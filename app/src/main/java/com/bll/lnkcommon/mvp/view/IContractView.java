@@ -1,0 +1,53 @@
+package com.bll.lnkcommon.mvp.view;
+
+import com.bll.lnkcommon.mvp.model.AppList;
+import com.bll.lnkcommon.mvp.model.BookStore;
+import com.bll.lnkcommon.mvp.model.BookStoreType;
+import com.bll.lnkcommon.mvp.model.CommonData;
+import com.bll.lnkcommon.mvp.model.SchoolBean;
+import com.bll.lnkcommon.mvp.model.User;
+import com.bll.lnkcommon.net.IBaseView;
+
+import java.util.List;
+
+public interface IContractView {
+
+    //登录
+    interface ILoginView extends IBaseView {
+        void getLogin(User user);
+        void getAccount(User user);
+    }
+
+    //注册 找回密码
+    interface IRegisterView extends IBaseView {
+        void onSms();
+        void onRegister();
+        void onFindPsd();
+        void onEditPsd();
+    }
+
+    interface IAccountInfoView extends IBaseView {
+        void onEditNameSuccess();
+    }
+
+    interface ISchoolView extends IBaseView{
+        void onListSchools(List<SchoolBean> list);
+    }
+
+    //主页
+    interface ICommonView extends IBaseView {
+        void onCommon(CommonData commonData);
+    }
+
+    interface IBookStoreView extends IBaseView {
+        void onBook(BookStore bookStore);
+        void onType(BookStoreType bookStoreType);
+        void buyBookSuccess();
+    }
+
+    //应用
+    interface IAPPView extends IBaseView {
+        void onAppList(AppList appBean);
+        void buySuccess();
+    }
+}

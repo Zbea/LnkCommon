@@ -1,0 +1,78 @@
+package com.bll.lnkcommon.manager;
+
+import com.bll.lnkcommon.MyApplication;
+import com.bll.lnkcommon.greendao.DaoSession;
+import com.bll.lnkcommon.greendao.NotebookDao;
+import com.bll.lnkcommon.mvp.model.Notebook;
+import com.bll.lnkcommon.mvp.model.User;
+import com.bll.lnkcommon.utils.SPUtil;
+
+import org.greenrobot.greendao.query.WhereCondition;
+
+import java.util.List;
+import java.util.Objects;
+
+public class NotebookDaoManager {
+
+    /**
+     * DaoSession
+     */
+    private DaoSession mDaoSession;
+    /**
+     *
+     */
+    private static NotebookDaoManager mDbController;
+
+
+    private NotebookDao dao;
+
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    private WhereCondition whereUser= NotebookDao.Properties.UserId.eq(userId);
+
+    /**
+     * 构造初始化
+     */
+    public NotebookDaoManager() {
+        mDaoSession = MyApplication.Companion.getMDaoSession();
+        dao = mDaoSession.getNotebookDao();
+    }
+
+    /**
+     * 获取单例（context 最好用application的context  防止内存泄漏）
+     */
+    public static NotebookDaoManager getInstance() {
+        if (mDbController == null) {
+            synchronized (NotebookDaoManager.class) {
+                if (mDbController == null) {
+                    mDbController = new NotebookDaoManager();
+                }
+            }
+        }
+        return mDbController;
+    }
+
+    public void insertOrReplace(Notebook bean) {
+        dao.insertOrReplace(bean);
+    }
+
+    public List<Notebook> queryAll() {
+        return dao.queryBuilder().where(whereUser)
+                .orderAsc(NotebookDao.Properties.Date).build().list();
+    }
+
+    /**
+     * 是否存在这个分类
+     * @param title
+     * @return
+     */
+    public Boolean isExist(String title){
+        WhereCondition whereUser1= NotebookDao.Properties.Title.eq(title);
+        return dao.queryBuilder().where(whereUser,whereUser1).unique()!=null;
+    }
+
+    public void deleteBean(Notebook bean){
+        dao.delete(bean);
+    }
+
+
+}

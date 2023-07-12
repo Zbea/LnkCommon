@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/drawing_bottom_height"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:id="@+id/iv_erasure"
+            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_height="match_parent"
+            android:layout_marginStart="98dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_erasure" />
+
+        <ImageView
+            android:id="@+id/iv_page_up"
+            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_height="match_parent"
+            android:layout_marginStart="44dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_page_up" />
+
+        <View
+            android:id="@+id/iv_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            />
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <View
+            android:id="@+id/iv_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/iv_page_down"
+            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="196dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_page_down" />
+
+    </LinearLayout>
+
+</LinearLayout>
