@@ -24,4 +24,9 @@
     <string name="note_type_tzb">田字本</string>
     <string name="note_type_wxp">五线谱</string>
 
+    <string name="textbook_tab_text">我的课本</string>
+    <string name="textbook_tab_course">解析课本</string>
+    <string name="textbook_tab_homework">我的题卷本</string>
+    <string name="textbook_tab_homework_other">参考题卷本</string>
+
 </resources>

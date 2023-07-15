@@ -8,10 +8,5 @@ public class User {
     public String telNumber;
     public String nickname;
     public int balance;//学豆
-    public String subjectName;
-    public int schoolId;
-    public String schoolName;
-    public String schoolProvince;
-    public String schoolCity;
-    public String schoolArea;
+    public boolean isBind;//是否有关联学生
 }

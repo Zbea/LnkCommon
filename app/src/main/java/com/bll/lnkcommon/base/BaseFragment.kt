@@ -25,10 +25,7 @@ import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NoteDrawingActivity
-import com.bll.lnkcommon.utils.ActivityManager
-import com.bll.lnkcommon.utils.KeyboardUtils
-import com.bll.lnkcommon.utils.SPUtil
-import com.bll.lnkcommon.utils.SToast
+import com.bll.lnkcommon.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
@@ -240,6 +237,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
                 showView(ll_page_number)
             }
         }
+    }
+
+    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(activity, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
     }
 
     /**

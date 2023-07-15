@@ -34,11 +34,20 @@ interface APIService{
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 修改学校信息
+     * 绑定学生
      */
-    @POST("accounts/changeAddress")
-    fun editSchool(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    @POST("parent/child/bind")
+    fun onBindStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 绑定学生
+     */
+    @POST("parent/child/unbind")
+    fun onUnbindStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取账户绑定学生列表
+     */
+    @GET("parent/child/list")
+    fun onStudentList(): Observable<BaseResult<MutableList<StudentBean>>>
     /**
      * 短信信息 "/sms"
      */
@@ -46,9 +55,9 @@ interface APIService{
     fun getSms(@Query("telNumber") num:String): Observable<BaseResult<Any>>
 
     /**
-     * 注册 "/user/createTeacher"
+     * 注册
      */
-    @POST("user/createTeacher")
+    @POST("user/createParent")
     fun register(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 忘记密码 "/password"

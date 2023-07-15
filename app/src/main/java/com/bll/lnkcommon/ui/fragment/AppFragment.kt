@@ -28,7 +28,7 @@ class AppFragment:BaseFragment() {
     }
 
     override fun initView() {
-        setTitle(DataBeanManager.getMainData()[3].name)
+        setTitle(DataBeanManager.mainListTitle[3])
         initRecyclerView()
         initMenuRecyclerView()
 

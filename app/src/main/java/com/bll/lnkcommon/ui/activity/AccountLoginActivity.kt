@@ -4,8 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.LoginPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
@@ -24,14 +26,20 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
     override fun getLogin(user: User?) {
         token= user?.token.toString()
         SPUtil.putString("token",token)
-        presenter.accounts()
+        presenter.getStudents()
     }
 
     override fun getAccount(user: User?) {
         user?.token=token
+        user?.isBind=DataBeanManager.students.size!=0
         SPUtil.putObj("user",user!!)
         startActivity(Intent(this,MainActivity::class.java))
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+    }
+
+    override fun onStudentList(studentBeans: MutableList<StudentBean>) {
+        DataBeanManager.students=studentBeans
+        presenter.accounts()
     }
 
     override fun layoutId(): Int {
@@ -44,7 +52,7 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        ed_user.setText("techerone")
+        ed_user.setText("zhufeng4")
         ed_psw.setText("123456")
 
 
@@ -64,10 +72,8 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
             val map=HashMap<String,Any>()
             map ["account"]=account
             map ["password"]=password
-            map ["role"]= 1
-
+            map ["role"]= 3
             presenter.login(map)
-
         }
 
         val tokenStr=SPUtil.getString("token")

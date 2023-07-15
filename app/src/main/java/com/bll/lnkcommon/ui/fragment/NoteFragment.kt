@@ -51,7 +51,7 @@ class NoteFragment:BaseFragment() {
         popupBeans.add(PopupBean(1, "新建笔记本", false))
         popupBeans.add(PopupBean(2, "新建笔记", false))
 
-        setTitle(DataBeanManager.getMainData()[2].name)
+        setTitle(DataBeanManager.mainListTitle[2])
         showView(iv_manager)
 
         iv_manager?.setOnClickListener {

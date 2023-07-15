@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.book
 
 import android.content.Intent
 import com.bll.lnkcommon.R

@@ -3,6 +3,8 @@ package com.bll.lnkcommon.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -16,6 +18,7 @@ import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
 import kotlinx.android.synthetic.main.fragment_app.*
+import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
@@ -23,11 +26,31 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var nickname=""
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
+    private var position=0
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
         mUser?.nickname=nickname
         tv_name.text = nickname
+    }
+    override fun onBindStudent() {
+        presenter.getStudents()
+    }
+    override fun onUnbindStudent() {
+        mAdapter?.remove(position)
+        DataBeanManager.students=students
+        if (DataBeanManager.students.size==0){
+            mUser?.isBind=false
+            EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        }
+    }
+    override fun onStudentList(studentBeans: MutableList<StudentBean>) {
+        if (studentBeans.size>0)
+            mUser?.isBind=true
+        DataBeanManager.students=studentBeans
+        students=studentBeans
+        mAdapter?.setNewData(students)
+        EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 
     override fun layoutId(): Int {
@@ -35,13 +58,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     override fun initData() {
+        presenter.getStudents()
     }
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
         setPageTitle("我的账户")
-
         initRecyclerView()
 
         mUser?.apply {
@@ -63,26 +85,19 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_logout.setOnClickListener {
-            CommonDialog(this).setContent("确认退出登录？").builder().setDialogClickListener(object :
+            CommonDialog(this).setContent("退出登录？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {
                     SPUtil.putString("token", "")
                     SPUtil.removeObj("user")
+                    DataBeanManager.students.clear()
                     startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
                     ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
                 }
             })
         }
-
-        students.add(StudentBean().apply{
-            id=123
-            name="朱"
-            grade=3
-        })
-
-        mAdapter?.setNewData(students)
 
     }
 
@@ -91,17 +106,15 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mAdapter = AccountStudentAdapter(R.layout.item_account_student,null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-
-        }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            this.position=position
             if (view.id==R.id.tv_student_cancel){
-                CommonDialog(this).setContent("确定取消学生关联？").builder().setDialogClickListener(object :
+                CommonDialog(this).setContent("取消学生关联？").builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }
                     override fun ok() {
-
+                        presenter.unbindStudent(students[position].childId)
                     }
                 })
             }
@@ -123,9 +136,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
      * 关联学生
      */
     private fun addStudent(){
-        InputContentDialog(this,"请输入学生号").builder()
+        InputContentDialog(this,"输入学生账号").builder()
             .setOnDialogClickListener { string ->
-
+                presenter.onBindStudent(string)
             }
     }
 

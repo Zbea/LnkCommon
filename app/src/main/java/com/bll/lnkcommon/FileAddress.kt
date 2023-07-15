@@ -4,6 +4,9 @@ import com.bll.lnkcommon.Constants.BOOK_DRAW_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
 import com.bll.lnkcommon.Constants.DATE_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
+import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
+import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
+import com.bll.lnkcommon.Constants.TEXTBOOK_PICTURE_FILES
 import com.bll.lnkcommon.Constants.ZIP_PATH
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.SPUtil
@@ -28,6 +31,24 @@ class FileAddress {
         return "$BOOK_DRAW_PATH/$fileName"
     }
 
+    fun getPathTextBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+    }
+    fun getPathTextBookDraw(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
+    }
+    /**
+     * 书籍目录地址
+     */
+    fun getPathTextBookCatalog(path:String):String{
+        return path + File.separator + TEXTBOOK_CATALOG_TXT
+    }
+    /**
+     * 书籍图片地址
+     */
+    fun getPathTextBookPicture(path:String):String{
+        return path + File.separator + TEXTBOOK_PICTURE_FILES
+    }
     /**
      * zip保存地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip

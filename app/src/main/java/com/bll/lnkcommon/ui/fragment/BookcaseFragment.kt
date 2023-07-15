@@ -10,7 +10,8 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.ui.activity.BookcaseTypeListActivity
+import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
+import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
@@ -33,10 +34,15 @@ class BookcaseFragment:BaseFragment() {
         return R.layout.fragment_bookcase
     }
     override fun initView() {
-        setTitle(DataBeanManager.getMainData()[1].name)
+        setTitle(DataBeanManager.mainListTitle[1])
+        showView(ll_search)
 
         initRecyclerView()
         findBook()
+
+        ll_search.setOnClickListener {
+            startActivity(Intent(activity, BookStoreTypeActivity::class.java))
+        }
 
         tv_type.setOnClickListener {
             startActivity(Intent(activity, BookcaseTypeListActivity::class.java))

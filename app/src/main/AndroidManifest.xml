@@ -70,9 +70,11 @@
         <activity android:name=".ui.activity.MainActivity"/>
         <activity android:name=".ui.activity.NotebookManagerActivity"/>
         <activity android:name=".ui.activity.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.BookcaseTypeListActivity"/>
-        <activity android:name=".ui.activity.BookStoreActivity"/>
-        <activity android:name=".ui.activity.BookStoreTypeActivity"/>
+        <activity android:name=".ui.activity.book.BookcaseTypeListActivity"/>
+        <activity android:name=".ui.activity.book.BookStoreActivity"/>
+        <activity android:name=".ui.activity.book.TextBookStoreActivity"/>
+        <activity android:name=".ui.activity.book.BookDetailsActivity"/>
+        <activity android:name=".ui.activity.book.BookStoreTypeActivity"/>
         <activity android:name=".ui.activity.AppCenterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
         <activity android:name=".ui.activity.AccountRegisterActivity"/>

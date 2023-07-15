@@ -1,6 +1,5 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.book
 
-import android.Manifest
 import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,7 +22,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_title.*
-import pub.devrel.easypermissions.EasyPermissions
 import java.text.DecimalFormat
 
 /**

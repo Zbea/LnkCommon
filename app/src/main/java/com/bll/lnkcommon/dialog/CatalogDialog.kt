@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.ui.adapter.BookCatalogAdapter
 import com.bll.lnkcommon.utils.DP2PX
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.entity.MultiItemEntity
 
-class CatalogDialog(val context: Context, val list: List<Any>) {
+class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0) {
 
     private var dialog:Dialog?=null
 
@@ -32,15 +34,33 @@ class CatalogDialog(val context: Context, val list: List<Any>) {
 
         rv_list?.layoutManager = LinearLayoutManager(context)
 
-        val mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ItemList>)
-        rv_list?.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rv_list)
-        mAdapter.setOnItemClickListener  { adapter, view, position ->
-            dismiss()
-            if (listener!=null)
-                listener?.onClick(position)
+        if (type==0){
+            val mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ItemList>)
+            rv_list?.adapter = mAdapter
+            mAdapter.bindToRecyclerView(rv_list)
+            mAdapter.setOnItemClickListener  { adapter, view, position ->
+                dismiss()
+                if (listener!=null)
+                    listener?.onClick(position)
+            }
         }
-
+        else{
+            val mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
+            rv_list?.adapter = mAdapter
+            mAdapter.bindToRecyclerView(rv_list)
+            mAdapter.setOnCatalogClickListener(object : BookCatalogAdapter.OnCatalogClickListener {
+                override fun onParentClick(page: Int) {
+                    dismiss()
+                    if (listener!=null)
+                        listener?.onClick(page)
+                }
+                override fun onChildClick(page: Int) {
+                    dismiss()
+                    if (listener!=null)
+                        listener?.onClick(page)
+                }
+            })
+        }
         return this
     }
 

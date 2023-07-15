@@ -142,7 +142,7 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="账号ID"
+                android:text="学生账号"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -152,14 +152,23 @@
                 android:text="姓名"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
+                android:gravity="center"
                 />
 
             <TextView
-                android:id="@+id/tv_student_grade"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="年级"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                />
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="年级"
+                android:text="学校"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />

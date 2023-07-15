@@ -93,7 +93,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
             val name=ed_name.text.toString().trim()
             val phone=ed_phone.text.toString().trim()
             val code=ed_code.text.toString().trim()
-            val role=1
+            val role=3
 
             if (psd.isEmpty()) {
                 showToast("请输入密码")

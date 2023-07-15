@@ -5,6 +5,7 @@ import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CommonData;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
+import com.bll.lnkcommon.mvp.model.StudentBean;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.net.IBaseView;
 
@@ -16,6 +17,7 @@ public interface IContractView {
     interface ILoginView extends IBaseView {
         void getLogin(User user);
         void getAccount(User user);
+        void onStudentList(List<StudentBean> studentBeans);
     }
 
     //注册 找回密码
@@ -28,6 +30,9 @@ public interface IContractView {
 
     interface IAccountInfoView extends IBaseView {
         void onEditNameSuccess();
+        void onBindStudent();
+        void onUnbindStudent();
+        void onStudentList(List<StudentBean> studentBeans);
     }
 
     interface ISchoolView extends IBaseView{

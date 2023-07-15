@@ -24,8 +24,8 @@ import android.os.Environment
  */
 object Constants {
 
-//                const val URL_BASE = "https://api2.bailianlong.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+                const val URL_BASE = "https://api2.bailianlong.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -40,13 +40,18 @@ object Constants {
         val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
 
+        val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
+        val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
+        val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
+
         //eventbus通知标志
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"
+        const val TEXT_BOOK_EVENT = "TextBookEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val APP_EVENT = "APPEvent"
-
+        const val STUDENT_EVENT="StudentEvent"
 
 }
 

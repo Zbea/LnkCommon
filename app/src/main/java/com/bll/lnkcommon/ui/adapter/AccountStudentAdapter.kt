@@ -10,9 +10,11 @@ class AccountStudentAdapter(layoutResId: Int,data: List<StudentBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: StudentBean) {
         helper.apply {
-            setText(R.id.tv_student_id,item.id.toString())
-            setText(R.id.tv_student_name,item.name)
-            setText(R.id.tv_student_grade,DataBeanManager.grades[item.grade-1].desc)
+            setText(R.id.tv_student_id,item.account)
+            setText(R.id.tv_student_name,item.nickname)
+            setText(R.id.tv_student_school,item.schoolName)
+            if (DataBeanManager.grades.size>0)
+                setText(R.id.tv_student_grade,DataBeanManager.grades[item.grade-1].desc)
             addOnClickListener(R.id.tv_student_cancel)
         }
     }

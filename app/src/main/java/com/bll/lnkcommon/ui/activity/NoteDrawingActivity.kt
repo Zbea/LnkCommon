@@ -124,7 +124,7 @@ class NoteDrawingActivity : BaseActivity() {
             }
 
         }
-        CatalogDialog(this,list).builder().setOnDialogClickListener { position ->
+        CatalogDialog(this,list,0).builder().setOnDialogClickListener { position ->
             page = noteContents[position].page
             changeContent()
         }

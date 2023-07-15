@@ -9,8 +9,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.ui.activity.AppCenterActivity
-import com.bll.lnkcommon.ui.activity.BookStoreTypeActivity
+import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
@@ -18,11 +17,10 @@ import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
-import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_app.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,11 +33,7 @@ class HomeFragment:BaseFragment() {
         return R.layout.fragment_home
     }
     override fun initView() {
-        setTitle(DataBeanManager.getMainData()[0].name)
-        showView(ll_search)
-        ll_search.setOnClickListener {
-            startActivity(Intent(activity,BookStoreTypeActivity::class.java))
-        }
+        setTitle(DataBeanManager.mainListTitle[0])
 
         ll_date.setOnClickListener {
             startActivity(Intent(activity,DateActivity::class.java))
@@ -62,7 +56,8 @@ class HomeFragment:BaseFragment() {
     private fun setDateView() {
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
-        GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        if (File(path).exists())
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
 
         val solar= Solar()
         solar.solarYear=DateUtils.getYear()
@@ -93,15 +88,9 @@ class HomeFragment:BaseFragment() {
         mAdapter = AppListAdapter(R.layout.item_main_app, 1,null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (position==0){
-                startActivity(Intent(requireActivity(), AppCenterActivity::class.java))
-            }
-            else{
-                val packageName= apps[position].packageName
-                AppUtils.startAPP(activity,packageName)
-            }
+            val packageName= apps[position].packageName
+            AppUtils.startAPP(activity,packageName)
         }
     }
 

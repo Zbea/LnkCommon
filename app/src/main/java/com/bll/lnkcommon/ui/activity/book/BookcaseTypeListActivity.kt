@@ -1,7 +1,5 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.book
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants.BOOK_EVENT
@@ -21,8 +19,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**

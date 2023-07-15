@@ -8,14 +8,23 @@ object DataBeanManager {
     var grades= mutableListOf<Grade>()
     var typeGrades= mutableListOf<Grade>()
     var courses= mutableListOf<ItemList>()
+    var students= mutableListOf<StudentBean>()
+    var provinces= mutableListOf<AreaBean>()
 
-    private val mainListTitle = arrayOf("首页","书架","笔记","应用")
+    val mainListTitle = arrayOf("首页","书架","笔记","应用","教材","作业")
+
+    val homeworkType = arrayOf("老师作业","学校考试","我的作业")
 
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",
         "四大名著", "中国科技", "小说散文",
         "外国原著", "历史地理", "政治经济",
         "军事战略", "科学技术", "运动才艺"
+    )
+
+    val textbookType = arrayOf(
+        mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
+        mContext.getString(R.string.textbook_tab_homework),mContext.getString(R.string.textbook_tab_homework_other)
     )
 
     val popupGrades: MutableList<PopupBean>
@@ -40,7 +49,7 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<PopupBean>()
             for (i in courses.indices){
-                list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
+                list.add(PopupBean(courses[i].type, courses[i].desc, false))
             }
             return list
         }
