@@ -5,7 +5,9 @@ import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CommonData;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
+import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.StudentBean;
+import com.bll.lnkcommon.mvp.model.TeacherHomeworkList;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.net.IBaseView;
 
@@ -54,5 +56,15 @@ public interface IContractView {
     interface IAPPView extends IBaseView {
         void onAppList(AppList appBean);
         void buySuccess();
+    }
+
+    interface IHomeworkView extends IBaseView{
+        void onList(TeacherHomeworkList item);
+        void onDeleteSuccess();
+        void onScore(List<Score> scores);
+    }
+
+    interface IStudentView extends IBaseView{
+        void onListStudents(List<StudentBean> list);
     }
 }

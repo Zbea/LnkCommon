@@ -13,7 +13,7 @@ object DataBeanManager {
 
     val mainListTitle = arrayOf("首页","书架","笔记","应用","教材","作业")
 
-    val homeworkType = arrayOf("老师作业","学校考试","我的作业")
+    val homeworkType = arrayOf("老师作业","学校考试","我的作业","我的批改")
 
     val bookType = arrayOf(
         "诗经楚辞", "唐诗宋词", "古代经典",

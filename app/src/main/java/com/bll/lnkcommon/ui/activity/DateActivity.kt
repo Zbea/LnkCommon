@@ -42,7 +42,7 @@ open class DateActivity: BaseActivity() {
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
+            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028)
             if (yearPop==null){
                 yearPop=PopupDateSelector(this,tv_year,list,0).builder()
                 yearPop ?.setOnSelectorListener {
@@ -80,7 +80,7 @@ open class DateActivity: BaseActivity() {
 
     }
 
-    open fun initRecycler(){
+    private fun initRecycler(){
         mAdapter = DateAdapter(R.layout.item_date, null)
         rv_list.layoutManager = GridLayoutManager(this,7)
         rv_list.adapter = mAdapter
@@ -100,7 +100,7 @@ open class DateActivity: BaseActivity() {
 
 
     //根据月份获取当月日期
-    open fun getDates(){
+    private fun getDates(){
         dates.clear()
         val lastYear: Int
         val lastMonth: Int
@@ -169,7 +169,7 @@ open class DateActivity: BaseActivity() {
 
     }
 
-    open fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
+    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month

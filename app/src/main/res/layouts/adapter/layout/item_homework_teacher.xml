@@ -3,122 +3,130 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_black_stroke_5dp_corner"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="@dimen/dp_20">
 
-    <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="通知"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_24"
-        android:textStyle="bold"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            >
-            <TextView
-                android:id="@+id/tv_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20" />
-
-            <TextView
-                android:id="@+id/tv_content"
+            android:text="通知"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20" />
 
-            <TextView
-                android:id="@+id/tv_commitDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:textColor="@color/black_20"
-                android:textSize="@dimen/sp_20" />
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_20" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_commitDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:textColor="@color/black_20"
+            android:textSize="@dimen/sp_20" />
+
+        <ImageView
+            android:id="@+id/iv_rank"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_notebook_edit"
+            android:layout_marginEnd="@dimen/dp_10"/>
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_notebook_delete" />
+    </LinearLayout>
 
 
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_90"
+        android:layout_gravity="right"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="        "
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_gravity="right"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textColor="@color/black_20"
+            android:textSize="@dimen/sp_18" />
 
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/black_20"
-                android:textSize="@dimen/sp_18" />
-
-            <TextView
-                android:id="@+id/tv_image_content"
-                android:layout_width="80dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="@dimen/dp_20"
-                android:gravity="center"
-                android:text="作业内容"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
-                android:visibility="gone"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
-            <TextView
-                android:id="@+id/tv_image_commit"
-                android:layout_width="80dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="@dimen/dp_20"
-                android:gravity="center"
-                android:text="提交内容"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
-                android:visibility="gone"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
-            <TextView
-                android:id="@+id/tv_image_correct"
-                android:layout_width="80dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="@dimen/dp_20"
-                android:gravity="center"
-                android:text="批改内容"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
-                android:visibility="gone"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_image_content"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="作业内容"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+        <TextView
+            android:id="@+id/tv_image_commit"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="提交内容"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+        <TextView
+            android:id="@+id/tv_image_correct"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="批改内容"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/tv_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/icon_notebook_delete" />
+
 
 
 </LinearLayout>

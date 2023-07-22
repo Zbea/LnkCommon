@@ -1,5 +1,7 @@
 package com.bll.lnkcommon.mvp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class TeacherHomeworkList {
@@ -9,12 +11,18 @@ public class TeacherHomeworkList {
 
     public static class TeacherHomeworkBean{
         public int id;
-        public int status;
-        public String course;
-        public String typeStr;
+        public int childId;
+        public String subject;
         public int type;
-        public String content;
-        public long date;
-        public long commitDate;
+        public String homeworkName;
+        public long submitTime;
+        public long time;
+        public String submitContent;
+        public String homeworkContent;
+        public String correctContent;
+        public String title;
+        @SerializedName("msgType")
+        public int status;
+        public int studentTaskId;
     }
 }

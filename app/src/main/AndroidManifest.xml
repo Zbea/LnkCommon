@@ -80,6 +80,7 @@
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
         <activity android:name=".ui.activity.DateActivity"/>
         <activity android:name=".ui.activity.DateEventActivity"/>
+        <activity android:name=".ui.activity.ScoreActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

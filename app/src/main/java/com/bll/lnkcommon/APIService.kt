@@ -113,4 +113,21 @@ interface APIService{
      */
     @POST("buy/book/createOrder")
     fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 作业列表
+     */
+    @GET("homework/inform/list")
+    fun getHomeworks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TeacherHomeworkList>>
+    /**
+     * 删除
+     */
+    @POST("homework/inform/delete")
+    fun deleteHomeworks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 成绩
+     */
+    @GET("task/group/oneByStudentTaskId")
+    fun getScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<Score>>>
+
 }

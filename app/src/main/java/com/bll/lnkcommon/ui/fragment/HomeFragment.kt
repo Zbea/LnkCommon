@@ -9,6 +9,9 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
+import com.bll.lnkcommon.mvp.model.StudentBean
+import com.bll.lnkcommon.mvp.presenter.StudentPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IStudentView
 import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
@@ -24,10 +27,16 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeFragment:BaseFragment() {
+class HomeFragment:BaseFragment(),IStudentView {
 
+    private val presenter=StudentPresenter(this)
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
+
+
+    override fun onListStudents(list: MutableList<StudentBean>?) {
+        DataBeanManager.students=list!!
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_home
@@ -45,6 +54,8 @@ class HomeFragment:BaseFragment() {
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
             mCommonPresenter.getCommon()
+        if (DataBeanManager.students.size==0)
+            presenter.getStudents()
         setDateView()
         apps= AppDaoManager.getInstance().queryAll()
         mAdapter?.setNewData(apps)
@@ -108,4 +119,5 @@ class HomeFragment:BaseFragment() {
         lazyLoad()
         setDateView()
     }
+
 }

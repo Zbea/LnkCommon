@@ -12,6 +12,7 @@ import com.bll.lnkcommon.mvp.model.AreaBean
 import com.bll.lnkcommon.mvp.model.MainListBean
 import com.bll.lnkcommon.ui.adapter.MainListAdapter
 import com.bll.lnkcommon.ui.fragment.*
+import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.utils.FileUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -28,7 +29,7 @@ class MainActivity : BaseActivity() {
     private var bookcaseFragment: BookcaseFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
-    private var teachFragment:HomeworkFragment?=null
+    private var teachFragment: HomeworkManagerFragment?=null
     private var textbookFragment:TextbookFragment?=null
 
     override fun layoutId(): Int {
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity() {
         noteFragment= NoteFragment()
         appFragment = AppFragment()
         textbookFragment= TextbookFragment()
-        teachFragment= HomeworkFragment()
+        teachFragment= HomeworkManagerFragment()
 
         switchFragment(lastFragment, homeFragment)
 
