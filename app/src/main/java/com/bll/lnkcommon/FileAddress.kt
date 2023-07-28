@@ -3,6 +3,7 @@ package com.bll.lnkcommon
 import com.bll.lnkcommon.Constants.BOOK_DRAW_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
 import com.bll.lnkcommon.Constants.DATE_PATH
+import com.bll.lnkcommon.Constants.HOMEWORK_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
@@ -83,6 +84,13 @@ class FileAddress {
      */
     fun getPathDate(dateStr:String):String{
         return "$DATE_PATH/$mUserId/$dateStr"
+    }
+
+    /**
+     * 获取作业批改路径
+     */
+    fun getPathCorrect(id:Int):String{
+        return "$HOMEWORK_PATH/$mUserId/$id"
     }
 
 }

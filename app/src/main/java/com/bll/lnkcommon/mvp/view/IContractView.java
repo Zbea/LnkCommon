@@ -4,6 +4,8 @@ import com.bll.lnkcommon.mvp.model.AppList;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CommonData;
+import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
+import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.StudentBean;
@@ -64,7 +66,22 @@ public interface IContractView {
         void onScore(List<Score> scores);
     }
 
+    interface IMyHomeworkView extends IBaseView{
+        void onList(HomeworkTypeList homeworkTypeList);
+        void onCreateSuccess();
+        void onDeleteSuccess();
+        void onSendSuccess();
+    }
+
     interface IStudentView extends IBaseView{
         void onListStudents(List<StudentBean> list);
     }
+    interface IHomeworkCorrectView extends IBaseView{
+        void onList(HomeworkCorrectList list);
+        void onToken(String token);
+        void onUpdateSuccess();
+        void onDeleteSuccess();
+        void onSendSuccess();
+    }
+
 }

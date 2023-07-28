@@ -8,6 +8,12 @@ import retrofit2.http.*
 
 
 interface APIService{
+
+    /**
+     * 获取下载token
+     */
+    @POST("file/token")
+    fun getQiniuToken(): Observable<BaseResult<String>>
     /**
      * 公共年级接口
      */
@@ -129,5 +135,43 @@ interface APIService{
      */
     @GET("task/group/oneByStudentTaskId")
     fun getScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<Score>>>
+
+
+    /**
+     * 作业列表
+     */
+    @GET("parent/homework/list")
+    fun getHomeworkTypes(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkTypeList>>
+    /**
+     * 添加作业列表
+     */
+    @POST("parent/homework/insert")
+    fun createHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 添加作业列表
+     */
+    @POST("parent/homework/delete")
+    fun deleteHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 布置作业
+     */
+    @POST("student/job/sendJob")
+    fun sendHomework(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 批改列表
+     */
+    @GET("student/job/list")
+    fun getHomeworkCorrects(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkCorrectList>>
+    /**
+     * 删除批改
+     */
+    @POST("student/job/delete")
+    fun deleteCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 提交学生批改
+     */
+    @POST("student/task/update")
+    fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
 
 }

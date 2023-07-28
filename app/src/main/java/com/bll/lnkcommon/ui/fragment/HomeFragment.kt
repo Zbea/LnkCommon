@@ -18,6 +18,7 @@ import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -36,6 +37,7 @@ class HomeFragment:BaseFragment(),IStudentView {
 
     override fun onListStudents(list: MutableList<StudentBean>?) {
         DataBeanManager.students=list!!
+        SPUtil.putInt("studentId",list[0].childId)
     }
 
     override fun getLayoutId(): Int {

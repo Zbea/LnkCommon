@@ -7,6 +7,7 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.BookManageDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -69,7 +70,7 @@ class BookcaseFragment:BaseFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookcaseFragment.position=position
-                delete()
+                onLongClick()
                 true
             }
         }
@@ -125,26 +126,26 @@ class BookcaseFragment:BaseFragment() {
 
 
     //删除书架书籍
-    private fun delete(){
-        CommonDialog(requireActivity()).setContent("确定删除本书？").builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                val book=books[position]
-                BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                books.remove(book)
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                if (File(book.bookDrawPath).exists())
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                mAdapter?.notifyDataSetChanged()
+    private fun onLongClick(){
+        val book=books[position]
+        BookManageDialog(requireActivity(), book,1).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
+                    BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    books.remove(book)
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    if (File(book.bookDrawPath).exists())
+                        FileUtils.deleteFile(File(book.bookDrawPath))
+                    mAdapter?.notifyDataSetChanged()
 
-                if (books.size==11)
-                {
-                    findBook()
+                    if (books.size==11)
+                    {
+                        findBook()
+                    }
                 }
-            }
-        })
+                override fun onSet() {
+                }
+            })
     }
 
     override fun onEventBusMessage(msgFlag: String) {

@@ -4,6 +4,7 @@ import android.util.ArrayMap
 import android.util.Pair
 import com.google.gson.Gson
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 
 /**
@@ -11,7 +12,7 @@ import okhttp3.RequestBody
  */
 object RequestUtils {
     private val gson = Gson()
-    private val mediaType =  MediaType.parse("application/json; charset=utf-8")
+    private val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
     /**
      * 根据map 参数返回 一个 requestbody
      * @param map 封装好数据的map

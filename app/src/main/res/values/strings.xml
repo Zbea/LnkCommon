@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">墨之屏通用本</string>
+    <string name="app_name">青蓝通用本</string>
     <string name="authority">com.bll.lnkcommon</string>
     <string name="request_success">请求成功</string>
     <string name="login_timeout">连接超时,请重新登陆</string>

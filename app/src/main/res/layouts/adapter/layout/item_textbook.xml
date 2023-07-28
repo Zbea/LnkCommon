@@ -12,6 +12,7 @@
         android:layout_height="273dp"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
+        android:scaleType="fitXY"
         />
 
     <TextView

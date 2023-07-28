@@ -6,6 +6,7 @@ import com.bll.lnkcommon.Constants.BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.BookManageDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -111,7 +112,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position
-                delete()
+                onLongClick()
                 true
             }
         }
@@ -136,14 +137,11 @@ class BookcaseTypeListActivity : BaseActivity() {
     }
 
     //删除书架书籍
-    private fun delete() {
-        CommonDialog(this).setContent("确定删除本书").builder()
-            .setDialogClickListener(object :
-                CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    val book = books[pos]
+    private fun onLongClick() {
+        val book=books[pos]
+        BookManageDialog(this, book,1).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
                     mBookDaoManager.deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     if (File(book.bookDrawPath).exists())
@@ -151,6 +149,8 @@ class BookcaseTypeListActivity : BaseActivity() {
                     books.remove(book)
                     mAdapter?.notifyDataSetChanged()
                     EventBus.getDefault().post(BOOK_EVENT)
+                }
+                override fun onSet() {
                 }
             })
     }

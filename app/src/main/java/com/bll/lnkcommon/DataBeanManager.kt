@@ -2,6 +2,7 @@ package com.bll.lnkcommon
 
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
+import java.util.*
 
 object DataBeanManager {
 
@@ -162,5 +163,24 @@ object DataBeanManager {
             list.add(ItemList(5, "运动才艺"))
             return list
         }
+
+    //封面
+    fun homeworkCoverId(): Int{
+        val list= mutableListOf<ModuleBean>()
+        val moduleBean = ModuleBean()
+        moduleBean.resId = R.mipmap.icon_homework_cover_1
+        val moduleBean1 = ModuleBean()
+        moduleBean1.resId = R.mipmap.icon_homework_cover_2
+        val moduleBean2 = ModuleBean()
+        moduleBean2.resId = R.mipmap.icon_homework_cover_3
+        val moduleBean3 = ModuleBean()
+        moduleBean3.resId = R.mipmap.icon_homework_cover_4
+        list.add(moduleBean)
+        list.add(moduleBean1)
+        list.add(moduleBean2)
+        list.add(moduleBean3)
+        val index= Random().nextInt(list.size)
+        return list[index].resId
+    }
 
 }

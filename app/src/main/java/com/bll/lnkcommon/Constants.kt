@@ -39,6 +39,9 @@ object Constants {
         //日历保存
         val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
+        //断点记录文件保存的文件夹
+        val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+        val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
 
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件

@@ -1,17 +1,21 @@
 package com.bll.lnkcommon.ui.fragment
 
+import PopupClick
 import androidx.fragment.app.Fragment
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.HomeworkCreateDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.StudentPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IStudentView
+import com.bll.lnkcommon.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.ui.fragment.homework.MyHomeworkFragment
+import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
@@ -23,12 +27,14 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
     private var homeworkFragment: HomeworkFragment? = null
     private var examFragment: HomeworkFragment? = null
     private var myHomeworkFragment:MyHomeworkFragment?=null
+    private var homeworkCorrectFragment:HomeworkCorrectFragment?=null
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         DataBeanManager.students=list
+        SPUtil.putInt("studentId",list[0].childId)
         initStudent()
     }
 
@@ -40,9 +46,12 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
         showView(tv_course)
         iv_manager.setImageResource(R.mipmap.icon_add)
 
+        val coursePops=DataBeanManager.popupCourses
+
         homeworkFragment = HomeworkFragment().newInstance(1)
         examFragment = HomeworkFragment().newInstance(2)
         myHomeworkFragment= MyHomeworkFragment()
+        homeworkCorrectFragment= HomeworkCorrectFragment()
 
         switchFragment(lastFragment, homeworkFragment)
 
@@ -50,7 +59,7 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
         initTab()
 
         tv_course.setOnClickListener {
-            PopupRadioList(requireActivity(), DataBeanManager.popupCourses, tv_course,tv_course.width, 10).builder()
+            PopupClick(requireActivity(), coursePops, tv_course,200, 10).builder()
                 .setOnSelectListener {
                     tv_course.text = it.name
                     when(lastPosition){
@@ -69,8 +78,17 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
                 .setOnSelectListener {
                     tv_student.text = it.name
                     changeFragmentStudent(it.id)
+                    SPUtil.putInt("studentId",it.id)
                 }
         }
+
+        iv_manager.setOnClickListener {
+            HomeworkCreateDialog(requireActivity()).builder().setOnDialogClickListener {
+                    contentStr, courseId ->
+                myHomeworkFragment?.createHomeworkType(contentStr,courseId)
+            }
+        }
+
     }
     override fun lazyLoad() {
         if (DataBeanManager.students.size==0)
@@ -93,6 +111,7 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
         homeworkFragment?.onChangeStudent(id)
         examFragment?.onChangeStudent(id)
         myHomeworkFragment?.onChangeStudent(id)
+        homeworkCorrectFragment?.onChangeStudent(id)
     }
 
     private fun initTab() {
@@ -120,6 +139,7 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
                 }
                 3->{
                     disMissView(tv_course,iv_manager)
+                    switchFragment(lastFragment, homeworkCorrectFragment)
                 }
             }
             lastPosition=id

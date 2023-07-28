@@ -6,14 +6,19 @@ import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.BookManageDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.model.HomeworkTypeList
+import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.book.BookDetailsActivity
 import com.bll.lnkcommon.ui.activity.book.TextBookStoreActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -22,13 +27,24 @@ import kotlinx.android.synthetic.main.fragment_app.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextbookFragment:BaseFragment() {
+class TextbookFragment:BaseFragment(),IMyHomeworkView {
 
+    private val presenter=MyHomeworkPresenter(this)
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()
     private var textBook = ""//用来区分课本类型
     private var tabId=0
     private var position = 0
+
+    override fun onList(homeworkTypeList: HomeworkTypeList?) {
+    }
+    override fun onCreateSuccess() {
+        showToast("设置作业本成功")
+    }
+    override fun onDeleteSuccess() {
+    }
+    override fun onSendSuccess() {
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook
@@ -89,19 +105,35 @@ class TextbookFragment:BaseFragment() {
             }
     }
 
+    //长按显示课本管理
     private fun onLongClick(book: Book) {
-        CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                FileUtils.deleteFile(File(book.bookDrawPath))
-                mAdapter?.remove(position)
-                EventBus.getDefault().post(TEXT_BOOK_EVENT)
-            }
-        })
+        //题卷本可以设置为作业
+        val type=if (tabId==2||tabId==3) 2 else 1
+        BookManageDialog(requireActivity(), book,type).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
+                    BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    mAdapter?.remove(position)
+                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                }
+                override fun onSet() {
+                    val studentId=SPUtil.getInt("studentId")
+                    if (studentId==0){
+                        showToast("请选择学生")
+                        return
+                    }
+                    val map=HashMap<String,Any>()
+                    map["name"]=book.bookName
+                    map["type"]=2
+                    map["childId"]=studentId
+                    map["bookId"]=book.bookId
+                    map["imageUrl"]=book.imageUrl
+                    map["subject"]=book.subjectName
+                    presenter.createHomeworkType(map)
+                }
+            })
     }
 
     override fun onEventBusMessage(msgFlag: String) {
@@ -116,5 +148,7 @@ class TextbookFragment:BaseFragment() {
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }
+
+
 
 }

@@ -4,29 +4,32 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.KeyboardUtils
 import com.bll.lnkcommon.utils.SToast
 
-class HomeworkPublishDialog(val context: Context) {
-    private var date=0L
+class HomeworkCreateDialog(val context: Context) {
 
-    fun builder(): HomeworkPublishDialog {
+    private var courseId=0
+
+    fun builder(): HomeworkCreateDialog {
 
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_homework_publish)
+        dialog.setContentView(R.layout.dialog_homework_create)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
         val tv_send = dialog.findViewById<TextView>(R.id.tv_send)
-        val tv_date = dialog.findViewById<TextView>(R.id.tv_date)
+        val tv_course = dialog.findViewById<TextView>(R.id.tv_course)
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
-
-        tv_date.setOnClickListener {
-            DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
-                tv_date.text=DateUtils.longToStringWeek(dateTim)
-                date=dateTim
+        val pops=DataBeanManager.popupCourses
+        tv_course.setOnClickListener {
+            PopupRadioList(context,pops,tv_course,tv_course.width,5).builder()
+                .setOnSelectListener{
+                    tv_course.text=it.name
+                    courseId=it.id
             }
         }
 
@@ -36,11 +39,11 @@ class HomeworkPublishDialog(val context: Context) {
                 SToast.showText("请输入内容")
                 return@setOnClickListener
             }
-            if (date>0&&date<=System.currentTimeMillis()){
-                SToast.showText("提交时间必须大于当天")
+            if (courseId==0){
+                SToast.showText("请选择科目")
                 return@setOnClickListener
             }
-            listener?.onSend(contentStr,date)
+            listener?.onCreate(contentStr,courseId)
             dialog.dismiss()
         }
 
@@ -52,10 +55,12 @@ class HomeworkPublishDialog(val context: Context) {
     }
 
 
+
+
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onSend(contentStr:String,date:Long)
+        fun onCreate(contentStr:String,courseId:Int)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

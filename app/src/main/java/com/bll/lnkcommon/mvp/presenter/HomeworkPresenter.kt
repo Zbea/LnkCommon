@@ -20,7 +20,7 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
                 if (tBaseResult.data!=null)
                     view.onList(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
     fun deleteHomeworks(map: HashMap<String,Any>) {

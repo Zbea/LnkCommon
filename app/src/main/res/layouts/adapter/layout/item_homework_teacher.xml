@@ -52,7 +52,7 @@
             android:id="@+id/iv_rank"
             android:layout_width="@dimen/dp_40"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_notebook_edit"
+            android:src="@mipmap/icon_rank"
             android:layout_marginEnd="@dimen/dp_10"/>
         <ImageView
             android:id="@+id/iv_delete"
@@ -67,7 +67,6 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_90"
         android:layout_gravity="right"
         android:gravity="center_vertical"
         android:orientation="horizontal">
