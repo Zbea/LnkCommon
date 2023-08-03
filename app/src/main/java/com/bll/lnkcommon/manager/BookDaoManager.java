@@ -20,16 +20,9 @@ public class BookDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static BookDaoManager mDbController;
-
-
-    private BookDao bookDao;  //book表
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    WhereCondition whereUser= BookDao.Properties.UserId.eq(userId);
+    private final BookDao bookDao;  //book表
+    private static WhereCondition whereUser;
 
 
     /**
@@ -51,6 +44,8 @@ public class BookDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= BookDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

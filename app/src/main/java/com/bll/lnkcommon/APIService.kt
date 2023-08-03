@@ -77,6 +77,22 @@ interface APIService{
     fun editPassword(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
+     * //获取学豆列表
+     */
+    @GET("wallets/list")
+    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountXDList>>
+    /**
+     * 提交学豆订单
+     */
+    @POST("wallets/order/{id}")
+    fun postOrder(@Path("id") id:String ): Observable<BaseResult<AccountOrder>>
+    /**
+     * 查看订单状态
+     */
+    @GET("wallets/order/{id}")
+    fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
+
+    /**
      * 教材分类
      */
     @GET("book/types")
@@ -168,9 +184,9 @@ interface APIService{
     @POST("student/job/delete")
     fun deleteCorrect(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 提交学生批改
+     * 提交批改
      */
-    @POST("student/task/update")
+    @POST("student/job/parentChange")
     fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 

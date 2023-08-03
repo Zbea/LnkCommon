@@ -1,11 +1,15 @@
 package com.bll.lnkcommon.ui.activity
 
+import android.content.res.AssetManager
+import android.content.res.AssetManager.AssetInputStream
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
@@ -18,6 +22,7 @@ import com.bll.lnkcommon.utils.*
 import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
@@ -45,9 +50,8 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
                 override fun onUploadSuccess(urls: List<String>) {
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
-                    map["studentTaskId"]=correctBean?.id!!
-                    map["submitUrl"]=url
-                    map["status"]=3
+                    map["id"]=correctBean?.id!!
+                    map["changeUrl"]=url
                     presenter.commitPaperStudent(map)
                 }
                 override fun onUploadFail() {
@@ -64,12 +68,10 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik?.setPWEnabled(false)
+        EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
     override fun onDeleteSuccess() {
     }
-    override fun onSendSuccess() {
-    }
-
 
     override fun layoutId(): Int {
         return R.layout.ac_homework_correct
@@ -79,7 +81,8 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())
-        if (correctBean?.status==1)
+        elik=iv_image.pwInterFace
+        if (correctBean?.status==2)
         {
             showView(iv_manager)
             iv_manager.setImageResource(R.mipmap.icon_save)
@@ -89,6 +92,7 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
         else{
             elik?.setPWEnabled(false)
             images= correctBean?.changeUrl!!.split(",") as MutableList<String>
+            setContentImage()
         }
 
         iv_erasure.setOnClickListener {
@@ -101,6 +105,26 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
                 iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
                 elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
             }
+        }
+
+        iv_page_up.setOnClickListener {
+            if (posImage>0){
+                posImage-=1
+                setContentImage()
+            }
+        }
+        iv_page_down.setOnClickListener {
+            if (posImage< images.size-1){
+                posImage+=1
+                setContentImage()
+            }
+        }
+
+        iv_manager.setOnClickListener {
+            showLoading()
+            Handler().postDelayed( {
+                commitPapers()
+            },1000)
         }
 
     }
@@ -137,16 +161,15 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
      */
     private fun setContentImage(){
         hideLoading()
+        tv_page.text="${posImage+1}/${images.size}"
         //批改成功后加载提交后的图片
-        if (correctBean?.status==2){
+        if (correctBean?.status==3){
             GlideUtils.setImageUrl(this, images[posImage],iv_image)
         }
         else{
             elik?.setPWEnabled(true)
             val masterImage="${getPath()}/${posImage+1}.png"//原图
             GlideUtils.setImageFile(this, File(masterImage),iv_image)
-
-            tv_page.text="${posImage+1}/${images.size}"
 
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
@@ -184,7 +207,7 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
     private fun commitPapers(){
         commitItems.clear()
         //手写,图片合图
-        for (i in images?.indices!!){
+        for (i in images.indices){
             val index=i+1
             val masterImage="${getPath()}/${index}.png"//原图
             val drawPath = getPathDrawStr(index).replace("tch","png")
@@ -192,9 +215,7 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
             var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
             Thread {
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds=false
-                val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
+                val drawBitmap = BitmapFactory.decodeFile(drawPath)
                 if (drawBitmap!=null){
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                     BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
@@ -206,7 +227,7 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
                     id = i
                     url = mergePathStr
                 })
-                if (commitItems.size==images?.size){
+                if (commitItems.size==images.size){
                     commitItems.sort()
                     presenter.getToken()
                 }

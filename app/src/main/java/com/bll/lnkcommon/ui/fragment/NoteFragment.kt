@@ -49,7 +49,7 @@ class NoteFragment:BaseFragment() {
 
         popupBeans.add(PopupBean(0, "笔记本管理", true))
         popupBeans.add(PopupBean(1, "新建笔记本", false))
-        popupBeans.add(PopupBean(2, "新建笔记", false))
+        popupBeans.add(PopupBean(2, "新建主题", false))
 
         setTitle(DataBeanManager.mainListTitle[2])
         showView(iv_manager)
@@ -170,7 +170,7 @@ class NoteFragment:BaseFragment() {
     //新建笔记
     private fun createNote(resId:String) {
         val note = Note()
-        InputContentDialog(requireContext(),  "请输入笔记").builder()
+        InputContentDialog(requireContext(),  "请输入主题").builder()
             .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
                     showToast("已存在")
@@ -206,7 +206,7 @@ class NoteFragment:BaseFragment() {
 
     //删除
     private fun deleteNote() {
-        CommonDialog(requireActivity()).setContent("确定要删除笔记？").builder()
+        CommonDialog(requireActivity()).setContent("确定要删除主题？").builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.activity.book
 
+import android.content.Intent
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants.BOOK_EVENT
@@ -127,13 +128,16 @@ class BookcaseTypeListActivity : BaseActivity() {
         bookBean.time=System.currentTimeMillis()
         BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(BOOK_EVENT)
-//        val intent = Intent()
-//        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-//        intent.setPackage("com.geniatech.knote.reader")
-//        intent.putExtra("path", bookBean.bookPath)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-//        startActivity(intent)
+
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
+        startActivity(intent)
     }
 
     //删除书架书籍

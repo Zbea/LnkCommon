@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.fragment.homework
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
@@ -37,9 +38,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     override fun onDeleteSuccess() {
         showToast("删除成功")
         fetchData()
-    }
-    override fun onSendSuccess() {
-        showToast("发送成功")
     }
 
     override fun getLayoutId(): Int {
@@ -85,21 +83,22 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                 map["ids"]= arrayOf(homeworks[position].id)
                 mPresenter.deleteCorrect(map)
             }
-            if (view.id==R.id.tv_send){
-                val map=HashMap<String,Any>()
-                map["ids"]= arrayOf(homeworks[position].id)
-                mPresenter.sendCorrect(map)
-            }
         }
     }
 
     fun onChangeStudent(id:Int){
         pageIndex=1
         studentId=id
+        fetchData()
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.HOMEWORK_CORRECT_EVENT){
+            fetchData()
+        }
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         fetchData()
     }
 

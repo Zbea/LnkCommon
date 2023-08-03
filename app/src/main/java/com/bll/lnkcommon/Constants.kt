@@ -55,7 +55,7 @@ object Constants {
         const val NOTE_EVENT = "NoteEvent"
         const val APP_EVENT = "APPEvent"
         const val STUDENT_EVENT="StudentEvent"
-
+        const val HOMEWORK_CORRECT_EVENT="CorrectEvent"
 }
 
 

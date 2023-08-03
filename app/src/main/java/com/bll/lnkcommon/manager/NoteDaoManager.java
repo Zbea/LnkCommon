@@ -18,15 +18,9 @@ public class NoteDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static NoteDaoManager mDbController;
-
-    private NoteDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= NoteDao.Properties.UserId.eq(userId);
+    private final NoteDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -47,6 +41,8 @@ public class NoteDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= NoteDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

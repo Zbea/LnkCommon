@@ -81,13 +81,16 @@ class BookcaseFragment:BaseFragment() {
         bookBean.time=System.currentTimeMillis()
         BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
-//        val intent = Intent()
-//        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-//        intent.setPackage("com.geniatech.knote.reader")
-//        intent.putExtra("path", bookBean.bookPath)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-//        startActivity(intent)
+
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
+        startActivity(intent)
     }
 
     /**

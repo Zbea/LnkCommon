@@ -2,6 +2,7 @@ package com.bll.lnkcommon
 
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
@@ -165,7 +166,7 @@ object DataBeanManager {
         }
 
     //封面
-    fun homeworkCoverId(): Int{
+    fun homeworkCoverStr(): String{
         val list= mutableListOf<ModuleBean>()
         val moduleBean = ModuleBean()
         moduleBean.resId = R.mipmap.icon_homework_cover_1
@@ -180,7 +181,7 @@ object DataBeanManager {
         list.add(moduleBean2)
         list.add(moduleBean3)
         val index= Random().nextInt(list.size)
-        return list[index].resId
+        return ToolUtils.getImageResStr(mContext,list[index].resId)
     }
 
 }

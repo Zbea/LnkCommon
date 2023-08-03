@@ -9,6 +9,8 @@
         android:id="@+id/iv_image"
         android:layout_width="93dp"
         android:layout_height="93dp"
+        android:background="@drawable/bg_black_stroke_10dp_corner"
+        android:padding="@dimen/dp_5"
         />
 
     <TextView

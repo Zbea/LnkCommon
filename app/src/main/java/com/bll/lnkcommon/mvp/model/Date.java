@@ -21,5 +21,4 @@ public class Date implements Serializable {
 
     public DateEvent dateEvent;
 
-
 }

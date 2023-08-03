@@ -13,14 +13,6 @@ import androidx.annotation.StringRes;
 import com.bll.lnkcommon.R;
 
 
-/**
- * emmmm .........
- * 取名 super Toast 的意思
- * 同一时间只能显示一个toast
- * 支持在任意线程调用
- * 可以取消toast
- * Create by sanvar , 18-11-5
- */
 public class SToast {
     private static Context ctx;
     private static Toast toast;
@@ -69,7 +61,7 @@ public class SToast {
 
     private static void finalShow(CharSequence str, @IntRange(from = 0, to = 1) int duration) {
         if (toast == null) {
-            toast = Toast.makeText(ctx, "----what is this", duration);
+            toast = Toast.makeText(ctx, str,duration);
         }
         if (Build.VERSION.SDK_INT < 30) {
             TextView text = toast.getView().findViewById(android.R.id.message);

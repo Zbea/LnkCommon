@@ -11,10 +11,7 @@ import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.LoginPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.utils.ActivityManager
-import com.bll.lnkcommon.utils.MD5Utils
-import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.utils.SPUtil
+import com.bll.lnkcommon.utils.*
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 import pub.devrel.easypermissions.EasyPermissions
 

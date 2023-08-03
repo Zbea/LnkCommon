@@ -20,17 +20,9 @@ public class AppDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static AppDaoManager mDbController;
-
-
-    private AppBeanDao dao;
-
-    private final long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    private WhereCondition whereUser= AppBeanDao.Properties.UserId.eq(userId);
+    private final AppBeanDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -51,6 +43,8 @@ public class AppDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        whereUser= AppBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

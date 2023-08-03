@@ -1,5 +1,7 @@
 package com.bll.lnkcommon.mvp.view;
 
+import com.bll.lnkcommon.mvp.model.AccountOrder;
+import com.bll.lnkcommon.mvp.model.AccountXDList;
 import com.bll.lnkcommon.mvp.model.AppList;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
@@ -37,6 +39,13 @@ public interface IContractView {
         void onBindStudent();
         void onUnbindStudent();
         void onStudentList(List<StudentBean> studentBeans);
+    }
+
+    //钱包页面回调
+    interface IWalletView extends IBaseView {
+        void onXdList(AccountXDList list);
+        void onXdOrder(AccountOrder order);
+        void checkOrder(AccountOrder order);
     }
 
     interface ISchoolView extends IBaseView{
@@ -81,7 +90,6 @@ public interface IContractView {
         void onToken(String token);
         void onUpdateSuccess();
         void onDeleteSuccess();
-        void onSendSuccess();
     }
 
 }

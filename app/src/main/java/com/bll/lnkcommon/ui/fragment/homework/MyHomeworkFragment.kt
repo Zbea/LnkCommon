@@ -101,6 +101,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         map["subject"]=courseId
         map["type"]=1
         map["childId"]=studentId
+        map["imageUrl"]=DataBeanManager.homeworkCoverStr()
         presenter.createHomeworkType(map)
     }
 

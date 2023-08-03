@@ -84,18 +84,6 @@
                 android:text="学生提交时间"
                 android:textSize="@dimen/sp_18" />
 
-            <TextView
-                android:id="@+id/tv_send"
-                android:layout_width="80dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="@dimen/dp_20"
-                android:gravity="center"
-                android:text="发送"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_16"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
-
         </LinearLayout>
 
     </LinearLayout>
