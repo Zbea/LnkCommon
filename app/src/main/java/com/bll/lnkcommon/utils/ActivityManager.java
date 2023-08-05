@@ -81,6 +81,23 @@ public class ActivityManager {
         }
     }
 
+    public void finishActivity(String cls) {
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity a=weak.get();
+            if (a == null) {
+                it.remove();
+                continue;
+            }
+            if (a.getClass().getName().equals(cls)) {
+                it.remove();
+                a.finish();
+                return;
+            }
+        }
+    }
+
 
     public void finishAll() {
         Iterator<WeakReference<Activity>> it = stack.iterator();

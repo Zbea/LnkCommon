@@ -15,7 +15,10 @@ import java.io.File
 
 class FileAddress {
 
-    private val mUserId= SPUtil.getObj("user", User::class.java)?.accountId.toString()
+    private fun getUserId():Long{
+        val mUser=SPUtil.getObj("user", User::class.java)
+        return mUser?.accountId ?: 0
+    }
 
     /**
      * 书籍地址
@@ -33,10 +36,10 @@ class FileAddress {
     }
 
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+        return "$TEXTBOOK_PATH/${getUserId()}/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
+        return "$TEXTBOOK_PATH/${getUserId()}/${fileName}/draw"
     }
     /**
      * 书籍目录地址
@@ -69,28 +72,35 @@ class FileAddress {
      * 笔记保存地址
      */
     fun getPathNote(typeStr: String?,noteBookStr: String?,date:Long):String{
-        return "$NOTE_PATH/$mUserId/$typeStr/$noteBookStr/$date"
+        return "$NOTE_PATH/${getUserId()}/$typeStr/$noteBookStr/$date"
     }
 
     /**
      * 笔记保存地址
      */
     fun getPathNote(typeStr: String?,noteBookStr: String?):String{
-        return "$NOTE_PATH/$mUserId/$typeStr/$noteBookStr"
+        return "$NOTE_PATH/${getUserId()}/$typeStr/$noteBookStr"
     }
 
     /**
      * 日历保存地址
      */
     fun getPathDate(dateStr:String):String{
-        return "$DATE_PATH/$mUserId/$dateStr"
+        return "$DATE_PATH/${getUserId()}/$dateStr"
     }
 
     /**
      * 获取作业批改路径
      */
     fun getPathCorrect(id:Int):String{
-        return "$HOMEWORK_PATH/$mUserId/$id"
+        return "$HOMEWORK_PATH/${getUserId()}/$id"
+    }
+
+    /**
+     * 朗读作业文件夹路径
+     */
+    fun getPathRecord():String{
+        return "$HOMEWORK_PATH/${getUserId()}"
     }
 
 }

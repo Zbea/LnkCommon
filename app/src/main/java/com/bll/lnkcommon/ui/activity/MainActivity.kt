@@ -44,12 +44,15 @@ class MainActivity : BaseActivity() {
 
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
-        if (mUser?.isBind == true)
+        if (isLoginState()&&getUser()?.isBind==true){
             changeData()
+        }
     }
 
 
     override fun initView() {
+
+        setLoginView()
 
         homeFragment = HomeFragment()
         bookcaseFragment = BookcaseFragment()
@@ -79,9 +82,18 @@ class MainActivity : BaseActivity() {
         }
 
         iv_user.setOnClickListener {
-            startActivity(Intent(this,AccountInfoActivity::class.java))
+            if (isLoginState()){
+                customStartActivity(Intent(this,AccountInfoActivity::class.java))
+            }
+            else{
+                customStartActivity(Intent(this,AccountLoginActivity::class.java))
+            }
         }
 
+    }
+
+    private fun setLoginView(){
+        tv_login.text=if (isLoginState()) "登录" else "未登录"
     }
 
     private fun refreshData(boolean: Boolean){
@@ -145,6 +157,9 @@ class MainActivity : BaseActivity() {
 //    }
 
     override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.USER_EVENT){
+            setLoginView()
+        }
         if (msgFlag==Constants.STUDENT_EVENT){
             if(DataBeanManager.students.size>0){
                 refreshData(true)
@@ -153,12 +168,14 @@ class MainActivity : BaseActivity() {
                 refreshData(false)
                 if (lastPosition==4){
                     switchFragment(textbookFragment, homeFragment)
+                    lastPosition=0
+                    mHomeAdapter?.updateItem(0, true)//更新新的位置
                 }
                 if (lastPosition==5){
                     switchFragment(teachFragment, homeFragment)
+                    lastPosition=0
+                    mHomeAdapter?.updateItem(0, true)//更新新的位置
                 }
-                lastPosition=0
-                mHomeAdapter?.updateItem(0, true)//更新新的位置
             }
         }
     }

@@ -80,7 +80,7 @@ object SPUtil {
     fun putObj(key: String, any: Any) {
         map[key] = any
         Schedulers.io().run {
-            var file = File(rootFile, key)
+            val file = File(rootFile, key)
             if (file.exists()) {
                 file.delete()
             }
@@ -114,8 +114,6 @@ object SPUtil {
         }
         return map.remove(key)
     }
-
-
 
     /**
      * 序列化对象

@@ -60,17 +60,16 @@
         android:networkSecurityConfig="@xml/network_security_config"
         >
 
-        <activity android:name=".ui.activity.AccountLoginActivity"
+        <activity android:name=".ui.activity.AccountLoginActivity" />
+        <activity android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-<!--                <category android:name="android.intent.category.HOME" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
+                <!--                <category android:name="android.intent.category.HOME" />-->
+                <!--                <category android:name="android.intent.category.DEFAULT" />-->
             </intent-filter>
-
         </activity>
-        <activity android:name=".ui.activity.MainActivity"/>
         <activity android:name=".ui.activity.NotebookManagerActivity"/>
         <activity android:name=".ui.activity.NoteDrawingActivity"/>
         <activity android:name=".ui.activity.book.BookcaseTypeListActivity"/>
@@ -88,6 +87,9 @@
         <activity
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
+        <activity android:name=".ui.activity.FreeNoteActivity"/>
+        <activity android:name=".ui.activity.RecordListActivity"/>
+        <activity android:name=".ui.activity.RecordActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

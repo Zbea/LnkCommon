@@ -36,6 +36,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import java.net.UnknownServiceException
 
 
 abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView,  IContractView.ICommonView{
@@ -55,8 +56,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mUser= SPUtil.getObj("user", User::class.java)
-    var mUserId= SPUtil.getObj("user",User::class.java)?.accountId
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -224,6 +223,19 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     /**
+     * 是否登录
+     */
+    fun isLoginState():Boolean{
+        val mUser= SPUtil.getObj("user",User::class.java)
+        val token=SPUtil.getString("token")
+        return token.isNotEmpty() && mUser!=null
+    }
+
+    fun getUser():User?{
+        return SPUtil.getObj("user",User::class.java)
+    }
+
+    /**
      * 设置翻页
      */
     fun setPageNumber(total:Int){
@@ -267,6 +279,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         val bundle = Bundle()
         bundle.putSerializable("noteBundle",note)
         intent.putExtra("bundle",bundle)
+        customStartActivity(intent)
+    }
+
+    /**
+     * 跳转活动(关闭已经打开的)
+     */
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
     }
 
@@ -326,8 +346,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SToast.showText(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-        startActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        EventBus.getDefault().post(Constants.USER_EVENT)
+        customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
+        DataBeanManager.students.clear()
+        EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 
     override fun hideLoading() {

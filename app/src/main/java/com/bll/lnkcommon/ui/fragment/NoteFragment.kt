@@ -7,6 +7,7 @@ import android.widget.RadioGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkcommon.Constants.NOTE_EVENT
+import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -20,6 +21,7 @@ import com.bll.lnkcommon.manager.NotebookDaoManager
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.Notebook
 import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
@@ -55,7 +57,12 @@ class NoteFragment:BaseFragment() {
         showView(iv_manager)
 
         iv_manager?.setOnClickListener {
-            setTopSelectView()
+            if (isLoginState()){
+                setTopSelectView()
+            }
+            else{
+                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+            }
         }
 
         initRecyclerView()
@@ -90,7 +97,7 @@ class NoteFragment:BaseFragment() {
     private fun setTopSelectView() {
         PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder().setOnSelectListener { item ->
             when (item.id) {
-                0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
+                0 -> customStartActivity(Intent(activity, NotebookManagerActivity::class.java))
                 1 -> addNoteBookType()
                 else -> {
                     NoteModuleAddDialog(requireContext(), if (typeStr == resources.getString(R.string.note_tab_diary)) 0 else 1).builder()
@@ -110,13 +117,21 @@ class NoteFragment:BaseFragment() {
         notebooks.add(Notebook().apply {
             title = getString(R.string.note_tab_diary)
         })
-        notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
-        if (positionType>=notebooks.size){
-            positionType=0
+        if (isLoginState()){
+            notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
+            if (positionType>=notebooks.size){
+                positionType=0
+            }
+            typeStr = notebooks[positionType].title
+            initTab()
+            fetchData()
         }
-        typeStr = notebooks[positionType].title
-        initTab()
-        fetchData()
+        else{
+            initTab()
+            notes.clear()
+            mAdapter?.setNewData(notes)
+        }
+
     }
 
     //设置头部索引
@@ -158,6 +173,7 @@ class NoteFragment:BaseFragment() {
                 }
                 else{
                     val noteBook = Notebook()
+                    noteBook.userId=getUser()?.accountId!!
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
                     notebooks.add(noteBook)
@@ -227,6 +243,10 @@ class NoteFragment:BaseFragment() {
 
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
+            USER_EVENT->{
+                positionType=0
+                findTabs()
+            }
             NOTE_BOOK_MANAGER_EVENT->{
                 findTabs()
             }
@@ -237,11 +257,13 @@ class NoteFragment:BaseFragment() {
     }
 
     override fun fetchData() {
-        notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
-        val total = NoteDaoManager.getInstance().queryAll(typeStr)
-        setPageNumber(total.size)
-        mAdapter?.setNewData(notes)
+        if (isLoginState())
+        {
+            notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
+            val total = NoteDaoManager.getInstance().queryAll(typeStr)
+            setPageNumber(total.size)
+            mAdapter?.setNewData(notes)
+        }
     }
-
 
 }

@@ -17,6 +17,14 @@
         android:textSize="14sp"
         tools:ignore="MissingConstraints" />
 
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="@dimen/dp_45"
+        android:src="@mipmap/icon_back"/>
+
 
     <ImageView
         android:id="@+id/iv_login_title"

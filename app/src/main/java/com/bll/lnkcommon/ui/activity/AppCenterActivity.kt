@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.activity
 
+import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,9 +68,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
             pageIndex=1
             fetchData()
         }
-
         initRecyclerView()
-
     }
 
     private fun initRecyclerView(){
@@ -83,6 +82,10 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
+                if (!isLoginState()){
+                    customStartActivity(Intent(this@AppCenterActivity,AccountLoginActivity::class.java))
+                    return@setOnItemClickListener
+                }
                 app=apps[position]
                 if (app?.buyStatus==0){
                     val map = HashMap<String, Any>()
@@ -169,7 +172,12 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         map["page"] = pageIndex
         map["size"] = pageSize
         map["type"] = type
-        presenter.getAppList(map)
+        if (isLoginState()){
+            presenter.getAppList(map)
+        }
+        else{
+            presenter.getUnLoginAppList(map)
+        }
     }
 
 }

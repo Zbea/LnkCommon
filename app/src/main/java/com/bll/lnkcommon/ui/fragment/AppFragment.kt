@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
@@ -36,6 +37,7 @@ class AppFragment:BaseFragment() {
             val list= mutableListOf<AppBean>()
             for (item in apps){
                 if (item.isCheck){
+                    item.userId=getUser()?.accountId!!
                     list.add(item)
                 }
             }
@@ -72,7 +74,7 @@ class AppFragment:BaseFragment() {
         rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             if (position==0){
-                startActivity(Intent(requireActivity(), AppCenterActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
             }
             else{
                 val packageName= apps[position].packageName
@@ -123,17 +125,40 @@ class AppFragment:BaseFragment() {
             imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             isBase = true
         })
+        apps.add(AppBean().apply {
+            appName="百度搜索"
+            imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_bd))
+            packageName="com.baidu.searchbox"
+            isBase=true
+        })
+        apps.add(AppBean().apply {
+            appName="应用宝"
+            imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_yyb))
+            packageName="com.tencent.android.qqdownloader"
+            isBase=true
+        })
         apps.addAll(AppUtils.scanLocalInstallAppList(activity))
         mAdapter?.setNewData(apps)
     }
 
     private fun initMenuData(){
-        menuApps=AppDaoManager.getInstance().queryAll()
-        mMenuAdapter?.setNewData(menuApps)
+        ll_menu.visibility=if (isLoginState()) View.VISIBLE else View.INVISIBLE
+        if (isLoginState()){
+            menuApps=AppDaoManager.getInstance().queryAll()
+            mMenuAdapter?.setNewData(menuApps)
+        }
+        else{
+            menuApps.clear()
+            mMenuAdapter?.setNewData(menuApps)
+        }
+
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
+            Constants.USER_EVENT->{
+                initMenuData()
+            }
             Constants.APP_EVENT->{
                 initData()
             }

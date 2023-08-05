@@ -10,11 +10,13 @@ import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.mvp.model.StudentBean
+import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
 import com.bll.lnkcommon.utils.ActivityManager
 import com.bll.lnkcommon.utils.SPUtil
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
 import kotlinx.android.synthetic.main.fragment_app.*
@@ -66,6 +68,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         setPageTitle("我的账户")
         initRecyclerView()
 
+        mUser=getUser()
+
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
@@ -73,7 +77,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_edit_psd.setOnClickListener {
-            startActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
+            customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
         }
 
         btn_edit_name.setOnClickListener {
@@ -90,11 +94,13 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 override fun cancel() {
                 }
                 override fun ok() {
+                    mUser=null
                     SPUtil.putString("token", "")
                     SPUtil.removeObj("user")
+                    ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+                    EventBus.getDefault().post(Constants.USER_EVENT)
                     DataBeanManager.students.clear()
-                    startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
-                    ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+                    EventBus.getDefault().post(Constants.STUDENT_EVENT)
                 }
             })
         }

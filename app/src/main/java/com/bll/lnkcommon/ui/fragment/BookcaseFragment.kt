@@ -11,6 +11,7 @@ import com.bll.lnkcommon.dialog.BookManageDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
@@ -42,11 +43,21 @@ class BookcaseFragment:BaseFragment() {
         findBook()
 
         ll_search.setOnClickListener {
-            startActivity(Intent(activity, BookStoreTypeActivity::class.java))
+            if (isLoginState()){
+                customStartActivity(Intent(activity, BookStoreTypeActivity::class.java))
+            }
+            else{
+                customStartActivity(Intent(activity, AccountLoginActivity::class.java))
+            }
         }
 
         tv_type.setOnClickListener {
-            startActivity(Intent(activity, BookcaseTypeListActivity::class.java))
+            if (isLoginState()){
+                customStartActivity(Intent(activity, BookcaseTypeListActivity::class.java))
+            }
+            else{
+                customStartActivity(Intent(activity, AccountLoginActivity::class.java))
+            }
         }
 
         ll_book_top.setOnClickListener {
@@ -97,13 +108,19 @@ class BookcaseFragment:BaseFragment() {
      * 查找本地书籍
      */
     private fun findBook(){
-        books= BookDaoManager.getInstance().queryAllBook(true)
-        if (books.size==0){
-            bookTopBean=null
+        if (isLoginState()){
+            books= BookDaoManager.getInstance().queryAllBook(true)
+            if (books.size==0){
+                bookTopBean=null
+            }
+            else{
+                bookTopBean=books[0]
+                books.removeFirst()
+            }
         }
         else{
-            bookTopBean=books[0]
-            books.removeFirst()
+            books.clear()
+            bookTopBean=null
         }
         mAdapter?.setNewData(books)
         onChangeTopView()
@@ -152,6 +169,9 @@ class BookcaseFragment:BaseFragment() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.USER_EVENT){
+            findBook()
+        }
         if (msgFlag == Constants.BOOK_EVENT) {
             findBook()
         }
@@ -159,7 +179,7 @@ class BookcaseFragment:BaseFragment() {
 
     override fun onRefreshData() {
         super.onRefreshData()
-        findBook()
         lazyLoad()
+        findBook()
     }
 }

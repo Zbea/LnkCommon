@@ -93,7 +93,7 @@ open class DateActivity: BaseActivity() {
                 val bundle = Bundle()
                 bundle.putSerializable("dateBean", dateBean)
                 intent.putExtra("bundle", bundle)
-                startActivity(intent)
+                customStartActivity(intent)
             }
         }
     }

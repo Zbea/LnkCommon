@@ -14,7 +14,7 @@
         android:layout_width="740dp"
         android:layout_height="980dp"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_50"
         android:background="@mipmap/icon_date_bg"
         android:layout_gravity="center_horizontal"
         android:paddingTop="@dimen/dp_20"
@@ -77,7 +77,7 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_40"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
         />

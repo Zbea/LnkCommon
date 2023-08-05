@@ -53,7 +53,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-
+        mUser=getUser()
     }
 
     override fun initView() {

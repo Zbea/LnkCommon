@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.fragment
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants.DATE_EVENT
+import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -14,6 +15,8 @@ import com.bll.lnkcommon.mvp.presenter.StudentPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IStudentView
 import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
+import com.bll.lnkcommon.ui.activity.FreeNoteActivity
+import com.bll.lnkcommon.ui.activity.RecordListActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DateUtils
@@ -21,6 +24,7 @@ import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
@@ -28,17 +32,10 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeFragment:BaseFragment(),IStudentView {
+class HomeFragment:BaseFragment() {
 
-    private val presenter=StudentPresenter(this)
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
-
-
-    override fun onListStudents(list: MutableList<StudentBean>?) {
-        DataBeanManager.students=list!!
-        SPUtil.putInt("studentId",list[0].childId)
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_home
@@ -46,8 +43,20 @@ class HomeFragment:BaseFragment(),IStudentView {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
 
+        showView(iv_manager,iv_setting)
+        iv_setting.setImageResource(R.mipmap.icon_recorder)
+        iv_manager.setImageResource(R.mipmap.icon_free_note)
+
         ll_date.setOnClickListener {
-            startActivity(Intent(activity,DateActivity::class.java))
+            customStartActivity(Intent(activity,DateActivity::class.java))
+        }
+
+        iv_manager.setOnClickListener {
+            customStartActivity(Intent(activity,FreeNoteActivity::class.java))
+        }
+
+        iv_setting.setOnClickListener {
+            customStartActivity(Intent(activity,RecordListActivity::class.java))
         }
 
         initRecyclerView()
@@ -56,11 +65,8 @@ class HomeFragment:BaseFragment(),IStudentView {
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
             mCommonPresenter.getCommon()
-        if (DataBeanManager.students.size==0)
-            presenter.getStudents()
         setDateView()
-        apps= AppDaoManager.getInstance().queryAll()
-        mAdapter?.setNewData(apps)
+        findAppData()
     }
 
     /**
@@ -107,9 +113,23 @@ class HomeFragment:BaseFragment(),IStudentView {
         }
     }
 
+    private fun findAppData(){
+        if (isLoginState()){
+            apps= AppDaoManager.getInstance().queryAll()
+            mAdapter?.setNewData(apps)
+        }
+        else{
+            apps.clear()
+            mAdapter?.setNewData(apps)
+        }
+    }
+
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
+            USER_EVENT->{
+                findAppData()
+            }
             DATE_EVENT -> {
                 setDateView()
             }

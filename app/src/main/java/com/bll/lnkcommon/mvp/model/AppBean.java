@@ -17,7 +17,7 @@ public class AppBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId;
     public String appName;
     @Unique
     public String packageName;

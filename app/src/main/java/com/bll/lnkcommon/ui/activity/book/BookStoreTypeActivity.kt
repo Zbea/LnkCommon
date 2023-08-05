@@ -47,7 +47,7 @@ class BookStoreTypeActivity: BaseActivity() {
     private fun gotoBookStore(type: Int){
         val intent=Intent(this, BookStoreActivity::class.java)
         intent.flags=type
-        startActivity(intent)
+        customStartActivity(intent)
     }
 
 }

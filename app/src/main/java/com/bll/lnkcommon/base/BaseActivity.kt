@@ -26,13 +26,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.ui.activity.MainActivity
 import com.bll.lnkcommon.utils.*
+import com.google.gson.Gson
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -49,11 +53,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var mUser= SPUtil.getObj("user",User::class.java)
-    var mUserId= SPUtil.getObj("user", User::class.java)?.accountId
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var mUser:User?=null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -210,6 +213,19 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
+     * 是否登录
+     */
+    fun isLoginState():Boolean{
+        val mUser= SPUtil.getObj("user",User::class.java)
+        val token=SPUtil.getString("token")
+        return token.isNotEmpty() && mUser!=null
+    }
+
+    fun getUser():User?{
+        return SPUtil.getObj("user",User::class.java)
+    }
+
+    /**
      * 设置翻页
      */
     fun setPageNumber(total:Int){
@@ -223,6 +239,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 showView(ll_page_number)
             }
         }
+    }
+
+    /**
+     * 跳转活动(关闭已经打开的)
+     */
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
+        startActivity(intent)
     }
 
 
@@ -356,8 +380,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         SToast.showText(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-        startActivity(Intent(this, AccountLoginActivity::class.java))
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        EventBus.getDefault().post(Constants.USER_EVENT)
+        customStartActivity(Intent(this, AccountLoginActivity::class.java))
+        DataBeanManager.students.clear()
+        EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 
     override fun hideLoading() {

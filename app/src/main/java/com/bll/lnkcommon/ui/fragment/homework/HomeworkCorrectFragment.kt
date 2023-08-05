@@ -70,7 +70,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                 val bundle= Bundle()
                 bundle.putSerializable("correctBean", item)
                 intent.putExtra("bundle", bundle)
-                startActivity(intent)
+                customStartActivity(intent)
             }
             else{
                 showToast("学生作业未提交")

@@ -59,7 +59,7 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
         initRecyclerView()
 
         ll_search.setOnClickListener {
-            startActivity(Intent(activity, TextBookStoreActivity::class.java))
+            customStartActivity(Intent(activity, TextBookStoreActivity::class.java))
         }
     }
 
@@ -95,7 +95,7 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
             val intent = Intent(activity, BookDetailsActivity::class.java)
             intent.putExtra("book_id", book.bookId)
             intent.putExtra("book_type", book.typeId)
-            startActivity(intent)
+            customStartActivity(intent)
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->

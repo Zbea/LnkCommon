@@ -129,7 +129,11 @@ interface APIService{
      */
     @GET("application/list")
     fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
-
+    /**
+     * 应用列表
+     */
+    @GET("application/noAuthList")
+    fun getUnLoginApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
     /**
      * 购买apk
      */

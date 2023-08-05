@@ -105,7 +105,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
                     setImageView(item.correctContent)
                 }
                 R.id.iv_rank->{
-                    startActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(item.studentTaskId))
+                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(item.studentTaskId))
                 }
             }
         }
