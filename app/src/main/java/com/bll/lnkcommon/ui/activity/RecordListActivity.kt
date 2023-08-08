@@ -44,11 +44,9 @@ class RecordListActivity : BaseActivity(){
     }
 
     override fun initData() {
-        pageSize=10
+        pageSize=12
         pops.add(PopupBean(0,"修改",R.mipmap.icon_notebook_edit))
         pops.add(PopupBean(1,"删除",R.mipmap.icon_delete))
-
-        showLog(Gson().toJson(SPUtil.getObj("user", User::class.java)))
     }
 
     override fun initView() {
@@ -65,7 +63,7 @@ class RecordListActivity : BaseActivity(){
         mAdapter = RecordAdapter(R.layout.item_record, recordBeans)
         rv_list.adapter = mAdapter
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),DP2PX.dip2px(this,50f),20)
+        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,30f),DP2PX.dip2px(this,50f),20)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         mAdapter?.bindToRecyclerView(rv_list)
@@ -129,7 +127,7 @@ class RecordListActivity : BaseActivity(){
     private fun pause(pos:Int){
         mediaPlayer?.pause()
         recordBeans[pos].state=0
-        mAdapter?.notifyItemChanged(position)//刷新为结束状态
+        mAdapter?.notifyItemChanged(pos)//刷新为结束状态
     }
 
 
@@ -150,7 +148,7 @@ class RecordListActivity : BaseActivity(){
         val recordBean=recordBeans[position]
         InputContentDialog(this,recordBean.title).builder().setOnDialogClickListener { string ->
             recordBean.title=string
-            mAdapter?.notifyDataSetChanged()
+            mAdapter?.notifyItemChanged(position)
             RecordDaoManager.getInstance().insertOrReplace(recordBean)
         }
     }

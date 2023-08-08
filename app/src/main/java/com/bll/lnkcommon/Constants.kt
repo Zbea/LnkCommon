@@ -36,6 +36,7 @@ object Constants {
         val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
+        val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
         //日历保存
         val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path

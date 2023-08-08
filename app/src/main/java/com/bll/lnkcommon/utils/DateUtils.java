@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.utils;
 
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,6 +56,23 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date10ToDate13(date)));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 时间戳转换为字符串类型
+     *
+     * @return
+     */
+    public static String longToStringNoYear1(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -203,6 +221,7 @@ public class DateUtils {
         }
     }
 
+
     /**
      * 将10位转成13位
      * @param date
@@ -326,6 +345,38 @@ public class DateUtils {
      */
     public static String longToDay(long time){
         return String.valueOf(time/(24*60*60*1000));
+    }
+
+    public long getStartOfDayInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    public long getEndOfDayInMillis() {
+        // Add one day's time to the beginning of the day.
+        // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds = 1 day
+        return getStartOfDayInMillis() + (24 * 60 * 60 * 1000);
+    }
+
+    public long getStartOfDayInMillis(long date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(date));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * @param date the date in the format "yyyy-MM-dd"
+     */
+    public long getEndOfDayInMillis(long date){
+        return getStartOfDayInMillis(date) + (24 * 60 * 60 * 1000);
     }
 
 }

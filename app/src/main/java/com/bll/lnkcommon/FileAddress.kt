@@ -3,6 +3,7 @@ package com.bll.lnkcommon
 import com.bll.lnkcommon.Constants.BOOK_DRAW_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
 import com.bll.lnkcommon.Constants.DATE_PATH
+import com.bll.lnkcommon.Constants.FREE_NOTE_PATH
 import com.bll.lnkcommon.Constants.HOMEWORK_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
@@ -101,6 +102,13 @@ class FileAddress {
      */
     fun getPathRecord():String{
         return "$HOMEWORK_PATH/${getUserId()}"
+    }
+
+    /**
+     * 随笔文件路径
+     */
+    fun getPathFreeNote(title:String):String{
+        return "$FREE_NOTE_PATH/${getUserId()}/$title"
     }
 
 }

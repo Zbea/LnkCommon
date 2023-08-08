@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/sp_20"
+        android:text="标题"/>
+
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@mipmap/icon_notebook_edit"/>
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_notebook_delete"/>
+
+</LinearLayout>

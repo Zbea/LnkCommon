@@ -142,7 +142,7 @@ class RecordActivity : BaseActivity() {
             setDataSource(pathFile)
             setOnCompletionListener {
                 iv_play.setImageResource(R.mipmap.icon_record_play)
-                tv_play.setText("播放")
+                tv_play.text = "播放"
             }
             prepare()
         }
