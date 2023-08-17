@@ -24,6 +24,7 @@ import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.ui.activity.MainActivity
 import com.bll.lnkcommon.ui.activity.NoteDrawingActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.annotations.NonNull
@@ -347,6 +348,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         EventBus.getDefault().post(Constants.USER_EVENT)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
         customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
         DataBeanManager.students.clear()
         EventBus.getDefault().post(Constants.STUDENT_EVENT)

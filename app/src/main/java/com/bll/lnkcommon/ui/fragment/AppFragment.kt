@@ -8,6 +8,7 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.ui.activity.AppCenterActivity
@@ -92,6 +93,19 @@ class AppFragment:BaseFragment() {
                     showToast("至多选择5个应用")
                 }
             }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            if (position>2){
+                CommonDialog(requireActivity()).setContent("卸载应用？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                    }
+                })
+            }
+            true
         }
     }
 

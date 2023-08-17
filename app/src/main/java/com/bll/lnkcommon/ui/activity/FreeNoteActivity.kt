@@ -38,7 +38,8 @@ class FreeNoteActivity:BaseActivity() {
     private var bgRes=""
     private var freeNoteBean:FreeNoteBean?=null
     private var posImage=0
-    private var images= mutableListOf<String>()
+    private var images= mutableListOf<String>()//手写地址
+    private var bgResList= mutableListOf<String>()//背景地址
     private var freeNotePopWindow:PopupFreeNoteList?=null
     private var pops= mutableListOf<PopupBean>()
     private var notebooks= mutableListOf<Notebook>()
@@ -49,7 +50,6 @@ class FreeNoteActivity:BaseActivity() {
     override fun initData() {
         bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_note_details_bg_1)
         freeNoteBean= FreeNoteBean()
-        freeNoteBean?.bgRes=bgRes
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.userId=if (isLoginState()) getUser()?.accountId else 0
@@ -69,7 +69,7 @@ class FreeNoteActivity:BaseActivity() {
         setPageTitle("随笔")
         tv_name.text=freeNoteBean?.title
         tv_insert.visibility=if (isLoginState()) View.VISIBLE else View.GONE
-//        elik=iv_image.pwInterFace
+        elik=iv_image.pwInterFace
 
         tv_name.setOnClickListener {
             InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
@@ -92,8 +92,8 @@ class FreeNoteActivity:BaseActivity() {
             NoteModuleAddDialog(this,1).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    freeNoteBean?.bgRes=bgRes
                     iv_image.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    bgResList[posImage]=bgRes
                 }
         }
 
@@ -105,11 +105,10 @@ class FreeNoteActivity:BaseActivity() {
             if (freeNotePopWindow==null){
                 freeNotePopWindow=PopupFreeNoteList(this,tv_list).builder()
                 freeNotePopWindow?.setOnSelectListener{
-                    freeNoteBean?.paths=images
-                    if (images.isNotEmpty())
-                        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+                    saveFreeNote()
                     posImage=0
                     freeNoteBean=it
+                    bgResList= freeNoteBean?.bgRes as MutableList<String>
                     images= freeNoteBean?.paths as MutableList<String>
                     tv_name.text=freeNoteBean?.title
                     setContentImage()
@@ -130,6 +129,10 @@ class FreeNoteActivity:BaseActivity() {
 
         iv_page_down.setOnClickListener {
             posImage+=1
+            if (posImage>=bgResList.size){
+                bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_note_details_bg_1)
+                bgResList.add(bgRes)
+            }
             setContentImage()
         }
 
@@ -145,6 +148,9 @@ class FreeNoteActivity:BaseActivity() {
             }
         }
 
+        if (posImage>=bgResList.size){
+            bgResList.add(bgRes)
+        }
         setContentImage()
     }
 
@@ -152,27 +158,27 @@ class FreeNoteActivity:BaseActivity() {
      * 更换内容
      */
     private fun setContentImage(){
+        iv_image.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)){
             images.add(path)
-            freeNoteBean?.paths=images
         }
         tv_page.text="${posImage+1}/${images.size}"
 
-//        elik?.setLoadFilePath(path, true)
-//        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-//            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-//            }
-//
-//            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-//            }
-//
-//            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-//                elik?.saveBitmap(true) {}
-//            }
-//
-//        })
+        elik?.setLoadFilePath(path, true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+            }
+
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+            }
+
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik?.saveBitmap(true) {}
+            }
+
+        })
     }
 
     /**
@@ -180,15 +186,15 @@ class FreeNoteActivity:BaseActivity() {
      */
     private fun insertNote(){
         PopupClick(this,pops,tv_insert,10).builder().setOnSelectListener{
-            if (NoteDaoManager.getInstance().isExist(it.name,freeNoteBean?.title)){
-                showToast("已存在，插入失败")
-                return@setOnSelectListener
-            }
+//            if (NoteDaoManager.getInstance().isExist(it.name,freeNoteBean?.title)){
+//                showToast("已存在，插入失败")
+//                return@setOnSelectListener
+//            }
             val note=Note()
             note.title = freeNoteBean?.title
             note.date = System.currentTimeMillis()
             note.typeStr = it.name
-            note.contentResId = freeNoteBean?.bgRes
+            note.contentResId = ToolUtils.getImageResStr(this,0)
             NoteDaoManager.getInstance().insertOrReplace(note)
             for (i in freeNoteBean?.paths!!.indices){
                 val oldPath=freeNoteBean?.paths!![i]
@@ -270,12 +276,17 @@ class FreeNoteActivity:BaseActivity() {
         }
     }
 
+    private fun saveFreeNote(){
+        freeNoteBean?.paths=images
+        freeNoteBean?.bgRes=bgResList
+        if (images.isNotEmpty())
+            FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         release()
-        freeNoteBean?.paths=images
-        if (images.isNotEmpty())
-            FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+        saveFreeNote()
     }
 
 }

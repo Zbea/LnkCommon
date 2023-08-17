@@ -19,19 +19,19 @@ public class FreeNoteBean {
     public long userId;
     public String title;
     public long date;
-    public String bgRes;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;
-
-    @Generated(hash = 1782484194)
-    public FreeNoteBean(Long id, long userId, String title, long date, String bgRes,
-            List<String> paths) {
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> bgRes;
+    @Generated(hash = 1800919848)
+    public FreeNoteBean(Long id, long userId, String title, long date,
+            List<String> paths, List<String> bgRes) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.date = date;
-        this.bgRes = bgRes;
         this.paths = paths;
+        this.bgRes = bgRes;
     }
     @Generated(hash = 1976554700)
     public FreeNoteBean() {
@@ -66,12 +66,11 @@ public class FreeNoteBean {
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
-    public String getBgRes() {
+    public List<String> getBgRes() {
         return this.bgRes;
     }
-    public void setBgRes(String bgRes) {
+    public void setBgRes(List<String> bgRes) {
         this.bgRes = bgRes;
     }
-
-
+    
 }

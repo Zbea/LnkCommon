@@ -30,11 +30,12 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
         public final static Property Date = new Property(3, long.class, "date", false, "DATE");
-        public final static Property BgRes = new Property(4, String.class, "bgRes", false, "BG_RES");
-        public final static Property Paths = new Property(5, String.class, "paths", false, "PATHS");
+        public final static Property Paths = new Property(4, String.class, "paths", false, "PATHS");
+        public final static Property BgRes = new Property(5, String.class, "bgRes", false, "BG_RES");
     }
 
     private final StringConverter pathsConverter = new StringConverter();
+    private final StringConverter bgResConverter = new StringConverter();
 
     public FreeNoteBeanDao(DaoConfig config) {
         super(config);
@@ -52,8 +53,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"TITLE\" TEXT," + // 2: title
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
-                "\"BG_RES\" TEXT," + // 4: bgRes
-                "\"PATHS\" TEXT);"); // 5: paths
+                "\"PATHS\" TEXT," + // 4: paths
+                "\"BG_RES\" TEXT);"); // 5: bgRes
     }
 
     /** Drops the underlying database table. */
@@ -78,14 +79,14 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         }
         stmt.bindLong(4, entity.getDate());
  
-        String bgRes = entity.getBgRes();
-        if (bgRes != null) {
-            stmt.bindString(5, bgRes);
-        }
- 
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(6, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(5, pathsConverter.convertToDatabaseValue(paths));
+        }
+ 
+        List bgRes = entity.getBgRes();
+        if (bgRes != null) {
+            stmt.bindString(6, bgResConverter.convertToDatabaseValue(bgRes));
         }
     }
 
@@ -105,14 +106,14 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         }
         stmt.bindLong(4, entity.getDate());
  
-        String bgRes = entity.getBgRes();
-        if (bgRes != null) {
-            stmt.bindString(5, bgRes);
-        }
- 
         List paths = entity.getPaths();
         if (paths != null) {
-            stmt.bindString(6, pathsConverter.convertToDatabaseValue(paths));
+            stmt.bindString(5, pathsConverter.convertToDatabaseValue(paths));
+        }
+ 
+        List bgRes = entity.getBgRes();
+        if (bgRes != null) {
+            stmt.bindString(6, bgResConverter.convertToDatabaseValue(bgRes));
         }
     }
 
@@ -128,8 +129,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.getLong(offset + 3), // date
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // bgRes
-            cursor.isNull(offset + 5) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 5)) // paths
+            cursor.isNull(offset + 4) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 4)), // paths
+            cursor.isNull(offset + 5) ? null : bgResConverter.convertToEntityProperty(cursor.getString(offset + 5)) // bgRes
         );
         return entity;
     }
@@ -140,8 +141,8 @@ public class FreeNoteBeanDao extends AbstractDao<FreeNoteBean, Long> {
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setDate(cursor.getLong(offset + 3));
-        entity.setBgRes(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setPaths(cursor.isNull(offset + 5) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 5)));
+        entity.setPaths(cursor.isNull(offset + 4) ? null : pathsConverter.convertToEntityProperty(cursor.getString(offset + 4)));
+        entity.setBgRes(cursor.isNull(offset + 5) ? null : bgResConverter.convertToEntityProperty(cursor.getString(offset + 5)));
      }
     
     @Override

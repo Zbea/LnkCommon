@@ -381,6 +381,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         EventBus.getDefault().post(Constants.USER_EVENT)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
         customStartActivity(Intent(this, AccountLoginActivity::class.java))
         DataBeanManager.students.clear()
         EventBus.getDefault().post(Constants.STUDENT_EVENT)

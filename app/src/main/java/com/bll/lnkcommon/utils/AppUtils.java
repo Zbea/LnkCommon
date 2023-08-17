@@ -117,6 +117,16 @@ public class AppUtils {
         context.startActivity(intent);
     }
 
+    /**
+     * uninstall apk file
+     * @param packageName
+     */
+    public static void uninstallAPK(Context context,String packageName){
+        Uri uri=Uri.parse("package:"+packageName);
+        Intent intent=new Intent(Intent.ACTION_DELETE,uri);
+        context.startActivity(intent);
+    }
+
 
     public static void getSystemProperty() {
         Field[] fields = Build.class.getFields();
