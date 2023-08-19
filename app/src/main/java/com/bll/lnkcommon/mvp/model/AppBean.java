@@ -19,21 +19,25 @@ public class AppBean {
     public Long id;
     public long userId;
     public String appName;
-    @Unique
     public String packageName;
     public byte[] imageByte;
+    public int type;//0工具1首页菜单
+    public int sort;
     @Transient
     public boolean isCheck;
     @Transient
     public boolean isBase;//基本数据
 
-    @Generated(hash = 1499838802)
-    public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte) {
+    @Generated(hash = 1801819966)
+    public AppBean(Long id, long userId, String appName, String packageName,
+            byte[] imageByte, int type, int sort) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
         this.packageName = packageName;
         this.imageByte = imageByte;
+        this.type = type;
+        this.sort = sort;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -68,5 +72,18 @@ public class AppBean {
     public void setImageByte(byte[] imageByte) {
         this.imageByte = imageByte;
     }
-  
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public int getSort() {
+        return this.sort;
+    }
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+   
 }

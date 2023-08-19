@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/drawing_bottom_height"
     android:gravity="center_vertical"
@@ -47,7 +48,7 @@
             android:gravity="center_vertical"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16"
-            />
+            tools:ignore="NestedWeights" />
         <TextView
             android:id="@+id/tv_page"
             android:layout_width="wrap_content"
@@ -77,9 +78,17 @@
             android:id="@+id/iv_page_down"
             android:layout_width="@dimen/drawing_bottom_height"
             android:layout_height="match_parent"
-            android:layout_marginEnd="196dp"
+            android:layout_marginEnd="44dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_page_down" />
+
+        <ImageView
+            android:id="@+id/iv_tool"
+            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="98dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_tool" />
 
     </LinearLayout>
 

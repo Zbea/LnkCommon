@@ -24,8 +24,8 @@ import android.os.Environment
  */
 object Constants {
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -54,11 +54,12 @@ object Constants {
         const val TEXT_BOOK_EVENT = "TextBookEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
-        const val APP_EVENT = "APPEvent"
         const val STUDENT_EVENT="StudentEvent"
         const val HOMEWORK_CORRECT_EVENT="CorrectEvent"
         const val USER_EVENT="UserEvent"
         const val RECORD_EVENT="RecordEvent"
+        const val APP_INSTALL_EVENT="AppInstallEvent"
+        const val APP_UNINSTALL_EVENT="AppUnInstallEvent"
 }
 
 

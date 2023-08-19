@@ -8,6 +8,7 @@ import android.view.PWDrawObjectHandler
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.manager.NoteContentDaoManager
@@ -101,6 +102,10 @@ class NoteDrawingActivity : BaseActivity() {
                 iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
                 elik?.drawObjectType =PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
             }
+        }
+
+        iv_tool.setOnClickListener {
+            AppToolDialog(this).builder()
         }
 
     }

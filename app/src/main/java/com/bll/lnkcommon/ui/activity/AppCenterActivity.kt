@@ -27,7 +27,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     private var type=1
     private var mAdapter:AppCenterListAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
-    private var app: AppList.ListBean?=null
+    private var position=0
     private var currentDownLoadTask:BaseDownloadTask?=null
 
     override fun onAppList(appBean: AppList) {
@@ -37,11 +37,11 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun buySuccess() {
-        app?.buyStatus=1
-        mAdapter?.notifyDataSetChanged()
+        apps[position].buyStatus=1
+        mAdapter?.notifyItemChanged(position)
 
         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-            currentDownLoadTask = downLoadStart(app!!)
+            currentDownLoadTask = downLoadStart(apps[position])
         } else {
             showToast("正在下载安装")
         }
@@ -86,17 +86,19 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
                     customStartActivity(Intent(this@AppCenterActivity,AccountLoginActivity::class.java))
                     return@setOnItemClickListener
                 }
-                app=apps[position]
-                if (app?.buyStatus==0){
+                this@AppCenterActivity.position=position
+                val app=apps[position]
+                if (app.buyStatus==0){
                     val map = HashMap<String, Any>()
                     map["type"] = 4
-                    map["bookId"] = app?.applicationId!!
+                    map["bookId"] = app.applicationId
                     presenter.buyApk(map)
                 }
                 else{
-                    if (!isInstalled()) {
+                    val idName=app.applicationId.toString()
+                    if (!isInstalled(idName)) {
                         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-                            currentDownLoadTask = downLoadStart(app!!)
+                            currentDownLoadTask = downLoadStart(app)
                         } else {
                             showToast("正在下载安装")
                         }
@@ -110,18 +112,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     //下载应用
     private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
-
         val targetFileStr= FileAddress().getPathApk(bean.applicationId.toString())
-
-        //看看 是否已经下载
-        val listFiles = FileUtils.getFiles(Constants.APK_PATH)
-        for (file in listFiles) {
-            if (file.name.contains( bean.applicationId.toString())) {
-                //已经下载 直接去解析apk 去安装
-                installApk(targetFileStr)
-                return null
-            }
-        }
         showLoading()
         val download = FileDownManager.with(this).create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
@@ -145,25 +136,21 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     //安装apk
     private fun installApk(apkPath: String) {
         AppUtils.installApp(this, apkPath)
-        EventBus.getDefault().post(Constants.APP_EVENT)
     }
 
     //是否已经下载安装
-    private fun isInstalled(): Boolean {
-        val listFile = FileUtils.getFiles(File(Constants.APK_PATH).path)
-        if (listFile.size > 0) {
-            for (file in listFile) {
-                if (file.name.contains("" + app?.applicationId)) {//证明已经下载
-                    val packageName = AppUtils.getApkInfo(this, FileAddress().getPathApk(app?.applicationId.toString()))
-                    try {
-                        AppUtils.startAPP(this, packageName)
-                        return true
-                    } catch (_: Exception) {
-                    }
-                }
+    private fun isInstalled(idName:String): Boolean {
+        if (File(FileAddress().getPathApk(idName)).exists()){
+            val packageName = AppUtils.getApkInfo(this, FileAddress().getPathApk(idName))
+            if (AppUtils.isAvailable(this,packageName)){
+                AppUtils.startAPP(this, packageName)
             }
+            else{
+                //已经下载 直接去解析apk 去安装
+                installApk(FileAddress().getPathApk(idName))
+            }
+            return true
         }
-
         return false
     }
 

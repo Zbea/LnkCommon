@@ -10,6 +10,7 @@ import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -84,6 +85,10 @@ class BookDetailsActivity:BaseActivity() {
         updateScreen()
 
         bindClick()
+
+        iv_tool.setOnClickListener {
+            AppToolDialog(this).builder()
+        }
     }
 
 

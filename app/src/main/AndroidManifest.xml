@@ -63,6 +63,19 @@
         android:networkSecurityConfig="@xml/network_security_config"
         >
 
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+
         <activity android:name=".ui.activity.AccountLoginActivity" />
         <activity android:name=".ui.activity.MainActivity"
             android:exported="true">

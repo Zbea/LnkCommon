@@ -114,14 +114,8 @@ class HomeFragment:BaseFragment() {
     }
 
     private fun findAppData(){
-        if (isLoginState()){
-            apps= AppDaoManager.getInstance().queryAll()
-            mAdapter?.setNewData(apps)
-        }
-        else{
-            apps.clear()
-            mAdapter?.setNewData(apps)
-        }
+        apps= AppDaoManager.getInstance().queryMenu()
+        mAdapter?.setNewData(apps)
     }
 
 

@@ -29,6 +29,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         public final static Property AppName = new Property(2, String.class, "appName", false, "APP_NAME");
         public final static Property PackageName = new Property(3, String.class, "packageName", false, "PACKAGE_NAME");
         public final static Property ImageByte = new Property(4, byte[].class, "imageByte", false, "IMAGE_BYTE");
+        public final static Property Type = new Property(5, int.class, "type", false, "TYPE");
+        public final static Property Sort = new Property(6, int.class, "sort", false, "SORT");
     }
 
 
@@ -47,8 +49,10 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"APP_NAME\" TEXT," + // 2: appName
-                "\"PACKAGE_NAME\" TEXT UNIQUE ," + // 3: packageName
-                "\"IMAGE_BYTE\" BLOB);"); // 4: imageByte
+                "\"PACKAGE_NAME\" TEXT," + // 3: packageName
+                "\"IMAGE_BYTE\" BLOB," + // 4: imageByte
+                "\"TYPE\" INTEGER NOT NULL ," + // 5: type
+                "\"SORT\" INTEGER NOT NULL );"); // 6: sort
     }
 
     /** Drops the underlying database table. */
@@ -81,6 +85,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         if (imageByte != null) {
             stmt.bindBlob(5, imageByte);
         }
+        stmt.bindLong(6, entity.getType());
+        stmt.bindLong(7, entity.getSort());
     }
 
     @Override
@@ -107,6 +113,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         if (imageByte != null) {
             stmt.bindBlob(5, imageByte);
         }
+        stmt.bindLong(6, entity.getType());
+        stmt.bindLong(7, entity.getSort());
     }
 
     @Override
@@ -121,7 +129,9 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             cursor.getLong(offset + 1), // userId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // appName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // packageName
-            cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4) // imageByte
+            cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4), // imageByte
+            cursor.getInt(offset + 5), // type
+            cursor.getInt(offset + 6) // sort
         );
         return entity;
     }
@@ -133,6 +143,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         entity.setAppName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPackageName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setImageByte(cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4));
+        entity.setType(cursor.getInt(offset + 5));
+        entity.setSort(cursor.getInt(offset + 6));
      }
     
     @Override
