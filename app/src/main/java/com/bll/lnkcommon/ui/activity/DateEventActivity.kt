@@ -59,7 +59,6 @@ class DateEventActivity:BaseActivity() {
         tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date(nowLong))
 
         val path=FileAddress().getPathDate(DateUtils.longToStringCalender(nowLong))+"/draw.tch"
-        elik?.setPWEnabled(true)
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {

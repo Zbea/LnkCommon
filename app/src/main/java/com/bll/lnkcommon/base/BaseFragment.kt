@@ -15,7 +15,9 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
+import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
+import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.CommonData
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.User
@@ -37,6 +39,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
+import java.io.File
 import java.net.UnknownServiceException
 
 
@@ -281,6 +284,17 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         bundle.putSerializable("noteBundle",note)
         intent.putExtra("bundle",bundle)
         customStartActivity(intent)
+    }
+
+    /**
+     * 删除书本
+     */
+    fun deleteBook(book: Book){
+        BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
+        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+        if (File(book.bookDrawPath).exists())
+            FileUtils.deleteFile(File(book.bookDrawPath))
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
     }
 
     /**

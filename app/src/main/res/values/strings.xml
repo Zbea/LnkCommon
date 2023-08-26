@@ -16,6 +16,16 @@
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
 
+    <string name="axis_one">一维坐标</string>
+    <string name="axis_two">二维坐标</string>
+    <string name="axis_three">三维坐标</string>
+    <string name="circle_1">圆心</string>
+    <string name="circle_2">两点</string>
+    <string name="circle_3">三点</string>
+    <string name="line_black">黑线</string>
+    <string name="line_gray">灰线</string>
+    <string name="line_dotted">虚线</string>
+
     <string name="note_tab_diary">我的密本</string>
     <string name="note_type_hgb">横格本</string>
     <string name="note_type_fgb">方格本</string>

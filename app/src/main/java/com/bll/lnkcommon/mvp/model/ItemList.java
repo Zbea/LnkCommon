@@ -12,6 +12,7 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
     public int page;//目录页码
     public boolean isCheck;
     public String url;
+    public int resId;
 
     public ItemList() {
     }

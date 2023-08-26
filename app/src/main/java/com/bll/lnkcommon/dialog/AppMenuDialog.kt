@@ -2,7 +2,6 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.util.Log
 import android.widget.ImageView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.AppDaoManager
@@ -11,7 +10,7 @@ import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.BitmapUtils
 import com.bll.lnkcommon.utils.SPUtil
 
-class AppMenuDialog(val context: Context, val appBean:AppBean){
+class AppMenuDialog(val context: Context, val appBean: AppBean){
 
     private var iv_1:ImageView?=null
     private var iv_2:ImageView?=null
@@ -35,7 +34,6 @@ class AppMenuDialog(val context: Context, val appBean:AppBean){
 
         val list=AppDaoManager.getInstance().queryMenu()
         for (item in list){
-            Log.d("debug",item.sort.toString())
             when(item.sort){
                 1->{
                     iv_1?.setImageDrawable(BitmapUtils.byteToDrawable(item.imageByte))

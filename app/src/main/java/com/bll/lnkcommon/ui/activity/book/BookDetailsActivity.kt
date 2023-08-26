@@ -10,6 +10,7 @@ import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
@@ -21,13 +22,13 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_book_details.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseActivity() {
+class BookDetailsActivity:BaseDrawingActivity() {
     private var book: Book?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()
@@ -37,11 +38,8 @@ class BookDetailsActivity:BaseActivity() {
     private var count = 1
     private var page = 0 //当前页码
 
-    private var elik_a: EinkPWInterface?=null
-    private var isErasure=false
-
     override fun layoutId(): Int {
-        return R.layout.ac_book_details
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -75,25 +73,13 @@ class BookDetailsActivity:BaseActivity() {
     }
 
     override fun initView() {
+        setDrawingTitleClick(false)
         if (catalogMsg!=null){
-            setPageTitle(catalogMsg?.title!!)
+            setDrawingTitle(catalogMsg?.title!!)
             count=catalogMsg?.totalCount!!
         }
 
-        elik_a=v_content_a.pwInterFace
-
         updateScreen()
-
-        bindClick()
-
-        iv_tool.setOnClickListener {
-            AppToolDialog(this).builder()
-        }
-    }
-
-
-
-    private fun bindClick(){
 
         iv_catalog.setOnClickListener {
             CatalogDialog(this,catalogs,1).builder().
@@ -104,38 +90,26 @@ class BookDetailsActivity:BaseActivity() {
 
         }
 
-        iv_page_up.setOnClickListener {
-            if (page>1){
-                page-=1
-                updateScreen()
-            }
-        }
+    }
 
-        iv_page_down.setOnClickListener {
-            if(page<count){
-                page+=1
-                updateScreen()
-            }
-        }
-
-        iv_erasure.setOnClickListener {
-            isErasure=!isErasure
-            if (isErasure){
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
-                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            }
-            else{
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
-                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            }
+    override fun onPageDown() {
+        if(page<count){
+            page+=1
+            updateScreen()
         }
     }
 
+    override fun onPageUp() {
+        if (page>1){
+            page-=1
+            updateScreen()
+        }
+    }
 
     //单屏翻页
     private fun updateScreen(){
         tv_page.text="${page+1}/$count"
-        loadPicture(page,elik_a!!,v_content_a)
+        loadPicture(page,elik!!,v_content)
     }
 
 
@@ -144,7 +118,6 @@ class BookDetailsActivity:BaseActivity() {
         val showFile = getIndexFile(index)
         if (showFile!=null){
             book?.pageUrl=showFile.path //设置当前页面路径
-
             GlideUtils.setImageFile(this,showFile,view)
 
             val drawPath=book?.bookDrawPath+"/${index+1}.tch"

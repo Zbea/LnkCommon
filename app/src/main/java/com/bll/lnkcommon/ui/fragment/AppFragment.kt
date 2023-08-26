@@ -8,15 +8,15 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.AppMenuDialog
-import com.bll.lnkcommon.dialog.AppSettingDialog
+import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.activity.AppCenterActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.BitmapUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.fragment_app.*
 import kotlinx.android.synthetic.main.fragment_app.rv_list
 
@@ -27,12 +27,23 @@ class AppFragment:BaseFragment() {
     private var mAdapter: AppListAdapter?=null
     private var mMenuAdapter: AppListAdapter?=null
     private var position=0
+    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_app
     }
 
     override fun initView() {
+
+        longBeans.add(ItemList().apply {
+            name="菜单"
+            resId=R.mipmap.icon_setting_menu
+        })
+        longBeans.add(ItemList().apply {
+            name="卸载"
+            resId=R.mipmap.icon_setting_uninstall
+        })
+
         setTitle(DataBeanManager.mainListTitle[3])
         initRecyclerView()
         initMenuRecyclerView()
@@ -95,15 +106,14 @@ class AppFragment:BaseFragment() {
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
             if (position>2){
-                AppSettingDialog(requireActivity(),apps[position].appName).builder().setOnDialogClickListener(
-                    object : AppSettingDialog.OnDialogClickListener {
-                        override fun onUninstall() {
-                            AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
-                        }
-                        override fun onMove() {
-                            AppMenuDialog(requireActivity(),apps[position]).builder()
-                        }
-                    })
+                LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
+                    if (it==0){
+                        AppMenuDialog(requireActivity(),apps[position]).builder()
+                    }
+                    else{
+                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                    }
+                }
             }
             true
         }
@@ -142,6 +152,12 @@ class AppFragment:BaseFragment() {
             imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_yyb))
             packageName="com.tencent.android.qqdownloader"
             isBase=true
+        })
+        apps.add(AppBean().apply {
+            appName="几何绘图"
+            imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_geometry))
+            packageName=Constants.PACKAGE_GEOMETRY
+            isBase=false
         })
         apps.addAll(AppUtils.scanLocalInstallAppList(activity))
         mAdapter?.setNewData(apps)

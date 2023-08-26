@@ -142,7 +142,7 @@
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="学生账号"
+                android:text="账号"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -188,7 +188,54 @@
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_line_bottom"
+            android:gravity="center_vertical"
+            >
 
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="账号"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+            <TextView
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="wrap_content"
+                android:text="姓名"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                />
+
+            <TextView
+                android:id="@+id/btn_add_friend"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="关联好友"
+                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

@@ -19,6 +19,4 @@ public class Date implements Serializable {
     public Solar solar=new Solar();
     public Lunar lunar=new Lunar();
 
-    public DateEvent dateEvent;
-
 }

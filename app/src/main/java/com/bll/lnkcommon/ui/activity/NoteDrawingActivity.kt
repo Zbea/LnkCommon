@@ -8,6 +8,7 @@ import android.view.PWDrawObjectHandler
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
@@ -17,13 +18,11 @@ import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_note_draw_details.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 
-class NoteDrawingActivity : BaseActivity() {
+class NoteDrawingActivity : BaseDrawingActivity() {
 
-    private var elik:EinkPWInterface?=null
-    private var isErasure=false
     private var typeStr = ""
     private var note: Note? = null
     private var noteContent: NoteContent? = null//当前内容
@@ -31,7 +30,7 @@ class NoteDrawingActivity : BaseActivity() {
     private var page = 0//页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_note_draw_details
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -50,66 +49,42 @@ class NoteDrawingActivity : BaseActivity() {
 
     }
 
-
     override fun initView() {
-
         v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
-        elik = v_content.pwInterFace
         changeContent()
-
-        tv_title.setOnClickListener {
-            val title=tv_title.text.toString()
-            InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                tv_title.text = string
-                noteContent?.title = string
-                noteContents[page-1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-            }
-        }
-
-
-        iv_page_down.setOnClickListener {
-            val total=noteContents.size-1
-            when(page){
-                total->{
-                    newNoteContent()
-                }
-                else->{
-                    page += 1
-                }
-            }
-            changeContent()
-        }
-
-        iv_page_up.setOnClickListener {
-            if (page>0){
-                page-=1
-                changeContent()
-            }
-        }
 
         iv_catalog.setOnClickListener {
             showCatalog()
         }
 
-        iv_erasure.setOnClickListener {
-            isErasure=!isErasure
-            if (isErasure){
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
-                elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            }
-            else{
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
-                elik?.drawObjectType =PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            }
-        }
-
-        iv_tool.setOnClickListener {
-            AppToolDialog(this).builder()
-        }
-
     }
 
+    override fun setDrawingTitle(title: String) {
+        noteContent?.title = title
+        noteContents[page-1].title = title
+        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+    }
+
+
+    override fun onPageDown() {
+        val total=noteContents.size-1
+        when(page){
+            total->{
+                newNoteContent()
+            }
+            else->{
+                page += 1
+            }
+        }
+        changeContent()
+    }
+
+    override fun onPageUp() {
+        if (page>0){
+            page-=1
+            changeContent()
+        }
+    }
 
 
     /**
@@ -137,12 +112,10 @@ class NoteDrawingActivity : BaseActivity() {
 
     //翻页内容更新切换
     private fun changeContent() {
-
         noteContent = noteContents[page]
         tv_title.text=noteContent?.title
         tv_page.text = (page + 1).toString()
 
-        elik?.setPWEnabled(true)
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {

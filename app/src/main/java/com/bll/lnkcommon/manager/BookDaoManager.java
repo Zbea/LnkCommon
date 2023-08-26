@@ -109,26 +109,6 @@ public class BookDaoManager {
                 .build().list();
     }
 
-    //根据名称搜索 分页
-    public List<Book> queryBookByName(String name, String type, int page, int pageSize) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(1);
-        WhereCondition whereCondition2=BookDao.Properties.BookName.like("%"+name+"%");
-        WhereCondition whereCondition3=BookDao.Properties.SubtypeStr.eq(type);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
-                .orderDesc(BookDao.Properties.Time)
-                .offset((page-1)*pageSize).limit(pageSize)
-                .build().list();
-    }
-    //根据名称搜素全部
-    public List<Book> queryBookByName(String name, String type) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(1);
-        WhereCondition whereCondition2=BookDao.Properties.BookName.like("%"+name+"%");
-        WhereCondition whereCondition3=BookDao.Properties.SubtypeStr.eq(type);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3)
-                .orderDesc(BookDao.Properties.Time)
-                .build().list();
-    }
-
     //查找课本 细分子类
     public List<Book> queryAllTextBook(String textType) {
         WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);

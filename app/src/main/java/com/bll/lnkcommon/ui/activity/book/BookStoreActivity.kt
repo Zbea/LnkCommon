@@ -210,17 +210,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         loadSate = 2
                         category=1
                         typeId = this@BookStoreActivity.type
-                        subtypeStr = when (tabStr) {
-                            "思维科学", "自然科学" -> {
-                                "科学技术"
-                            }
-                            "运动才艺" -> {
-                                "运动才艺"
-                            }
-                            else -> {
-                                subTypeStr
-                            }
-                        }
+                        subtypeStr = ""
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)

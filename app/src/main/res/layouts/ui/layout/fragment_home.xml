@@ -6,15 +6,45 @@
     android:background="@color/bg_page"
     >
 
-    <include
-        layout="@layout/common_fragment_title"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:gravity="center_vertical"
+        android:background="@color/bg_page">
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="33dp"
+            android:textColor="@color/black"
+            android:textSize="36sp"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_free_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="随笔"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:gravity="center"
+            android:drawablePadding="@dimen/dp_10"
+            android:drawableStart="@mipmap/icon_free_note"
+            android:layout_marginEnd="@dimen/dp_40"
+            />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="740dp"
         android:layout_height="980dp"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_40"
         android:background="@mipmap/icon_date_bg"
         android:layout_gravity="center_horizontal"
         android:paddingTop="@dimen/dp_20"
@@ -33,11 +63,11 @@
 
             <TextView
                 android:id="@+id/tv_date_festival"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black_30"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_30"
                 />
 
             <TextView
@@ -53,11 +83,11 @@
 
             <TextView
                 android:id="@+id/tv_date_luna"
-                android:layout_width="150dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_22"
                 android:textColor="@color/black_30"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
                 android:gravity="end"
                 />
 

@@ -30,6 +30,9 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
+import com.bll.lnkcommon.manager.AppDaoManager
+import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
@@ -44,8 +47,12 @@ import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
 import kotlin.math.ceil
 
 
@@ -89,14 +96,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
         if (!EasyPermissions.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_CALENDAR,
-                Manifest.permission.READ_CALENDAR,
                 Manifest.permission.RECORD_AUDIO)){
             EasyPermissions.requestPermissions(this,"请求权限",1,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_CALENDAR,
-                Manifest.permission.READ_CALENDAR,
                 Manifest.permission.RECORD_AUDIO
             )
         }
@@ -325,6 +328,66 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         radioButton.layoutParams = layoutParams
 
         return radioButton
+    }
+
+    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = isCheck
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(this, 45f))
+
+        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
+    /**
+     * 跳转阅读器
+     */
+    fun gotoBookDetails(bookBean: Book){
+        bookBean.isLook=true
+        bookBean.time=System.currentTimeMillis()
+        BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
+
+        val toolApps= AppDaoManager.getInstance().queryTool()
+        val result = JSONArray()
+        for (item in toolApps){
+            val jsonObject = JSONObject()
+            try {
+                jsonObject.put("appName", item.appName)
+                jsonObject.put("packageName", item.packageName)
+            } catch (_: JSONException) {
+            }
+            result.put(jsonObject)
+        }
+
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
+        intent.putExtra("tool",result.toString())
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
+        startActivity(intent)
+    }
+
+    /**
+     * 删除书本
+     */
+    fun deleteBook(book: Book){
+        BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
+        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+        if (File(book.bookDrawPath).exists())
+            FileUtils.deleteFile(File(book.bookDrawPath))
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
     }
 
     /**

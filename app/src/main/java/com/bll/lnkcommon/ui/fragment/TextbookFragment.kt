@@ -6,11 +6,11 @@ import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.BookManageDialog
-import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.book.BookDetailsActivity
@@ -108,21 +108,38 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
     //长按显示课本管理
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
-        val type=if (tabId==2||tabId==3) 2 else 1
-        BookManageDialog(requireActivity(), book,type).builder()
-            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
+        val beans= mutableListOf<ItemList>()
+        if (tabId==2||tabId==3) {
+            beans.add(ItemList().apply {
+                name="删除"
+                resId=R.mipmap.icon_setting_delete
+            })
+            beans.add(ItemList().apply {
+                    name="设置作业"
+                    resId=R.mipmap.icon_setting_set
+            })
+        }
+        else{
+             beans.add(ItemList().apply {
+                    name="删除"
+                    resId=R.mipmap.icon_setting_delete
+             })
+        }
+
+        LongClickManageDialog(requireActivity(), book.bookName,beans).builder()
+            .setOnDialogClickListener{
+                if (it==0){
                     BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     FileUtils.deleteFile(File(book.bookDrawPath))
                     mAdapter?.remove(position)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
                 }
-                override fun onSet() {
+                else{
                     val studentId=SPUtil.getInt("studentId")
                     if (studentId==0){
                         showToast("请选择学生")
-                        return
+                        return@setOnDialogClickListener
                     }
                     val map=HashMap<String,Any>()
                     map["name"]=book.bookName
@@ -133,7 +150,7 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
                     map["subject"]=book.subjectName
                     presenter.createHomeworkType(map)
                 }
-            })
+            }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

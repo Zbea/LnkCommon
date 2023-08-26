@@ -7,10 +7,11 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.BookManageDialog
-import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.dialog.LongClickManageDialog
+import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
@@ -23,6 +24,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import org.greenrobot.eventbus.EventBus
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 
 class BookcaseFragment:BaseFragment() {
@@ -31,6 +35,7 @@ class BookcaseFragment:BaseFragment() {
     private var position=0
     private var books= mutableListOf<Book>()//所有数据
     private var bookTopBean:Book?=null
+    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
@@ -38,6 +43,11 @@ class BookcaseFragment:BaseFragment() {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
         showView(ll_search)
+
+        longBeans.add(ItemList().apply {
+            name="删除"
+            resId=R.mipmap.icon_setting_delete
+        })
 
         initRecyclerView()
         findBook()
@@ -93,12 +103,25 @@ class BookcaseFragment:BaseFragment() {
         BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
         EventBus.getDefault().post(Constants.BOOK_EVENT)
 
+        val toolApps= AppDaoManager.getInstance().queryTool()
+        val result = JSONArray()
+        for (item in toolApps){
+            val jsonObject = JSONObject()
+            try {
+                jsonObject.put("appName", item.appName)
+                jsonObject.put("packageName", item.packageName)
+            } catch (_: JSONException) {
+            }
+            result.put(jsonObject)
+        }
+
         val intent = Intent()
         intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
         intent.setPackage("com.geniatech.knote.reader")
         intent.putExtra("path", bookBean.bookPath)
         intent.putExtra("key_book_id",bookBean.bookId.toString())
         intent.putExtra("bookName", bookBean.bookName)
+        intent.putExtra("tool",result.toString())
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
         startActivity(intent)
@@ -148,24 +171,16 @@ class BookcaseFragment:BaseFragment() {
     //删除书架书籍
     private fun onLongClick(){
         val book=books[position]
-        BookManageDialog(requireActivity(), book,1).builder()
-            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
-                    BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    books.remove(book)
-                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                    if (File(book.bookDrawPath).exists())
-                        FileUtils.deleteFile(File(book.bookDrawPath))
-                    mAdapter?.notifyDataSetChanged()
-
-                    if (books.size==11)
-                    {
-                        findBook()
-                    }
+        LongClickManageDialog(requireActivity(), book.bookName,longBeans).builder()
+            .setOnDialogClickListener {
+                deleteBook(book)
+                books.remove(book)
+                mAdapter?.notifyDataSetChanged()
+                if (books.size==11)
+                {
+                    findBook()
                 }
-                override fun onSet() {
-                }
-            })
+            }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

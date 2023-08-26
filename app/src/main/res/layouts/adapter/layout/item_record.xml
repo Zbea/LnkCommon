@@ -2,33 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:background="@drawable/bg_line_bottom"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
     >
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_10"
         android:layout_weight="1"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="标题"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24"/>
+        android:textSize="@dimen/sp_20"/>
 
 
     <ImageView
         android:id="@+id/iv_record"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="30dp"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_marginEnd="10dp"
         android:src="@mipmap/icon_record_play"/>
 
     <ImageView
-        android:id="@+id/iv_setting"
-        android:layout_width="wrap_content"
+        android:id="@+id/iv_edit"
+        android:layout_width="@dimen/dp_30"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:src="@mipmap/icon_more"/>
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@mipmap/icon_notebook_edit"/>
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_notebook_delete"/>
 
 </LinearLayout>

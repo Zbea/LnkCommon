@@ -171,11 +171,49 @@ public class BitmapUtils {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
+//        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+//        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        Uri uri = Uri.fromFile(file);
+//        intent.setData(uri);
+//        context.sendBroadcast(intent);
+
+    }
+
+    /**
+     * 保存图片
+     * @param context
+     * @param bmp
+     * @param path 保存路径
+     */
+    public static void saveBmpGallery(Context context,Bitmap bmp, String path) {
+        File file = null;
+        File parentFile=new File(path);
+        if (!parentFile.getParentFile().exists()){
+            parentFile.getParentFile().mkdirs();
+        }
+        // 声明输出流
+        FileOutputStream outStream = null;
+        try {
+            file = new File(path);
+            // 获得输出流，如果文件中有内容，追加内容
+            outStream = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+        } catch (Exception e) {
+            e.getStackTrace();
+        } finally {
+            try {
+                if (outStream != null) {
+                    outStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+//        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+//        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        Uri uri = Uri.fromFile(file);
+//        intent.setData(uri);
+//        context.sendBroadcast(intent);
 
     }
 

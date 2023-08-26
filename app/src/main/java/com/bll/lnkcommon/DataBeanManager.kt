@@ -17,12 +17,6 @@ object DataBeanManager {
 
     val homeworkType = arrayOf("老师作业","学校考试","我的作业","我的批改")
 
-    val bookType = arrayOf(
-        "诗经楚辞", "唐诗宋词", "古代经典",
-        "四大名著", "中国科技", "小说散文",
-        "外国原著", "历史地理", "政治经济",
-        "军事战略", "科学技术", "运动才艺"
-    )
 
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),

@@ -13,6 +13,7 @@ import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
+import com.bll.lnkcommon.ui.adapter.AccountFriendAdapter
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
 import com.bll.lnkcommon.utils.ActivityManager
 import com.bll.lnkcommon.utils.SPUtil
@@ -28,6 +29,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var nickname=""
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
+    private var friends= mutableListOf<StudentBean>()
+    private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
 
     override fun onEditNameSuccess() {
@@ -67,6 +70,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     override fun initView() {
         setPageTitle("我的账户")
         initRecyclerView()
+        initRecyclerViewFriend()
 
         mUser=getUser()
 
@@ -85,7 +89,11 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_add.setOnClickListener {
-            addStudent()
+            add(0)
+        }
+
+        btn_add_friend.setOnClickListener {
+            add(1)
         }
 
         btn_logout.setOnClickListener {
@@ -115,14 +123,20 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.tv_student_cancel){
-                CommonDialog(this).setContent("取消学生关联？").builder().setDialogClickListener(object :
-                    CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        presenter.unbindStudent(students[position].childId)
-                    }
-                })
+                cancel(0)
+            }
+        }
+    }
+
+    private fun initRecyclerViewFriend(){
+        rv_list_friend.layoutManager = LinearLayoutManager(this)//创建布局管理
+        mAdapterFriend = AccountFriendAdapter(R.layout.item_account_friend,null)
+        rv_list_friend.adapter = mAdapterFriend
+        mAdapterFriend?.bindToRecyclerView(rv_list_friend)
+        mAdapterFriend?.setOnItemChildClickListener { adapter, view, position ->
+            this.position=position
+            if (view.id==R.id.tv_friend_cancel){
+                cancel(1)
             }
         }
     }
@@ -139,14 +153,32 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     /**
-     * 关联学生
+     * 管理
      */
-    private fun addStudent(){
-        InputContentDialog(this,"输入学生账号").builder()
+    private fun add(type:Int){
+        val str=if (type==0) "输入学生账号" else "输入好友账号"
+        InputContentDialog(this,str).builder()
             .setOnDialogClickListener { string ->
-                presenter.onBindStudent(string)
+                if (type==0){
+                    presenter.onBindStudent(string)
+                }
             }
     }
+
+    private fun cancel(type: Int){
+        val str=if (type==0) "取消学生关联?" else "取消好友关联?"
+        CommonDialog(this).setContent(str).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                if (type==0){
+                    presenter.unbindStudent(students[position].childId)
+                }
+            }
+        })
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

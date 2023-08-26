@@ -3,17 +3,13 @@ package com.bll.lnkcommon.manager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.AppBeanDao;
 import com.bll.lnkcommon.greendao.DaoSession;
-import com.bll.lnkcommon.greendao.FreeNoteBeanDao;
-import com.bll.lnkcommon.greendao.NoteContentDao;
 import com.bll.lnkcommon.mvp.model.AppBean;
-import com.bll.lnkcommon.mvp.model.NoteContent;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
-import java.util.Objects;
 
 public class AppDaoManager {
 

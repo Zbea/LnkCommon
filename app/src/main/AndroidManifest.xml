@@ -82,8 +82,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-<!--                                <category android:name="android.intent.category.HOME" />-->
-<!--                                <category android:name="android.intent.category.DEFAULT" />-->
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.NotebookManagerActivity"/>
@@ -93,6 +93,7 @@
         <activity android:name=".ui.activity.book.TextBookStoreActivity"/>
         <activity android:name=".ui.activity.book.BookDetailsActivity"/>
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"/>
+        <activity android:name=".ui.activity.book.BookListActivity"/>
         <activity android:name=".ui.activity.AppCenterActivity"/>
         <activity android:name=".ui.activity.AccountInfoActivity"/>
         <activity android:name=".ui.activity.AccountRegisterActivity"/>
@@ -109,7 +110,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="@string/authority"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

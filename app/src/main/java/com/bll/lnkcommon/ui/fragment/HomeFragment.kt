@@ -10,10 +10,6 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.mvp.model.StudentBean
-import com.bll.lnkcommon.mvp.presenter.StudentPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IStudentView
-import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.FreeNoteActivity
 import com.bll.lnkcommon.ui.activity.RecordListActivity
@@ -21,11 +17,8 @@ import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
 import java.io.File
@@ -43,20 +36,12 @@ class HomeFragment:BaseFragment() {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
 
-        showView(iv_manager,iv_setting)
-        iv_setting.setImageResource(R.mipmap.icon_recorder)
-        iv_manager.setImageResource(R.mipmap.icon_free_note)
-
         ll_date.setOnClickListener {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        iv_manager.setOnClickListener {
+        tv_free_note.setOnClickListener {
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
-        }
-
-        iv_setting.setOnClickListener {
-            customStartActivity(Intent(activity,RecordListActivity::class.java))
         }
 
         initRecyclerView()

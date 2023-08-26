@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
@@ -38,7 +39,13 @@ class AppToolDialog(val context: Context) {
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val packageName= lists[position].packageName
-            AppUtils.startAPP(context,packageName)
+            if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
+                listener?.onClick()
+            }
+            else{
+                AppUtils.startAPP(context,packageName)
+            }
+            dismiss()
         }
 
         return this
@@ -59,6 +66,16 @@ class AppToolDialog(val context: Context) {
             helper.setText(R.id.tv_name,item.appName)
             helper.setImageDrawable(R.id.iv_image,BitmapUtils.byteToDrawable(item.imageByte))
         }
+    }
+
+    var listener: OnDialogClickListener? = null
+
+    fun interface OnDialogClickListener {
+        fun onClick()
+    }
+
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+        listener = onDialogClickListener
     }
 
 }

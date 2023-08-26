@@ -10,17 +10,22 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.DateDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.manager.FreeNoteDaoManager
+import com.bll.lnkcommon.manager.RecordDaoManager
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import org.w3c.dom.Text
+import java.io.File
 
 class PopupFreeNoteList(var context: Context, var view: View) {
 
@@ -69,8 +74,16 @@ class PopupFreeNoteList(var context: Context, var view: View) {
                 }
             }
             if (view.id==R.id.iv_delete){
-                FreeNoteDaoManager.getInstance().deleteBean(item)
-                mAdapter?.remove(position)
+                CommonDialog(context).setContent("确定删除？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            FreeNoteDaoManager.getInstance().deleteBean(item)
+                            FileUtils.deleteFile(File(FileAddress().getPathFreeNote(DateUtils.longToString(item.date))))
+                            mAdapter?.remove(position)
+                        }
+                    })
             }
         }
 
