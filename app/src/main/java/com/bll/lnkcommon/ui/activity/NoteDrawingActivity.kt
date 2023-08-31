@@ -113,7 +113,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //翻页内容更新切换
     private fun changeContent() {
         noteContent = noteContents[page]
-        tv_title.text=noteContent?.title
+        tv_page_title.text=noteContent?.title
         tv_page.text = (page + 1).toString()
 
         elik?.setLoadFilePath(noteContent?.filePath!!, true)

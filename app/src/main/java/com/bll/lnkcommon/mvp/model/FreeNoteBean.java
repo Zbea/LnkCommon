@@ -5,6 +5,7 @@ import com.bll.lnkcommon.greendao.StringConverter;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -23,6 +24,7 @@ public class FreeNoteBean {
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> bgRes;
+
     @Generated(hash = 1800919848)
     public FreeNoteBean(Long id, long userId, String title, long date,
             List<String> paths, List<String> bgRes) {

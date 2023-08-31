@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
@@ -25,9 +26,9 @@ class AppToolDialog(val context: Context) {
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        layoutParams?.gravity = Gravity.BOTTOM or Gravity.RIGHT
-        layoutParams?.x=DP2PX.dip2px(context,12f)
-        layoutParams?.y=50
+        layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
+        layoutParams.x=DP2PX.dip2px(context,10f)
+        layoutParams.y= DP2PX.dip2px(context,46f)
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()

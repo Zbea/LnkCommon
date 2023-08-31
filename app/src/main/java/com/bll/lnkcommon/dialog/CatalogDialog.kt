@@ -24,10 +24,10 @@ class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0) {
         dialog?.setContentView(R.layout.dialog_catalog)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or Gravity.START
-        layoutParams.y= DP2PX.dip2px(context,32f)
+        layoutParams.x=DP2PX.dip2px(context,10f)
+        layoutParams.y= DP2PX.dip2px(context,46f)
         dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)

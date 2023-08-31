@@ -5,30 +5,42 @@ import PopupFreeNoteList
 import PopupRecordList
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Point
+import android.graphics.Rect
 import android.media.MediaRecorder
 import android.net.Uri
-import android.os.Build
 import android.os.StrictMode
 import android.provider.MediaStore
+import android.view.EinkPWInterface
 import android.view.View
 import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.dialog.FriendSelectorDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.dialog.NoteModuleAddDialog
+import com.bll.lnkcommon.dialog.PopupShareNoteList
+import com.bll.lnkcommon.greendao.StringConverter
 import com.bll.lnkcommon.manager.*
 import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.presenter.ShareNotePresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IShareNoteView
 import com.bll.lnkcommon.utils.*
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_free_note.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.io.IOException
 
-class FreeNoteActivity:BaseDrawingActivity() {
+class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
+    private val presenter=ShareNotePresenter(this)
     private var isRecord=false
     private var recordBean: RecordBean? = null
     private var mRecorder: MediaRecorder? = null
@@ -39,9 +51,67 @@ class FreeNoteActivity:BaseDrawingActivity() {
     private var images= mutableListOf<String>()//手写地址
     private var bgResList= mutableListOf<String>()//背景地址
     private var freeNotePopWindow:PopupFreeNoteList?=null
+    private var sharePopWindow:PopupShareNoteList?=null
     private var popsNote= mutableListOf<PopupBean>()
     private var popsShare= mutableListOf<PopupBean>()
     private var notebooks= mutableListOf<Notebook>()
+    private var shareTotal=0//分享总数
+    private var shareNotes= mutableListOf<ShareNoteList.ShareNoteBean>()
+    private var sharePosition=0//分享列表position
+    private var friendId=0//选中好友id
+
+    override fun onList(list: ShareNoteList) {
+        shareNotes=list.list
+        shareTotal=list.total
+    }
+    override fun onToken(token: String) {
+        showLoading()
+        //分享只能是有手写页面
+        val sImages= mutableListOf<String>()
+        val sBgRes= mutableListOf<String>()
+        for (i in images.indices){
+            if (File(images[i]).exists()){
+                sImages.add(images[i])
+                sBgRes.add(bgResList[i])
+            }
+        }
+        if (sImages.size==0){
+            hideLoading()
+            showToast("暂无分享内容")
+            return
+        }
+        val imagePaths= mutableListOf<String>()
+        for (path in sImages){
+            imagePaths.add(path.replace("tch","png"))
+        }
+        FileImageUploadManager(token, imagePaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    val urls=ToolUtils.getImagesStr(urls)
+                    val bgs=ToolUtils.getImagesStr(sBgRes)
+                    val map=HashMap<String,Any>()
+                    map["userId"]=friendId
+                    map["title"]=freeNoteBean?.title!!
+                    map["bgRes"]=bgs
+                    map["paths"]=urls
+                    map["date"]=freeNoteBean?.date!!
+                    presenter.commitShare(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("分享失败")
+                }
+            })
+        }
+    }
+    override fun onDeleteSuccess() {
+        sharePopWindow?.deleteData(sharePosition)
+    }
+    override fun onShare() {
+        showToast("分享成功")
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_free_note
@@ -66,8 +136,12 @@ class FreeNoteActivity:BaseDrawingActivity() {
 
         popsShare.add(PopupBean(0,"微信",R.mipmap.ic_wx))
         popsShare.add(PopupBean(1,"墨本",R.mipmap.ic_launcher))
+
+        if (isLoginState())
+            fetchShareNotes(1,false)
     }
     override fun initView() {
+        //用于分享本地应用
         val builder=  StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
         builder.detectFileUriExposure()
@@ -83,7 +157,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
             }
         }
 
-        tv_record.setOnClickListener {
+        iv_record.setOnClickListener {
             isRecord=!isRecord
             if (isRecord){
                 startRecord()
@@ -110,6 +184,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
             if (freeNotePopWindow==null){
                 freeNotePopWindow=PopupFreeNoteList(this,tv_free_list).builder()
                 freeNotePopWindow?.setOnSelectListener{
+                    saveFreeNote()
                     posImage=0
                     freeNoteBean=it
                     bgResList= freeNoteBean?.bgRes as MutableList<String>
@@ -127,6 +202,34 @@ class FreeNoteActivity:BaseDrawingActivity() {
             PopupRecordList(this,tv_record_list).builder()
         }
 
+        tv_share_list.setOnClickListener {
+            if (!isLoginState()){
+                showToast("未登录")
+                return@setOnClickListener
+            }
+            if (sharePopWindow==null){
+                sharePopWindow=PopupShareNoteList(this,tv_share_list,shareTotal).builder()
+                sharePopWindow?.setData(shareNotes)
+                sharePopWindow?.setOnClickListener(object : PopupShareNoteList.OnClickListener {
+                    override fun onPage(pageIndex: Int) {
+                        fetchShareNotes(pageIndex,true)
+                    }
+                    override fun onDelete(position: Int) {
+                        sharePosition=position
+                        val map=HashMap<String,Any>()
+                        map["ids"]= arrayOf(shareNotes[position].id)
+                        presenter.deleteShareNote(map)
+                    }
+                    override fun onDownload(position: Int) {
+                        downloadShareNote(shareNotes[position])
+                    }
+                })
+            }
+            else{
+                sharePopWindow?.show()
+            }
+        }
+
         tv_share.setOnClickListener {
             PopupClick(this,popsShare,tv_share,5).builder().setOnSelectListener{
                 if (it.id==0){
@@ -135,6 +238,16 @@ class FreeNoteActivity:BaseDrawingActivity() {
                     }
                     else{
                         showToast("未安装微信")
+                    }
+                }
+                else{
+                    if (!isLoginState()){
+                        showToast("未登录")
+                        return@setOnSelectListener
+                    }
+                    FriendSelectorDialog(this, DataBeanManager.friends).builder().setOnDialogClickListener{ id->
+                        friendId=id
+                        presenter.getToken()
                     }
                 }
             }
@@ -160,6 +273,42 @@ class FreeNoteActivity:BaseDrawingActivity() {
             posImage-=1
             setContentImage()
         }
+    }
+
+    /**
+     * 下载分享随笔
+     */
+    private fun downloadShareNote(item:ShareNoteList.ShareNoteBean){
+        val date=System.currentTimeMillis()
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(date))
+        val savePaths= mutableListOf<String>()
+        val tchPaths= mutableListOf<String>()
+        val urls=item.paths.split(",")
+        for (i in urls.indices)
+        {
+            savePaths.add(path+"/${i+1}.png")
+            tchPaths.add(path+"/${i+1}.tch")
+        }
+        FileMultitaskDownManager.with(this).create(urls).setPath(savePaths).startMultiTaskDownLoad(
+            object : FileMultitaskDownManager.MultiTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    val freeNoteBean= FreeNoteBean()
+                    freeNoteBean.userId=getUser()?.accountId!!
+                    freeNoteBean.title=item.title
+                    freeNoteBean.date=date
+                    freeNoteBean.bgRes=StringConverter().convertToEntityProperty(item.bgRes)
+                    freeNoteBean.paths=tchPaths
+                    FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+                    showToast("下载成功")
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    showToast("下载失败")
+                }
+            })
     }
 
     /**
@@ -200,20 +349,22 @@ class FreeNoteActivity:BaseDrawingActivity() {
     private fun saveImage():MutableList<String>{
         val list= mutableListOf<String>()
         for (i in images.indices){
-            val bgRes=bgResList[i]
-            val drawPath=images[i].replace("tch","png")
-            val mergePath=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/merge/${i+1}.jpg"
+            if (File(images[i]).exists()){
+                val bgRes=bgResList[i]
+                val drawPath=images[i].replace("tch","png")
+                val mergePath=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/merge/${i+1}.jpg"
 
-            val oldBitmap=BitmapFactory.decodeResource(resources, ToolUtils.getImageResId(this,bgRes))
-            val drawBitmap = BitmapFactory.decodeFile(drawPath)
-            if (drawBitmap!=null){
-                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath)
+                val oldBitmap=BitmapFactory.decodeResource(resources, ToolUtils.getImageResId(this,bgRes))
+                val drawBitmap = BitmapFactory.decodeFile(drawPath)
+                if (drawBitmap!=null){
+                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath)
+                }
+                else{
+                    BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath)
+                }
+                list.add(mergePath)
             }
-            else{
-                BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath)
-            }
-            list.add(mergePath)
         }
         return list
     }
@@ -234,14 +385,11 @@ class FreeNoteActivity:BaseDrawingActivity() {
 //        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
 //            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
 //            }
-//
 //            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
 //            }
-//
 //            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
 //                elik?.saveBitmap(true) {}
 //            }
-//
 //        })
     }
 
@@ -260,23 +408,25 @@ class FreeNoteActivity:BaseDrawingActivity() {
             note.typeStr = it.name
             note.contentResId = ToolUtils.getImageResStr(this,0)
             NoteDaoManager.getInstance().insertOrReplace(note)
-            for (i in freeNoteBean?.paths!!.indices){
-                val oldPath=freeNoteBean?.paths!![i]
-                val date=System.currentTimeMillis()
-                val pathName = DateUtils.longToString(date)
-                val path=FileAddress().getPathNote(it.name,note.title,date)+"/${pathName}.tch"
-                FileUtils.copyFile(oldPath,path)
+            for (i in images.indices){
+                val oldPath=images[i]
+                if(File(oldPath).exists()){
+                    val date=System.currentTimeMillis()
+                    val pathName = DateUtils.longToString(date)
+                    val path=FileAddress().getPathNote(it.name,note.title,date)+"/${pathName}.tch"
+                    FileUtils.copyFile(oldPath,path)
 //                FileUtils.copyFile(oldPath.replace("tch","png"),path.replace("tch","png"))
-                val noteContent = NoteContent()
-                noteContent.date = date
-                noteContent.typeStr=note.typeStr
-                noteContent.notebookTitle = note.title
-                noteContent.resId = note.contentResId
-                noteContent.title="未命名${i+1}"
-                noteContent.filePath = path
-                noteContent.pathName=pathName
-                noteContent.page = i
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+                    val noteContent = NoteContent()
+                    noteContent.date = date
+                    noteContent.typeStr=note.typeStr
+                    noteContent.notebookTitle = note.title
+                    noteContent.resId = note.contentResId
+                    noteContent.title="未命名${i+1}"
+                    noteContent.filePath = path
+                    noteContent.pathName=pathName
+                    noteContent.page = i
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+                }
             }
             showToast("插入笔记成功")
             EventBus.getDefault().post(Constants.NOTE_EVENT)
@@ -287,7 +437,6 @@ class FreeNoteActivity:BaseDrawingActivity() {
      * 开始录音
      */
     private fun startRecord(){
-        tv_record.text="结束"
         recordBean = RecordBean()
         recordBean?.userId=if (isLoginState()) getUser()?.accountId else 0
         recordBean?.date=System.currentTimeMillis()
@@ -316,7 +465,6 @@ class FreeNoteActivity:BaseDrawingActivity() {
      * 结束录音
      */
     private fun stopRecord(){
-        tv_record.text="录音"
         mRecorder?.apply {
             setOnErrorListener(null)
             setOnInfoListener(null)
@@ -332,10 +480,24 @@ class FreeNoteActivity:BaseDrawingActivity() {
     }
 
     private fun saveFreeNote(){
+        //清空没有手写页面
+        val sImages= mutableListOf<String>()
+        for (i in images.indices){
+            if (File(images[i]).exists()){
+                sImages.add(images[i])
+            }
+        }
         freeNoteBean?.paths=images
         freeNoteBean?.bgRes=bgResList
-        if (images.isNotEmpty())
+        if (sImages.size>0)
             FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+    }
+
+    private fun fetchShareNotes(page:Int,isShow: Boolean){
+        val map=HashMap<String,Any>()
+        map["size"]=6
+        map["page"]=page
+        presenter.getShareNotes(map,isShow)
     }
 
     override fun onDestroy() {
@@ -344,6 +506,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
             stopRecord()
         }
         saveFreeNote()
+        FileDownloader.getImpl().pauseAll()
     }
 
 }

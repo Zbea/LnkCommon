@@ -12,6 +12,7 @@ object DataBeanManager {
     var courses= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
     var provinces= mutableListOf<AreaBean>()
+    var friends= mutableListOf<FriendList.FriendBean>()
 
     val mainListTitle = arrayOf("首页","书架","笔记","应用","教材","作业")
 

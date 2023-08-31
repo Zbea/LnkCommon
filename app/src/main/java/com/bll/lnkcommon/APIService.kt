@@ -54,6 +54,39 @@ interface APIService{
      */
     @GET("parent/child/list")
     fun onStudentList(): Observable<BaseResult<MutableList<StudentBean>>>
+
+    /**
+     * 绑定好友
+     */
+    @POST("add/friend/insert")
+    fun onBindFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 解绑好友
+     */
+    @POST("friend/delete")
+    fun onUnbindFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取好友列表
+     */
+    @GET("friend/list")
+    fun onFriendList(): Observable<BaseResult<FriendList>>
+
+    /**
+     * 同意好友请求
+     */
+    @POST("add/friend/consent")
+    fun onAgreeFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 不同意好友
+     */
+    @POST("add/friend/delete")
+    fun onUnAgreeFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 请求列表
+     */
+    @GET("add/friend/list")
+    fun onRequestFriendList(): Observable<BaseResult<FriendList>>
+
     /**
      * 短信信息 "/sms"
      */
@@ -194,4 +227,19 @@ interface APIService{
     fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 
+    /**
+     * 获取分享列表
+     */
+    @GET("friend/message/list")
+    fun getShareList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ShareNoteList>>
+    /**
+     * 删除列表
+     */
+    @POST("friend/message/delete")
+    fun deleteShare(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 分享随笔
+     */
+    @POST("friend/message/send")
+    fun shareFreeNote(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 }

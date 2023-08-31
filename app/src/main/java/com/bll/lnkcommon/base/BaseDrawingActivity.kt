@@ -14,6 +14,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.mvp.model.PopupBean
@@ -21,6 +23,7 @@ import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.ui.activity.MainActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -28,10 +31,10 @@ import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
 import kotlinx.android.synthetic.main.ac_drawing.v_content
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.tv_title
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 
 
 abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
@@ -106,11 +109,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-        tv_title?.setOnClickListener {
+        tv_page_title?.setOnClickListener {
             if (isTitleClick){
-                val title=tv_title.text.toString()
+                val title=tv_page_title.text.toString()
                 InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                    tv_title.text = string
+                    tv_page_title.text = string
                     setDrawingTitle(string)
                 }
             }
@@ -464,6 +467,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         isGeometry=false
     }
 
+    fun setPageTitle(title: String){
+        tv_title?.text=title
+    }
+
     /**
      * 标题a操作
      */
@@ -568,12 +575,15 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        showToast(R.string.login_timeout)
+        SToast.showText(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
-        val intent=Intent(this, AccountLoginActivity::class.java)
-        startActivity(intent)
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+        EventBus.getDefault().post(Constants.USER_EVENT)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+        startActivity(Intent(this, AccountLoginActivity::class.java))
+        DataBeanManager.students.clear()
+        DataBeanManager.friends.clear()
+        EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 
     override fun hideLoading() {

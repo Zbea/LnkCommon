@@ -8,6 +8,7 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.LoginPresenter
@@ -24,22 +25,14 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
     override fun getLogin(user: User?) {
         token= user?.token.toString()
         SPUtil.putString("token",token)
-        presenter.getStudents()
+        presenter.accounts()
     }
 
     override fun getAccount(user: User?) {
         user?.token=token
-        user?.isBind=DataBeanManager.students.size!=0
         SPUtil.putObj("user",user!!)
         EventBus.getDefault().post(Constants.USER_EVENT)
-        if (user.isBind)
-            EventBus.getDefault().post(Constants.STUDENT_EVENT)
         finish()
-    }
-
-    override fun onStudentList(studentBeans: MutableList<StudentBean>) {
-        DataBeanManager.students=studentBeans
-        presenter.accounts()
     }
 
     override fun layoutId(): Int {

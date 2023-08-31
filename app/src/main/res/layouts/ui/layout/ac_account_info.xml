@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:orientation="vertical">
@@ -140,35 +140,17 @@
             >
 
             <TextView
-                android:layout_width="120dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账号"
+                android:text="学生："
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
-                />
-            <TextView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="wrap_content"
-                android:text="姓名"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:gravity="center"
-                />
-
-            <TextView
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="年级"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:gravity="center"
                 />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="学校"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -188,6 +170,11 @@
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"
+            />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -197,19 +184,11 @@
             >
 
             <TextView
-                android:layout_width="120dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账号"
+                android:text="好友："
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
-                />
-            <TextView
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="wrap_content"
-                android:text="姓名"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:gravity="center"
                 />
 
             <TextView

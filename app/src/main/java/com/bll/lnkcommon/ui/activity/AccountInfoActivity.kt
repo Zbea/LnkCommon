@@ -9,6 +9,8 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
+import com.bll.lnkcommon.dialog.PopupFriendRequestList
+import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
@@ -20,6 +22,7 @@ import com.bll.lnkcommon.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
+import kotlinx.android.synthetic.main.common_title.*
 import kotlinx.android.synthetic.main.fragment_app.*
 import org.greenrobot.eventbus.EventBus
 
@@ -29,33 +32,55 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var nickname=""
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
-    private var friends= mutableListOf<StudentBean>()
+    private var friends= mutableListOf<FriendList.FriendBean>()
+    private var requestfriends= mutableListOf<FriendList.FriendBean>()
     private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
+    private var type=0//0学生1好友
+    private var requestPosition=0
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
         mUser?.nickname=nickname
         tv_name.text = nickname
     }
-    override fun onBindStudent() {
-        presenter.getStudents()
-    }
-    override fun onUnbindStudent() {
-        mAdapter?.remove(position)
-        DataBeanManager.students=students
-        if (DataBeanManager.students.size==0){
-            mUser?.isBind=false
-            EventBus.getDefault().post(Constants.STUDENT_EVENT)
+    override fun onBind() {
+        if (type==0){
+            presenter.getStudents()
         }
     }
-    override fun onStudentList(studentBeans: MutableList<StudentBean>) {
-        if (studentBeans.size>0)
-            mUser?.isBind=true
-        DataBeanManager.students=studentBeans
-        students=studentBeans
+    override fun onUnbind() {
+        if (type==0){
+            mAdapter?.remove(position)
+            DataBeanManager.students=students
+            if (DataBeanManager.students.size==0)
+                EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        }
+        else{
+            mAdapterFriend?.remove(position)
+            DataBeanManager.friends=friends
+        }
+    }
+    override fun onListStudent(bens: MutableList<StudentBean>) {
+        DataBeanManager.students=bens
+        students=bens
         mAdapter?.setNewData(students)
         EventBus.getDefault().post(Constants.STUDENT_EVENT)
+    }
+    override fun onListFriend(list: FriendList) {
+        friends=list.list
+        DataBeanManager.friends=friends
+        mAdapterFriend?.setNewData(friends)
+    }
+    override fun onAgree() {
+        requestfriends.removeAt(requestPosition)
+        presenter.getFriends()
+    }
+    override fun onDisagree() {
+        requestfriends.removeAt(requestPosition)
+    }
+    override fun onListRequestFriend(list: FriendList) {
+        requestfriends=list.list
     }
 
     override fun layoutId(): Int {
@@ -64,11 +89,16 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
     override fun initData() {
         presenter.getStudents()
+        presenter.getFriends()
+        presenter.getRequestFriends()
     }
 
     @SuppressLint("WrongConstant")
     override fun initView() {
         setPageTitle("我的账户")
+        showView(iv_manager)
+        iv_manager.setImageResource(R.mipmap.icon_friend_add)
+
         initRecyclerView()
         initRecyclerViewFriend()
 
@@ -80,6 +110,19 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
         }
 
+        iv_manager?.setOnClickListener {
+            PopupFriendRequestList(this,iv_manager,requestfriends).builder()
+                .setOnSelectListener{ position,type->
+                    requestPosition=position
+                    if (type==1) {
+                        presenter.disagreeFriend(requestfriends[position].id)
+                    }
+                    else{
+                        presenter.onAgreeFriend(requestfriends[position].id)
+                    }
+            }
+        }
+
         btn_edit_psd.setOnClickListener {
             customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
         }
@@ -89,11 +132,13 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_add.setOnClickListener {
-            add(0)
+            type=0
+            add()
         }
 
         btn_add_friend.setOnClickListener {
-            add(1)
+            type=1
+            add()
         }
 
         btn_logout.setOnClickListener {
@@ -108,6 +153,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                     ActivityManager.getInstance().finishOthers(MainActivity::class.java)
                     EventBus.getDefault().post(Constants.USER_EVENT)
                     DataBeanManager.students.clear()
+                    DataBeanManager.friends.clear()
                     EventBus.getDefault().post(Constants.STUDENT_EVENT)
                 }
             })
@@ -123,7 +169,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.tv_student_cancel){
-                cancel(0)
+                type=0
+                cancel()
             }
         }
     }
@@ -136,7 +183,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mAdapterFriend?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.tv_friend_cancel){
-                cancel(1)
+                type=1
+                cancel()
             }
         }
     }
@@ -155,17 +203,20 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     /**
      * 管理
      */
-    private fun add(type:Int){
+    private fun add(){
         val str=if (type==0) "输入学生账号" else "输入好友账号"
         InputContentDialog(this,str).builder()
             .setOnDialogClickListener { string ->
                 if (type==0){
                     presenter.onBindStudent(string)
                 }
+                else{
+                    presenter.onBindFriend(string)
+                }
             }
     }
 
-    private fun cancel(type: Int){
+    private fun cancel(){
         val str=if (type==0) "取消学生关联?" else "取消好友关联?"
         CommonDialog(this).setContent(str).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
@@ -174,6 +225,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             override fun ok() {
                 if (type==0){
                     presenter.unbindStudent(students[position].childId)
+                }
+                else{
+                    presenter.unbindFriend(friends[position].id)
                 }
             }
         })

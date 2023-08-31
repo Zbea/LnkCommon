@@ -60,7 +60,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
 
     override fun initView() {
         index= arguments?.getInt("index")!!
-        pageSize=7
+        pageSize=6
 
         initRecyclerView()
 

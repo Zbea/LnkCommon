@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="随笔"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="24sp"
             android:gravity="center"
             android:drawablePadding="@dimen/dp_10"
             android:drawableStart="@mipmap/icon_free_note"

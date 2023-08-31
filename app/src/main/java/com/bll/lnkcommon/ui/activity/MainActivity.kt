@@ -45,7 +45,7 @@ class MainActivity : BaseActivity() {
 
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
-        if (isLoginState()&&getUser()?.isBind==true){
+        if (isLoginState()&&DataBeanManager.students.size>0){
             changeData()
         }
     }

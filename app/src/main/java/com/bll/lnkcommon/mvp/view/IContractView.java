@@ -6,10 +6,12 @@ import com.bll.lnkcommon.mvp.model.AppList;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CommonData;
+import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
+import com.bll.lnkcommon.mvp.model.ShareNoteList;
 import com.bll.lnkcommon.mvp.model.StudentBean;
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList;
 import com.bll.lnkcommon.mvp.model.User;
@@ -23,7 +25,6 @@ public interface IContractView {
     interface ILoginView extends IBaseView {
         void getLogin(User user);
         void getAccount(User user);
-        void onStudentList(List<StudentBean> studentBeans);
     }
 
     //注册 找回密码
@@ -36,9 +37,13 @@ public interface IContractView {
 
     interface IAccountInfoView extends IBaseView {
         void onEditNameSuccess();
-        void onBindStudent();
-        void onUnbindStudent();
-        void onStudentList(List<StudentBean> studentBeans);
+        void onBind();
+        void onUnbind();
+        void onListStudent(List<StudentBean> beans);
+        void onListFriend(FriendList list);
+        void onAgree();
+        void onDisagree();
+        void onListRequestFriend(FriendList list);
     }
 
     //钱包页面回调
@@ -82,14 +87,22 @@ public interface IContractView {
         void onSendSuccess();
     }
 
-    interface IStudentView extends IBaseView{
+    interface IRelationView extends IBaseView{
         void onListStudents(List<StudentBean> list);
+        void onListFriend(FriendList list);
     }
     interface IHomeworkCorrectView extends IBaseView{
         void onList(HomeworkCorrectList list);
         void onToken(String token);
         void onUpdateSuccess();
         void onDeleteSuccess();
+    }
+
+    interface IShareNoteView extends IBaseView{
+        void onList(ShareNoteList list);
+        void onToken(String token);
+        void onDeleteSuccess();
+        void onShare();
     }
 
 }

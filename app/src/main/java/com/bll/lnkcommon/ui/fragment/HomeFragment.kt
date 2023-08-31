@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.DATE_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
@@ -10,6 +11,10 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
+import com.bll.lnkcommon.mvp.model.FriendList
+import com.bll.lnkcommon.mvp.model.StudentBean
+import com.bll.lnkcommon.mvp.presenter.RelationPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.FreeNoteActivity
 import com.bll.lnkcommon.ui.activity.RecordListActivity
@@ -17,18 +22,32 @@ import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeFragment:BaseFragment() {
+class HomeFragment:BaseFragment(),IRelationView {
 
+    private val presenter=RelationPresenter(this)
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
+
+    override fun onListStudents(list: MutableList<StudentBean>) {
+        DataBeanManager.students=list
+        if (list.size>0){
+            SPUtil.putInt("studentId",list[0].childId)
+            EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        }
+    }
+    override fun onListFriend(list: FriendList) {
+        DataBeanManager.friends=list.list
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_home
@@ -50,6 +69,10 @@ class HomeFragment:BaseFragment() {
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
             mCommonPresenter.getCommon()
+        if (isLoginState()){
+            presenter.getStudents()
+            presenter.getFriends()
+        }
         setDateView()
         findAppData()
     }
@@ -107,7 +130,7 @@ class HomeFragment:BaseFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
-                findAppData()
+                lazyLoad()
             }
             DATE_EVENT -> {
                 setDateView()
@@ -117,7 +140,13 @@ class HomeFragment:BaseFragment() {
 
     override fun onRefreshData() {
         super.onRefreshData()
-        lazyLoad()
+        if (DataBeanManager.courses.isEmpty())
+            mCommonPresenter.getCommon()
+        if (isLoginState()){
+            if (DataBeanManager.students.size==0)
+                presenter.getStudents()
+            presenter.getFriends()
+        }
         setDateView()
     }
 

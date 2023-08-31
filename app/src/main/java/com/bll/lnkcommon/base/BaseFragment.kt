@@ -365,6 +365,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
         customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
         DataBeanManager.students.clear()
+        DataBeanManager.friends.clear()
         EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 

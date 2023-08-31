@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
+import android.util.Pair
 import android.view.View
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
@@ -138,6 +139,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
                     map["nickname"]=name
                     map["code"]=code
                     map["telNumber"]=phone
+                    map["role"]=role
                     presenter.register(map)
                 }
                 1 -> {

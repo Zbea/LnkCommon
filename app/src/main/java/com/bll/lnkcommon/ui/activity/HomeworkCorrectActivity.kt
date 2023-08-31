@@ -13,23 +13,24 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkcommon.utils.*
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_homework_correct.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
+class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
     private val presenter=HomeworkCorrectPresenter(this)
-    private var elik: EinkPWInterface?=null
-    private var isErasure=false
     private var correctBean:CorrectBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
@@ -73,6 +74,7 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
     override fun onDeleteSuccess() {
     }
 
+
     override fun layoutId(): Int {
         return R.layout.ac_homework_correct
     }
@@ -95,31 +97,6 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
             setContentImage()
         }
 
-        iv_erasure.setOnClickListener {
-            isErasure=!isErasure
-            if (isErasure){
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
-                elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
-            }
-            else{
-                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
-                elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
-            }
-        }
-
-        iv_page_up.setOnClickListener {
-            if (posImage>0){
-                posImage-=1
-                setContentImage()
-            }
-        }
-        iv_page_down.setOnClickListener {
-            if (posImage< images.size-1){
-                posImage+=1
-                setContentImage()
-            }
-        }
-
         iv_manager.setOnClickListener {
             showLoading()
             Handler().postDelayed( {
@@ -129,27 +106,45 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
 
     }
 
+    override fun onPageDown() {
+        if (posImage< images.size-1){
+            posImage+=1
+            setContentImage()
+        }
+    }
+
+    override fun onPageUp() {
+        if (posImage>0){
+            posImage-=1
+            setContentImage()
+        }
+    }
+
     /**
      * 下载学生作业
      */
     private fun loadPapers(){
         showLoading()
-        val file = File(getPath())
-        val files = FileUtils.getFiles(file.path)
+        val savePaths= mutableListOf<String>()
+        for (i in images.indices){
+            savePaths.add(getPath()+"/${i+1}.png")
+        }
+        val files = FileUtils.getFiles(getPath())
         if (files.isNullOrEmpty()) {
-            val imageDownLoad = ImageDownLoadUtils(this, images.toTypedArray(), file.path)
-            imageDownLoad.startDownload()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    hideLoading()
-                    runOnUiThread {
+            FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        hideLoading()
                         setContentImage()
                     }
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        hideLoading()
+                    }
+                })
         }
         else{
             setContentImage()
@@ -236,6 +231,9 @@ class HomeworkCorrectActivity:BaseActivity(),IHomeworkCorrectView {
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        FileDownloader.getImpl().pauseAll()
+    }
 
 }

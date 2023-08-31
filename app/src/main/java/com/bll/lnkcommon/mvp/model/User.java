@@ -8,5 +8,4 @@ public class User {
     public String telNumber;
     public String nickname;
     public int balance;//学豆
-    public boolean isBind;//是否有关联学生
 }

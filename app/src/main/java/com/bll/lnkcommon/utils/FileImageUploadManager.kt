@@ -78,7 +78,6 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
                 }
             }, null
         )
-
     }
 
     private var callBack: UploadCallBack? = null

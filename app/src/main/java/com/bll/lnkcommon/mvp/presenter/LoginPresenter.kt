@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
+import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.view.IContractView
@@ -38,17 +39,5 @@ class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractVi
         }, true)
     }
 
-    fun getStudents() {
-        val editName = RetrofitManager.service.onStudentList()
-        doRequest(editName, object : Callback<MutableList<StudentBean>>(view) {
-            override fun failed(tBaseResult: BaseResult<MutableList<StudentBean>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<MutableList<StudentBean>>) {
-                if (tBaseResult.data!=null)
-                    view.onStudentList(tBaseResult.data)
-            }
-        }, true)
-    }
 
 }

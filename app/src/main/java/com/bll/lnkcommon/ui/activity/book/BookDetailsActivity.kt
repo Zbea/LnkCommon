@@ -75,7 +75,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     override fun initView() {
         setDrawingTitleClick(false)
         if (catalogMsg!=null){
-            setDrawingTitle(catalogMsg?.title!!)
+            tv_page_title.text=catalogMsg?.title!!
             count=catalogMsg?.totalCount!!
         }
 

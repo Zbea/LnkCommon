@@ -9,9 +9,6 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.HomeworkCreateDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.StudentBean
-import com.bll.lnkcommon.mvp.presenter.StudentPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IStudentView
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.ui.fragment.homework.MyHomeworkFragment
@@ -19,9 +16,8 @@ import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
-class HomeworkManagerFragment:BaseFragment(),IStudentView {
+class HomeworkManagerFragment:BaseFragment() {
 
-    private val presenter=StudentPresenter(this)
     private var popupStudents = mutableListOf<PopupBean>()
 
     private var homeworkFragment: HomeworkFragment? = null
@@ -32,11 +28,6 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
-    override fun onListStudents(list: MutableList<StudentBean>) {
-        DataBeanManager.students=list
-        SPUtil.putInt("studentId",list[0].childId)
-        initStudent()
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework_manager
@@ -91,8 +82,6 @@ class HomeworkManagerFragment:BaseFragment(),IStudentView {
 
     }
     override fun lazyLoad() {
-        if (DataBeanManager.students.size==0)
-            presenter.getStudents()
     }
 
     private fun initStudent(){

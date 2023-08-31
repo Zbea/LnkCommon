@@ -447,6 +447,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)
         customStartActivity(Intent(this, AccountLoginActivity::class.java))
         DataBeanManager.students.clear()
+        DataBeanManager.friends.clear()
         EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
 
