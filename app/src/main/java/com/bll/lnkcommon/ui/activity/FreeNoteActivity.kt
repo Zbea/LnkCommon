@@ -117,16 +117,13 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         return R.layout.ac_free_note
     }
     override fun initData() {
-        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_note_details_bg_1)
+        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
         freeNoteBean= FreeNoteBean()
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.userId=if (isLoginState()) getUser()?.accountId else 0
 
         if (isLoginState()){
-            notebooks.add(Notebook().apply {
-                title = getString(R.string.note_tab_diary)
-            })
             notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
 
             for (i in notebooks.indices){
@@ -148,7 +145,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
         tv_name.text=freeNoteBean?.title
         tv_insert.visibility=if (isLoginState()) View.VISIBLE else View.GONE
-//        elik=iv_image.pwInterFace
+        elik=iv_image.pwInterFace
 
         tv_name.setOnClickListener {
             InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
@@ -170,7 +167,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         tv_theme.setOnClickListener {
             NoteModuleAddDialog(this,1).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
+                    bgRes=ToolUtils.getImageResStr(this, moduleBean.resFreenoteBg)
                     iv_image.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }
@@ -262,7 +259,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
     override fun onPageDown() {
         posImage+=1
         if (posImage>=bgResList.size){
-            bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_note_details_bg_1)
+            bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
             bgResList.add(bgRes)
         }
         setContentImage()
@@ -381,16 +378,16 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         }
         tv_page.text="${posImage+1}/${images.size}"
 
-//        elik?.setLoadFilePath(path, true)
-//        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-//            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-//            }
-//            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-//            }
-//            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-//                elik?.saveBitmap(true) {}
-//            }
-//        })
+        elik?.setLoadFilePath(path, true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik?.saveBitmap(true) {}
+            }
+        })
     }
 
     /**
@@ -437,6 +434,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
      * 开始录音
      */
     private fun startRecord(){
+        iv_record.setImageResource(R.mipmap.icon_freenote_recording)
         recordBean = RecordBean()
         recordBean?.userId=if (isLoginState()) getUser()?.accountId else 0
         recordBean?.date=System.currentTimeMillis()
@@ -465,6 +463,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
      * 结束录音
      */
     private fun stopRecord(){
+        iv_record.setImageResource(R.mipmap.icon_freenote_recorder)
         mRecorder?.apply {
             setOnErrorListener(null)
             setOnInfoListener(null)

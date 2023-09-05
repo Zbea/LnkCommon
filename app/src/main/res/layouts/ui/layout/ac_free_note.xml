@@ -50,8 +50,8 @@
 
         <ImageView
             android:id="@+id/iv_record"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="70dp"
             android:src="@mipmap/icon_freenote_recorder"
             />
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="30dp"
-            android:drawableStart="@mipmap/icon_freenote_recorder"
+            android:drawableStart="@mipmap/icon_freenote_share_list"
             android:drawablePadding="@dimen/dp_5"
             android:text="列表"
             android:textColor="@color/black"
@@ -157,7 +157,7 @@
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@mipmap/icon_note_details_bg_1" />
+            android:src="@mipmap/icon_freenote_bg_1" />
 
         <include
             android:id="@+id/ll_geometry"
