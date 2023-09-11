@@ -2,11 +2,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -14,18 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.DateDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
-import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.manager.RecordDaoManager
-import com.bll.lnkcommon.mvp.model.FreeNoteBean
 import com.bll.lnkcommon.mvp.model.RecordBean
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
 import kotlin.math.ceil
 
@@ -79,7 +72,7 @@ class PopupRecordList(var context: Context, var view: View) {
 
         val rvList = popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        mAdapter = RecordAdapter(R.layout.item_record, null)
+        mAdapter = RecordAdapter(R.layout.item_freenote_record, null)
         rvList.adapter=mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setEmptyView(R.layout.common_empty)

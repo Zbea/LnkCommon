@@ -339,7 +339,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private fun setEilkAxis(){
         setCheckView(ll_axis)
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik?.setDrawAxisProperty(axisPos+1, 20,5, isScale)
+        elik?.setDrawAxisProperty(axisPos+1, 10,5, isScale)
         currentGeometry=9
     }
 

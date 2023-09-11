@@ -105,7 +105,6 @@
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
         <activity android:name=".ui.activity.FreeNoteActivity"/>
-        <activity android:name=".ui.activity.RecordListActivity"/>
         <activity android:name=".ui.activity.RecordActivity"/>
 
         <provider

@@ -42,7 +42,7 @@ class BookcaseFragment:BaseFragment() {
     }
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
-        showView(ll_search)
+        showView(tv_search)
 
         longBeans.add(ItemList().apply {
             name="删除"
@@ -52,7 +52,7 @@ class BookcaseFragment:BaseFragment() {
         initRecyclerView()
         findBook()
 
-        ll_search.setOnClickListener {
+        tv_search.setOnClickListener {
             if (isLoginState()){
                 customStartActivity(Intent(activity, BookStoreTypeActivity::class.java))
             }

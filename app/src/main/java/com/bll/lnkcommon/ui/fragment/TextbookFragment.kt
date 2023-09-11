@@ -14,14 +14,12 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.book.BookDetailsActivity
-import com.bll.lnkcommon.ui.activity.book.TextBookStoreActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_app.*
 import org.greenrobot.eventbus.EventBus
@@ -53,14 +51,10 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
     override fun initView() {
         pageSize=12
         setTitle(DataBeanManager.mainListTitle[4])
-        showSearch(true)
 
         initTab()
         initRecyclerView()
 
-        ll_search.setOnClickListener {
-            customStartActivity(Intent(activity, TextBookStoreActivity::class.java))
-        }
     }
 
     override fun lazyLoad() {

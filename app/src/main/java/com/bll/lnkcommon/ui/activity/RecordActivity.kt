@@ -43,15 +43,15 @@ class RecordActivity : BaseActivity() {
 
     override fun initView() {
         setPageTitle("录音")
-        showView(iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_save)
+        showView(tv_setting)
+        tv_setting.text="保存"
 
         iv_back?.setOnClickListener {
             finish()
             FileUtils.deleteFile(File(pathFile))
         }
 
-        iv_manager?.setOnClickListener {
+        tv_setting?.setOnClickListener {
             hideKeyboard()
             if (!FileUtils.isExist(pathFile)) {
                 showToast("请录音")

@@ -86,8 +86,8 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         elik=iv_image.pwInterFace
         if (correctBean?.status==2)
         {
-            showView(iv_manager)
-            iv_manager.setImageResource(R.mipmap.icon_save)
+            showView(tv_setting)
+            tv_setting.text="保存"
             images= correctBean?.submitUrl!!.split(",") as MutableList<String>
             loadPapers()
         }
@@ -97,7 +97,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
             setContentImage()
         }
 
-        iv_manager.setOnClickListener {
+        tv_setting.setOnClickListener {
             showLoading()
             Handler().postDelayed( {
                 commitPapers()

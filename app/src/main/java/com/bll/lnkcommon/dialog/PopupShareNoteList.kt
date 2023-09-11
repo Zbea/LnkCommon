@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.FreeNoteBean
 import com.bll.lnkcommon.mvp.model.ShareNoteList
 import com.bll.lnkcommon.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -66,7 +65,7 @@ class PopupShareNoteList(var context: Context, var view: View, val total:Int) {
 
         val rvList = popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        mAdapter = MyAdapter(R.layout.item_share_list, null)
+        mAdapter = MyAdapter(R.layout.item_freenote_share_list, null)
         rvList.adapter=mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setEmptyView(R.layout.common_empty)

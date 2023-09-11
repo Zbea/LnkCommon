@@ -176,15 +176,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         tv_title?.text = getString(titleResId)
     }
 
-    fun showSearch(isShow:Boolean) {
-        if (isShow){
-            showView(ll_search)
-        }
-        else{
-            disMissView(ll_search)
-        }
-    }
-
     /**
      * 显示view
      */

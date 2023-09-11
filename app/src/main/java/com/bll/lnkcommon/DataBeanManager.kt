@@ -162,7 +162,8 @@ object DataBeanManager {
             list.add(ItemList(2, "自然科学"))
             list.add(ItemList(3, "社会科学"))
             list.add(ItemList(4, "思维科学"))
-            list.add(ItemList(5, "运动才艺"))
+            list.add(ItemList(5, "运动健康"))
+            list.add(ItemList(6, "艺术才能"))
             return list
         }
 
