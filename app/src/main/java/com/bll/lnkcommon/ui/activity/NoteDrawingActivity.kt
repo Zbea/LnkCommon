@@ -115,20 +115,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent = noteContents[page]
         tv_page_title.text=noteContent?.title
         tv_page.text = (page + 1).toString()
-
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
-            }
-
-        })
     }
 
 

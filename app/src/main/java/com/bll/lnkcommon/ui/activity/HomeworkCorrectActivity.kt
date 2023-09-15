@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
+import android.view.View
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -83,6 +84,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())
+        iv_tool.visibility= View.INVISIBLE
         elik=iv_image.pwInterFace
         if (correctBean?.status==2)
         {

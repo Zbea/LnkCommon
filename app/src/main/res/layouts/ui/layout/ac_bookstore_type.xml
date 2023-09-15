@@ -76,7 +76,7 @@
             android:id="@+id/iv_jc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="213dp"
+            android:layout_marginEnd="207dp"
             android:layout_marginBottom="705dp"
             android:src="@mipmap/icon_bookstore_jc"
             android:visibility="gone"

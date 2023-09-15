@@ -2,11 +2,23 @@ package com.bll.lnkcommon.utils;
 
 import android.content.Context;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ToolUtils {
+
+
+    /**
+     * 格式化数据显示
+     * @param num
+     * @param format
+     * @return
+     */
+    public static String getFormatNum(Object num, String format){
+        return new DecimalFormat(format).format(num);
+    }
 
     /**
      * 得到唯一id

@@ -192,13 +192,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024)) + "/" +
+                                    getFormatNum(totalBytes.toDouble() / (1024 * 1024))
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -236,8 +231,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
 
-    fun getFormatNum(pi: Double, format: String?): String? {
-        val df = DecimalFormat(format)
+    fun getFormatNum(pi: Double): String? {
+        val df = DecimalFormat("0.0M")
         return df.format(pi)
     }
 

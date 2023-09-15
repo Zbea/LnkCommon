@@ -289,6 +289,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 //                reDrawGeometry(elik!!)
 //            }
 //            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+//                 onElikSave()
 //            }
 //        })
     }
@@ -434,6 +435,13 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 上一页
      */
     open fun onPageUp(){
+    }
+
+    /**
+     * 抬笔保存
+     */
+    open fun onElikSave(){
+
     }
 
     /**

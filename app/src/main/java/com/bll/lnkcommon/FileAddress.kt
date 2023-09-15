@@ -2,9 +2,9 @@ package com.bll.lnkcommon
 
 import com.bll.lnkcommon.Constants.BOOK_DRAW_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
-import com.bll.lnkcommon.Constants.DATE_PATH
 import com.bll.lnkcommon.Constants.FREE_NOTE_PATH
 import com.bll.lnkcommon.Constants.HOMEWORK_PATH
+import com.bll.lnkcommon.Constants.IMAGE_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
@@ -87,7 +87,7 @@ class FileAddress {
      * 日历保存地址
      */
     fun getPathDate(dateStr:String):String{
-        return "$DATE_PATH/${getUserId()}/$dateStr"
+        return "$IMAGE_PATH/${getUserId()}/date/$dateStr"
     }
 
     /**
@@ -110,5 +110,19 @@ class FileAddress {
     fun getPathFreeNote(title:String):String{
         return "$FREE_NOTE_PATH/${getUserId()}/$title"
     }
+
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(year:Int,month:Int):String{
+        return "$IMAGE_PATH/${getUserId()}/month/$year$month"
+    }
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(startTime:String):String{
+        return "$IMAGE_PATH/${getUserId()}/week/$startTime"
+    }
+
 
 }

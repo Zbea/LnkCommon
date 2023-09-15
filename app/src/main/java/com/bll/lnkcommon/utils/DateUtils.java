@@ -1,13 +1,26 @@
 package com.bll.lnkcommon.utils;
 
 
-import java.text.ParseException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.util.Log;
+
+import androidx.core.content.FileProvider;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-
+/**
+ * Created by seatrend on 2018/8/21.
+ */
 
 public class DateUtils {
 
@@ -56,23 +69,6 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date10ToDate13(date)));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 时间戳转换为字符串类型
-     *
-     * @return
-     */
-    public static String longToStringNoYear1(long date) {
-        if(0 == date){
-            return null;
-        }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -130,7 +126,7 @@ public class DateUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -160,7 +156,8 @@ public class DateUtils {
             return null;
         }
     }
-    public static String longToStringDataNoYearNoHour(long date) {
+
+    public static String longToStringDataNoYear(long date) {
         if(0 == date){
             return null;
         }
@@ -221,7 +218,6 @@ public class DateUtils {
         }
     }
 
-
     /**
      * 将10位转成13位
      * @param date
@@ -276,9 +272,7 @@ public class DateUtils {
     public static long dateToStamp(int year,int month,int day) {
         String s=year+"-"+month+"-"+day;
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-            Date date = simpleDateFormat.parse(s);
-            return date.getTime();
+            return dateToStamp(s);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -337,7 +331,6 @@ public class DateUtils {
         return 0;
     }
 
-
     /**
      *
      * 把时间long 的格式转为天
@@ -347,7 +340,7 @@ public class DateUtils {
         return String.valueOf(time/(24*60*60*1000));
     }
 
-    public long getStartOfDayInMillis() {
+    public static long getStartOfDayInMillis() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -356,13 +349,13 @@ public class DateUtils {
         return calendar.getTimeInMillis();
     }
 
-    public long getEndOfDayInMillis() {
+    public static long getEndOfDayInMillis() {
         // Add one day's time to the beginning of the day.
         // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds = 1 day
         return getStartOfDayInMillis() + (24 * 60 * 60 * 1000);
     }
 
-    public long getStartOfDayInMillis(long date){
+    public static long getStartOfDayInMillis(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date(date));
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -375,8 +368,36 @@ public class DateUtils {
     /**
      * @param date the date in the format "yyyy-MM-dd"
      */
-    public long getEndOfDayInMillis(long date){
+    public static long getEndOfDayInMillis(long date){
         return getStartOfDayInMillis(date) + (24 * 60 * 60 * 1000);
     }
+
+    /**
+     * 获取当前时间所在周开始、结束时间
+     * @return
+     */
+    public static long[] getCurrentWeekTimeFrame() {
+        Calendar calendar = Calendar.getInstance();
+        //start of the week
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DAY_OF_YEAR,-1);
+        }
+        calendar.add(Calendar.DAY_OF_WEEK, -(calendar.get(Calendar.DAY_OF_WEEK) - 2));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        long startTime = calendar.getTimeInMillis();
+        //end of the week
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        long endTime = calendar.getTimeInMillis();
+        return new long[]{startTime, endTime};
+    }
+
 
 }

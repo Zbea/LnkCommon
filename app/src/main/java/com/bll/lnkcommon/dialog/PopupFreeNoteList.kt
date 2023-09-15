@@ -48,8 +48,8 @@ class PopupFreeNoteList(var context: Context, var view: View) {
             width=DP2PX.dip2px(context,280f)
         }
 
-        dayStartTime=DateUtils().startOfDayInMillis
-        dayEndTime=DateUtils().endOfDayInMillis
+        dayStartTime=DateUtils.getStartOfDayInMillis()
+        dayEndTime=DateUtils.getEndOfDayInMillis()
 
         tv_date= popView.findViewById(R.id.tv_date)
         val iv_up = popView.findViewById<ImageView>(R.id.iv_up)
@@ -90,20 +90,20 @@ class PopupFreeNoteList(var context: Context, var view: View) {
         tv_date?.setOnClickListener {
             DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
                 dayStartTime=dateTim
-                dayEndTime=DateUtils().getEndOfDayInMillis(dateTim)
+                dayEndTime=DateUtils.getEndOfDayInMillis(dateTim)
                 setChangeContent()
             }
         }
 
         iv_up.setOnClickListener {
             dayStartTime -= 24 * 60 * 60 * 1000
-            dayEndTime=DateUtils().getEndOfDayInMillis(dayStartTime)
+            dayEndTime=DateUtils.getEndOfDayInMillis(dayStartTime)
             setChangeContent()
         }
 
         iv_down.setOnClickListener {
             dayStartTime += 24 * 60 * 60 * 1000
-            dayEndTime=DateUtils().getEndOfDayInMillis(dayStartTime)
+            dayEndTime=DateUtils.getEndOfDayInMillis(dayStartTime)
             setChangeContent()
         }
         setChangeContent()

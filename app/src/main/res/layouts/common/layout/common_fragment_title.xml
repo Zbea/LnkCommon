@@ -3,8 +3,7 @@
     android:id="@+id/rl_parent"
     android:layout_width="match_parent"
     android:layout_height="@dimen/navigation_height"
-    android:gravity="center_vertical"
-    android:background="@color/bg_page">
+    android:gravity="center_vertical">
 
 
     <TextView

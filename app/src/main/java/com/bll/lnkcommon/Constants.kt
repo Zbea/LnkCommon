@@ -37,8 +37,6 @@ object Constants {
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
-        //日历保存
-        val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
         //断点记录文件保存的文件夹
         val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
@@ -47,6 +45,7 @@ object Constants {
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
+
 
         //eventbus通知标志
         const val DATE_EVENT = "DateEvent"

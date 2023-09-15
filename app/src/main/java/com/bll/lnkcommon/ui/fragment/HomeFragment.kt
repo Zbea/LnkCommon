@@ -17,6 +17,7 @@ import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.FreeNoteActivity
+import com.bll.lnkcommon.ui.activity.PlanOverviewActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DateUtils
@@ -58,8 +59,12 @@ class HomeFragment:BaseFragment(),IRelationView {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        tv_free_note.setOnClickListener {
+        iv_freenote.setOnClickListener {
             customStartActivity(Intent(activity,FreeNoteActivity::class.java))
+        }
+
+        iv_plan.setOnClickListener {
+            customStartActivity(Intent(activity,PlanOverviewActivity::class.java))
         }
 
         initRecyclerView()

@@ -122,18 +122,6 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
             val drawPath=book?.bookDrawPath+"/${index+1}.tch"
             elik.setLoadFilePath(drawPath,true)
-            elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-                override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-                }
-
-                override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-                }
-
-                override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                    elik.saveBitmap(true) {}
-                }
-
-            })
         }
     }
 
