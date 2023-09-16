@@ -12,7 +12,10 @@ import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.AppCenterActivity
+import com.bll.lnkcommon.ui.activity.CalenderListActivity
+import com.bll.lnkcommon.ui.activity.CalenderMyActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.BitmapUtils
@@ -88,12 +91,22 @@ class AppFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(5,50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (position==0){
-                customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
-            }
-            else{
-                val packageName= apps[position].packageName
-                AppUtils.startAPP(activity,packageName)
+            when (position) {
+                0 -> {
+                    customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
+                }
+                1 -> {
+                    customStartActivity(Intent(requireActivity(), CalenderMyActivity::class.java))
+                }
+                else -> {
+                    if (isLoginState()){
+                        val packageName= apps[position].packageName
+                        AppUtils.startAPP(activity,packageName)
+                    }
+                    else{
+                        customStartActivity(Intent(activity, AccountLoginActivity::class.java))
+                    }
+                }
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -107,11 +120,13 @@ class AppFragment:BaseFragment() {
             this.position=position
             if (position>2){
                 LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
-                    if (it==0){
-                        AppMenuDialog(requireActivity(),apps[position]).builder()
-                    }
-                    else{
-                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                    when (it) {
+                        0 -> {
+                            AppMenuDialog(requireActivity(),apps[position]).builder()
+                        }
+                        else -> {
+                            AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                        }
                     }
                 }
             }
@@ -140,6 +155,11 @@ class AppFragment:BaseFragment() {
             appName = "应用中心"
             imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             isBase = true
+        })
+        apps.add(AppBean().apply {
+            appName="我的日历"
+            imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+            isBase=true
         })
         apps.add(AppBean().apply {
             appName="百度搜索"

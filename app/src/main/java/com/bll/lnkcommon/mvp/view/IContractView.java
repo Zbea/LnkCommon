@@ -5,6 +5,7 @@ import com.bll.lnkcommon.mvp.model.AccountXDList;
 import com.bll.lnkcommon.mvp.model.AppList;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
+import com.bll.lnkcommon.mvp.model.CalenderList;
 import com.bll.lnkcommon.mvp.model.CommonData;
 import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
@@ -71,6 +72,11 @@ public interface IContractView {
     //应用
     interface IAPPView extends IBaseView {
         void onAppList(AppList appBean);
+        void buySuccess();
+    }
+
+    interface ICalenderView extends IBaseView {
+        void onList(CalenderList list);
         void buySuccess();
     }
 

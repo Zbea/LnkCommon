@@ -109,6 +109,8 @@
         <activity android:name=".ui.activity.FreeNoteActivity"/>
         <activity android:name=".ui.activity.RecordActivity"/>
         <activity android:name=".ui.activity.PlanOverviewActivity"/>
+        <activity android:name=".ui.activity.CalenderListActivity"/>
+        <activity android:name=".ui.activity.CalenderMyActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

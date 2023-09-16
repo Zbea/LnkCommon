@@ -59,6 +59,7 @@ object Constants {
         const val RECORD_EVENT="RecordEvent"
         const val APP_INSTALL_EVENT="AppInstallEvent"
         const val APP_UNINSTALL_EVENT="AppUnInstallEvent"
+        const val CALENDER_EVENT = "CalenderEvent"
 
         const val PACKAGE_WX="com.tencent.mm"
         const val PACKAGE_GEOMETRY="com.geometry"

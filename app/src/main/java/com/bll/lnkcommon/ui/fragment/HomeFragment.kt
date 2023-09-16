@@ -87,8 +87,12 @@ class HomeFragment:BaseFragment(),IRelationView {
     private fun setDateView() {
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
-        if (File(path).exists())
+        if (File(path).exists()){
             GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        }
+        else{
+
+        }
 
         val solar= Solar()
         solar.solarYear=DateUtils.getYear()

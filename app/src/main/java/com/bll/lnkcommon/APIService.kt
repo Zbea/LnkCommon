@@ -174,6 +174,12 @@ interface APIService{
     fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
+     * 应用列表
+     */
+    @GET("application/list")
+    fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
+
+    /**
      * 作业列表
      */
     @GET("homework/inform/list")

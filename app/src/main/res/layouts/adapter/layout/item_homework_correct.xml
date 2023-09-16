@@ -48,7 +48,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="语文 课堂作业本"
                 android:textSize="@dimen/sp_20" />
 
             <TextView
@@ -58,7 +57,6 @@
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:text="语文作业123页"
                 android:textSize="@dimen/sp_20" />
 
             <ImageView
@@ -81,7 +79,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black_20"
-                android:text="学生提交时间"
                 android:textSize="@dimen/sp_18" />
 
         </LinearLayout>

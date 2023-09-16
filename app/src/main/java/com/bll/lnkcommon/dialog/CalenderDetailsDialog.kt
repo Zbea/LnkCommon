@@ -6,51 +6,42 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.utils.GlideUtils
 
 
-class BookDetailsDialog(private val context: Context, private val book: Book) {
+class CalenderDetailsDialog(private val context: Context, private val item: CalenderItemBean) {
 
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null
 
     fun builder(): Dialog? {
         dialog= Dialog(context).apply {
-            setContentView(R.layout.dialog_book_detail)
+            setContentView(R.layout.dialog_calender_detail)
             show()
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             btn_ok = findViewById(R.id.btn_ok)
             val iv_cancel = findViewById<ImageView>(R.id.iv_cancel)
-            val iv_book = findViewById<ImageView>(R.id.iv_book)
+            val iv_image = findViewById<ImageView>(R.id.iv_image)
             val tv_price =findViewById<TextView>(R.id.tv_price)
-            val tv_course = findViewById<TextView>(R.id.tv_course)
-            val tv_version = findViewById<TextView>(R.id.tv_version)
             val tv_info = findViewById<TextView>(R.id.tv_info)
-            val tv_book_name = findViewById<TextView>(R.id.tv_book_name)
+            val tv_title = findViewById<TextView>(R.id.tv_title)
 
-            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,10)
+            GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,10)
 
-            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
-            tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-            tv_version?.text = "出版社： " + book.version
-            tv_info?.text = "简介： " + book.bookDesc
+            tv_title?.text = item.title
+            tv_price?.text = "价格： " + if (item.price==0) "免费" else item.price
+            tv_info?.text = "简介： " + item.introduction
 
-            if (book.subjectName==0){
-                tv_course.visibility=View.GONE
-            }else{
-                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1].desc
-            }
 
-            if (book.buyStatus == 1) {
+            if (item.buyStatus == 1) {
                 btn_ok?.text = "点击下载"
             } else {
                 btn_ok?.text = "点击购买"
             }
 
-            if (book.loadSate==2){
+            if (item.loadSate==2){
                 btn_ok?.visibility= View.GONE
             }
 
@@ -62,7 +53,7 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
 
     fun setChangeStatus() {
-        book.buyStatus=1
+        item.buyStatus=1
         btn_ok?.text = "点击下载"
     }
 

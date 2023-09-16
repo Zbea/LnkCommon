@@ -16,6 +16,7 @@ import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
@@ -34,7 +35,6 @@ class TextBookStoreActivity : BaseActivity(),
 
     private var tabId = 0
     private var tabStr = ""
-    private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
@@ -247,8 +247,7 @@ class TextBookStoreActivity : BaseActivity(),
                 val localBook = BookDaoManager.getInstance().queryTextBookByBookID(getHostType(),book.bookId)
                 if (localBook == null) {
                     showLoading()
-                    val downloadTask = downLoadStart(book.bodyUrl, book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    downLoadStart(book.bodyUrl, book)
                 } else {
                     book.loadSate = 2
                     showToast("已下载")
@@ -276,17 +275,13 @@ class TextBookStoreActivity : BaseActivity(),
      */
     private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
 
-        val fileName = book.bookId.toString()//文件名
+        val fileName =  MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val targetFile = File(zipPath)
-        if (targetFile.exists()) {
-            targetFile.delete()
-        }
         val download = FileDownManager.with(this).create(url).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                    if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024),) + "/" +
                                     getFormatNum(totalBytes.toDouble() / (1024 * 1024),)
@@ -299,8 +294,6 @@ class TextBookStoreActivity : BaseActivity(),
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    //删除缓存 poolmap
-                    deleteDoneTask(task)
                     lock.lock()
                     val fileTargetPath = FileAddress().getPathTextBook(fileName)
                     unzip(book, zipPath, fileTargetPath)
@@ -313,7 +306,6 @@ class TextBookStoreActivity : BaseActivity(),
                     hideLoading()
                     showToast("${book.bookName}下载失败")
                     bookDetailsDialog?.setChangeStatus()
-                    deleteDoneTask(task)
                 }
             })
         return download
@@ -322,8 +314,8 @@ class TextBookStoreActivity : BaseActivity(),
     /**
      * 下载完成书籍解压
      */
-    private fun unzip(book: Book, targetFileStr: String, fileTargetPath: String) {
-        ZipUtils.unzip(targetFileStr, fileTargetPath, object : IZipCallback {
+    private fun unzip(book: Book, zipPath: String, fileTargetPath: String) {
+        ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
                 book.apply {
                     loadSate = 2
@@ -340,7 +332,6 @@ class TextBookStoreActivity : BaseActivity(),
                 //更新列表
                 mAdapter?.notifyDataSetChanged()
                 bookDetailsDialog?.dismiss()
-
                 Handler().postDelayed({
                     showToast(book.bookName+"下载成功")
                 },500)
@@ -361,27 +352,6 @@ class TextBookStoreActivity : BaseActivity(),
     fun getFormatNum(pi: Double): String? {
         val df = DecimalFormat("0.0M")
         return df.format(pi)
-    }
-
-    /**
-     * 下载完成 需要删除列表
-     */
-    private fun deleteDoneTask(task: BaseDownloadTask?) {
-
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-
-            val iterator = entries.iterator();
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-
-        }
     }
 
     override fun onDestroy() {

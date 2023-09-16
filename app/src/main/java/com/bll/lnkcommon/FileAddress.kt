@@ -124,5 +124,10 @@ class FileAddress {
         return "$IMAGE_PATH/${getUserId()}/week/$startTime"
     }
 
-
+    /**
+     * 日历背景下载地址
+     */
+    fun getPathCalender(fileName: String):String{
+        return "$IMAGE_PATH/${getUserId()}/calender//$fileName"
+    }
 }
