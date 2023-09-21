@@ -1,19 +1,15 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.drawing
 
 import PopupClick
 import PopupFreeNoteList
 import PopupRecordList
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.graphics.Rect
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.StrictMode
 import android.provider.MediaStore
-import android.view.EinkPWInterface
 import android.view.View
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
@@ -379,15 +375,10 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         tv_page.text="${posImage+1}/${images.size}"
 
         elik?.setLoadFilePath(path, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
-            }
-        })
+    }
+
+    override fun onElikSave() {
+        elik?.saveBitmap(true) {}
     }
 
     /**

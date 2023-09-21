@@ -55,6 +55,10 @@ public class CalenderDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public List<CalenderItemBean> queryListOld(int year) {
+        WhereCondition whereCondition= CalenderItemBeanDao.Properties.Year.lt(year);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(CalenderItemBeanDao.Properties.Date).build().list();
+    }
 
     public List<CalenderItemBean> queryList(int year) {
         WhereCondition whereCondition= CalenderItemBeanDao.Properties.Year.eq(year);
@@ -66,6 +70,11 @@ public class CalenderDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(CalenderItemBeanDao.Properties.Date)
                 .offset(index-1).limit(size)
                 .build().list();
+    }
+
+    public CalenderItemBean queryCalenderBean() {
+        WhereCondition whereCondition= CalenderItemBeanDao.Properties.IsSet.eq(true);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
     public boolean isExist(int pid){
@@ -87,5 +96,9 @@ public class CalenderDaoManager {
         dao.delete(bean);
     }
 
+
+    public void deleteBeans(List<CalenderItemBean> items){
+        dao.deleteInTx(items);
+    }
 
 }

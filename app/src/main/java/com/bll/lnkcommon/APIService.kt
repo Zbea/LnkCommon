@@ -168,15 +168,20 @@ interface APIService{
     @GET("application/noAuthList")
     fun getUnLoginApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
     /**
-     * 购买apk
-     */
-    @POST("buy/book/createOrder")
-    fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-    /**
      * 应用列表
      */
-    @GET("application/list")
+    @GET("application/types")
+    fun getApkTypes(): Observable<BaseResult<CommonData>>
+    /**
+     * 购买
+     */
+    @POST("buy/book/createOrder")
+    fun onBuy(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 台历列表
+     */
+    @GET("calendar/list")
     fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
 
     /**
@@ -248,4 +253,15 @@ interface APIService{
      */
     @POST("friend/message/send")
     fun shareFreeNote(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 壁纸
+     */
+    @GET("font/draw/list")
+    fun getWallpaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<WallpaperList>>
+
+    /**
+     * 期刊列表
+     */
+    @GET("font/draw/list")
+    fun getJournalList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<JournalList>>
 }

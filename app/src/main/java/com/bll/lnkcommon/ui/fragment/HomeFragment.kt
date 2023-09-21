@@ -1,28 +1,33 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.Constants.AUTO_UPLOAD_1MONTH_EVENT
+import com.bll.lnkcommon.Constants.AUTO_UPLOAD_EVENT
+import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
+import com.bll.lnkcommon.Constants.CHECK_PASSWORD_EVENT
 import com.bll.lnkcommon.Constants.DATE_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.CheckPasswordDialog
 import com.bll.lnkcommon.manager.AppDaoManager
+import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
 import com.bll.lnkcommon.ui.activity.DateActivity
-import com.bll.lnkcommon.ui.activity.FreeNoteActivity
-import com.bll.lnkcommon.ui.activity.PlanOverviewActivity
+import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
+import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
+import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
-import com.bll.lnkcommon.utils.AppUtils
-import com.bll.lnkcommon.utils.DateUtils
-import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.utils.SPUtil
+import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -37,6 +42,8 @@ class HomeFragment:BaseFragment(),IRelationView {
     private val presenter=RelationPresenter(this)
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
+    private var nowDay=1
+    private var calenderPath=""
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         DataBeanManager.students=list
@@ -60,11 +67,48 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
 
         iv_freenote.setOnClickListener {
-            customStartActivity(Intent(activity,FreeNoteActivity::class.java))
+            customStartActivity(Intent(activity, FreeNoteActivity::class.java))
         }
 
         iv_plan.setOnClickListener {
-            customStartActivity(Intent(activity,PlanOverviewActivity::class.java))
+            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+        }
+
+        iv_diary.setOnClickListener {
+            if (checkPassword!=null&&checkPassword?.isSet==true){
+                CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    customStartActivity(Intent(activity, DiaryActivity::class.java))
+                }
+            }
+            else{
+                customStartActivity(Intent(activity, DiaryActivity::class.java))
+            }
+        }
+
+        v_up.setOnClickListener{
+            if (nowDay>1){
+                nowDay-=1
+                setCalenderBg()
+            }
+        }
+
+        v_down.setOnClickListener {
+            val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
+            if (nowDay<=allDay){
+                nowDay+=1
+                setCalenderBg()
+            }
+        }
+
+        iv_change.setOnClickListener {
+            if (!isLoginState())
+                return@setOnClickListener
+            if (ll_calender.isVisible){
+                disMissView(ll_calender)
+            }
+            else{
+                showView(ll_calender)
+            }
         }
 
         initRecyclerView()
@@ -77,7 +121,9 @@ class HomeFragment:BaseFragment(),IRelationView {
             presenter.getStudents()
             presenter.getFriends()
         }
+        setDeleteOldCalender()
         setDateView()
+        setCalenderView()
         findAppData()
     }
 
@@ -86,13 +132,6 @@ class HomeFragment:BaseFragment(),IRelationView {
      */
     private fun setDateView() {
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
-        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
-        if (File(path).exists()){
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
-        }
-        else{
-
-        }
 
         val solar= Solar()
         solar.solarYear=DateUtils.getYear()
@@ -116,6 +155,47 @@ class HomeFragment:BaseFragment(),IRelationView {
             }
         }
         tv_date_festival.text=str
+
+        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
+        if (File(path).exists())
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+    }
+
+    /**
+     * 删掉过期台历
+     */
+    private fun setDeleteOldCalender(){
+        //删除过期台历
+        val oldItems=CalenderDaoManager.getInstance().queryListOld(DateUtils.getYear())
+        for (item in oldItems){
+            FileUtils.deleteFile(File(item.path))
+        }
+        CalenderDaoManager.getInstance().deleteBeans(oldItems)
+    }
+
+    /**
+     * 设置台历
+     */
+    private fun setCalenderView(){
+        val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(Date().time))
+        nowDay=calenderUtils.elapsedTime()
+        val item=CalenderDaoManager.getInstance().queryCalenderBean()
+        if (item!=null){
+            showView(ll_calender)
+            calenderPath=item.path
+            setCalenderBg()
+        }
+        else{
+            disMissView(ll_calender)
+        }
+    }
+
+    private fun setCalenderBg(){
+        val listFiles=FileUtils.getFiles(calenderPath)
+        if (listFiles!=null&&listFiles.size>nowDay-1){
+            val file=listFiles[nowDay-1]
+            GlideUtils.setImageFile(requireActivity(),file,iv_calender_bg)
+        }
     }
 
     private fun initRecyclerView(){
@@ -129,6 +209,9 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
     }
 
+    /**
+     * 查找菜单应用
+     */
     private fun findAppData(){
         apps= AppDaoManager.getInstance().queryMenu()
         mAdapter?.setNewData(apps)
@@ -138,10 +221,25 @@ class HomeFragment:BaseFragment(),IRelationView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
+                checkPassword=getCheckPasswordObj()
                 lazyLoad()
+                setCalenderView()
             }
             DATE_EVENT -> {
                 setDateView()
+            }
+            CALENDER_SET_EVENT->{
+                setCalenderView()
+            }
+            AUTO_UPLOAD_1MONTH_EVENT->{
+                setDeleteOldCalender()
+            }
+            AUTO_UPLOAD_EVENT->{
+                setDateView()
+                setCalenderView()
+            }
+            CHECK_PASSWORD_EVENT->{
+                checkPassword=getCheckPasswordObj()
             }
         }
     }
@@ -155,7 +253,7 @@ class HomeFragment:BaseFragment(),IRelationView {
                 presenter.getStudents()
             presenter.getFriends()
         }
-        setDateView()
+        findAppData()
     }
 
 }

@@ -24,6 +24,10 @@ import android.os.Environment
  */
 object Constants {
 
+        const val halfYear=180*24*60*60*1000
+        const val dayLong=24*60*60*1000
+        const val weekTime=7*24*60*60*1000
+
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
@@ -48,6 +52,8 @@ object Constants {
 
 
         //eventbus通知标志
+        const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
+        const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"
         const val TEXT_BOOK_EVENT = "TextBookEvent"
@@ -58,11 +64,22 @@ object Constants {
         const val USER_EVENT="UserEvent"
         const val RECORD_EVENT="RecordEvent"
         const val APP_INSTALL_EVENT="AppInstallEvent"
+        const val APP_INSTALL_INSERT_EVENT="AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT="AppUnInstallEvent"
+
         const val CALENDER_EVENT = "CalenderEvent"
+        const val CALENDER_SET_EVENT = "CalenderSetEvent"
+        const val CHECK_PASSWORD_EVENT = "CheckPasswordEvent"
 
         const val PACKAGE_WX="com.tencent.mm"
         const val PACKAGE_GEOMETRY="com.geometry"
+
+        const val ACTION_UPLOAD_1MONTH = "com.bll.lnkcommon.upload.1month"
+        const val ACTION_UPLOAD = "com.bll.lnkcommon.upload"
+
+        //广播
+        const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
+        const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"
 }
 
 

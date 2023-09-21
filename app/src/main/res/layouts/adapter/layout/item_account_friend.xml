@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"
-        android:gravity="center"
         />
 
     <TextView

@@ -2,14 +2,10 @@ package com.bll.lnkcommon.base
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +23,6 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.AppDaoManager
@@ -36,10 +31,7 @@ import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
-import com.bll.lnkcommon.ui.activity.MainActivity
 import com.bll.lnkcommon.utils.*
-import com.google.gson.Gson
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -347,39 +339,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
-     * 跳转阅读器
-     */
-    fun gotoBookDetails(bookBean: Book){
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-
-        val toolApps= AppDaoManager.getInstance().queryTool()
-        val result = JSONArray()
-        for (item in toolApps){
-            val jsonObject = JSONObject()
-            try {
-                jsonObject.put("appName", item.appName)
-                jsonObject.put("packageName", item.packageName)
-            } catch (_: JSONException) {
-            }
-            result.put(jsonObject)
-        }
-
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("key_book_id",bookBean.bookId.toString())
-        intent.putExtra("bookName", bookBean.bookName)
-        intent.putExtra("tool",result.toString())
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-        startActivity(intent)
-    }
-
-    /**
      * 删除书本
      */
     fun deleteBook(book: Book){
@@ -440,15 +399,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        EventBus.getDefault().post(Constants.USER_EVENT)
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        customStartActivity(Intent(this, AccountLoginActivity::class.java))
-        DataBeanManager.students.clear()
-        DataBeanManager.friends.clear()
-        EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        MethodUtils.logoutFailure(this)
     }
 
     override fun hideLoading() {

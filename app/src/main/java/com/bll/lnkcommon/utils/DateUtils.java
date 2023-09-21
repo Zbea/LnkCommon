@@ -24,6 +24,14 @@ import java.util.regex.Pattern;
 
 public class DateUtils {
 
+    // 判断是闰年还是平年
+    public boolean isYear(int year) {
+        boolean judge = false;
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+            judge = true;
+        }
+        return judge;
+    }
     /**
      * 基于当天剩余天数
      * @param date

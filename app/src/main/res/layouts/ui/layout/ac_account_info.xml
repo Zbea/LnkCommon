@@ -25,9 +25,9 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="账号："
+                android:text="账号:"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -35,7 +35,6 @@
                 android:id="@+id/tv_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -48,18 +47,17 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="姓名："
+                android:text="姓名:"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -83,9 +81,9 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="手机："
+                android:text="手机:"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -93,7 +91,6 @@
                 android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -106,27 +103,28 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="密码："
+                android:text="查看密码:"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_check_pad"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:text="******"
+                android:visibility="invisible"
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/btn_edit_psd"
+                android:id="@+id/btn_psd_check"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:gravity="center"
-                android:text="修改密码"
+                android:text="创建密码"
                 android:background="@drawable/bg_black_solid_10dp_corner"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
@@ -141,9 +139,9 @@
             >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="学生："
+                android:text="学生:"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -185,9 +183,9 @@
             >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="好友："
+                android:text="好友:"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />

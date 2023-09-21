@@ -1,8 +1,5 @@
 package com.bll.lnkcommon.ui.activity
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress

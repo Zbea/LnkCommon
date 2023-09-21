@@ -1,19 +1,11 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.drawing
 
-import android.content.res.AssetManager
-import android.content.res.AssetManager.AssetInputStream
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.graphics.Rect
 import android.os.Handler
-import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.view.View
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
@@ -170,18 +162,11 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
-            elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-                override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-                }
-
-                override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-                }
-
-                override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                    elik?.saveBitmap(true) {}
-                }
-            })
         }
+    }
+
+    override fun onElikSave() {
+        elik?.saveBitmap(true) {}
     }
 
     /**

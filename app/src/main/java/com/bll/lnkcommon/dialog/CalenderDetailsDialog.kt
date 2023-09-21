@@ -19,6 +19,7 @@ class CalenderDetailsDialog(private val context: Context, private val item: Cale
     fun builder(): Dialog? {
         dialog= Dialog(context).apply {
             setContentView(R.layout.dialog_calender_detail)
+            setCanceledOnTouchOutside(false)
             show()
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             btn_ok = findViewById(R.id.btn_ok)
@@ -27,10 +28,12 @@ class CalenderDetailsDialog(private val context: Context, private val item: Cale
             val tv_price =findViewById<TextView>(R.id.tv_price)
             val tv_info = findViewById<TextView>(R.id.tv_info)
             val tv_title = findViewById<TextView>(R.id.tv_title)
+            val tv_year = findViewById<TextView>(R.id.tv_year)
 
             GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,10)
 
             tv_title?.text = item.title
+            tv_year?.text="年份： "+item.year
             tv_price?.text = "价格： " + if (item.price==0) "免费" else item.price
             tv_info?.text = "简介： " + item.introduction
 

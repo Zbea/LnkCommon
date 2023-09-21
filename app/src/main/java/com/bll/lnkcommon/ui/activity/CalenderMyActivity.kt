@@ -1,21 +1,17 @@
 package com.bll.lnkcommon.ui.activity
 
-import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.BookTypeSelectorDialog
 import com.bll.lnkcommon.dialog.CalenderDetailsDialog
+import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
-import com.bll.lnkcommon.mvp.model.CalenderList
 import com.bll.lnkcommon.mvp.model.ItemList
-import com.bll.lnkcommon.mvp.presenter.CalenderPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.ICalenderView
 import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
@@ -23,7 +19,6 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -46,20 +41,15 @@ class CalenderMyActivity:BaseActivity(){
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置"
+            name="设置台历"
             resId=R.mipmap.icon_setting_set
         })
     }
     override fun initView() {
         setPageTitle("我的台历")
-        showView(tv_setting)
-        tv_setting.text="列表"
 
         initRecycleView()
-
-        tv_setting.setOnClickListener {
-            customStartActivity(Intent(this, CalenderListActivity::class.java))
-        }
+        fetchData()
     }
 
     private fun initRecycleView(){
@@ -83,6 +73,13 @@ class CalenderMyActivity:BaseActivity(){
                 item.loadSate=2
                 CalenderDetailsDialog(this@CalenderMyActivity,item).builder()
             }
+            setOnItemChildClickListener { adapter, view, position ->
+                val item=items[position]
+                if (view.id==R.id.tv_preview){
+                    val urls=item.previewUrl.split(",")
+                    ImageDialog(this@CalenderMyActivity,urls).builder()
+                }
+            }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CalenderMyActivity.position = position
                 onLongClick()
@@ -105,6 +102,7 @@ class CalenderMyActivity:BaseActivity(){
                     item.isSet=true
                     CalenderDaoManager.getInstance().insertOrReplace(item)
                 }
+                EventBus.getDefault().post(Constants.CALENDER_SET_EVENT)
             }
     }
 

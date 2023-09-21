@@ -29,15 +29,16 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
         public final static Property Pid = new Property(2, int.class, "pid", false, "PID");
         public final static Property ImageUrl = new Property(3, String.class, "imageUrl", false, "IMAGE_URL");
         public final static Property DownloadUrl = new Property(4, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
-        public final static Property Introduction = new Property(6, String.class, "introduction", false, "INTRODUCTION");
-        public final static Property BuyStatus = new Property(7, int.class, "buyStatus", false, "BUY_STATUS");
-        public final static Property Time = new Property(8, long.class, "time", false, "TIME");
-        public final static Property Price = new Property(9, int.class, "price", false, "PRICE");
-        public final static Property Date = new Property(10, long.class, "date", false, "DATE");
-        public final static Property Year = new Property(11, int.class, "year", false, "YEAR");
-        public final static Property IsSet = new Property(12, boolean.class, "isSet", false, "IS_SET");
-        public final static Property Path = new Property(13, String.class, "path", false, "PATH");
+        public final static Property PreviewUrl = new Property(5, String.class, "previewUrl", false, "PREVIEW_URL");
+        public final static Property Title = new Property(6, String.class, "title", false, "TITLE");
+        public final static Property Introduction = new Property(7, String.class, "introduction", false, "INTRODUCTION");
+        public final static Property BuyStatus = new Property(8, int.class, "buyStatus", false, "BUY_STATUS");
+        public final static Property Time = new Property(9, long.class, "time", false, "TIME");
+        public final static Property Price = new Property(10, int.class, "price", false, "PRICE");
+        public final static Property Date = new Property(11, long.class, "date", false, "DATE");
+        public final static Property Year = new Property(12, int.class, "year", false, "YEAR");
+        public final static Property IsSet = new Property(13, boolean.class, "isSet", false, "IS_SET");
+        public final static Property Path = new Property(14, String.class, "path", false, "PATH");
     }
 
 
@@ -58,15 +59,16 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
                 "\"PID\" INTEGER NOT NULL ," + // 2: pid
                 "\"IMAGE_URL\" TEXT," + // 3: imageUrl
                 "\"DOWNLOAD_URL\" TEXT," + // 4: downloadUrl
-                "\"TITLE\" TEXT," + // 5: title
-                "\"INTRODUCTION\" TEXT," + // 6: introduction
-                "\"BUY_STATUS\" INTEGER NOT NULL ," + // 7: buyStatus
-                "\"TIME\" INTEGER NOT NULL ," + // 8: time
-                "\"PRICE\" INTEGER NOT NULL ," + // 9: price
-                "\"DATE\" INTEGER NOT NULL ," + // 10: date
-                "\"YEAR\" INTEGER NOT NULL ," + // 11: year
-                "\"IS_SET\" INTEGER NOT NULL ," + // 12: isSet
-                "\"PATH\" TEXT);"); // 13: path
+                "\"PREVIEW_URL\" TEXT," + // 5: previewUrl
+                "\"TITLE\" TEXT," + // 6: title
+                "\"INTRODUCTION\" TEXT," + // 7: introduction
+                "\"BUY_STATUS\" INTEGER NOT NULL ," + // 8: buyStatus
+                "\"TIME\" INTEGER NOT NULL ," + // 9: time
+                "\"PRICE\" INTEGER NOT NULL ," + // 10: price
+                "\"DATE\" INTEGER NOT NULL ," + // 11: date
+                "\"YEAR\" INTEGER NOT NULL ," + // 12: year
+                "\"IS_SET\" INTEGER NOT NULL ," + // 13: isSet
+                "\"PATH\" TEXT);"); // 14: path
     }
 
     /** Drops the underlying database table. */
@@ -96,25 +98,30 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
             stmt.bindString(5, downloadUrl);
         }
  
+        String previewUrl = entity.getPreviewUrl();
+        if (previewUrl != null) {
+            stmt.bindString(6, previewUrl);
+        }
+ 
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
  
         String introduction = entity.getIntroduction();
         if (introduction != null) {
-            stmt.bindString(7, introduction);
+            stmt.bindString(8, introduction);
         }
-        stmt.bindLong(8, entity.getBuyStatus());
-        stmt.bindLong(9, entity.getTime());
-        stmt.bindLong(10, entity.getPrice());
-        stmt.bindLong(11, entity.getDate());
-        stmt.bindLong(12, entity.getYear());
-        stmt.bindLong(13, entity.getIsSet() ? 1L: 0L);
+        stmt.bindLong(9, entity.getBuyStatus());
+        stmt.bindLong(10, entity.getTime());
+        stmt.bindLong(11, entity.getPrice());
+        stmt.bindLong(12, entity.getDate());
+        stmt.bindLong(13, entity.getYear());
+        stmt.bindLong(14, entity.getIsSet() ? 1L: 0L);
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(14, path);
+            stmt.bindString(15, path);
         }
     }
 
@@ -139,25 +146,30 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
             stmt.bindString(5, downloadUrl);
         }
  
+        String previewUrl = entity.getPreviewUrl();
+        if (previewUrl != null) {
+            stmt.bindString(6, previewUrl);
+        }
+ 
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(6, title);
+            stmt.bindString(7, title);
         }
  
         String introduction = entity.getIntroduction();
         if (introduction != null) {
-            stmt.bindString(7, introduction);
+            stmt.bindString(8, introduction);
         }
-        stmt.bindLong(8, entity.getBuyStatus());
-        stmt.bindLong(9, entity.getTime());
-        stmt.bindLong(10, entity.getPrice());
-        stmt.bindLong(11, entity.getDate());
-        stmt.bindLong(12, entity.getYear());
-        stmt.bindLong(13, entity.getIsSet() ? 1L: 0L);
+        stmt.bindLong(9, entity.getBuyStatus());
+        stmt.bindLong(10, entity.getTime());
+        stmt.bindLong(11, entity.getPrice());
+        stmt.bindLong(12, entity.getDate());
+        stmt.bindLong(13, entity.getYear());
+        stmt.bindLong(14, entity.getIsSet() ? 1L: 0L);
  
         String path = entity.getPath();
         if (path != null) {
-            stmt.bindString(14, path);
+            stmt.bindString(15, path);
         }
     }
 
@@ -174,15 +186,16 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
             cursor.getInt(offset + 2), // pid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // imageUrl
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // downloadUrl
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // introduction
-            cursor.getInt(offset + 7), // buyStatus
-            cursor.getLong(offset + 8), // time
-            cursor.getInt(offset + 9), // price
-            cursor.getLong(offset + 10), // date
-            cursor.getInt(offset + 11), // year
-            cursor.getShort(offset + 12) != 0, // isSet
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // path
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // previewUrl
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // title
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // introduction
+            cursor.getInt(offset + 8), // buyStatus
+            cursor.getLong(offset + 9), // time
+            cursor.getInt(offset + 10), // price
+            cursor.getLong(offset + 11), // date
+            cursor.getInt(offset + 12), // year
+            cursor.getShort(offset + 13) != 0, // isSet
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14) // path
         );
         return entity;
     }
@@ -194,15 +207,16 @@ public class CalenderItemBeanDao extends AbstractDao<CalenderItemBean, Long> {
         entity.setPid(cursor.getInt(offset + 2));
         entity.setImageUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDownloadUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setIntroduction(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setBuyStatus(cursor.getInt(offset + 7));
-        entity.setTime(cursor.getLong(offset + 8));
-        entity.setPrice(cursor.getInt(offset + 9));
-        entity.setDate(cursor.getLong(offset + 10));
-        entity.setYear(cursor.getInt(offset + 11));
-        entity.setIsSet(cursor.getShort(offset + 12) != 0);
-        entity.setPath(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setPreviewUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setTitle(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setIntroduction(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setBuyStatus(cursor.getInt(offset + 8));
+        entity.setTime(cursor.getLong(offset + 9));
+        entity.setPrice(cursor.getInt(offset + 10));
+        entity.setDate(cursor.getLong(offset + 11));
+        entity.setYear(cursor.getInt(offset + 12));
+        entity.setIsSet(cursor.getShort(offset + 13) != 0);
+        entity.setPath(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
      }
     
     @Override

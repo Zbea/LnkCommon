@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
@@ -71,15 +72,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="com.bll.lnkcommon.upload.1month"/>
+                <action android:name="com.bll.lnkcommon.upload"/>
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
-
         <activity android:name=".ui.activity.AccountLoginActivity" />
         <activity android:name=".ui.activity.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -88,29 +89,55 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.NotebookManagerActivity"/>
-        <activity android:name=".ui.activity.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.book.BookcaseTypeListActivity"/>
-        <activity android:name=".ui.activity.book.BookStoreActivity"/>
-        <activity android:name=".ui.activity.book.TextBookStoreActivity"/>
-        <activity android:name=".ui.activity.book.BookDetailsActivity"/>
-        <activity android:name=".ui.activity.book.BookStoreTypeActivity"/>
+        <activity android:name=".ui.activity.NotebookManagerActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.NoteDrawingActivity"/>
+        <activity android:name=".ui.activity.book.BookcaseTypeListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.book.BookStoreActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.book.TextBookStoreActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.BookDetailsActivity"/>
+        <activity android:name=".ui.activity.book.BookStoreTypeActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.book.BookListActivity"/>
-        <activity android:name=".ui.activity.AppCenterActivity"/>
-        <activity android:name=".ui.activity.AccountInfoActivity"/>
-        <activity android:name=".ui.activity.AccountRegisterActivity"/>
+        <activity android:name=".ui.activity.AppCenterActivity"
+            android:launchMode="singleTask"
+            />
+        <activity android:name=".ui.activity.AccountInfoActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.AccountRegisterActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.DateActivity"/>
         <activity android:name=".ui.activity.DateEventActivity"/>
         <activity android:name=".ui.activity.ScoreActivity"/>
-        <activity android:name=".ui.activity.HomeworkCorrectActivity"/>
+        <activity android:name=".ui.activity.drawing.HomeworkCorrectActivity"/>
         <activity
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
-        <activity android:name=".ui.activity.FreeNoteActivity"/>
-        <activity android:name=".ui.activity.RecordActivity"/>
-        <activity android:name=".ui.activity.PlanOverviewActivity"/>
-        <activity android:name=".ui.activity.CalenderListActivity"/>
+        <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
+        <activity android:name=".ui.activity.RecordActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
+        <activity android:name=".ui.activity.CalenderListActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.CalenderMyActivity"/>
+        <activity android:name=".ui.activity.AppToolActivity"/>
+        <activity android:name=".ui.activity.drawing.DiaryActivity"/>
+        <activity android:name=".ui.activity.WallpaperListActivity"
+            android:launchMode="singleTask"
+            />
+        <activity android:name=".ui.activity.WallpaperMyActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

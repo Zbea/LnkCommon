@@ -30,6 +30,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         public final static Property TypeStr = new Property(3, String.class, "typeStr", false, "TYPE_STR");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property ContentResId = new Property(5, String.class, "contentResId", false, "CONTENT_RES_ID");
+        public final static Property IsCancelPassword = new Property(6, boolean.class, "isCancelPassword", false, "IS_CANCEL_PASSWORD");
     }
 
 
@@ -50,7 +51,8 @@ public class NoteDao extends AbstractDao<Note, Long> {
                 "\"TITLE\" TEXT," + // 2: title
                 "\"TYPE_STR\" TEXT," + // 3: typeStr
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
-                "\"CONTENT_RES_ID\" TEXT);"); // 5: contentResId
+                "\"CONTENT_RES_ID\" TEXT," + // 5: contentResId
+                "\"IS_CANCEL_PASSWORD\" INTEGER NOT NULL );"); // 6: isCancelPassword
     }
 
     /** Drops the underlying database table. */
@@ -84,6 +86,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (contentResId != null) {
             stmt.bindString(6, contentResId);
         }
+        stmt.bindLong(7, entity.getIsCancelPassword() ? 1L: 0L);
     }
 
     @Override
@@ -111,6 +114,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         if (contentResId != null) {
             stmt.bindString(6, contentResId);
         }
+        stmt.bindLong(7, entity.getIsCancelPassword() ? 1L: 0L);
     }
 
     @Override
@@ -126,7 +130,8 @@ public class NoteDao extends AbstractDao<Note, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // typeStr
             cursor.getLong(offset + 4), // date
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // contentResId
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // contentResId
+            cursor.getShort(offset + 6) != 0 // isCancelPassword
         );
         return entity;
     }
@@ -139,6 +144,7 @@ public class NoteDao extends AbstractDao<Note, Long> {
         entity.setTypeStr(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setContentResId(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setIsCancelPassword(cursor.getShort(offset + 6) != 0);
      }
     
     @Override

@@ -35,7 +35,6 @@ class TextBookStoreActivity : BaseActivity(),
 
     private var tabId = 0
     private var tabStr = ""
-    private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
     private var mAdapter: BookAdapter? = null
@@ -274,7 +273,7 @@ class TextBookStoreActivity : BaseActivity(),
      * 下载解压书籍
      */
     private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
-
+        showLoading()
         val fileName =  MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         val download = FileDownManager.with(this).create(url).setPath(zipPath)
@@ -294,11 +293,8 @@ class TextBookStoreActivity : BaseActivity(),
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    lock.lock()
                     val fileTargetPath = FileAddress().getPathTextBook(fileName)
                     unzip(book, zipPath, fileTargetPath)
-                    lock.unlock()
-                    hideLoading()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -333,6 +329,7 @@ class TextBookStoreActivity : BaseActivity(),
                 mAdapter?.notifyDataSetChanged()
                 bookDetailsDialog?.dismiss()
                 Handler().postDelayed({
+                    hideLoading()
                     showToast(book.bookName+"下载成功")
                 },500)
             }

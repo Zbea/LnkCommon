@@ -23,28 +23,44 @@
             android:textSize="36sp"
             />
 
-        <ImageView
-            android:id="@+id/iv_plan"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
-            android:src="@mipmap/icon_diary"
-            android:layout_marginEnd="@dimen/dp_40"
-            />
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            >
+            <ImageView
+                android:id="@+id/iv_diary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_diary"
+                android:layout_marginEnd="@dimen/dp_30"
+                />
 
-        <ImageView
-            android:id="@+id/iv_freenote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
-            android:src="@mipmap/icon_free_note"
-            android:layout_marginEnd="@dimen/dp_40"
-            />
+            <ImageView
+                android:id="@+id/iv_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_plan"
+                android:layout_marginEnd="@dimen/dp_30"
+                />
+
+            <ImageView
+                android:id="@+id/iv_freenote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_free_note"
+                android:layout_marginEnd="@dimen/dp_30"
+                />
+
+        </LinearLayout>
+
 
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="740dp"
         android:layout_height="980dp"
         android:orientation="vertical"
@@ -100,12 +116,59 @@
             android:id="@+id/iv_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@+id/ll_date"
             android:scaleType="center"
             android:background="@mipmap/icon_date_event_bg"
-            android:layout_marginBottom="@dimen/dp_10"/>
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"/>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/ll_calender"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_date"
+            android:background="@color/white"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:id="@+id/iv_calender_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:background="@mipmap/icon_date_event_bg"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+                <View
+                    android:id="@+id/v_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <View
+                    android:id="@+id/v_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@mipmap/icon_main_change"
+            />
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

@@ -13,6 +13,7 @@ import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.MethodUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_list
@@ -67,7 +68,7 @@ class BookListActivity : BaseActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@BookListActivity, 22f), DP2PX.dip2px(this@BookListActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodUtils.gotoBookDetails(this@BookListActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

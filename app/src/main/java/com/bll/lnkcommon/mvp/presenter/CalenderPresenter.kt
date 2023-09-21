@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.AppList
 import com.bll.lnkcommon.mvp.model.CalenderList
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
@@ -10,7 +9,7 @@ import com.bll.lnkcommon.net.*
  */
 class CalenderPresenter(view: IContractView.ICalenderView) : BasePresenter<IContractView.ICalenderView>(view) {
 
-    fun getAppList(map: HashMap<String,Any>) {
+    fun getList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getCalenderList(map)
 
@@ -30,7 +29,7 @@ class CalenderPresenter(view: IContractView.ICalenderView) : BasePresenter<ICont
     fun buyApk(map: HashMap<String, Any> ) {
 
         val requestBody= RequestUtils.getBody(map)
-        val download = RetrofitManager.service.buyApk(requestBody)
+        val download = RetrofitManager.service.onBuy(requestBody)
 
         doRequest(download, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {

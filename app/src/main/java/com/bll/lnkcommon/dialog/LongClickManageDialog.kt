@@ -2,18 +2,12 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.BookTypeBean
 import com.bll.lnkcommon.mvp.model.ItemList
-import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.bll.lnkcommon.widget.SpaceGridItemDecoScore
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

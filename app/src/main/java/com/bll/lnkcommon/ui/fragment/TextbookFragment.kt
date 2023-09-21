@@ -13,7 +13,7 @@ import com.bll.lnkcommon.mvp.model.HomeworkTypeList
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
-import com.bll.lnkcommon.ui.activity.book.BookDetailsActivity
+import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
@@ -50,7 +50,7 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
 
     override fun initView() {
         pageSize=12
-        setTitle(DataBeanManager.mainListTitle[4])
+        setTitle(DataBeanManager.mainListTitle[5])
 
         initTab()
         initRecyclerView()

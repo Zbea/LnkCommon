@@ -4,28 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import android.util.Pair
 import android.view.View
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.SchoolSelectDialog
-import com.bll.lnkcommon.mvp.model.SchoolBean
 import com.bll.lnkcommon.mvp.presenter.RegisterPresenter
-import com.bll.lnkcommon.mvp.presenter.SchoolPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.mvp.view.IContractView.ISchoolView
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
 
-/**
- *  //2. 帐号规则 4 - 12 位字母、数字
-//3. 密码规则 6 - 20 位字母、数字
-//4. 姓名规则 2 - 5 位中文
-//5. 手机号码规则 11 位有效手机号
-//6. 验证码规则数字即可
- */
 class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
 
     private val presenter= RegisterPresenter(this)

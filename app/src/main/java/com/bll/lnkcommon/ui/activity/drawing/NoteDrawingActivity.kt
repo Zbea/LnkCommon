@@ -1,17 +1,9 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
-import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
-import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.manager.NoteContentDaoManager
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.Note
@@ -94,13 +86,13 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         var titleStr=""
         val list= mutableListOf<ItemList>()
         for (item in noteContents){
-            val itemList= ItemList()
-            itemList.name=item.title
-            itemList.page=item.page
+            val itemBean= ItemList()
+            itemBean.name=item.title
+            itemBean.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(itemList)
+                list.add(itemBean)
             }
 
         }

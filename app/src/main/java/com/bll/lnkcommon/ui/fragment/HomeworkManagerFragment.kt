@@ -33,7 +33,7 @@ class HomeworkManagerFragment:BaseFragment() {
         return R.layout.fragment_homework_manager
     }
     override fun initView() {
-        setTitle(DataBeanManager.mainListTitle[5])
+        setTitle(DataBeanManager.mainListTitle[6])
         showView(tv_course)
         iv_manager.setImageResource(R.mipmap.icon_add)
 

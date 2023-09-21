@@ -24,8 +24,6 @@ class AppMenuDialog(val context: Context, val appBean: AppBean){
         dialog.show()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        appBean.userId=if (SPUtil.getObj("user", User::class.java)==null) 0 else SPUtil.getObj("user", User::class.java)?.accountId!!
-
         iv_1=dialog.findViewById(R.id.iv_1)
         iv_2=dialog.findViewById(R.id.iv_2)
         iv_3=dialog.findViewById(R.id.iv_3)
@@ -77,36 +75,31 @@ class AppMenuDialog(val context: Context, val appBean: AppBean){
     }
 
     private fun setAddMenu(type:Int,view: ImageView){
-        if (AppDaoManager.getInstance().isExist(appBean.packageName,1)){
-            val bean=AppDaoManager.getInstance().queryByType(appBean.packageName,1)
-            if (bean.sort!=type){
-                when(bean.sort){
-                    1->{
-                        iv_1?.setImageDrawable(null)
-                    }
-                    2->{
-                        iv_2?.setImageDrawable(null)
-                    }
-                    3->{
-                        iv_3?.setImageDrawable(null)
-                    }
-                    4->{
-                        iv_4?.setImageDrawable(null)
-                    }
-                    5->{
-                        iv_5?.setImageDrawable(null)
-                    }
+        AppDaoManager.getInstance().deleteBySort(type)
+        val bean=AppDaoManager.getInstance().queryByType(appBean.packageName,1)
+        if (bean!=null){
+            when(bean.sort){
+                1->{
+                    iv_1?.setImageDrawable(null)
                 }
-                bean.sort=type
-                AppDaoManager.getInstance().delete(type)
-                AppDaoManager.getInstance().insertOrReplace(bean)
+                2->{
+                    iv_2?.setImageDrawable(null)
+                }
+                3->{
+                    iv_3?.setImageDrawable(null)
+                }
+                4->{
+                    iv_4?.setImageDrawable(null)
+                }
+                5->{
+                    iv_5?.setImageDrawable(null)
+                }
             }
         }
-        else{
-            appBean.type=1
-            appBean.sort=type
-            AppDaoManager.getInstance().insertOrReplace(appBean)
-        }
+        appBean.type=1
+        appBean.sort=type
+        AppDaoManager.getInstance().insertOrReplace(appBean)
+
         view.setImageDrawable(BitmapUtils.byteToDrawable(appBean.imageByte))
     }
 

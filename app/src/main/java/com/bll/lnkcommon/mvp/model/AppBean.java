@@ -17,26 +17,26 @@ public class AppBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;;
     public String appName;
     public String packageName;
     public byte[] imageByte;
-    public int type;//0工具1首页菜单
+    public int type;//1首页菜单2工具
+    public int subType;//分类
     public int sort;
     @Transient
     public boolean isCheck;
-    @Transient
-    public boolean isBase;//基本数据
 
-    @Generated(hash = 1801819966)
+    @Generated(hash = 743368013)
     public AppBean(Long id, long userId, String appName, String packageName,
-            byte[] imageByte, int type, int sort) {
+            byte[] imageByte, int type, int subType, int sort) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
         this.packageName = packageName;
         this.imageByte = imageByte;
         this.type = type;
+        this.subType = subType;
         this.sort = sort;
     }
     @Generated(hash = 285800313)
@@ -83,6 +83,12 @@ public class AppBean {
     }
     public void setSort(int sort) {
         this.sort = sort;
+    }
+    public int getSubType() {
+        return this.subType;
+    }
+    public void setSubType(int subType) {
+        this.subType = subType;
     }
 
    

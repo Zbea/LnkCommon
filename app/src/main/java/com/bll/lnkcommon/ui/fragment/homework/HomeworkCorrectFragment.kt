@@ -11,11 +11,10 @@ import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
-import com.bll.lnkcommon.ui.activity.HomeworkCorrectActivity
+import com.bll.lnkcommon.ui.activity.drawing.HomeworkCorrectActivity
 import com.bll.lnkcommon.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkcommon.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_my_homework.rv_list
-import kotlinx.android.synthetic.main.item_homework_correct.*
+import kotlinx.android.synthetic.main.fragment_homework.rv_list
 
 class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
 
@@ -59,7 +58,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 40))
+        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 55))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]

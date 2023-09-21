@@ -215,8 +215,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     //更新列表
                     mAdapter?.notifyItemChanged(position)
                     bookDetailsDialog?.dismiss()
-                    hideLoading()
                     Handler().postDelayed({
+                        hideLoading()
                         showToast(book.bookName+"下载完成")
                     },500)
                 }

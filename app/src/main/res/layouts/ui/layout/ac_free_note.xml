@@ -53,7 +53,7 @@
             android:id="@+id/iv_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="60dp"
             android:src="@mipmap/icon_freenote_recorder"
             />
 
@@ -134,7 +134,7 @@
             android:id="@+id/tv_free_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="60dp"
             android:drawableStart="@mipmap/icon_freenote_note_list"
             android:drawablePadding="@dimen/dp_5"
             android:text="列表"

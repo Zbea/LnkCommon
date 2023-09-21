@@ -39,4 +39,20 @@
     <string name="textbook_tab_homework">我的题卷本</string>
     <string name="textbook_tab_homework_other">参考题卷本</string>
 
+    <string name="password_input">输入密码</string>
+    <string name="password_old">原先密码</string>
+    <string name="password_new">新设密码</string>
+    <string name="password_again">再输密码</string>
+    <string name="password_old_error">原密码错误</string>
+    <string name="password_again_error">再次输入密码</string>
+    <string name="password_different">密码输入不一致</string>
+    <string name="password_question_str">输入密保</string>
+    <string name="password_question_select_str">选择问题</string>
+    <string name="password_father_name">爸爸姓名？</string>
+    <string name="password_mother_name">妈妈姓名？</string>
+    <string name="password_grandfather_name">爷爷姓名？</string>
+    <string name="password_grandmother_name">奶奶姓名？</string>
+    <string name="password_set">设置密码</string>
+    <string name="password_set_question">设置密保</string>
+
 </resources>

@@ -10,12 +10,14 @@ import com.bll.lnkcommon.mvp.model.CommonData;
 import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
+import com.bll.lnkcommon.mvp.model.JournalList;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.ShareNoteList;
 import com.bll.lnkcommon.mvp.model.StudentBean;
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList;
 import com.bll.lnkcommon.mvp.model.User;
+import com.bll.lnkcommon.mvp.model.WallpaperList;
 import com.bll.lnkcommon.net.IBaseView;
 
 import java.util.List;
@@ -71,12 +73,18 @@ public interface IContractView {
 
     //应用
     interface IAPPView extends IBaseView {
+        void onType(CommonData commonData);
         void onAppList(AppList appBean);
         void buySuccess();
     }
 
     interface ICalenderView extends IBaseView {
         void onList(CalenderList list);
+        void buySuccess();
+    }
+
+    interface IWallpaperView extends IBaseView {
+        void onList(WallpaperList list);
         void buySuccess();
     }
 
@@ -109,6 +117,10 @@ public interface IContractView {
         void onToken(String token);
         void onDeleteSuccess();
         void onShare();
+    }
+
+    interface IJournalView extends IBaseView{
+        void onList(JournalList list);
     }
 
 }

@@ -16,8 +16,7 @@ import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
 import com.bll.lnkcommon.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_app.rv_list
+import kotlinx.android.synthetic.main.fragment_homework.rv_list
 
 class HomeworkFragment : BaseFragment(),IHomeworkView {
 
@@ -78,7 +77,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         rv_list.adapter = mAdapterHomework
         mAdapterHomework?.bindToRecyclerView(rv_list)
         mAdapterHomework?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 40))
+        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 60))
         mAdapterHomework?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]

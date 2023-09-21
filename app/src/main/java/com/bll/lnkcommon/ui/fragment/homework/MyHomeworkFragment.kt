@@ -57,7 +57,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
             rv_list.layoutManager = GridLayoutManager(activity, 3)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 80))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 85))
             setOnItemClickListener { adapter, view, position ->
                 sendHomework(homeworkTypes[position])
             }

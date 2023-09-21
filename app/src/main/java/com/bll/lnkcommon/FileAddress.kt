@@ -128,6 +128,21 @@ class FileAddress {
      * 日历背景下载地址
      */
     fun getPathCalender(fileName: String):String{
-        return "$IMAGE_PATH/${getUserId()}/calender//$fileName"
+        return "$IMAGE_PATH/${getUserId()}/calender/$fileName"
+    }
+
+
+    /**
+     * 日记路径
+     */
+    fun getPathDiary(time:String):String{
+        return "$IMAGE_PATH/${getUserId()}/diary/$time"
+    }
+
+    /**
+     * 壁纸
+     */
+    fun getPathImage(typeStr: String,contentId: Int):String{
+        return "$IMAGE_PATH/${getUserId()}/$typeStr/$contentId"
     }
 }

@@ -1,23 +1,26 @@
 package com.bll.lnkcommon.ui.activity
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MyApplication
-import com.bll.lnkcommon.R
+import com.bll.lnkcommon.*
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.model.AreaBean
 import com.bll.lnkcommon.mvp.model.MainListBean
 import com.bll.lnkcommon.ui.adapter.MainListAdapter
 import com.bll.lnkcommon.ui.fragment.*
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
+import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_main.*
+import java.util.*
 
 class MainActivity : BaseActivity() {
 
@@ -32,6 +35,7 @@ class MainActivity : BaseActivity() {
     private var appFragment: AppFragment? = null
     private var teachFragment: HomeworkManagerFragment?=null
     private var textbookFragment:TextbookFragment?=null
+    private var journalFragment:JournalFragment?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_main
@@ -61,6 +65,7 @@ class MainActivity : BaseActivity() {
         appFragment = AppFragment()
         textbookFragment= TextbookFragment()
         teachFragment= HomeworkManagerFragment()
+        journalFragment=JournalFragment()
 
         switchFragment(lastFragment, homeFragment)
 
@@ -74,13 +79,17 @@ class MainActivity : BaseActivity() {
             when (position) {
                 0 -> switchFragment(lastFragment, homeFragment)
                 1 -> switchFragment(lastFragment, bookcaseFragment)
-                2 -> switchFragment(lastFragment, noteFragment)
-                3 -> switchFragment(lastFragment, appFragment)
-                4 -> switchFragment(lastFragment, textbookFragment)
-                5 -> switchFragment(lastFragment, teachFragment)
+                2 -> switchFragment(lastFragment, journalFragment)
+                3 -> switchFragment(lastFragment, noteFragment)
+                4 -> switchFragment(lastFragment, appFragment)
+                5 -> switchFragment(lastFragment, textbookFragment)
+                6 -> switchFragment(lastFragment, teachFragment)
             }
             lastPosition=position
         }
+
+        startRemind()
+        startRemind1Month()
 
         iv_user.setOnClickListener {
             if (isLoginState()){
@@ -93,17 +102,94 @@ class MainActivity : BaseActivity() {
 
     }
 
+    /**
+     * 开始每天定时任务
+     */
+    private fun startRemind() {
+
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+
+            if (currentTimeMillisLong > selectLong) {
+                add(Calendar.DAY_OF_MONTH, 1)
+                selectLong = timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD
+            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            else
+                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.INTERVAL_DAY, pendingIntent
+            )
+        }
+
+
+    }
+
+    /**
+     * 每年1月1 3点执行
+     */
+    private fun startRemind1Month() {
+        val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
+        val date=allDay*24*60*60*1000L
+        Calendar.getInstance().apply {
+            val currentTimeMillisLong = System.currentTimeMillis()
+            timeInMillis = currentTimeMillisLong
+            timeZone = TimeZone.getTimeZone("GMT+8")
+            set(Calendar.MONTH,0)
+            set(Calendar.DAY_OF_MONTH,1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+
+            var selectLong = timeInMillis
+            if (System.currentTimeMillis()>selectLong){
+                set(Calendar.YEAR, DateUtils.getYear()+1)
+                selectLong=timeInMillis
+            }
+
+            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
+            intent.action = Constants.ACTION_UPLOAD_1MONTH
+            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
+                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            else
+                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, selectLong,
+                date, pendingIntent
+            )
+        }
+
+    }
+
     private fun setLoginView(){
         tv_login.text=if (isLoginState()) "登录" else "未登录"
     }
 
     private fun refreshData(boolean: Boolean){
         if (boolean){
-            if (mData.size==4)
+            if (mData.size==5)
                 changeData()
         }
         else{
-            if (mData.size>4)
+            if (mData.size>5)
             {
                 mData.removeLast()
                 mData.removeLast()
@@ -118,13 +204,13 @@ class MainActivity : BaseActivity() {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jc)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jc_check)
             checked = false
-            name = DataBeanManager.mainListTitle[4]
+            name = DataBeanManager.mainListTitle[5]
         })
         mData.add(MainListBean().apply {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jx)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jx_check)
             checked = false
-            name = DataBeanManager.mainListTitle[5]
+            name = DataBeanManager.mainListTitle[6]
         })
     }
 
@@ -167,12 +253,12 @@ class MainActivity : BaseActivity() {
             }
             else{
                 refreshData(false)
-                if (lastPosition==4){
+                if (lastPosition==5){
                     switchFragment(textbookFragment, homeFragment)
                     lastPosition=0
                     mHomeAdapter?.updateItem(0, true)//更新新的位置
                 }
-                if (lastPosition==5){
+                if (lastPosition==6){
                     switchFragment(teachFragment, homeFragment)
                     lastPosition=0
                     mHomeAdapter?.updateItem(0, true)//更新新的位置

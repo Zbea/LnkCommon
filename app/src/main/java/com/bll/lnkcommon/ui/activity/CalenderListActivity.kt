@@ -1,24 +1,30 @@
 package com.bll.lnkcommon.ui.activity
 
+import android.content.Intent
 import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.BookDetailsDialog
 import com.bll.lnkcommon.dialog.CalenderDetailsDialog
+import com.bll.lnkcommon.dialog.ImageDialog
+import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.mvp.model.CalenderList
+import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.presenter.CalenderPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.ICalenderView
 import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
@@ -40,9 +46,15 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
     private var mAdapter:CalenderListAdapter?=null
     private var detailsDialog:CalenderDetailsDialog?=null
     private var position=0
+    private var supply=1
+    private var pops= mutableListOf<PopupBean>()
 
     override fun onList(list: CalenderList) {
         setPageNumber(list.total)
+        for (item in list.list){
+            item.pid=item.id.toInt()
+            item.id=null
+        }
         items=list.list
         mAdapter?.setNewData(items)
     }
@@ -56,11 +68,29 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
 
     override fun initData() {
         pageSize=12
+        pops=DataBeanManager.popupSupplys
     }
     override fun initView() {
         setPageTitle("新年台历")
+        tv_setting.text="我的台历"
+        tv_type.text="官方"
+        showView(tv_setting,tv_type)
+
+        tv_type.setOnClickListener {
+            PopupRadioList(this,pops,tv_type,tv_type.width,5).builder().setOnSelectListener{
+                supply=it.id
+                tv_type.text=it.name
+                pageIndex=1
+                fetchData()
+            }
+        }
+
+        tv_setting.setOnClickListener {
+            customStartActivity(Intent(this, CalenderMyActivity::class.java))
+        }
 
         initRecycleView()
+        fetchData()
     }
 
     private fun initRecycleView(){
@@ -84,6 +114,13 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
                 val item=items[position]
                 showDetails(item)
             }
+            setOnItemChildClickListener { adapter, view, position ->
+                val item=items[position]
+                if (view.id==R.id.tv_preview){
+                    val urls=item.previewUrl.split(",")
+                    ImageDialog(this@CalenderListActivity,urls).builder()
+                }
+            }
         }
 
     }
@@ -105,7 +142,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
             }
             else{
                 val map = HashMap<String, Any>()
-                map["type"] = 3
+                map["type"] = 7
                 map["bookId"] = item.pid
                 presenter.buyApk(map)
             }
@@ -114,7 +151,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
 
 
     private fun downLoadStart(url: String, item: CalenderItemBean): BaseDownloadTask? {
-
+        showLoading()
         val fileName = MD5Utils.digest(item.pid.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         val download = FileDownManager.with(this).create(url).setPath(zipPath)
@@ -189,7 +226,9 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        presenter.getAppList(map)
+        map["type"]=supply
+        map["years"]=DateUtils.getYear()
+        presenter.getList(map)
     }
 
     override fun onDestroy() {

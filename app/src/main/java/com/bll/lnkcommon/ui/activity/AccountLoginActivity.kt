@@ -32,6 +32,12 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
         user?.token=token
         SPUtil.putObj("user",user!!)
         EventBus.getDefault().post(Constants.USER_EVENT)
+
+        val intent = Intent()
+        intent.putExtra("token", token)
+        intent.action = Constants.LOGIN_BROADCAST_EVENT
+        sendBroadcast(intent)
+
         finish()
     }
 

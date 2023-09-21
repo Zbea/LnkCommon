@@ -16,6 +16,8 @@ class CalenderListAdapter(layoutResId: Int, data: List<CalenderItemBean>?) : Bas
             setText(R.id.tv_name,item.title)
             val image=getView<ImageView>(R.id.iv_image)
             GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,10)
+
+            addOnClickListener(R.id.tv_preview)
         }
     }
 

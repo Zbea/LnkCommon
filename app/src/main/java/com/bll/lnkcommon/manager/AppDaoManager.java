@@ -58,7 +58,7 @@ public class AppDaoManager {
      * @return
      */
     public List<AppBean> queryTool() {
-        WhereCondition whereCondition1= AppBeanDao.Properties.Type.eq(0);
+        WhereCondition whereCondition1= AppBeanDao.Properties.Type.eq(2);
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
@@ -72,15 +72,28 @@ public class AppDaoManager {
     }
 
     /**
-     * 删除工具应用
-     * @param packageName
+     * 获取工具应用
+     * @return
      */
-    public void delete(String packageName) {
+    public List<AppBean> queryAPPTool() {
+        WhereCondition whereCondition1= AppBeanDao.Properties.SubType.eq(1);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
+
+    /**
+     * 获取工具应用
+     * @return
+     */
+    public List<AppBean> queryAPP() {
+        WhereCondition whereCondition1= AppBeanDao.Properties.SubType.notEq(1);
+        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+    }
+
+    public boolean isExist(String packageName){
         WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.Type.eq(0);
+        WhereCondition where2= AppBeanDao.Properties.SubType.eq(1);
         AppBean appBean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-        if (appBean!=null)
-            dao.deleteInTx(appBean);
+        return appBean!=null;
     }
 
     public boolean isExist(String packageName,int type){
@@ -96,16 +109,18 @@ public class AppDaoManager {
         return dao.queryBuilder().where(whereUser,where1,where2).build().unique();
     }
 
-    public void delete(int sort) {
-        WhereCondition where1= AppBeanDao.Properties.Sort.eq(sort);
-        WhereCondition where2= AppBeanDao.Properties.Type.eq(1);
-        AppBean appBean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-        if (appBean!=null)
-            dao.deleteInTx(appBean);
+    public void deleteBySort(int sort){
+        WhereCondition where1=AppBeanDao.Properties.Type.eq(1);
+        WhereCondition where2= AppBeanDao.Properties.Sort.eq(sort);
+        AppBean bean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
+        if (bean!=null){
+            bean.sort=0;
+            insertOrReplace(bean);
+        }
     }
 
-    public void deletes(List<AppBean> beans){
-        dao.deleteInTx(beans);
+    public void delete(AppBean item) {
+        dao.delete(item);
     }
 
 }

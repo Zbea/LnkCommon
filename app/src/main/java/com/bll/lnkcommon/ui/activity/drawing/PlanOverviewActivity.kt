@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.drawing
 
 
 import com.bll.lnkcommon.base.BaseDrawingActivity

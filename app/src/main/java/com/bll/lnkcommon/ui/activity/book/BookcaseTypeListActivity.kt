@@ -17,6 +17,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.MethodUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.*
@@ -59,16 +60,16 @@ class BookcaseTypeListActivity : BaseActivity() {
 
     override fun initView() {
         setPageTitle("分类展示")
-        showView(tv_custom,tv_province)
+        showView(tv_setting,tv_province)
 
-        tv_custom.text="书籍列表"
+        tv_setting.text="书籍列表"
         tv_province.text="分类管理"
 
         tv_province?.setOnClickListener {
             setTopSelectView()
         }
 
-        tv_custom?.setOnClickListener {
+        tv_setting?.setOnClickListener {
             customStartActivity(Intent(this,BookListActivity::class.java))
         }
 
@@ -78,7 +79,7 @@ class BookcaseTypeListActivity : BaseActivity() {
 
     //顶部弹出选择
     private fun setTopSelectView() {
-        PopupClick(this, popupBeans, tv_province,tv_province.width, 5).builder().setOnSelectListener { item ->
+        PopupClick(this, popupBeans, tv_province, 5).builder().setOnSelectListener { item ->
             when (item.id) {
                 0 -> {
                     InputContentDialog(this,"创建书籍分类").builder().setOnDialogClickListener{
@@ -133,10 +134,10 @@ class BookcaseTypeListActivity : BaseActivity() {
 
     private fun initTab() {
         bookTypes = BookTypeDaoManager.getInstance().queryAllList()
+        rg_group.removeAllViews()
         if (bookTypes.isEmpty()){
             return
         }
-        rg_group.removeAllViews()
         typeStr = bookTypes[0].name
         for (i in bookTypes.indices) {
             rg_group.addView(getRadioButton(i, bookTypes[i].name, i==0))
@@ -146,7 +147,6 @@ class BookcaseTypeListActivity : BaseActivity() {
             typeStr=bookTypes[id].name
             fetchData()
         }
-
         fetchData()
     }
 
@@ -164,7 +164,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodUtils.gotoBookDetails(this@BookcaseTypeListActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position
@@ -199,6 +199,9 @@ class BookcaseTypeListActivity : BaseActivity() {
     }
 
     override fun fetchData() {
+        if (bookTypes.isEmpty()){
+            return
+        }
         books=mBookDaoManager.queryAllBook(typeStr, pageIndex, pageSize)
         val total = mBookDaoManager.queryAllBook(typeStr)
         setPageNumber(total.size)

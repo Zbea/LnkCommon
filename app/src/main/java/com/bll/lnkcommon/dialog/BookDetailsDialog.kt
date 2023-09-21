@@ -20,6 +20,7 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
     fun builder(): Dialog? {
         dialog= Dialog(context).apply {
             setContentView(R.layout.dialog_book_detail)
+            setCanceledOnTouchOutside(false)
             show()
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             btn_ok = findViewById(R.id.btn_ok)

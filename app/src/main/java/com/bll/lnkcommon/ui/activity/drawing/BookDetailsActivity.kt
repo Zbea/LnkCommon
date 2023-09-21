@@ -1,17 +1,11 @@
-package com.bll.lnkcommon.ui.activity.book
+package com.bll.lnkcommon.ui.activity.drawing
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
 import android.view.EinkPWInterface
-import android.view.PWDrawObjectHandler
 import android.widget.ImageView
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -22,7 +16,7 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_drawing_book.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -39,7 +33,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     private var page = 0 //当前页码
 
     override fun layoutId(): Int {
-        return R.layout.ac_drawing
+        return R.layout.ac_drawing_book
     }
 
     override fun initData() {

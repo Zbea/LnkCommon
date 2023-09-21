@@ -14,10 +14,11 @@ object DataBeanManager {
     var provinces= mutableListOf<AreaBean>()
     var friends= mutableListOf<FriendList.FriendBean>()
 
-    val mainListTitle = arrayOf("首页","书架","笔记","应用","教材","作业")
+    val mainListTitle = arrayOf("首页","书架","期刊","笔记","应用","教材","作业")
 
     val homeworkType = arrayOf("老师作业","学校考试","我的作业","我的批改")
 
+    val journalType = arrayOf("每日报刊","周期报刊","小说杂志","综合杂志","专业杂志")
 
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
@@ -72,16 +73,22 @@ object DataBeanManager {
             name = mainListTitle[1]
         })
         list.add(MainListBean().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_main_qk)
+            icon_check = mContext.getDrawable(R.mipmap.icon_main_qk_check)
+            checked = false
+            name = mainListTitle[2]
+        })
+        list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_note)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_note_check)
             checked = false
-            name = mainListTitle[2]
+            name = mainListTitle[3]
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_app)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
             checked = false
-            name = mainListTitle[3]
+            name = mainListTitle[4]
         })
         return list
     }
@@ -93,12 +100,12 @@ object DataBeanManager {
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
-                resContentId = R.mipmap.icon_note_details_bg_6
+                resContentId = R.mipmap.icon_diary_details_bg_1
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
-                resContentId = R.mipmap.icon_note_details_bg_7
+                resContentId = R.mipmap.icon_diary_details_bg_2
             })
             return list
         }
@@ -155,10 +162,18 @@ object DataBeanManager {
             return list
         }
 
+    val popupSupplys: MutableList<PopupBean>
+        get() {
+            val list = mutableListOf<PopupBean>()
+            list.add(PopupBean(1, "官方",true))
+            list.add(PopupBean(2,"第三方",false))
+            return list
+        }
+
     val bookStoreTypes: MutableList<ItemList>
         get() {
             val list = mutableListOf<ItemList>()
-            list.add(ItemList(1,"古籍"))
+            list.add(ItemList(1, "古籍"))
             list.add(ItemList(2, "自然科学"))
             list.add(ItemList(3, "社会科学"))
             list.add(ItemList(4, "思维科学"))

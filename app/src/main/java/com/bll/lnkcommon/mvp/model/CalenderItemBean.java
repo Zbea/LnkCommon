@@ -18,30 +18,32 @@ public class CalenderItemBean {
     @Unique
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    @SerializedName("id")
     public int pid;
     public String imageUrl;
     public String downloadUrl;
+    public String previewUrl;
     public String title;
     public String introduction;
     public int buyStatus;
     public long time;//上架时间
     public int price;
     public long date;//下载时间
+    @SerializedName("years")
     public int year;
     public boolean isSet;
     public String path;
     @Transient
     public int loadSate;
-    @Generated(hash = 2090359717)
+    @Generated(hash = 205828730)
     public CalenderItemBean(Long id, long userId, int pid, String imageUrl, String downloadUrl,
-            String title, String introduction, int buyStatus, long time, int price, long date, int year,
-            boolean isSet, String path) {
+            String previewUrl, String title, String introduction, int buyStatus, long time, int price,
+            long date, int year, boolean isSet, String path) {
         this.id = id;
         this.userId = userId;
         this.pid = pid;
         this.imageUrl = imageUrl;
         this.downloadUrl = downloadUrl;
+        this.previewUrl = previewUrl;
         this.title = title;
         this.introduction = introduction;
         this.buyStatus = buyStatus;
@@ -138,6 +140,12 @@ public class CalenderItemBean {
     }
     public void setPath(String path) {
         this.path = path;
+    }
+    public String getPreviewUrl() {
+        return this.previewUrl;
+    }
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
     }
     
 }

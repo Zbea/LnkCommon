@@ -16,7 +16,7 @@
             android:id="@+id/iv_erasure"
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_120"
+            android:layout_marginStart="44dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_erasure" />
 
@@ -86,7 +86,7 @@
             android:id="@+id/iv_tool"
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="120dp"
+            android:layout_marginEnd="44dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_tool" />
 

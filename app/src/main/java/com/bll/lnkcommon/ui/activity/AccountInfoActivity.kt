@@ -1,25 +1,21 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.InputContentDialog
-import com.bll.lnkcommon.dialog.PopupFriendRequestList
+import com.bll.lnkcommon.dialog.*
+import com.bll.lnkcommon.mvp.model.CheckPassword
 import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
-import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AccountFriendAdapter
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
-import com.bll.lnkcommon.utils.ActivityManager
+import com.bll.lnkcommon.utils.MethodUtils
 import com.bll.lnkcommon.utils.SPUtil
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
 import kotlinx.android.synthetic.main.common_title.*
@@ -38,6 +34,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var position=0
     private var type=0//0学生1好友
     private var requestPosition=0
+    private var checkPassword: CheckPassword?=null
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -88,9 +85,11 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     override fun initData() {
+        mUser=getUser()
         presenter.getStudents()
         presenter.getFriends()
         presenter.getRequestFriends()
+        checkPassword=SPUtil.getObj("${mUser?.accountId}CheckPassword", CheckPassword::class.java)
     }
 
     @SuppressLint("WrongConstant")
@@ -102,13 +101,22 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         initRecyclerView()
         initRecyclerViewFriend()
 
-        mUser=getUser()
-
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
         }
+
+        if (checkPassword!=null){
+            showView(tv_check_pad)
+            if (checkPassword?.isSet == true){
+                btn_psd_check.text="取消密码"
+            }
+            else{
+                btn_psd_check.text="设置密码"
+            }
+        }
+
 
         iv_manager?.setOnClickListener {
             PopupFriendRequestList(this,iv_manager,requestfriends).builder()
@@ -123,9 +131,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             }
         }
 
-        btn_edit_psd.setOnClickListener {
-            customStartActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
-        }
 
         btn_edit_name.setOnClickListener {
             editName()
@@ -141,6 +146,10 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             add()
         }
 
+        btn_psd_check.setOnClickListener {
+            setPassword()
+        }
+
         btn_logout.setOnClickListener {
             CommonDialog(this).setContent("退出登录？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
@@ -148,13 +157,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 }
                 override fun ok() {
                     mUser=null
-                    SPUtil.putString("token", "")
-                    SPUtil.removeObj("user")
-                    ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-                    EventBus.getDefault().post(Constants.USER_EVENT)
-                    DataBeanManager.students.clear()
-                    DataBeanManager.friends.clear()
-                    EventBus.getDefault().post(Constants.STUDENT_EVENT)
+                    MethodUtils.logout(this@AccountInfoActivity)
                 }
             })
         }
@@ -201,7 +204,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     /**
-     * 管理
+     * 关联
      */
     private fun add(){
         val str=if (type==0) "输入学生账号" else "输入好友账号"
@@ -216,6 +219,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             }
     }
 
+    /**
+     * 取消关联
+     */
     private fun cancel(){
         val str=if (type==0) "取消学生关联?" else "取消好友关联?"
         CommonDialog(this).setContent(str).builder().setDialogClickListener(object :
@@ -231,6 +237,30 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 }
             }
         })
+    }
+
+    /**
+     * 设置查看密码
+     */
+    private fun setPassword(){
+        if (checkPassword==null){
+            CheckPasswordCreateDialog(this).builder().setOnDialogClickListener{
+                checkPassword=it
+                showView(tv_check_pad)
+                btn_psd_check.text="设置密码"
+                SPUtil.putObj("${mUser?.accountId}CheckPassword",checkPassword!!)
+                EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
+            }
+        }
+        else{
+            CheckPasswordDialog(this).builder()?.setOnDialogClickListener{
+                checkPassword?.isSet=!checkPassword?.isSet!!
+                btn_psd_check.text=if (checkPassword?.isSet==true) "取消密码" else "设置密码"
+                SPUtil.putObj("${mUser?.accountId}CheckPassword",checkPassword!!)
+                EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
+            }
+        }
+
     }
 
 

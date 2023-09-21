@@ -8,26 +8,18 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.LongClickManageDialog
-import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
-import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.MethodUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import org.greenrobot.eventbus.EventBus
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.File
 
 class BookcaseFragment:BaseFragment() {
 
@@ -42,7 +34,6 @@ class BookcaseFragment:BaseFragment() {
     }
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
-        showView(tv_search)
 
         longBeans.add(ItemList().apply {
             name="删除"
@@ -51,15 +42,6 @@ class BookcaseFragment:BaseFragment() {
 
         initRecyclerView()
         findBook()
-
-        tv_search.setOnClickListener {
-            if (isLoginState()){
-                customStartActivity(Intent(activity, BookStoreTypeActivity::class.java))
-            }
-            else{
-                customStartActivity(Intent(activity, AccountLoginActivity::class.java))
-            }
-        }
 
         tv_type.setOnClickListener {
             if (isLoginState()){
@@ -71,7 +53,8 @@ class BookcaseFragment:BaseFragment() {
         }
 
         ll_book_top.setOnClickListener {
-            bookTopBean?.let { gotoBookDetails(it) }
+            if (bookTopBean!=null)
+                MethodUtils.gotoBookDetails(requireActivity(),bookTopBean)
         }
     }
     override fun lazyLoad() {
@@ -87,7 +70,7 @@ class BookcaseFragment:BaseFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodUtils.gotoBookDetails(requireActivity(), bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookcaseFragment.position=position
@@ -95,36 +78,6 @@ class BookcaseFragment:BaseFragment() {
                 true
             }
         }
-    }
-
-    private fun gotoBookDetails(bookBean: Book){
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-
-        val toolApps= AppDaoManager.getInstance().queryTool()
-        val result = JSONArray()
-        for (item in toolApps){
-            val jsonObject = JSONObject()
-            try {
-                jsonObject.put("appName", item.appName)
-                jsonObject.put("packageName", item.packageName)
-            } catch (_: JSONException) {
-            }
-            result.put(jsonObject)
-        }
-
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("key_book_id",bookBean.bookId.toString())
-        intent.putExtra("bookName", bookBean.bookName)
-        intent.putExtra("tool",result.toString())
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-        startActivity(intent)
     }
 
     /**

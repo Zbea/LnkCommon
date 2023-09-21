@@ -2,7 +2,6 @@ package com.bll.lnkcommon.base
 
 import PopupClick
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
@@ -14,16 +13,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
-import com.bll.lnkcommon.ui.activity.MainActivity
+import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -34,7 +30,6 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 
 abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
@@ -281,17 +276,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-//        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
-//            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
-//                elik?.setShifted(isCurrent&&isParallel)
-//            }
-//            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
-//                reDrawGeometry(elik!!)
-//            }
-//            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-//                 onElikSave()
-//            }
-//        })
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                elik?.setShifted(isCurrent&&isParallel)
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+                reDrawGeometry(elik!!)
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                 onElikSave()
+            }
+        })
     }
 
     /**
@@ -411,6 +406,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     private fun showDialogAppTool(){
         AppToolDialog(this).builder()?.setDialogClickListener{
+            if(this is DiaryActivity)
+                return@setDialogClickListener
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -584,15 +581,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        EventBus.getDefault().post(Constants.USER_EVENT)
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        startActivity(Intent(this, AccountLoginActivity::class.java))
-        DataBeanManager.students.clear()
-        DataBeanManager.friends.clear()
-        EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        MethodUtils.logoutFailure(this)
     }
 
     override fun hideLoading() {

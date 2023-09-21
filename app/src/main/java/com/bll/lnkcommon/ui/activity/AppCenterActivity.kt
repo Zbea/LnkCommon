@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,16 +9,18 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.manager.AppDaoManager
+import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.mvp.model.AppList
+import com.bll.lnkcommon.mvp.model.CommonData
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.AppCenterPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AppCenterListAdapter
-import com.bll.lnkcommon.utils.AppUtils
-import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileDownManager
-import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_app_center.*
+import kotlinx.android.synthetic.main.ac_app_center.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -29,6 +32,12 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     private var apps= mutableListOf<AppList.ListBean>()
     private var position=0
     private var currentDownLoadTask:BaseDownloadTask?=null
+    private var types= mutableListOf<ItemList>()
+
+    override fun onType(commonData: CommonData) {
+        types=commonData.subType
+        initTab()
+    }
 
     override fun onAppList(appBean: AppList) {
         setPageNumber(appBean.total)
@@ -53,22 +62,24 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     override fun initData() {
         pageSize=8
-        fetchData()
+        presenter.getTypeList()
     }
 
     override fun initView() {
-        setPageTitle("应用中心")
+        setPageTitle("应用")
+        initRecyclerView()
+    }
 
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            type = if (id==R.id.rb_official){
-                1
-            }else{
-                2
-            }
+    private fun initTab(){
+        for (i in types.indices) {
+            rg_group.addView(getRadioButton(i,types[i].desc,types.size-1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            type=types[i].type
             pageIndex=1
             fetchData()
         }
-        initRecyclerView()
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -82,10 +93,6 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                if (!isLoginState()){
-                    customStartActivity(Intent(this@AppCenterActivity,AccountLoginActivity::class.java))
-                    return@setOnItemClickListener
-                }
                 this@AppCenterActivity.position=position
                 val app=apps[position]
                 if (app.buyStatus==0){
@@ -158,12 +165,21 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"] = type
-        if (isLoginState()){
-            presenter.getAppList(map)
-        }
-        else{
-            presenter.getUnLoginAppList(map)
+        map["subType"] = type
+        presenter.getAppList(map)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.APP_INSTALL_EVENT){
+            val bean=apps[position]
+            val drawable=AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
+            val item=AppBean()
+            item.appName=bean.nickname
+            item.packageName=bean.packageName
+            item.imageByte= BitmapUtils.drawableToByte(drawable)
+            item.subType=if (type==6)1 else 0
+            AppDaoManager.getInstance().insertOrReplace(item)
+            EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
         }
     }
 

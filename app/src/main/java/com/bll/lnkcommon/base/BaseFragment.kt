@@ -3,7 +3,6 @@ package com.bll.lnkcommon.base
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,17 +16,12 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
-import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.CommonData
-import com.bll.lnkcommon.mvp.model.Note
-import com.bll.lnkcommon.mvp.model.User
+import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.CommonPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
-import com.bll.lnkcommon.ui.activity.MainActivity
-import com.bll.lnkcommon.ui.activity.NoteDrawingActivity
+import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -40,7 +34,6 @@ import kotlin.math.ceil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
-import java.net.UnknownServiceException
 
 
 abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView,  IContractView.ICommonView{
@@ -64,6 +57,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var checkPassword:CheckPassword?=null
 
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -97,6 +91,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
+        checkPassword=getCheckPasswordObj()
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -297,6 +292,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     /**
+     * 获取查看密码
+     */
+    fun getCheckPasswordObj(): CheckPassword? {
+        return SPUtil.getObj("${getUser()?.accountId}CheckPassword",
+            CheckPassword::class.java)
+    }
+
+    /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
      * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
      *
@@ -349,15 +352,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun login() {
         if (mView==null||activity==null)return
-        SToast.showText(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        EventBus.getDefault().post(Constants.USER_EVENT)
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-        customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
-        DataBeanManager.students.clear()
-        DataBeanManager.friends.clear()
-        EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        MethodUtils.logoutFailure(requireActivity())
     }
 
     override fun hideLoading() {
@@ -387,7 +382,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         onEventBusMessage(msgFlag)
     }
