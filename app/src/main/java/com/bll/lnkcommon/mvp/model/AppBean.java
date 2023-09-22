@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.mvp.model;
 
-import android.graphics.drawable.Drawable;
 
 import com.bll.lnkcommon.utils.SPUtil;
 

@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.mvp.model.PopupBean
@@ -581,7 +582,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        MethodUtils.logoutFailure(this)
+        MethodManager.logoutFailure(this)
     }
 
     override fun hideLoading() {

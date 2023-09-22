@@ -81,7 +81,14 @@ class NoteFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            gotoNote(note)
+            if (positionType==0&&checkPassword!=null&&checkPassword?.isSet==true&&!note.isCancelPassword){
+                CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    gotoNote(note)
+                }
+            }
+            else{
+                gotoNote(note)
+            }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position = position
@@ -266,7 +273,7 @@ class NoteFragment:BaseFragment() {
             val total = NoteDaoManager.getInstance().queryAll(typeStr)
             setPageNumber(total.size)
             for (item in notes){
-                item.isSet = checkPassword!=null&&checkPassword?.isSet==true
+                item.isSet = positionType==0&&checkPassword!=null&&checkPassword?.isSet==true
             }
             mAdapter?.setNewData(notes)
         }

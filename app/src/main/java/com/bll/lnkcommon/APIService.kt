@@ -262,6 +262,6 @@ interface APIService{
     /**
      * 期刊列表
      */
-    @GET("font/draw/list")
+    @GET("magazine/list")
     fun getJournalList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<JournalList>>
 }

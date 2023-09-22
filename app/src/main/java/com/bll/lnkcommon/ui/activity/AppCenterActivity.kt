@@ -171,15 +171,17 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.APP_INSTALL_EVENT){
-            val bean=apps[position]
-            val drawable=AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
-            val item=AppBean()
-            item.appName=bean.nickname
-            item.packageName=bean.packageName
-            item.imageByte= BitmapUtils.drawableToByte(drawable)
-            item.subType=if (type==6)1 else 0
-            AppDaoManager.getInstance().insertOrReplace(item)
-            EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
+            if (type==6){
+                val bean=apps[position]
+                val drawable=AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
+                val item=AppBean()
+                item.appName=bean.nickname
+                item.packageName=bean.packageName
+                item.imageByte= BitmapUtils.drawableToByte(drawable)
+                item.subType=1
+                AppDaoManager.getInstance().insertOrReplace(item)
+                EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
+            }
         }
     }
 

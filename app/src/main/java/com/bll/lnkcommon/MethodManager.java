@@ -1,17 +1,18 @@
-package com.bll.lnkcommon.utils;
+package com.bll.lnkcommon;
 
 import android.content.Context;
 import android.content.Intent;
 
-import com.bll.lnkcommon.Constants;
-import com.bll.lnkcommon.DataBeanManager;
-import com.bll.lnkcommon.R;
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.model.Book;
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
+import com.bll.lnkcommon.utils.ActivityManager;
+import com.bll.lnkcommon.utils.AppUtils;
+import com.bll.lnkcommon.utils.SPUtil;
+import com.bll.lnkcommon.utils.SToast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -20,7 +21,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class MethodUtils {
+public class MethodManager {
 
     /**
      * 退出登录(失效)

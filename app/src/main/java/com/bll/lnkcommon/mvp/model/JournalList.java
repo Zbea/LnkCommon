@@ -1,7 +1,5 @@
 package com.bll.lnkcommon.mvp.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class JournalList {
@@ -11,9 +9,8 @@ public class JournalList {
 
     public static class JournalBean{
         public int id;
-        @SerializedName("drawName")
         public String title;
-        public String bodyUrl;
+        public String imageUrl;
         public long date;
     }
 }

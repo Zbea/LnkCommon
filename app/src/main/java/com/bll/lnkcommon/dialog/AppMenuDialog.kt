@@ -6,9 +6,7 @@ import android.widget.ImageView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.BitmapUtils
-import com.bll.lnkcommon.utils.SPUtil
 
 class AppMenuDialog(val context: Context, val appBean: AppBean){
 

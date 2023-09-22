@@ -37,7 +37,7 @@ class AppToolActivity:BaseActivity() {
             resId=R.mipmap.icon_setting_uninstall
         })
 
-        setPageTitle("工具设置")
+        setPageTitle("工具")
         initRecyclerView()
         initMenuRecyclerView()
 

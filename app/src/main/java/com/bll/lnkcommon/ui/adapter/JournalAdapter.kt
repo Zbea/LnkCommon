@@ -12,8 +12,7 @@ class JournalAdapter(layoutResId: Int,  data: List<JournalList.JournalBean>?) : 
     override fun convert(helper: BaseViewHolder, item: JournalList.JournalBean) {
         helper.apply {
             setText(R.id.tv_title,item.title)
-            setText(R.id.tv_date,DateUtils.longToStringDataNoYear(item.date))
-            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,getView(R.id.iv_image),15)
+            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,getView(R.id.iv_image),30)
         }
     }
 

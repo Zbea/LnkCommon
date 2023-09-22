@@ -80,15 +80,6 @@ public class AppDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
-    /**
-     * 获取工具应用
-     * @return
-     */
-    public List<AppBean> queryAPP() {
-        WhereCondition whereCondition1= AppBeanDao.Properties.SubType.notEq(1);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
     public boolean isExist(String packageName){
         WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
         WhereCondition where2= AppBeanDao.Properties.SubType.eq(1);
@@ -114,8 +105,7 @@ public class AppDaoManager {
         WhereCondition where2= AppBeanDao.Properties.Sort.eq(sort);
         AppBean bean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
         if (bean!=null){
-            bean.sort=0;
-            insertOrReplace(bean);
+            delete(bean);
         }
     }
 

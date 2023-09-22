@@ -43,7 +43,7 @@ class AppFragment:BaseFragment() {
 
         setTitle(DataBeanManager.mainListTitle[4])
         showView(tv_setting)
-        tv_setting.text="工具设置"
+        tv_setting.text="工具"
 
         tv_setting.setOnClickListener {
             customStartActivity(Intent(requireActivity(),if (isLoginState())AppToolActivity::class.java
@@ -116,11 +116,11 @@ class AppFragment:BaseFragment() {
         apps.clear()
         if (isLoginState()){
             apps.add(AppBean().apply {
-                appName = "应用中心"
+                appName = "应用"
                 imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             })
             apps.add(AppBean().apply {
-                appName="新年台历"
+                appName="台历"
                 imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             })
             apps.add(AppBean().apply {
@@ -131,7 +131,7 @@ class AppFragment:BaseFragment() {
                 appName="书库"
                 imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             })
-            apps.addAll(AppDaoManager.getInstance().queryAPP())
+            apps.addAll(AppUtils.scanLocalInstallAppList(requireActivity()))
         }
         mAdapter?.setNewData(apps)
     }
@@ -142,7 +142,7 @@ class AppFragment:BaseFragment() {
             Constants.USER_EVENT->{
                 initData()
             }
-            Constants.APP_INSTALL_INSERT_EVENT->{
+            Constants.APP_INSTALL_EVENT->{
                 initData()
             }
             Constants.APP_UNINSTALL_EVENT->{

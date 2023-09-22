@@ -58,7 +58,7 @@ class JournalFragment:BaseFragment(),IJournalView {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
         }
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,60))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,100))
     }
 
     override fun fetchData() {

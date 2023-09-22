@@ -17,7 +17,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.MethodUtils
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.*
@@ -164,7 +164,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodUtils.gotoBookDetails(this@BookcaseTypeListActivity,bookBean)
+                MethodManager.gotoBookDetails(this@BookcaseTypeListActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

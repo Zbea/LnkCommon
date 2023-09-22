@@ -14,7 +14,7 @@ import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AccountFriendAdapter
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
-import com.bll.lnkcommon.utils.MethodUtils
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
@@ -157,7 +157,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 }
                 override fun ok() {
                     mUser=null
-                    MethodUtils.logout(this@AccountInfoActivity)
+                    MethodManager.logout(this@AccountInfoActivity)
                 }
             })
         }

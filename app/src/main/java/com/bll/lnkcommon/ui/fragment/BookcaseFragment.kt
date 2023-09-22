@@ -16,7 +16,7 @@ import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.utils.MethodUtils
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
@@ -54,7 +54,7 @@ class BookcaseFragment:BaseFragment() {
 
         ll_book_top.setOnClickListener {
             if (bookTopBean!=null)
-                MethodUtils.gotoBookDetails(requireActivity(),bookTopBean)
+                MethodManager.gotoBookDetails(requireActivity(),bookTopBean)
         }
     }
     override fun lazyLoad() {
@@ -70,7 +70,7 @@ class BookcaseFragment:BaseFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodUtils.gotoBookDetails(requireActivity(), bookBean)
+                MethodManager.gotoBookDetails(requireActivity(), bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookcaseFragment.position=position

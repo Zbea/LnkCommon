@@ -12,6 +12,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
@@ -352,7 +353,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun login() {
         if (mView==null||activity==null)return
-        MethodUtils.logoutFailure(requireActivity())
+        MethodManager.logoutFailure(requireActivity())
     }
 
     override fun hideLoading() {
