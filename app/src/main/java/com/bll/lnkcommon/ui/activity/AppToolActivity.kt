@@ -21,7 +21,6 @@ class AppToolActivity:BaseActivity() {
     private var mAdapter: AppListAdapter?=null
     private var mMenuAdapter: AppListAdapter?=null
     private var position=0
-    private var longBeans = mutableListOf<ItemList>()
 
     override fun layoutId(): Int {
         return R.layout.ac_app_tool
@@ -32,12 +31,8 @@ class AppToolActivity:BaseActivity() {
 
     override fun initView() {
 
-        longBeans.add(ItemList().apply {
-            name="卸载"
-            resId=R.mipmap.icon_setting_uninstall
-        })
 
-        setPageTitle("工具")
+        setPageTitle("我的工具")
         initRecyclerView()
         initMenuRecyclerView()
 
@@ -91,20 +86,6 @@ class AppToolActivity:BaseActivity() {
                 mAdapter?.notifyItemChanged(position)
             }
         }
-        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
-            this.position=position
-            val item=apps[position]
-            if (position>0){
-                LongClickManageDialog(this,item.appName,longBeans).builder().setOnDialogClickListener{
-                    when (it) {
-                        0 -> {
-                            AppUtils.uninstallAPK(this,item.packageName)
-                        }
-                    }
-                }
-            }
-            true
-        }
     }
 
     private fun initMenuRecyclerView(){
@@ -148,7 +129,6 @@ class AppToolActivity:BaseActivity() {
                 setData()
             }
             Constants.APP_UNINSTALL_EVENT->{
-                AppDaoManager.getInstance().delete(apps[position])
                 setData()
                 setMenuData()
             }

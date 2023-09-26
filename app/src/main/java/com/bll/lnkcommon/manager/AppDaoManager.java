@@ -109,6 +109,14 @@ public class AppDaoManager {
         }
     }
 
+    public void delete(String packageName) {
+        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
+        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+        if (appBean!=null)
+            delete(appBean);
+    }
+
+
     public void delete(AppBean item) {
         dao.delete(item);
     }

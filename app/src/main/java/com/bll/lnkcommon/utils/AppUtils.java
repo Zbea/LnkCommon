@@ -353,6 +353,12 @@ public class AppUtils {
         return myAppInfos;
     }
 
+    /**
+     * 查看本地应用图标
+     * @param context
+     * @param packageName
+     * @return
+     */
     public static Drawable scanLocalInstallAppDrawable(Context context,String packageName) {
         PackageManager packageManager=context.getPackageManager();
         Drawable drawable=null;

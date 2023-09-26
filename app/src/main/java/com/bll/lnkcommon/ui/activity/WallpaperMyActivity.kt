@@ -85,7 +85,10 @@ class WallpaperMyActivity:BaseActivity(){
                     mAdapter?.remove(position)
                 }
                 else{
-
+                    if(File(item.path).exists()){
+                        android.os.SystemProperties.set("xsys.eink.standby",item.path)
+//                android.os.SystemProperties.set("xsys.eink.poweroff",item.path)
+                    }
                 }
             }
     }

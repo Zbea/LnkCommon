@@ -43,7 +43,7 @@ class AppFragment:BaseFragment() {
 
         setTitle(DataBeanManager.mainListTitle[4])
         showView(tv_setting)
-        tv_setting.text="工具"
+        tv_setting.text="我的工具"
 
         tv_setting.setOnClickListener {
             customStartActivity(Intent(requireActivity(),if (isLoginState())AppToolActivity::class.java
@@ -146,7 +146,7 @@ class AppFragment:BaseFragment() {
                 initData()
             }
             Constants.APP_UNINSTALL_EVENT->{
-                AppDaoManager.getInstance().delete(apps[position])
+                AppDaoManager.getInstance().delete(apps[position].packageName)
                 mAdapter?.remove(position)
             }
         }

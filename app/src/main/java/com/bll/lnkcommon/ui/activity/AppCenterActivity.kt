@@ -166,6 +166,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         map["page"] = pageIndex
         map["size"] = pageSize
         map["subType"] = type
+        map["mainType"]=1
         presenter.getAppList(map)
     }
 
