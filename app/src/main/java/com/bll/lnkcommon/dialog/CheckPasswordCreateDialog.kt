@@ -30,28 +30,28 @@ class CheckPasswordCreateDialog(private val context: Context) {
         popWindowBeans.add(
             PopupBean(
                 0,
-                "爸爸名称？",
+                "您的姓名是？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 1,
-                "妈妈名称？",
+                "父亲姓名是？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 2,
-                "爷爷名称？",
+                "您的生日是？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 3,
-                "奶奶名称？",
+                "最喜欢电影？",
                 false
             )
         )

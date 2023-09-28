@@ -208,6 +208,16 @@ public class DateUtils {
         return Integer.parseInt(month);
     }
 
+    //得到当前年月日数值
+    public static int[] getDateNumber(long date){
+        Calendar a = Calendar.getInstance();
+        a.setTime(new Date(date));
+        int year = a.get(Calendar.YEAR);
+        int month = a.get(Calendar.MONTH) + 1;
+        int day=a.get(Calendar.DAY_OF_MONTH);
+        return new int[]{year,month,day};
+    }
+
 
     /**
      *  把秒换算成 "yyyy-MM-dd"

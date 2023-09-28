@@ -9,37 +9,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        android:gravity="center_vertical"
-        android:background="@color/bg_page">
+        android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:scaleType="center"
-            android:src="@mipmap/icon_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/black"
-            android:textSize="31sp"
-            android:text="随笔"
-            />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="180dp"
             android:layout_height="50dp"
             android:layout_marginEnd="30dp"
+            android:layout_marginStart="53dp"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:ellipsize="end"
             android:gravity="center"
@@ -49,14 +27,6 @@
             android:textColor="@color/black"
             android:textSize="22sp" />
 
-        <ImageView
-            android:id="@+id/iv_record"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
-            android:src="@mipmap/icon_freenote_recorder"
-            />
-
     </LinearLayout>
 
     <LinearLayout
@@ -65,12 +35,14 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
+
+
         <TextView
             android:id="@+id/tv_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="105dp"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginStart="53dp"
+            android:layout_marginEnd="@dimen/dp_40"
             android:text="格式"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -79,7 +51,7 @@
             android:id="@+id/tv_insert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_40"
             android:text="插入"
             android:textColor="@color/black"
             android:textSize="22sp" />
@@ -88,10 +60,11 @@
             android:id="@+id/tv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="40dp"
             android:text="分享"
             android:textColor="@color/black"
             android:textSize="22sp" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -99,51 +72,53 @@
             android:layout_weight="1"
             />
 
+
         <TextView
             android:id="@+id/tv_share_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="53dp"
             android:drawableStart="@mipmap/icon_freenote_share_list"
             android:drawablePadding="@dimen/dp_5"
-            android:text="列表"
+            android:text="分享"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_15"
-            android:paddingEnd="@dimen/dp_15"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
         <TextView
             android:id="@+id/tv_record_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="40dp"
             android:drawableStart="@mipmap/icon_freenote_recorder_list"
             android:drawablePadding="@dimen/dp_5"
-            android:text="列表"
+            android:text="录音"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_15"
-            android:paddingEnd="@dimen/dp_15"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
         <TextView
             android:id="@+id/tv_free_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="60dp"
-            android:drawableStart="@mipmap/icon_freenote_note_list"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:drawableStart="@mipmap/icon_freenote"
             android:drawablePadding="@dimen/dp_5"
-            android:text="列表"
+            android:text="随笔"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_15"
-            android:paddingEnd="@dimen/dp_15"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+
+
+        <ImageView
+            android:id="@+id/iv_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="53dp"
+            android:src="@mipmap/icon_freenote_recorder"
             />
 
     </LinearLayout>
@@ -158,6 +133,7 @@
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="centerInside"
             android:src="@mipmap/icon_freenote_bg_1" />
 
         <include

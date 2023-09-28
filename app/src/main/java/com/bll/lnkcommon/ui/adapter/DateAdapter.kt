@@ -5,6 +5,7 @@ import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -23,6 +24,7 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         val tvDay = helper.getView<TextView>(R.id.tv_day)
         val tvLunar=helper.getView<TextView>(R.id.tv_lunar)
         val ivImage=helper.getView<ImageView>(R.id.iv_image)
+        val rlImage=helper.getView<RelativeLayout>(R.id.rl_image)
         tvDay.text = if (item.day == 0) "" else item.day.toString()
         if (item.isNow)
             tvDay.typeface = defaultFromStyle(BOLD)
@@ -55,11 +57,11 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
                 GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
             }
             else{
-                ivImage.visibility= View.GONE
+                rlImage.visibility= View.GONE
             }
         }
         else{
-            ivImage.visibility= View.GONE
+            rlImage.visibility= View.GONE
         }
 
     }

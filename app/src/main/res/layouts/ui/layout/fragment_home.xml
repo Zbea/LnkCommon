@@ -30,29 +30,45 @@
             android:orientation="horizontal"
             android:gravity="bottom"
             >
-            <ImageView
-                android:id="@+id/iv_diary"
+            <TextView
+                android:id="@+id/tv_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_diary"
                 android:layout_marginEnd="@dimen/dp_30"
+                android:text="计划"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:drawablePadding="@dimen/dp_10"
+                android:drawableStart="@mipmap/icon_plan"
                 />
 
-            <ImageView
-                android:id="@+id/iv_plan"
+            <TextView
+                android:id="@+id/tv_diary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_plan"
                 android:layout_marginEnd="@dimen/dp_30"
+                android:text="日记"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:drawablePadding="@dimen/dp_10"
+                android:drawableStart="@mipmap/icon_diary"
                 />
 
-            <ImageView
-                android:id="@+id/iv_freenote"
+            <TextView
+                android:id="@+id/tv_free_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/icon_free_note"
-                android:layout_marginEnd="@dimen/dp_30"
+                android:layout_marginEnd="80dp"
+                android:text="随笔"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:drawablePadding="@dimen/dp_10"
+                android:drawableStart="@mipmap/icon_freenote"
                 />
+
 
         </LinearLayout>
 
@@ -61,8 +77,8 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="740dp"
-        android:layout_height="980dp"
+        android:layout_width="755dp"
+        android:layout_height="1000dp"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_40"
         android:background="@mipmap/icon_date_bg"
@@ -113,12 +129,19 @@
 
         </LinearLayout>
         <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_date"
+            android:scaleType="centerInside"
+            android:src="@mipmap/icon_date_event_bg"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"/>
+        <ImageView
             android:id="@+id/iv_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_date"
-            android:scaleType="center"
-            android:background="@mipmap/icon_date_event_bg"
+            android:scaleType="centerInside"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_5"/>
 
@@ -135,28 +158,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
-                android:background="@mipmap/icon_date_event_bg"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_5"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
-                <View
-                    android:id="@+id/v_up"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <View
-                    android:id="@+id/v_down"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-            </LinearLayout>
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_date"
+            android:orientation="horizontal"
+            >
+            <View
+                android:id="@+id/v_up"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <View
+                android:id="@+id/v_down"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_change"
@@ -174,7 +198,7 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
         />

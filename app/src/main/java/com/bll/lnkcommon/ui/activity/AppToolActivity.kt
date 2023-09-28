@@ -30,8 +30,6 @@ class AppToolActivity:BaseActivity() {
     }
 
     override fun initView() {
-
-
         setPageTitle("我的工具")
         initRecyclerView()
         initMenuRecyclerView()

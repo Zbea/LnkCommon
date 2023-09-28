@@ -61,7 +61,7 @@ class DateEventActivity:BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().post(Constants.DATE_EVENT)
+        EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
     }
 
 }

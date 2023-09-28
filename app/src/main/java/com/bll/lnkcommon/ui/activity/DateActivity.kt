@@ -8,7 +8,6 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.PopupDateSelector
 import com.bll.lnkcommon.mvp.model.Date
-import com.bll.lnkcommon.ui.activity.DateEventActivity
 import com.bll.lnkcommon.ui.adapter.DateAdapter
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
@@ -190,7 +189,7 @@ open class DateActivity: BaseActivity() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.DATE_EVENT){
+        if (msgFlag==Constants.DATE_DRAWING_EVENT){
             mAdapter?.notifyItemChanged(position)
         }
     }

@@ -42,13 +42,6 @@ class AppFragment:BaseFragment() {
         })
 
         setTitle(DataBeanManager.mainListTitle[4])
-        showView(tv_setting)
-        tv_setting.text="我的工具"
-
-        tv_setting.setOnClickListener {
-            customStartActivity(Intent(requireActivity(),if (isLoginState())AppToolActivity::class.java
-            else AccountLoginActivity::class.java))
-        }
 
         initRecyclerView()
 
@@ -87,6 +80,10 @@ class AppFragment:BaseFragment() {
                         customStartActivity(Intent(requireActivity(), BookStoreTypeActivity::class.java))
                     }
                 }
+                4->{
+                    if (isLoginState())
+                        customStartActivity(Intent(requireActivity(),AppToolActivity::class.java))
+                }
                 else -> {
                     val packageName= apps[position].packageName
                     AppUtils.startAPP(activity,packageName)
@@ -95,7 +92,7 @@ class AppFragment:BaseFragment() {
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
-            if (position>3){
+            if (position>4){
                 LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
                     when (it) {
                         0 -> {
@@ -129,6 +126,10 @@ class AppFragment:BaseFragment() {
             })
             apps.add(AppBean().apply {
                 appName="书库"
+                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+            })
+            apps.add(AppBean().apply {
+                appName="工具"
                 imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
             })
             apps.addAll(AppUtils.scanLocalInstallAppList(requireActivity()))

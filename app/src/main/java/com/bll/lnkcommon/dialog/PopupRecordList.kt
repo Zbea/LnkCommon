@@ -188,7 +188,7 @@ class PopupRecordList(var context: Context, var view: View) {
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view, 0, 10, Gravity.RIGHT)
+            mPopupWindow?.showAsDropDown(view, 0, 0, Gravity.RIGHT)
         }
     }
 

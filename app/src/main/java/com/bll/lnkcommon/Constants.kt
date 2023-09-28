@@ -54,7 +54,7 @@ object Constants {
         //eventbus通知标志
         const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
         const val AUTO_UPLOAD_EVENT = "AutoUploadEvent"
-        const val DATE_EVENT = "DateEvent"
+        const val DATE_DRAWING_EVENT = "DateDrawingEvent"
         const val BOOK_EVENT = "BookEvent"
         const val TEXT_BOOK_EVENT = "TextBookEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"

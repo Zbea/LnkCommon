@@ -8,7 +8,7 @@ import com.bll.lnkcommon.Constants.AUTO_UPLOAD_1MONTH_EVENT
 import com.bll.lnkcommon.Constants.AUTO_UPLOAD_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.CHECK_PASSWORD_EVENT
-import com.bll.lnkcommon.Constants.DATE_EVENT
+import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
@@ -42,7 +42,8 @@ class HomeFragment:BaseFragment(),IRelationView {
     private val presenter=RelationPresenter(this)
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
-    private var nowDay=1
+    private var nowDayPos=1
+    private var nowDay=0L
     private var calenderPath=""
 
     override fun onListStudents(list: MutableList<StudentBean>) {
@@ -66,15 +67,15 @@ class HomeFragment:BaseFragment(),IRelationView {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        iv_freenote.setOnClickListener {
+        tv_free_note.setOnClickListener {
             customStartActivity(Intent(activity, FreeNoteActivity::class.java))
         }
 
-        iv_plan.setOnClickListener {
+        tv_plan.setOnClickListener {
             customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
         }
 
-        iv_diary.setOnClickListener {
+        tv_diary.setOnClickListener {
             if (checkPassword!=null&&checkPassword?.isSet==true){
                 CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                     customStartActivity(Intent(activity, DiaryActivity::class.java))
@@ -86,16 +87,20 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
 
         v_up.setOnClickListener{
-            if (nowDay>1){
-                nowDay-=1
+            nowDay-=Constants.dayLong
+            setDateView()
+            if (nowDayPos>1){
+                nowDayPos-=1
                 setCalenderBg()
             }
         }
 
         v_down.setOnClickListener {
+            nowDay+=Constants.dayLong
+            setDateView()
             val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
-            if (nowDay<=allDay){
-                nowDay+=1
+            if (nowDayPos<=allDay){
+                nowDayPos+=1
                 setCalenderBg()
             }
         }
@@ -112,7 +117,7 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
 
         initRecyclerView()
-
+        nowDay=DateUtils.getStartOfDayInMillis()
     }
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
@@ -131,12 +136,12 @@ class HomeFragment:BaseFragment(),IRelationView {
      * 设置当天时间以及图片
      */
     private fun setDateView() {
-        tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
-
+        tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date(nowDay))
+        val dates=DateUtils.getDateNumber(nowDay)
         val solar= Solar()
-        solar.solarYear=DateUtils.getYear()
-        solar.solarMonth=DateUtils.getMonth()
-        solar.solarDay=DateUtils.getDay()
+        solar.solarYear=dates[0]
+        solar.solarMonth=dates[1]
+        solar.solarDay=dates[2]
         val lunar=LunarSolarConverter.SolarToLunar(solar)
         tv_date_luna.text=lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
 
@@ -156,9 +161,8 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
         tv_date_festival.text=str
 
-        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
-        if (File(path).exists())
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDay))+"/draw.png"
+        GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
     }
 
     /**
@@ -177,8 +181,8 @@ class HomeFragment:BaseFragment(),IRelationView {
      * 设置台历
      */
     private fun setCalenderView(){
-        val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(Date().time))
-        nowDay=calenderUtils.elapsedTime()
+        val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(nowDay))
+        nowDayPos=calenderUtils.elapsedTime()
         val item=CalenderDaoManager.getInstance().queryCalenderBean()
         if (item!=null){
             showView(ll_calender)
@@ -192,8 +196,8 @@ class HomeFragment:BaseFragment(),IRelationView {
 
     private fun setCalenderBg(){
         val listFiles=FileUtils.getFiles(calenderPath)
-        if (listFiles!=null&&listFiles.size>nowDay-1){
-            val file=listFiles[nowDay-1]
+        if (listFiles!=null&&listFiles.size>nowDayPos-1){
+            val file=listFiles[nowDayPos-1]
             GlideUtils.setImageFile(requireActivity(),file,iv_calender_bg)
         }
     }
@@ -225,7 +229,7 @@ class HomeFragment:BaseFragment(),IRelationView {
                 lazyLoad()
                 setCalenderView()
             }
-            DATE_EVENT -> {
+            DATE_DRAWING_EVENT -> {
                 setDateView()
             }
             CALENDER_SET_EVENT->{
@@ -235,6 +239,7 @@ class HomeFragment:BaseFragment(),IRelationView {
                 setDeleteOldCalender()
             }
             AUTO_UPLOAD_EVENT->{
+                nowDay=DateUtils.getStartOfDayInMillis()
                 setDateView()
                 setCalenderView()
             }
