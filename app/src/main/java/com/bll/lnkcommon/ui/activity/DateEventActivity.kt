@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.activity
 
 import android.view.EinkPWInterface
 import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.Constants.dayLong
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
@@ -15,7 +16,6 @@ import java.util.*
 
 class DateEventActivity:BaseActivity() {
     private var mDate: Date?=null
-    private var dayLong = 24 * 60 * 60 * 1000
     private var nowLong=0L
     private var elik: EinkPWInterface?=null
 

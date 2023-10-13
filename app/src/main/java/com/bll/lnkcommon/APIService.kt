@@ -165,11 +165,6 @@ interface APIService{
     /**
      * 应用列表
      */
-    @GET("application/noAuthList")
-    fun getUnLoginApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
-    /**
-     * 应用列表
-     */
     @GET("application/types")
     fun getApkTypes(): Observable<BaseResult<CommonData>>
     /**

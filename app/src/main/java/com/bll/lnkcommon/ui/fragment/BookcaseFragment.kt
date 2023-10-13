@@ -35,11 +35,6 @@ class BookcaseFragment:BaseFragment() {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
 
-        longBeans.add(ItemList().apply {
-            name="删除"
-            resId=R.mipmap.icon_setting_delete
-        })
-
         initRecyclerView()
         findBook()
 
@@ -71,11 +66,6 @@ class BookcaseFragment:BaseFragment() {
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
                 MethodManager.gotoBookDetails(requireActivity(), bookBean)
-            }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                this@BookcaseFragment.position=position
-                onLongClick()
-                true
             }
         }
     }
@@ -115,25 +105,8 @@ class BookcaseFragment:BaseFragment() {
         }
     }
 
-
     private fun setImageUrl(url: String,image: ImageView){
         GlideUtils.setImageRoundUrl(activity,url,image,5)
-    }
-
-
-    //删除书架书籍
-    private fun onLongClick(){
-        val book=books[position]
-        LongClickManageDialog(requireActivity(), book.bookName,longBeans).builder()
-            .setOnDialogClickListener {
-                deleteBook(book)
-                books.remove(book)
-                mAdapter?.notifyDataSetChanged()
-                if (books.size==11)
-                {
-                    findBook()
-                }
-            }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

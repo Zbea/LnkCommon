@@ -7,7 +7,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.*
-import com.bll.lnkcommon.mvp.model.CheckPassword
+import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
@@ -34,7 +34,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var position=0
     private var type=0//0学生1好友
     private var requestPosition=0
-    private var checkPassword: CheckPassword?=null
+    private var privacyPassword: PrivacyPassword?=null
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -89,7 +89,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         presenter.getStudents()
         presenter.getFriends()
         presenter.getRequestFriends()
-        checkPassword=SPUtil.getObj("${mUser?.accountId}CheckPassword", CheckPassword::class.java)
+        privacyPassword=SPUtil.getObj("${mUser?.accountId}PrivacyPassword", PrivacyPassword::class.java)
     }
 
     @SuppressLint("WrongConstant")
@@ -107,9 +107,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
         }
 
-        if (checkPassword!=null){
+        if (privacyPassword!=null){
             showView(tv_check_pad)
-            if (checkPassword?.isSet == true){
+            if (privacyPassword?.isSet == true){
                 btn_psd_check.text="取消密码"
             }
             else{
@@ -243,20 +243,20 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
      * 设置查看密码
      */
     private fun setPassword(){
-        if (checkPassword==null){
-            CheckPasswordCreateDialog(this).builder().setOnDialogClickListener{
-                checkPassword=it
+        if (privacyPassword==null){
+            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
+                privacyPassword=it
                 showView(tv_check_pad)
                 btn_psd_check.text="设置密码"
-                SPUtil.putObj("${mUser?.accountId}CheckPassword",checkPassword!!)
+                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
                 EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
             }
         }
         else{
-            CheckPasswordDialog(this).builder()?.setOnDialogClickListener{
-                checkPassword?.isSet=!checkPassword?.isSet!!
-                btn_psd_check.text=if (checkPassword?.isSet==true) "取消密码" else "设置密码"
-                SPUtil.putObj("${mUser?.accountId}CheckPassword",checkPassword!!)
+            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
+                privacyPassword?.isSet=!privacyPassword?.isSet!!
+                btn_psd_check.text=if (privacyPassword?.isSet==true) "取消密码" else "设置密码"
+                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
                 EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
             }
         }

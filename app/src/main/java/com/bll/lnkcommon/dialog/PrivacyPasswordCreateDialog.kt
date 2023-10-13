@@ -2,12 +2,11 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.CheckPassword
+import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.KeyboardUtils
@@ -16,11 +15,11 @@ import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.SToast
 
 
-class CheckPasswordCreateDialog(private val context: Context) {
+class PrivacyPasswordCreateDialog(private val context: Context) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
-    fun builder(): CheckPasswordCreateDialog {
+    fun builder(): PrivacyPasswordCreateDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_check_password_create)
         val window = dialog.window!!
@@ -97,15 +96,15 @@ class CheckPasswordCreateDialog(private val context: Context) {
                 SToast.showText("密码输入不一致")
                 return@setOnClickListener
             }
-            val checkPassword= CheckPassword()
-            checkPassword.question=tvQuestion.text.toString()
-            checkPassword.answer=answerStr
-            checkPassword.password= MD5Utils.digest(passwordStr)
+            val privacyPassword= PrivacyPassword()
+            privacyPassword.question=tvQuestion.text.toString()
+            privacyPassword.answer=answerStr
+            privacyPassword.password= MD5Utils.digest(passwordStr)
             val user= SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}CheckPassword",checkPassword)
+            SPUtil.putObj("${user?.accountId}PrivacyPassword",privacyPassword)
 
             dialog.dismiss()
-            listener?.onClick(checkPassword)
+            listener?.onClick(privacyPassword)
 
         }
 
@@ -120,7 +119,7 @@ class CheckPasswordCreateDialog(private val context: Context) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(checkPassword: CheckPassword)
+        fun onClick(privacyPassword: PrivacyPassword)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

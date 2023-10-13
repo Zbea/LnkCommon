@@ -14,7 +14,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.CheckPasswordDialog
+import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
@@ -76,8 +76,8 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
 
         tv_diary.setOnClickListener {
-            if (checkPassword!=null&&checkPassword?.isSet==true){
-                CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+            if (privacyPassword!=null&&privacyPassword?.isSet==true){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                     customStartActivity(Intent(activity, DiaryActivity::class.java))
                 }
             }
@@ -117,7 +117,6 @@ class HomeFragment:BaseFragment(),IRelationView {
         }
 
         initRecyclerView()
-        nowDay=DateUtils.getStartOfDayInMillis()
     }
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
@@ -127,6 +126,7 @@ class HomeFragment:BaseFragment(),IRelationView {
             presenter.getFriends()
         }
         setDeleteOldCalender()
+        nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()
         setCalenderView()
         findAppData()
@@ -225,7 +225,7 @@ class HomeFragment:BaseFragment(),IRelationView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
-                checkPassword=getCheckPasswordObj()
+                privacyPassword=getCheckPasswordObj()
                 lazyLoad()
                 setCalenderView()
             }
@@ -244,7 +244,7 @@ class HomeFragment:BaseFragment(),IRelationView {
                 setCalenderView()
             }
             CHECK_PASSWORD_EVENT->{
-                checkPassword=getCheckPasswordObj()
+                privacyPassword=getCheckPasswordObj()
             }
         }
     }
@@ -258,6 +258,9 @@ class HomeFragment:BaseFragment(),IRelationView {
                 presenter.getStudents()
             presenter.getFriends()
         }
+        nowDay=DateUtils.getStartOfDayInMillis()
+        setDateView()
+        setCalenderView()
         findAppData()
     }
 

@@ -58,7 +58,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
-    var checkPassword:CheckPassword?=null
+    var privacyPassword: PrivacyPassword?=null
 
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -92,7 +92,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
-        checkPassword=getCheckPasswordObj()
+        privacyPassword=getCheckPasswordObj()
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -295,9 +295,9 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     /**
      * 获取查看密码
      */
-    fun getCheckPasswordObj(): CheckPassword? {
-        return SPUtil.getObj("${getUser()?.accountId}CheckPassword",
-            CheckPassword::class.java)
+    fun getCheckPasswordObj(): PrivacyPassword? {
+        return SPUtil.getObj("${getUser()?.accountId}PrivacyPassword",
+            PrivacyPassword::class.java)
     }
 
     /**

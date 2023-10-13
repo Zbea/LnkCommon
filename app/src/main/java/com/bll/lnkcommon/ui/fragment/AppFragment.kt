@@ -59,48 +59,48 @@ class AppFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(5,50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            when (position) {
-                0 -> {
-                    if (isLoginState()){
-                        customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
-                    }
-                }
-                1 -> {
-                    if (isLoginState()){
-                        customStartActivity(Intent(requireActivity(), CalenderListActivity::class.java))
-                    }
-                }
-                2->{
-                    if (isLoginState()){
-                        customStartActivity(Intent(requireActivity(), WallpaperListActivity::class.java))
-                    }
-                }
-                3->{
-                    if (isLoginState()){
-                        customStartActivity(Intent(requireActivity(), BookStoreTypeActivity::class.java))
-                    }
-                }
-                4->{
-                    if (isLoginState())
-                        customStartActivity(Intent(requireActivity(),AppToolActivity::class.java))
-                }
-                else -> {
-                    val packageName= apps[position].packageName
-                    AppUtils.startAPP(activity,packageName)
-                }
-            }
+            val packageName= apps[position].packageName
+            AppUtils.startAPP(activity,packageName)
+//            when (position) {
+//                0 -> {
+//                    if (isLoginState()){
+//                        customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
+//                    }
+//                }
+//                1 -> {
+//                    if (isLoginState()){
+//                        customStartActivity(Intent(requireActivity(), CalenderListActivity::class.java))
+//                    }
+//                }
+//                2->{
+//                    if (isLoginState()){
+//                        customStartActivity(Intent(requireActivity(), WallpaperListActivity::class.java))
+//                    }
+//                }
+//                3->{
+//                    if (isLoginState()){
+//                        customStartActivity(Intent(requireActivity(), BookStoreTypeActivity::class.java))
+//                    }
+//                }
+//                4->{
+//                    if (isLoginState())
+//                        customStartActivity(Intent(requireActivity(),AppToolActivity::class.java))
+//                }
+//                else -> {
+//                    val packageName= apps[position].packageName
+//                    AppUtils.startAPP(activity,packageName)
+//                }
+//            }
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
-            if (position>4){
-                LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
-                    when (it) {
-                        0 -> {
-                            AppMenuDialog(requireActivity(),apps[position]).builder()
-                        }
-                        else -> {
-                            AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
-                        }
+            LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
+                when (it) {
+                    0 -> {
+                        AppMenuDialog(requireActivity(),apps[position]).builder()
+                    }
+                    else -> {
+                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
                     }
                 }
             }
@@ -112,26 +112,26 @@ class AppFragment:BaseFragment() {
     private fun initData() {
         apps.clear()
         if (isLoginState()){
-            apps.add(AppBean().apply {
-                appName = "应用"
-                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-            })
-            apps.add(AppBean().apply {
-                appName="台历"
-                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-            })
-            apps.add(AppBean().apply {
-                appName="壁纸"
-                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-            })
-            apps.add(AppBean().apply {
-                appName="书库"
-                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-            })
-            apps.add(AppBean().apply {
-                appName="工具"
-                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-            })
+//            apps.add(AppBean().apply {
+//                appName = "应用"
+//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+//            })
+//            apps.add(AppBean().apply {
+//                appName="台历"
+//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+//            })
+//            apps.add(AppBean().apply {
+//                appName="壁纸"
+//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+//            })
+//            apps.add(AppBean().apply {
+//                appName="书库"
+//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+//            })
+//            apps.add(AppBean().apply {
+//                appName="工具"
+//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
+//            })
             apps.addAll(AppUtils.scanLocalInstallAppList(requireActivity()))
         }
         mAdapter?.setNewData(apps)

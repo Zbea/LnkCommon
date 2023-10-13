@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MethodManager {
 
@@ -32,7 +33,7 @@ public class MethodManager {
         SPUtil.INSTANCE.putString("token", "");
         SPUtil.INSTANCE.removeObj("user");
         EventBus.getDefault().post(Constants.USER_EVENT);
-        ActivityManager.getInstance().finishOthers(MainActivity.class);
+        ActivityManager.getInstance().finishAll();
         context.startActivity(new Intent(context, AccountLoginActivity.class));
         DataBeanManager.INSTANCE.getStudents().clear();
         DataBeanManager.INSTANCE.getStudents().clear();
@@ -82,6 +83,8 @@ public class MethodManager {
         List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
         JSONArray result =new JSONArray();
         for (AppBean item :toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("appName", item.appName);

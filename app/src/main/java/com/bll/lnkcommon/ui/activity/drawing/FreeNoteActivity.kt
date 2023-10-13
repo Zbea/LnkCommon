@@ -37,10 +37,6 @@ import java.io.IOException
 class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     private val presenter=ShareNotePresenter(this)
-    private var isRecord=false
-    private var recordBean: RecordBean? = null
-    private var mRecorder: MediaRecorder? = null
-    private var recordPath: String? = null
     private var bgRes=""
     private var freeNoteBean:FreeNoteBean?=null
     private var posImage=0
@@ -139,24 +135,14 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         StrictMode.setVmPolicy(builder.build())
         builder.detectFileUriExposure()
 
+        disMissView(tv_page_title)
         tv_name.text=freeNoteBean?.title
-        tv_insert.visibility=if (isLoginState()) View.VISIBLE else View.GONE
         elik=iv_image.pwInterFace
 
         tv_name.setOnClickListener {
             InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
                 tv_name.text=it
                 freeNoteBean?.title=it
-            }
-        }
-
-        iv_record.setOnClickListener {
-            isRecord=!isRecord
-            if (isRecord){
-                startRecord()
-            }
-            else{
-                stopRecord()
             }
         }
 
@@ -167,10 +153,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                     iv_image.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }
-        }
-
-        tv_insert.setOnClickListener {
-            insertNote()
         }
 
         tv_free_list.setOnClickListener {
@@ -189,10 +171,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             else{
                 freeNotePopWindow?.show()
             }
-        }
-
-        tv_record_list.setOnClickListener {
-            PopupRecordList(this,tv_record_list).builder()
         }
 
         tv_share_list.setOnClickListener {
@@ -381,94 +359,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         elik?.saveBitmap(true) {}
     }
 
-    /**
-     * 插入笔记
-     */
-    private fun insertNote(){
-        PopupClick(this,popsNote,tv_insert,10).builder().setOnSelectListener{
-//            if (NoteDaoManager.getInstance().isExist(it.name,freeNoteBean?.title)){
-//                showToast("已存在，插入失败")
-//                return@setOnSelectListener
-//            }
-            val note=Note()
-            note.title = freeNoteBean?.title
-            note.date = System.currentTimeMillis()
-            note.typeStr = it.name
-            note.contentResId = ToolUtils.getImageResStr(this,0)
-            NoteDaoManager.getInstance().insertOrReplace(note)
-            for (i in images.indices){
-                val oldPath=images[i]
-                if(File(oldPath).exists()){
-                    val date=System.currentTimeMillis()
-                    val pathName = DateUtils.longToString(date)
-                    val path=FileAddress().getPathNote(it.name,note.title,date)+"/${pathName}.tch"
-                    FileUtils.copyFile(oldPath,path)
-//                FileUtils.copyFile(oldPath.replace("tch","png"),path.replace("tch","png"))
-                    val noteContent = NoteContent()
-                    noteContent.date = date
-                    noteContent.typeStr=note.typeStr
-                    noteContent.notebookTitle = note.title
-                    noteContent.resId = note.contentResId
-                    noteContent.title="未命名${i+1}"
-                    noteContent.filePath = path
-                    noteContent.pathName=pathName
-                    noteContent.page = i
-                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-                }
-            }
-            showToast("插入笔记成功")
-            EventBus.getDefault().post(Constants.NOTE_EVENT)
-        }
-    }
-
-    /**
-     * 开始录音
-     */
-    private fun startRecord(){
-        iv_record.setImageResource(R.mipmap.icon_freenote_recording)
-        recordBean = RecordBean()
-        recordBean?.userId=if (isLoginState()) getUser()?.accountId else 0
-        recordBean?.date=System.currentTimeMillis()
-        recordBean?.title=tv_name.text.toString()
-
-        val path= FileAddress().getPathRecord()
-        if (!File(path).exists())
-            File(path).mkdir()
-        recordPath = File(path, "${DateUtils.longToString(recordBean?.date!!)}.mp3").path
-
-        mRecorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-            setOutputFile(recordPath)
-            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-            try {
-                prepare()//准备
-                start()//开始录音
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    /**
-     * 结束录音
-     */
-    private fun stopRecord(){
-        iv_record.setImageResource(R.mipmap.icon_freenote_recorder)
-        mRecorder?.apply {
-            setOnErrorListener(null)
-            setOnInfoListener(null)
-            setPreviewDisplay(null)
-            stop()
-            release()
-            mRecorder=null
-        }
-        recordBean?.path=recordPath
-        RecordDaoManager.getInstance().insertOrReplace(recordBean)
-        recordBean=null
-        recordPath=null
-    }
-
     private fun saveFreeNote(){
         //清空没有手写页面
         val sImages= mutableListOf<String>()
@@ -492,9 +382,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (recordBean!=null){
-            stopRecord()
-        }
         saveFreeNote()
         FileDownloader.getImpl().pauseAll()
     }

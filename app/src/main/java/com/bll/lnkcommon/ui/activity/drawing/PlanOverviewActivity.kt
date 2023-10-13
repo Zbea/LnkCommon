@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
 
+import com.bll.lnkcommon.Constants.weekTime
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -12,7 +13,6 @@ import java.io.File
 
 class PlanOverviewActivity: BaseDrawingActivity() {
 
-    private val weekTime=7*24*60*60*1000
     private var type=1//1月计划 2 周计划
     private var nowYear=0
     private var nowMonth=1

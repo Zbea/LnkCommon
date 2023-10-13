@@ -46,24 +46,6 @@ class AppCenterPresenter(view: IContractView.IAPPView) : BasePresenter<IContract
     }
 
 
-    fun getUnLoginAppList(map: HashMap<String,Any>) {
-
-        val app = RetrofitManager.service.getUnLoginApks(map)
-
-        doRequest(app, object : Callback<AppList>(view) {
-            override fun failed(tBaseResult: BaseResult<AppList>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<AppList>) {
-                if (tBaseResult.data!=null)
-                    view.onAppList(tBaseResult.data)
-            }
-
-        }, true)
-    }
-
-
     fun buyApk(map: HashMap<String, Any> ) {
 
         val requestBody= RequestUtils.getBody(map)

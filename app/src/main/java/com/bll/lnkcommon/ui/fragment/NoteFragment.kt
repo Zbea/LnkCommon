@@ -13,7 +13,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.CheckPasswordDialog
+import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.dialog.NoteModuleAddDialog
@@ -81,8 +81,8 @@ class NoteFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            if (positionType==0&&checkPassword!=null&&checkPassword?.isSet==true&&!note.isCancelPassword){
-                CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+            if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                     gotoNote(note)
                 }
             }
@@ -125,7 +125,7 @@ class NoteFragment:BaseFragment() {
                         }
                 }
                 R.id.iv_password->{
-                    CheckPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
                         note.isCancelPassword=!note.isCancelPassword
                         mAdapter?.notifyItemChanged(position)
                         NoteDaoManager.getInstance().insertOrReplace(note)
@@ -249,7 +249,7 @@ class NoteFragment:BaseFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             USER_EVENT->{
-                checkPassword=getCheckPasswordObj()
+                privacyPassword=getCheckPasswordObj()
                 positionType=0
                 findTabs()
             }
@@ -260,7 +260,7 @@ class NoteFragment:BaseFragment() {
                 fetchData()
             }
             CHECK_PASSWORD_EVENT->{
-                checkPassword=getCheckPasswordObj()
+                privacyPassword=getCheckPasswordObj()
                 fetchData()
             }
         }
@@ -273,7 +273,7 @@ class NoteFragment:BaseFragment() {
             val total = NoteDaoManager.getInstance().queryAll(typeStr)
             setPageNumber(total.size)
             for (item in notes){
-                item.isSet = positionType==0&&checkPassword!=null&&checkPassword?.isSet==true
+                item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
             }
             mAdapter?.setNewData(notes)
         }

@@ -113,6 +113,7 @@ class WallpaperListActivity:BaseActivity(),IWallpaperView {
                 ImageDialog(this@WallpaperListActivity,items[position].bodyUrl.split(",")).builder()
             }
             setOnItemChildClickListener { adapter, view, position ->
+                this@WallpaperListActivity.position=position
                 val item=items[position]
                 if (view.id==R.id.btn_download){
                     if (item.buyStatus==1){
@@ -150,7 +151,7 @@ class WallpaperListActivity:BaseActivity(),IWallpaperView {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     hideLoading()
-                    item.path=pathStr
+                    item.path=savePaths[0]
                     WallpaperDaoManager.getInstance().insertOrReplace(item)
                     showToast("下载完成")
                 }

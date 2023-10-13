@@ -76,6 +76,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())
+        disMissView(tv_page_title)
         iv_tool.visibility= View.INVISIBLE
         elik=iv_image.pwInterFace
         if (correctBean?.status==2)

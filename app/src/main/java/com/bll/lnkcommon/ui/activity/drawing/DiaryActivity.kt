@@ -34,6 +34,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
+        disMissView(tv_page_title)
         elik=v_content_b.pwInterFace
         elik?.addOnTopView(ll_date)
         elik?.addOnTopView(tv_digest)
