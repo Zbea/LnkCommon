@@ -28,16 +28,13 @@ object Constants {
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
 
-                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")?.path
-        //解压的目录
-        val BOOK_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Books"
-        val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
@@ -49,7 +46,10 @@ object Constants {
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
-
+        //解压的目录
+        val BOOK_PATH =Environment.getExternalStoragePublicDirectory("Books").absolutePath
+        val BOOK_DRAW_PATH= Environment.getExternalStoragePublicDirectory("Notes").absolutePath
+        val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
         const val AUTO_UPLOAD_1MONTH_EVENT = "AutoUploadEvent1Month"
@@ -66,7 +66,7 @@ object Constants {
         const val APP_INSTALL_EVENT="AppInstallEvent"
         const val APP_INSTALL_INSERT_EVENT="AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT="AppUnInstallEvent"
-
+        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"
         const val CALENDER_EVENT = "CalenderEvent"
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
         const val CHECK_PASSWORD_EVENT = "CheckPasswordEvent"

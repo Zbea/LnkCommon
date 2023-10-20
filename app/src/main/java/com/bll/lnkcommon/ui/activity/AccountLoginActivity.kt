@@ -1,15 +1,11 @@
 package com.bll.lnkcommon.ui.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.mvp.model.FriendList
-import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.LoginPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
@@ -35,6 +31,7 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
         val intent = Intent()
         intent.putExtra("token", token)
+        intent.putExtra("userId", user.accountId)
         intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
 
@@ -50,6 +47,8 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+
+        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
 
         ed_user.setText("zhufeng4")
         ed_psw.setText("123456")

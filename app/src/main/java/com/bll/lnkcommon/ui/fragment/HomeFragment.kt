@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.fragment
 
+import PopupClick
 import android.content.Intent
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,6 +20,7 @@ import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.mvp.model.FriendList
+import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
@@ -30,6 +32,8 @@ import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
+import kotlinx.android.synthetic.main.ac_account_login_user.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
 import org.greenrobot.eventbus.EventBus
@@ -45,6 +49,7 @@ class HomeFragment:BaseFragment(),IRelationView {
     private var nowDayPos=1
     private var nowDay=0L
     private var calenderPath=""
+    private var popNotes= mutableListOf<PopupBean>()
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         DataBeanManager.students=list
@@ -62,27 +67,35 @@ class HomeFragment:BaseFragment(),IRelationView {
     }
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
+        showView(iv_manager)
+
+        popNotes.add(PopupBean(0,"随笔",R.mipmap.icon_freenote))
+        popNotes.add(PopupBean(1,"日记",R.mipmap.icon_diary))
+        popNotes.add(PopupBean(2,"总览",R.mipmap.icon_plan))
 
         ll_date.setOnClickListener {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        tv_free_note.setOnClickListener {
-            customStartActivity(Intent(activity, FreeNoteActivity::class.java))
-        }
-
-        tv_plan.setOnClickListener {
-            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
-        }
-
-        tv_diary.setOnClickListener {
-            if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                    customStartActivity(Intent(activity, DiaryActivity::class.java))
+        iv_manager.setOnClickListener {
+            PopupClick(requireActivity(),popNotes,iv_manager,5).builder().setOnSelectListener{
+                when (it.id) {
+                    0 -> {
+                        startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
+                    }
+                    1->{
+                        if (privacyPassword!=null&&privacyPassword?.isSet==true){
+                            PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                            }
+                        } else{
+                            startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                        }
+                    }
+                    else -> {
+                        startActivity(Intent(requireActivity(),PlanOverviewActivity::class.java))
+                    }
                 }
-            }
-            else{
-                customStartActivity(Intent(activity, DiaryActivity::class.java))
             }
         }
 
@@ -119,11 +132,13 @@ class HomeFragment:BaseFragment(),IRelationView {
         initRecyclerView()
     }
     override fun lazyLoad() {
-        if (DataBeanManager.courses.isEmpty())
-            mCommonPresenter.getCommon()
-        if (isLoginState()){
-            presenter.getStudents()
-            presenter.getFriends()
+        if (NetworkUtil.isNetworkAvailable(requireActivity())) {
+            if (DataBeanManager.courses.isEmpty())
+                mCommonPresenter.getCommon()
+            if (isLoginState()){
+                presenter.getStudents()
+                presenter.getFriends()
+            }
         }
         setDeleteOldCalender()
         nowDay=DateUtils.getStartOfDayInMillis()
@@ -136,7 +151,10 @@ class HomeFragment:BaseFragment(),IRelationView {
      * 设置当天时间以及图片
      */
     private fun setDateView() {
-        tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date(nowDay))
+        tv_date_month.text=SimpleDateFormat("MM").format(nowDay)
+        tv_date_day.text=SimpleDateFormat("dd").format(nowDay)
+        tv_date_week.text=SimpleDateFormat("EEEE").format(Date(nowDay))
+
         val dates=DateUtils.getDateNumber(nowDay)
         val solar= Solar()
         solar.solarYear=dates[0]
@@ -250,18 +268,7 @@ class HomeFragment:BaseFragment(),IRelationView {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
-        if (DataBeanManager.courses.isEmpty())
-            mCommonPresenter.getCommon()
-        if (isLoginState()){
-            if (DataBeanManager.students.size==0)
-                presenter.getStudents()
-            presenter.getFriends()
-        }
-        nowDay=DateUtils.getStartOfDayInMillis()
-        setDateView()
-        setCalenderView()
-        findAppData()
+        lazyLoad()
     }
 
 }

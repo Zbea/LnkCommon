@@ -153,7 +153,7 @@ public class FileUtils {
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return null;
+        if (tempList==null) return files;
         for (File value : tempList) {
             if (value.isFile()) {
                 files.add(value);
@@ -178,7 +178,7 @@ public class FileUtils {
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return null;
+        if (tempList==null) return files;
         for (int i = 0; i < tempList.length; i++) {
             File childFile=tempList[i];
             if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {

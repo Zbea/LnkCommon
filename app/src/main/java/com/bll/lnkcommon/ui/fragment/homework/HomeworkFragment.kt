@@ -15,6 +15,7 @@ import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
+import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_homework.rv_list
 
@@ -68,7 +69,8 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
     }
 
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchData()
     }
 
     private fun initRecyclerView() {
@@ -132,7 +134,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
 
     override fun onRefreshData() {
         courseStr=""
-        fetchData()
+        lazyLoad()
     }
 
     override fun fetchData() {

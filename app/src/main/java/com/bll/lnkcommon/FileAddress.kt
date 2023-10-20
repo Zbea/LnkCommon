@@ -6,6 +6,7 @@ import com.bll.lnkcommon.Constants.FREE_NOTE_PATH
 import com.bll.lnkcommon.Constants.HOMEWORK_PATH
 import com.bll.lnkcommon.Constants.IMAGE_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
+import com.bll.lnkcommon.Constants.SCREEN_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_PICTURE_FILES
@@ -145,4 +146,12 @@ class FileAddress {
     fun getPathImage(typeStr: String,contentId: Int):String{
         return "$IMAGE_PATH/${getUserId()}/$typeStr/$contentId"
     }
+
+    /**
+     * 截图
+     */
+    fun getPathScreen(typeStr: String):String{
+        return "$SCREEN_PATH/${getUserId()}/$typeStr"
+    }
+
 }

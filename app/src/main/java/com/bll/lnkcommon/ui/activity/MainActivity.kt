@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.model.AreaBean
-import com.bll.lnkcommon.mvp.model.MainListBean
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.adapter.MainListAdapter
 import com.bll.lnkcommon.ui.fragment.*
-import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.google.gson.Gson
@@ -26,7 +25,7 @@ class MainActivity : BaseActivity() {
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData=mutableListOf<MainListBean>()
+    private var mData=mutableListOf<ItemList>()
     private var lastFragment: Fragment? = null
 
     private var homeFragment: HomeFragment? = null
@@ -200,16 +199,14 @@ class MainActivity : BaseActivity() {
     }
 
     private fun changeData(){
-        mData.add(MainListBean().apply {
-            icon = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jc)
-            icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jc_check)
-            checked = false
+        mData.add(ItemList().apply {
+            icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
             name = DataBeanManager.mainListTitle[5]
         })
-        mData.add(MainListBean().apply {
-            icon = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jx)
-            icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_main_jx_check)
-            checked = false
+        mData.add(ItemList().apply {
+            icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework_check)
             name = DataBeanManager.mainListTitle[6]
         })
     }

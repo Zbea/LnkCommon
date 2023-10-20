@@ -29,6 +29,16 @@ public class GlideUtils {
                 .into(imageView);
     }
 
+    public static final void setImageFileRound(Context mContext, File file, ImageView imageView,int round){
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.transform(new RoundedCorners(round));
+
+        Glide.with(mContext)
+                .load(file)
+                .apply(requestOptions)
+                .into(imageView);
+    }
+
     public static final void setImageRoundUrl(Context mContext,String url, ImageView imageView,int round){
 
         RequestOptions requestOptions=new RequestOptions();

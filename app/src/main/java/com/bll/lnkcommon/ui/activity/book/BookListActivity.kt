@@ -7,13 +7,14 @@ import com.bll.lnkcommon.Constants.BOOK_EVENT
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.LongClickManageDialog
-import com.bll.lnkcommon.dialog.BookTypeSelectorDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.dialog.ItemSelectorDialog
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.rv_list
@@ -40,7 +41,7 @@ class BookListActivity : BaseActivity() {
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置分类"
+            name="设置"
             resId=R.mipmap.icon_setting_set
         })
     }
@@ -90,8 +91,14 @@ class BookListActivity : BaseActivity() {
                     mAdapter?.notifyDataSetChanged()
                 }
                 else{
-                    BookTypeSelectorDialog(this@BookListActivity,"设置分类").builder().setOnDialogClickListener{
-                        book.subtypeStr=it
+                    val types= ItemTypeDaoManager.getInstance().queryAll(2)
+                    val lists= mutableListOf<ItemList>()
+                    for (i in types.indices){
+                        lists.add(ItemList(i,types[i].title))
+                    }
+                    ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{
+                        val typeStr=types[it].title
+                        book.subtypeStr=typeStr
                         mBookDaoManager.insertOrReplaceBook(book)
                         books.removeAt(pos)
                         mAdapter?.notifyItemChanged(pos)

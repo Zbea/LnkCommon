@@ -17,17 +17,17 @@ import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.ui.activity.ScreenshotManagerActivity
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 
 class BookcaseFragment:BaseFragment() {
 
     private var mAdapter: BookAdapter?=null
-    private var position=0
     private var books= mutableListOf<Book>()//所有数据
     private var bookTopBean:Book?=null
-    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
@@ -98,10 +98,12 @@ class BookcaseFragment:BaseFragment() {
         if (bookTopBean!=null){
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_up)
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_down)
+            tv_name.text=bookTopBean?.bookName
         }
         else{
             iv_content_up.setImageBitmap(null)
             iv_content_down.setImageBitmap(null)
+            tv_name.text=""
         }
     }
 

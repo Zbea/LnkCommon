@@ -17,11 +17,11 @@ import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.dialog.NoteModuleAddDialog
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.manager.NoteContentDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
-import com.bll.lnkcommon.manager.NotebookDaoManager
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.Note
-import com.bll.lnkcommon.mvp.model.Notebook
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
@@ -38,7 +38,7 @@ import java.io.File
 class NoteFragment:BaseFragment() {
 
     private var popupBeans = mutableListOf<PopupBean>()
-    private var notebooks = mutableListOf<Notebook>()
+    private var notebooks = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
     private var position = 0 //当前笔记标记
@@ -156,11 +156,11 @@ class NoteFragment:BaseFragment() {
      */
     private fun findTabs() {
         notebooks.clear()
-        notebooks.add(Notebook().apply {
+        notebooks.add(ItemTypeBean().apply {
             title = getString(R.string.note_tab_diary)
         })
         if (isLoginState()){
-            notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
+            notebooks.addAll(ItemTypeDaoManager.getInstance().queryAll(1))
             if (positionType>=notebooks.size){
                 positionType=0
             }
@@ -210,16 +210,16 @@ class NoteFragment:BaseFragment() {
     private fun addNoteBookType() {
         InputContentDialog(requireContext(),  "请输入笔记本").builder()
             .setOnDialogClickListener { string ->
-                if (NotebookDaoManager.getInstance().isExist(string)){
+                if (ItemTypeDaoManager.getInstance().isExist(string,1)){
                     showToast("已存在")
                 }
                 else{
-                    val noteBook = Notebook()
-                    noteBook.userId=getUser()?.accountId!!
+                    val noteBook = ItemTypeBean()
+                    noteBook.type=1
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
                     notebooks.add(noteBook)
-                    NotebookDaoManager.getInstance().insertOrReplace(noteBook)
+                    ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
                     initTab()
                 }
             }

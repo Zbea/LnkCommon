@@ -42,6 +42,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
+        intent.putExtra("userId", 0);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }
@@ -63,6 +64,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
+        intent.putExtra("userId", 0);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }

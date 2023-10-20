@@ -138,6 +138,11 @@
             android:launchMode="singleTask"
             />
         <activity android:name=".ui.activity.WallpaperMyActivity"/>
+        <activity android:name=".ui.activity.ScreenshotManagerActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.ScreenshotListActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

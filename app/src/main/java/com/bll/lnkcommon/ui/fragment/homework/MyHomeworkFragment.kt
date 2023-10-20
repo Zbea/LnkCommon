@@ -11,6 +11,7 @@ import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.fragment_my_homework.*
 
@@ -49,7 +50,8 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         initRecyclerView()
     }
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchData()
     }
 
     private fun initRecyclerView() {
@@ -112,7 +114,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
     }
 
     override fun onRefreshData() {
-        fetchData()
+        lazyLoad()
     }
 
     override fun fetchData() {

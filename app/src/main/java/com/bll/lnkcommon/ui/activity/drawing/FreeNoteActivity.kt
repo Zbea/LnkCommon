@@ -16,10 +16,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.FriendSelectorDialog
-import com.bll.lnkcommon.dialog.InputContentDialog
-import com.bll.lnkcommon.dialog.NoteModuleAddDialog
-import com.bll.lnkcommon.dialog.PopupShareNoteList
+import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.greendao.StringConverter
 import com.bll.lnkcommon.manager.*
 import com.bll.lnkcommon.mvp.model.*
@@ -44,9 +41,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
     private var bgResList= mutableListOf<String>()//背景地址
     private var freeNotePopWindow:PopupFreeNoteList?=null
     private var sharePopWindow:PopupShareNoteList?=null
-    private var popsNote= mutableListOf<PopupBean>()
     private var popsShare= mutableListOf<PopupBean>()
-    private var notebooks= mutableListOf<Notebook>()
     private var shareTotal=0//分享总数
     private var shareNotes= mutableListOf<ShareNoteList.ShareNoteBean>()
     private var sharePosition=0//分享列表position
@@ -114,14 +109,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.userId=if (isLoginState()) getUser()?.accountId else 0
-
-        if (isLoginState()){
-            notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
-
-            for (i in notebooks.indices){
-                popsNote.add(PopupBean(i,notebooks[i].title))
-            }
-        }
 
         popsShare.add(PopupBean(0,"微信",R.mipmap.ic_wx))
         popsShare.add(PopupBean(1,"墨本",R.mipmap.ic_launcher))
@@ -216,8 +203,13 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                         showToast("未登录")
                         return@setOnSelectListener
                     }
-                    FriendSelectorDialog(this, DataBeanManager.friends).builder().setOnDialogClickListener{ id->
-                        friendId=id
+                    val items=DataBeanManager.friends
+                    val lists= mutableListOf<ItemList>()
+                    for (item in items){
+                        lists.add(ItemList(item.id,item.nickname))
+                    }
+                    ItemSelectorDialog(this,"分享好友",lists).builder().setOnDialogClickListener{
+                        friendId=items[it].friendId
                         presenter.getToken()
                     }
                 }

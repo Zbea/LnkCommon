@@ -13,6 +13,7 @@ import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkcommon.ui.activity.drawing.HomeworkCorrectActivity
 import com.bll.lnkcommon.ui.adapter.HomeworkCorrectAdapter
+import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_homework.rv_list
 
@@ -42,14 +43,17 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     override fun getLayoutId(): Int {
         return R.layout.fragment_homework
     }
+
     override fun initView() {
         pageSize=6
         initRecyclerView()
         if(DataBeanManager.students.size>0)
             studentId= DataBeanManager.students[0].childId
     }
+
     override fun lazyLoad() {
-        fetchData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchData()
     }
 
     private fun initRecyclerView() {
@@ -98,7 +102,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     }
 
     override fun onRefreshData() {
-        fetchData()
+        lazyLoad()
     }
 
     override fun fetchData() {

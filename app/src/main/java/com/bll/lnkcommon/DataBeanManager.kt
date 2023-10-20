@@ -1,5 +1,6 @@
 package com.bll.lnkcommon
 
+import android.content.ClipData.Item
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.utils.ToolUtils
@@ -58,36 +59,32 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getMainData(): MutableList<MainListBean> {
-        val list = mutableListOf<MainListBean>()
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_home)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_home_check)
-            checked = true
+    fun getMainData(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
             name = mainListTitle[0]
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_bookcase)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_bookcase_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
             name = mainListTitle[1]
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_qk)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_qk_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_qk)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_qk_check)
             name = mainListTitle[2]
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_note)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_note_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
             name = mainListTitle[3]
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_app)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
             name = mainListTitle[4]
         })
         return list

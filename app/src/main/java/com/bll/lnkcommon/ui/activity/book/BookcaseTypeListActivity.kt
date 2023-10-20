@@ -7,21 +7,20 @@ import com.bll.lnkcommon.Constants.BOOK_EVENT
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.LongClickManageDialog
-import com.bll.lnkcommon.dialog.BookTypeSelectorDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.manager.BookTypeDaoManager
 import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.BookTypeBean
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.dialog.ItemSelectorDialog
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_book_type_list.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.common_title.*
 
 /**
@@ -34,7 +33,7 @@ class BookcaseTypeListActivity : BaseActivity() {
     private var typeStr = ""//当前分类
     private var pos = 0 //当前书籍位置
     private val mBookDaoManager=BookDaoManager.getInstance()
-    private var bookTypes= mutableListOf<BookTypeBean>()
+    private var bookTypes= mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
 
@@ -52,7 +51,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="移出分类"
+            name="移出"
             resId=R.mipmap.icon_setting_out
         })
 
@@ -83,15 +82,15 @@ class BookcaseTypeListActivity : BaseActivity() {
             when (item.id) {
                 0 -> {
                     InputContentDialog(this,"创建书籍分类").builder().setOnDialogClickListener{
-                        if (BookTypeDaoManager.getInstance().isExistType(it)){
+                        if (ItemTypeDaoManager.getInstance().isExist(it,2)){
                             showToast("已存在")
                             return@setOnDialogClickListener
                         }
-                        val bookTypeBean=BookTypeBean()
-                        bookTypeBean.userId=getUser()?.accountId!!
+                        val bookTypeBean=ItemTypeBean()
+                        bookTypeBean.type=2
                         bookTypeBean.date=System.currentTimeMillis()
-                        bookTypeBean.name=it
-                        BookTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
+                        bookTypeBean.title=it
+                        ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
 
                         rg_group.addView(getRadioButton(bookTypes.size, it,bookTypes.size==0))
                         bookTypes.add(bookTypeBean)
@@ -103,21 +102,27 @@ class BookcaseTypeListActivity : BaseActivity() {
                     }
                 }
                 1 -> {
-                    BookTypeSelectorDialog(this,"删除分类").builder().setOnDialogClickListener{
-                        val books = mBookDaoManager.queryAllBook(typeStr)
+                    val types=ItemTypeDaoManager.getInstance().queryAll(2)
+                    val lists= mutableListOf<ItemList>()
+                    for (i in types.indices){
+                        lists.add(ItemList(i,types[i].title))
+                    }
+                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
+                        val typeNameStr=types[it].title
+                        val books = mBookDaoManager.queryAllBook(typeNameStr)
                         if (books.size>0){
                             showToast("分类存在书籍，无法删除")
                             return@setOnDialogClickListener
                         }
-                        BookTypeDaoManager.getInstance().deleteBean(it)
+                        ItemTypeDaoManager.getInstance().deleteBean(types[it])
                         var index=0
                         for (i in bookTypes.indices){
-                            if (it == bookTypes[i].name){
+                            if (typeNameStr == bookTypes[i].title){
                                 index=i
                             }
                         }
                         rg_group.removeViewAt(index)
-                        if (typeStr==it){
+                        if (typeStr==typeNameStr){
                             if (bookTypes.size>0){
                                 rg_group.check(0)
                             }
@@ -133,18 +138,18 @@ class BookcaseTypeListActivity : BaseActivity() {
     }
 
     private fun initTab() {
-        bookTypes = BookTypeDaoManager.getInstance().queryAllList()
+        bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
         rg_group.removeAllViews()
         if (bookTypes.isEmpty()){
             return
         }
-        typeStr = bookTypes[0].name
+        typeStr = bookTypes[0].title
         for (i in bookTypes.indices) {
-            rg_group.addView(getRadioButton(i, bookTypes[i].name, i==0))
+            rg_group.addView(getRadioButton(i, bookTypes[i].title, i==0))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             pageIndex = 1
-            typeStr=bookTypes[id].name
+            typeStr=bookTypes[id].title
             fetchData()
         }
         fetchData()
