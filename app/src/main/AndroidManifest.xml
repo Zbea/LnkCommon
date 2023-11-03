@@ -70,10 +70,15 @@
             android:exported="true"
             >
             <intent-filter>
+                <action android:name="com.bll.lnkcommon.refresh.year"/>
+                <action android:name="com.bll.lnkcommon.refresh"/>
+                <action android:name="com.android.settings.importdatasgl"/>
+                <action android:name="com.bll.lnkcommon.upload"/>
+                <action android:name="com.bll.lnkcommon.upload.year"/>
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <action android:name="com.bll.lnkcommon.upload.1month"/>
-                <action android:name="com.bll.lnkcommon.upload"/>
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -143,6 +148,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ScreenshotListActivity"/>
+        <activity android:name=".ui.activity.CloudStorageActivity"
+            android:launchMode="singleTask"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

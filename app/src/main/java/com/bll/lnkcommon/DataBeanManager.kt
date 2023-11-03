@@ -16,6 +16,7 @@ object DataBeanManager {
     var friends= mutableListOf<FriendList.FriendBean>()
 
     val mainListTitle = arrayOf("首页","书架","期刊","笔记","应用","教材","作业")
+    private val cloudListTitle = arrayOf("书架","教材","笔记","日记","随笔","截图")
 
     val homeworkType = arrayOf("老师作业","学校考试","我的作业","我的批改")
 
@@ -52,6 +53,48 @@ object DataBeanManager {
             }
             return list
         }
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
+    fun getMainCloud(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
+            isCheck = true
+            name = cloudListTitle[0]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
+            name = cloudListTitle[1]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
+            name = cloudListTitle[2]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_diary)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_diary_check)
+            name = cloudListTitle[3]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_freenote)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_freenote_check)
+            name = cloudListTitle[4]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_screenshot)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_screenshot_check)
+            name = cloudListTitle[5]
+        })
+        return list
+    }
 
     /**
      * 获取index栏目

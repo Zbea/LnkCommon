@@ -48,7 +48,7 @@ public class ZipUtils {
         if(unZipFile.exists()){
             unZipFile.delete();
         }else {
-            unZipFile.mkdir();
+            unZipFile.mkdirs();
         }
         //开始解压
         ZipManager.unzip(targetZipFilePath,fileTargetPath,callback);

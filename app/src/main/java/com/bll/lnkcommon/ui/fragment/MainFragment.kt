@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.Constants.AUTO_UPLOAD_1MONTH_EVENT
-import com.bll.lnkcommon.Constants.AUTO_UPLOAD_EVENT
+import com.bll.lnkcommon.Constants.AUTO_REFRESH_YEAR_EVENT
+import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.CHECK_PASSWORD_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
@@ -16,12 +16,8 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
-import com.bll.lnkcommon.manager.AppDaoManager
-import com.bll.lnkcommon.manager.CalenderDaoManager
-import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.mvp.model.FriendList
-import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.StudentBean
+import com.bll.lnkcommon.manager.*
+import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
 import com.bll.lnkcommon.ui.activity.DateActivity
@@ -32,16 +28,16 @@ import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
-import kotlinx.android.synthetic.main.ac_account_login_user.*
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
-class HomeFragment:BaseFragment(),IRelationView {
+class MainFragment:BaseFragment(),IRelationView {
 
     private val presenter=RelationPresenter(this)
     private var apps= mutableListOf<AppBean>()
@@ -50,6 +46,7 @@ class HomeFragment:BaseFragment(),IRelationView {
     private var nowDay=0L
     private var calenderPath=""
     private var popNotes= mutableListOf<PopupBean>()
+    private var uploadType=0//上传类型
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         DataBeanManager.students=list
@@ -180,7 +177,12 @@ class HomeFragment:BaseFragment(),IRelationView {
         tv_date_festival.text=str
 
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDay))+"/draw.png"
-        GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        if (File(path).exists()){
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+        }
+        else{
+            iv_date.setImageResource(0)
+        }
     }
 
     /**
@@ -253,13 +255,14 @@ class HomeFragment:BaseFragment(),IRelationView {
             CALENDER_SET_EVENT->{
                 setCalenderView()
             }
-            AUTO_UPLOAD_1MONTH_EVENT->{
+            AUTO_REFRESH_YEAR_EVENT->{
                 setDeleteOldCalender()
             }
-            AUTO_UPLOAD_EVENT->{
+            AUTO_REFRESH_EVENT->{
                 nowDay=DateUtils.getStartOfDayInMillis()
                 setDateView()
                 setCalenderView()
+                findAppData()
             }
             CHECK_PASSWORD_EVENT->{
                 privacyPassword=getCheckPasswordObj()
@@ -269,6 +272,146 @@ class HomeFragment:BaseFragment(),IRelationView {
 
     override fun onRefreshData() {
         lazyLoad()
+    }
+
+    /**
+     * 每年上传日记
+     */
+    fun uploadDiary(token:String){
+        cloudList.clear()
+        val nullItems= mutableListOf<DiaryBean>()
+        val diarys=DiaryDaoManager.getInstance().queryList()
+        for (diaryBean in diarys){
+            val fileName=DateUtils.longToString(diaryBean.date)
+            val path=FileAddress().getPathDiary(fileName)
+            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+                FileUploadManager(token).apply {
+                    startUpload(path,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=4
+                            subType=-1
+                            subTypeStr="日记"
+                            year=DateUtils.getYear()
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(diaryBean)
+                            downloadUrl=it
+                        })
+                        //当加入上传的内容等于全部需要上传时候，则上传
+                        if (cloudList.size== diarys.size-nullItems.size){
+                            mCloudUploadPresenter.upload(cloudList)
+                            uploadType=1
+                        }
+                    }
+                }
+            }
+            else{
+                //没有内容不上传
+                nullItems.add(diaryBean)
+            }
+        }
+    }
+
+    /**
+     * 每年上传随笔
+     */
+    fun uploadFreeNote(token:String){
+        cloudList.clear()
+        val beans=FreeNoteDaoManager.getInstance().queryList()
+        val nullItems= mutableListOf<FreeNoteBean>()
+        for (item in beans){
+            val fileName=DateUtils.longToString(item.date)
+            val path=FileAddress().getPathFreeNote(fileName)
+            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+                FileUploadManager(token).apply {
+                    startUpload(path,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=5
+                            subType=-1
+                            subTypeStr="随笔"
+                            year=DateUtils.getYear()
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(item)
+                            downloadUrl=it
+                        })
+                        //当加入上传的内容等于全部需要上传时候，则上传
+                        if (cloudList.size== beans.size-nullItems.size){
+                            mCloudUploadPresenter.upload(cloudList)
+                            uploadType=2
+                        }
+                    }
+                }
+            }
+            else{
+                //没有内容不上传
+                nullItems.add(item)
+            }
+        }
+    }
+
+    /**
+     * 每年上传截图
+     */
+    fun uploadScreenShot(token:String){
+        cloudList.clear()
+        val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
+        val nullItems= mutableListOf<ItemTypeBean>()
+        val itemTypeBean=ItemTypeBean()
+        itemTypeBean.title="未分类"
+        itemTypeBean.date=System.currentTimeMillis()
+        itemTypeBean.path=FileAddress().getPathScreen("未分类")
+        screenTypes.add(itemTypeBean)
+        for (item in screenTypes){
+            val fileName=DateUtils.longToString(item.date)
+            val path=item.path
+            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+                FileUploadManager(token).apply {
+                    startUpload(path,fileName)
+                    setCallBack{
+                        cloudList.add(CloudListBean().apply {
+                            type=6
+                            subType=-1
+                            subTypeStr=item.title
+                            year=DateUtils.getYear()
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(item)
+                            downloadUrl=it
+                        })
+                        //当加入上传的内容等于全部需要上传时候，则上传
+                        if (cloudList.size== screenTypes.size-nullItems.size){
+                            mCloudUploadPresenter.upload(cloudList)
+                            uploadType=3
+                        }
+                    }
+                }
+            }
+            else{
+                //没有内容不上传
+                nullItems.add(item)
+            }
+        }
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        when(uploadType){
+            1->{
+                val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
+                FileUtils.deleteFile(File(path).parentFile)
+                DiaryDaoManager.getInstance().clear()
+            }
+            2->{
+                val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))
+                FileUtils.deleteFile(File(path).parentFile)
+                FreeNoteDaoManager.getInstance().clear()
+            }
+            3->{
+                val path=FileAddress().getPathScreen("未分类")
+                FileUtils.deleteFile(File(path).parentFile)
+                ItemTypeDaoManager.getInstance().clear(3)
+            }
+        }
     }
 
 }

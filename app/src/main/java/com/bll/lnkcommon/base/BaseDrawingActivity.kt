@@ -407,8 +407,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     private fun showDialogAppTool(){
         AppToolDialog(this).builder()?.setDialogClickListener{
-            if(this is DiaryActivity)
-                return@setDialogClickListener
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

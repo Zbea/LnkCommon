@@ -69,7 +69,7 @@ class JournalFragment:BaseFragment(),IJournalView {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag== Constants.AUTO_UPLOAD_EVENT){
+        if (msgFlag== Constants.AUTO_REFRESH_EVENT){
             pageIndex=1
             fetchData()
         }

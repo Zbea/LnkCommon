@@ -99,7 +99,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         showToast("分享成功")
     }
 
-
     override fun layoutId(): Int {
         return R.layout.ac_free_note
     }

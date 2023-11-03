@@ -34,17 +34,6 @@ class AppToolDialog(val context: Context) {
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()
-        //随笔、日记去掉几何绘图
-        if (context is DiaryActivity ||context is FreeNoteActivity){
-            val iterator=lists.iterator()
-            while (iterator.hasNext()){
-                val item=iterator.next()
-                if (item.packageName.equals(Constants.PACKAGE_GEOMETRY)){
-                    iterator.remove()
-                }
-            }
-        }
-
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)

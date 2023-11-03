@@ -33,11 +33,11 @@ public class MethodManager {
         SPUtil.INSTANCE.putString("token", "");
         SPUtil.INSTANCE.removeObj("user");
         EventBus.getDefault().post(Constants.USER_EVENT);
-        ActivityManager.getInstance().finishAll();
-        context.startActivity(new Intent(context, AccountLoginActivity.class));
         DataBeanManager.INSTANCE.getStudents().clear();
         DataBeanManager.INSTANCE.getStudents().clear();
         EventBus.getDefault().post(Constants.STUDENT_EVENT);
+        ActivityManager.getInstance().finishAll();
+        context.startActivity(new Intent(context, AccountLoginActivity.class));
 
         //发出退出登录广播
         Intent intent = new Intent();
@@ -75,7 +75,7 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, Book bookBean)  {
-        AppUtils.stopApp(context,"com.geniatech.knote.reader");
+//        AppUtils.stopApp(context,Constants.PACKAGE_READER);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -104,8 +104,8 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
     }
     

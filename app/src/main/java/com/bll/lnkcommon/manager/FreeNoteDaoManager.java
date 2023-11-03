@@ -57,17 +57,25 @@ public class FreeNoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    /**
-     * @return
-     */
     public List<FreeNoteBean> queryList(long startTime,long endTime) {
         WhereCondition whereCondition= FreeNoteBeanDao.Properties.Date.between(startTime,endTime);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+    }
+
+    public List<FreeNoteBean> queryList() {
+        return dao.queryBuilder().where(whereUser).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+    }
+
+    public boolean isExist(long date) {
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Date.eq(date);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique()!=null;
     }
 
     public void deleteBean(FreeNoteBean bean){
         dao.delete(bean);
     }
 
-
+    public void clear(){
+        dao.deleteAll();
+    }
 }

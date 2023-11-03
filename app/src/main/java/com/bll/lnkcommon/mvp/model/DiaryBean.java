@@ -4,6 +4,7 @@ import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Objects;
@@ -20,6 +21,11 @@ public class DiaryBean {
     public long date;
     public int size;
     public String bgRes;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
+
     @Generated(hash = 1887232553)
     public DiaryBean(Long id, long userId, String title, long date, int size, String bgRes) {
         this.id = id;

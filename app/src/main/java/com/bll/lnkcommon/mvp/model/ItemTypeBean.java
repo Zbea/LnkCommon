@@ -18,11 +18,17 @@ public class ItemTypeBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
-    public int type;//1书籍分类2截图分类
+    public int type;//1笔记分类2书籍分类3截图分类
     public long date;
     public String path;
     @Transient
     public boolean isCheck;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public int year;
 
     @Generated(hash = 757415184)
     public ItemTypeBean(Long id, long userId, String title, int type, long date, String path) {

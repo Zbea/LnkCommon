@@ -161,7 +161,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus==1){
-                val localBook = BookDaoManager.getInstance().queryBookByBookID(book.bookId)
+                val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookId)
                 if (localBook == null) {
                     downLoadStart(book.bodyUrl,book)
                 } else {

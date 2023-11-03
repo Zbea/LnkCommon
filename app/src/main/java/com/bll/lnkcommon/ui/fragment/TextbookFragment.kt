@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
@@ -9,6 +10,7 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
@@ -16,10 +18,12 @@ import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_app.*
 import org.greenrobot.eventbus.EventBus
@@ -145,6 +149,67 @@ class TextbookFragment:BaseFragment(),IMyHomeworkView {
                     presenter.createHomeworkType(map)
                 }
             }
+    }
+
+    /**
+     * 每天上传书籍
+     */
+    fun upload(tokenStr:String){
+        cloudList.clear()
+        val maxBooks= mutableListOf<Book>()
+        val books= BookDaoManager.getInstance().queryAllTextbook()
+        for (book in books){
+            if (System.currentTimeMillis()>=book.time+ Constants.halfYear){
+                val subTypeId=DataBeanManager.textbookType.indexOf(book.subtypeStr)
+                maxBooks.add(book)
+                //判读是否存在手写内容
+                if (File(book.bookDrawPath).exists()){
+                    FileUploadManager(tokenStr).apply {
+                        startUpload(book.bookDrawPath,book.bookId.toString())
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=2
+                                zipUrl=book.bodyUrl
+                                downloadUrl=it
+                                subType=subTypeId
+                                subTypeStr=book.subtypeStr
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(book)
+                                bookId=book.bookId
+                            })
+                            if (cloudList.size==maxBooks.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=2
+                        zipUrl=book.bodyUrl
+                        subType=subTypeId
+                        subTypeStr=book.subtypeStr
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(book)
+                        bookId=book.bookId
+                    })
+                    if (cloudList.size==maxBooks.size)
+                        mCloudUploadPresenter.upload(cloudList)
+                }
+            }
+        }
+    }
+
+    //上传完成后删除书籍
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (item in cloudList){
+            val bookBean=BookDaoManager.getInstance().queryByBookID(0,item.bookId)
+            //删除书籍
+            FileUtils.deleteFile(File(bookBean.bookPath))
+            FileUtils.deleteFile(File(bookBean.bookDrawPath))
+            BookDaoManager.getInstance().deleteBook(bookBean)
+        }
+        fetchData()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

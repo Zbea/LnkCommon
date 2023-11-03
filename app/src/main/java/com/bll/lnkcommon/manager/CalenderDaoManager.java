@@ -101,4 +101,7 @@ public class CalenderDaoManager {
         dao.deleteInTx(items);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 }

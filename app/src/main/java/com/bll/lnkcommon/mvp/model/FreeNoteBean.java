@@ -24,6 +24,10 @@ public class FreeNoteBean {
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> bgRes;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
 
     @Generated(hash = 1800919848)
     public FreeNoteBean(Long id, long userId, String title, long date,

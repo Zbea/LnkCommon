@@ -3,6 +3,7 @@ package com.bll.lnkcommon.manager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.DaoSession;
 import com.bll.lnkcommon.greendao.ItemTypeBeanDao;
+import com.bll.lnkcommon.mvp.model.Date;
 import com.bll.lnkcommon.mvp.model.ItemTypeBean;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.utils.SPUtil;
@@ -65,5 +66,10 @@ public class ItemTypeDaoManager {
         dao.delete(bean);
     }
 
-
+    public void clear(int type){
+        dao.deleteInTx(queryAll(type));
+    }
+    public void clear(){
+        dao.deleteAll();
+    }
 }

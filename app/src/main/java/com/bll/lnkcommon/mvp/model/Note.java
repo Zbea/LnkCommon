@@ -27,6 +27,12 @@ public class Note implements Serializable {
     public boolean isCancelPassword;//取消加密
     @Transient
     public boolean isSet;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public String contentJson;
 
     @Generated(hash = 150613865)
     public Note(Long id, long userId, String title, String typeStr, long date, String contentResId,

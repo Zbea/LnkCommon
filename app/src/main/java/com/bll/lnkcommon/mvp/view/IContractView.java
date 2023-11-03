@@ -6,6 +6,7 @@ import com.bll.lnkcommon.mvp.model.AppList;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CalenderList;
+import com.bll.lnkcommon.mvp.model.CloudList;
 import com.bll.lnkcommon.mvp.model.CommonData;
 import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
@@ -121,6 +122,25 @@ public interface IContractView {
 
     interface IJournalView extends IBaseView{
         void onList(JournalList list);
+    }
+
+
+    interface IQiniuView extends IBaseView {
+        void onToken(String token);
+    }
+
+    /**
+     * 云书库上传
+     */
+    interface ICloudUploadView extends IBaseView{
+        void onSuccess(List<Integer> cloudIds);
+        void onDeleteSuccess();
+    }
+
+    interface ICloudView extends IBaseView {
+        void onList(CloudList item);
+        void onType(List<String> types);
+        void onDelete();
     }
 
 }

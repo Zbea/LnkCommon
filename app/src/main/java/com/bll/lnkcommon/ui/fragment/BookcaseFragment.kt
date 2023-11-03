@@ -7,21 +7,23 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.ui.activity.ScreenshotManagerActivity
+import com.bll.lnkcommon.mvp.model.CloudListBean
+import com.bll.lnkcommon.ui.activity.CloudStorageActivity
+import com.bll.lnkcommon.utils.FileUploadManager
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
+import java.io.File
 
 class BookcaseFragment:BaseFragment() {
 
@@ -109,6 +111,67 @@ class BookcaseFragment:BaseFragment() {
 
     private fun setImageUrl(url: String,image: ImageView){
         GlideUtils.setImageRoundUrl(activity,url,image,5)
+    }
+
+    /**
+     * 每天上传书籍
+     */
+    fun upload(tokenStr:String){
+        showToast("上传书籍")
+        cloudList.clear()
+        val maxBooks= mutableListOf<Book>()
+        val books= BookDaoManager.getInstance().queryAllBook()
+        for (book in books){
+            if (System.currentTimeMillis()>=book.time+Constants.halfYear){
+                maxBooks.add(book)
+                //判读是否存在手写内容
+                if (File(book.bookDrawPath).exists()){
+                    FileUploadManager(tokenStr).apply {
+                        startUpload(book.bookDrawPath,book.bookId.toString())
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=1
+                                zipUrl=book.bodyUrl
+                                downloadUrl=it
+                                subType=-1
+                                subTypeStr=book.subtypeStr
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(book)
+                                bookId=book.bookId
+                            })
+                            if (cloudList.size==maxBooks.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=1
+                        zipUrl=book.bodyUrl
+                        subType=-1
+                        subTypeStr=book.subtypeStr
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(book)
+                        bookId=book.bookId
+                    })
+                    if (cloudList.size==maxBooks.size)
+                        mCloudUploadPresenter.upload(cloudList)
+                }
+            }
+        }
+    }
+
+    //上传完成后删除书籍
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (item in cloudList){
+            val bookBean=BookDaoManager.getInstance().queryByBookID(1,item.bookId)
+            //删除书籍
+            FileUtils.deleteFile(File(bookBean.bookPath))
+            FileUtils.deleteFile(File(bookBean.bookDrawPath))
+            BookDaoManager.getInstance().deleteBook(bookBean)
+        }
+        findBook()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

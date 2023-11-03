@@ -25,7 +25,7 @@ public class Book {
     public String imageUrl;
     public String bookName;//书名
     public int price;//书的价格
-    public int category;
+    public int category;//0教材1书籍
     public int typeId;//0教材1古籍2自然科学3社会科学4思维科学5运动才艺6作业7教学教育
     public String subtypeStr;//书架所有分类
     public String bookDesc;//描述
@@ -55,6 +55,11 @@ public class Book {
     public String desc;
     @Transient
     public int subject;
+    @Transient
+    public int cloudId;//云书库id
+    @Transient
+    public String drawUrl;//云书库手写下载地址
+
 
     @Generated(hash = 2146450712)
     public Book(Long id, long userId, int bookId, int bookPlusId, String imageUrl, String bookName,

@@ -14,6 +14,24 @@ interface APIService{
      */
     @POST("file/token")
     fun getQiniuToken(): Observable<BaseResult<String>>
+    @POST("cloud/data/insert")
+    fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
+    /**
+     * 获取云列表
+     */
+    @GET("cloud/data/list")
+    fun getCloudList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudList>>
+    /**
+     * 获取分类
+     */
+    @GET("cloud/data/types")
+    fun getCloudType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<String>>>
+    /**
+     * 删除云列表
+     */
+    @POST("cloud/data/delete")
+    fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 公共年级接口
      */

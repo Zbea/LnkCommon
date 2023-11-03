@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
         android:gravity="center_vertical">
@@ -38,12 +39,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_function"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
+        android:layout_below="@+id/ll_title"
         android:orientation="horizontal"
         android:gravity="center_vertical">
-
-
 
         <TextView
             android:id="@+id/tv_theme"
@@ -105,10 +106,38 @@
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom"
+        android:layout_below="@+id/ll_function"
         android:src="@mipmap/icon_freenote_bg_1" />
 
-    <include layout="@layout/common_drawing_bottom" />
+    <include
+        android:id="@+id/ll_bottom"
+        layout="@layout/common_drawing_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawing_bottom_height"
+        android:layout_alignParentBottom="true"
+        />
 
-</LinearLayout>
+    <include
+        android:id="@+id/ll_geometry"
+        layout="@layout/common_drawing_geometry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_image"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/iv_geometry"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="@dimen/dp_10"
+        android:layout_above="@+id/ll_bottom"
+        android:visibility="gone"
+        android:padding="1dp"
+        android:src="@mipmap/icon_app_geometry"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
+        />
+
+</RelativeLayout>

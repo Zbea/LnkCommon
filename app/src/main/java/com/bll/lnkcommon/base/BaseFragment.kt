@@ -18,8 +18,10 @@ import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkcommon.mvp.presenter.CommonPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
+import com.bll.lnkcommon.mvp.view.IContractView.ICloudUploadView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
@@ -37,10 +39,10 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
 
 
-abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView,  IContractView.ICommonView{
+abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,ICloudUploadView{
 
     var mCommonPresenter= CommonPresenter(this)
-
+    var mCloudUploadPresenter=CloudUploadPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -59,6 +61,13 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var privacyPassword: PrivacyPassword?=null
+    var cloudList= mutableListOf<CloudListBean>()
+
+    override fun onSuccess(cloudIds: MutableList<Int>?) {
+        uploadSuccess(cloudIds)
+    }
+    override fun onDeleteSuccess() {
+    }
 
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
@@ -300,55 +309,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             PrivacyPassword::class.java)
     }
 
-    /**
-     * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
-     * 在里面调用EasyPermissions.onRequestPermissionsResult()，实现回调。
-     *
-     * @param requestCode  权限请求的识别码
-     * @param permissions  申请的权限
-     * @param grantResults 授权结果
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    /**
-     * 当权限被成功申请的时候执行回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Log.i("EasyPermissions", "获取成功的权限$perms")
-    }
-
-    /**
-     * 当权限申请失败的时候执行的回调
-     *
-     * @param requestCode 权限请求的识别码
-     * @param perms       申请的权限的名字
-     */
-    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
-        //处理权限名字字符串
-        val sb = StringBuffer()
-        for (str in perms) {
-            sb.append(str)
-            sb.append("\n")
-        }
-        sb.replace(sb.length - 2, sb.length, "")
-        //用户点击拒绝并不在询问时候调用
-        if (EasyPermissions.somePermissionPermanentlyDenied(requireActivity(), perms)) {
-            Toast.makeText(activity, "已拒绝权限" + sb + "并不再询问", Toast.LENGTH_SHORT).show()
-            AppSettingsDialog.Builder(requireActivity())
-                    .setRationale("此功能需要" + sb + "权限，否则无法正常使用，是否打开设置")
-                    .setPositiveButton("好")
-                    .setNegativeButton("不行")
-                    .build()
-                    .show()
-        }
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -398,6 +358,16 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 每次翻页，刷新数据
      */
     open fun onRefreshData(){
+    }
+
+    /**
+     * 上传成功(书籍云id) 上传成功后删掉重复上传的数据
+     */
+    open fun uploadSuccess(cloudIds: MutableList<Int>?){
+        if (!cloudIds.isNullOrEmpty())
+        {
+            mCloudUploadPresenter.deleteCloud(cloudIds)
+        }
     }
 
     /**

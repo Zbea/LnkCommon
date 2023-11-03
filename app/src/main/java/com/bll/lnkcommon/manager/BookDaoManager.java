@@ -73,12 +73,23 @@ public class BookDaoManager {
      * @param bookID
      * @return
      */
-    public Book queryBookByBookID(int bookID) {
-        WhereCondition whereCondition= BookDao.Properties.Category.eq(1);
-        WhereCondition whereCondition1= BookDao.Properties.BookPlusId.eq(bookID);
+    public Book queryByBookID(int type,int bookID) {
+        WhereCondition whereCondition= BookDao.Properties.Category.eq(type);
+        WhereCondition whereCondition1;
+        if (type==1){
+            whereCondition1= BookDao.Properties.BookPlusId.eq(bookID);
+        }
+        else {
+            whereCondition1= BookDao.Properties.BookId.eq(bookID);
+        }
         return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
     }
 
+    //查询所有书籍
+    public List<Book> queryAllBook() {
+        WhereCondition whereCondition=BookDao.Properties.Category.eq(1);
+        return bookDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookDao.Properties.Time).build().list();
+    }
 
     /**
      * 获取打开过的书籍
@@ -109,6 +120,12 @@ public class BookDaoManager {
                 .build().list();
     }
 
+    //查询所有课本
+    public List<Book> queryAllTextbook() {
+        WhereCondition whereCondition=BookDao.Properties.Category.eq(0);
+        return bookDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookDao.Properties.Time).build().list();
+    }
+
     //查找课本 细分子类
     public List<Book> queryAllTextBook(String textType) {
         WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
@@ -132,4 +149,7 @@ public class BookDaoManager {
         bookDao.delete(book);
     }
 
+    public void clear(){
+        bookDao.deleteAll();
+    }
 }
