@@ -7,6 +7,7 @@ import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.model.Book;
+import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
 import com.bll.lnkcommon.utils.ActivityManager;
@@ -75,7 +76,8 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, Book bookBean)  {
-//        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -99,11 +101,12 @@ public class MethodManager {
 
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
-        intent.setPackage("com.geniatech.knote.reader");
+        intent.setPackage(Constants.PACKAGE_READER);
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
+        intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);

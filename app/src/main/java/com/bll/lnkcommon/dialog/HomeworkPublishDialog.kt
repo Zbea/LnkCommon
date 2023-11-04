@@ -33,11 +33,11 @@ class HomeworkPublishDialog(val context: Context) {
         tv_send.setOnClickListener {
             val contentStr = etContent.text.toString()
             if (contentStr.isEmpty()){
-                SToast.showText("请输入内容")
+                SToast.showText(R.string.toast_input_content)
                 return@setOnClickListener
             }
             if (date>0&&date<=System.currentTimeMillis()){
-                SToast.showText("提交时间必须大于当天")
+                SToast.showText(R.string.toast_commit_time_error)
                 return@setOnClickListener
             }
             listener?.onSend(contentStr,date)

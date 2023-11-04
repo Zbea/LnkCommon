@@ -54,7 +54,6 @@
             android:drawableEnd="@mipmap/icon_wallet_smoney"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
-            android:text="价格"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -64,7 +63,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="center_vertical"
-            android:text="科目"
             android:textColor="@color/black"
             android:textSize="20sp" />
         <TextView
@@ -73,17 +71,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="center_vertical"
-            android:text="出版社"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="简介"
             android:textColor="@color/black"
             android:textSize="20sp" />
 

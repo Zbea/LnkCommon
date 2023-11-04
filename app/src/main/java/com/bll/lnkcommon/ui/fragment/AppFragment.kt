@@ -33,11 +33,11 @@ class AppFragment:BaseFragment() {
 
     override fun initView() {
         longBeans.add(ItemList().apply {
-            name="菜单"
+            name=getString(R.string.menu)
             resId=R.mipmap.icon_setting_menu
         })
         longBeans.add(ItemList().apply {
-            name="卸载"
+            name=getString(R.string.uninstall)
             resId=R.mipmap.icon_setting_uninstall
         })
 
@@ -61,36 +61,6 @@ class AppFragment:BaseFragment() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val packageName= apps[position].packageName
             AppUtils.startAPP(activity,packageName)
-//            when (position) {
-//                0 -> {
-//                    if (isLoginState()){
-//                        customStartActivity(Intent(requireActivity(), AppCenterActivity::class.java))
-//                    }
-//                }
-//                1 -> {
-//                    if (isLoginState()){
-//                        customStartActivity(Intent(requireActivity(), CalenderListActivity::class.java))
-//                    }
-//                }
-//                2->{
-//                    if (isLoginState()){
-//                        customStartActivity(Intent(requireActivity(), WallpaperListActivity::class.java))
-//                    }
-//                }
-//                3->{
-//                    if (isLoginState()){
-//                        customStartActivity(Intent(requireActivity(), BookStoreTypeActivity::class.java))
-//                    }
-//                }
-//                4->{
-//                    if (isLoginState())
-//                        customStartActivity(Intent(requireActivity(),AppToolActivity::class.java))
-//                }
-//                else -> {
-//                    val packageName= apps[position].packageName
-//                    AppUtils.startAPP(activity,packageName)
-//                }
-//            }
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
@@ -112,26 +82,6 @@ class AppFragment:BaseFragment() {
     private fun initData() {
         apps.clear()
         if (isLoginState()){
-//            apps.add(AppBean().apply {
-//                appName = "应用"
-//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-//            })
-//            apps.add(AppBean().apply {
-//                appName="台历"
-//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-//            })
-//            apps.add(AppBean().apply {
-//                appName="壁纸"
-//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-//            })
-//            apps.add(AppBean().apply {
-//                appName="书库"
-//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-//            })
-//            apps.add(AppBean().apply {
-//                appName="工具"
-//                imageByte = BitmapUtils.drawableToByte(requireActivity().getDrawable(R.mipmap.icon_app_center))
-//            })
             apps.addAll(AppUtils.scanLocalInstallAppList(requireActivity()))
         }
         mAdapter?.setNewData(apps)

@@ -51,7 +51,6 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -83,7 +82,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.AccountLoginActivity" />
+        <activity android:name=".ui.activity.AccountLoginActivity"
+            android:launchMode="singleTask"
+            />
         <activity android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="true">

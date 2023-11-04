@@ -27,14 +27,14 @@ class FileAddress {
      * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/$fileName"
+        return "$BOOK_PATH/${getUserId()}/$fileName"
     }
     /**
      * 书籍手写地址
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_DRAW_PATH/$fileName"
+        return "$BOOK_DRAW_PATH/${getUserId()}/$fileName"
     }
 
     fun getPathTextBook(fileName: String):String{

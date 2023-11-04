@@ -36,11 +36,11 @@ class HomeworkCreateDialog(val context: Context) {
         tv_send.setOnClickListener {
             val contentStr = etContent.text.toString()
             if (contentStr.isEmpty()){
-                SToast.showText("请输入内容")
+                SToast.showText(R.string.toast_input_content)
                 return@setOnClickListener
             }
             if (courseId==0){
-                SToast.showText("请选择科目")
+                SToast.showText(R.string.selector_subject)
                 return@setOnClickListener
             }
             listener?.onCreate(contentStr,courseId)

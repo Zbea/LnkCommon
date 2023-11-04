@@ -37,18 +37,18 @@ class BookListActivity : BaseActivity() {
 
     override fun initData() {
         longBeans.add(ItemList().apply {
-            name="删除"
+            name=getString(R.string.delete)
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置"
+            name=getString(R.string.set)
             resId=R.mipmap.icon_setting_set
         })
     }
 
     override fun initView() {
         pageSize = 12
-        setPageTitle("书籍列表（未分类）")
+        setPageTitle(R.string.book_list_str)
 
         initRecycleView()
         fetchData()
@@ -96,7 +96,7 @@ class BookListActivity : BaseActivity() {
                     for (i in types.indices){
                         lists.add(ItemList(i,types[i].title))
                     }
-                    ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{
+                    ItemSelectorDialog(this,getString(R.string.type_set_str),lists).builder().setOnDialogClickListener{
                         val typeStr=types[it].title
                         book.subtypeStr=typeStr
                         mBookDaoManager.insertOrReplaceBook(book)

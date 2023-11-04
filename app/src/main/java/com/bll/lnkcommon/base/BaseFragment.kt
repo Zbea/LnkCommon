@@ -282,16 +282,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         customStartActivity(intent)
     }
 
-    /**
-     * 删除书本
-     */
-    fun deleteBook(book: Book){
-        BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-        if (File(book.bookDrawPath).exists())
-            FileUtils.deleteFile(File(book.bookDrawPath))
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-    }
 
     /**
      * 跳转活动(关闭已经打开的)

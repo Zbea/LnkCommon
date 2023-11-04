@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:text="购买学豆"
+        android:text="@string/buy_xd"
         android:textColor="@color/black"
         android:textSize="26sp"
         android:textStyle="bold"/>
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
-        android:text="支付方式"
+        android:text="@string/mode_payment"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_24" />
 

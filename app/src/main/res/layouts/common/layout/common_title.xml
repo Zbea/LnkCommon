@@ -153,6 +153,18 @@
             android:background="@drawable/bg_gary_arch"
             />
 
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:visibility="gone"
+            android:background="@drawable/bg_gary_arch"
+            />
+
         <ImageView
             android:id="@+id/iv_manager"
             android:layout_width="wrap_content"

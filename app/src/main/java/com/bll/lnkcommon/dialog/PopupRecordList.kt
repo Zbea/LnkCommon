@@ -90,7 +90,7 @@ class PopupRecordList(var context: Context, var view: View) {
                 }
             }
             if (view.id==R.id.iv_delete){
-                CommonDialog(context).setContent("确定删除？").builder()
+                CommonDialog(context).setContent(R.string.tips_is_delete).builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }

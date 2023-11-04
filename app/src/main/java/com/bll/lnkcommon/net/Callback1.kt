@@ -33,7 +33,7 @@ abstract class Callback1<T> : Observer<T> {
     }
 
     override fun onComplete() {
-        IBaseView?.hideLoading()
+        IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {

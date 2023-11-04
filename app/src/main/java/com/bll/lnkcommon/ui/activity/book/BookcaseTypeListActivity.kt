@@ -43,26 +43,26 @@ class BookcaseTypeListActivity : BaseActivity() {
 
     override fun initData() {
         pageSize = 12
-        popupBeans.add(PopupBean(0, "创建分类", false))
-        popupBeans.add(PopupBean(1, "删除分类", false))
+        popupBeans.add(PopupBean(0, getString(R.string.type_create_str), false))
+        popupBeans.add(PopupBean(1, getString(R.string.type_delete_str), false))
 
         longBeans.add(ItemList().apply {
-            name="删除"
+            name=getString(R.string.delete)
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="移出"
+            name=getString(R.string.shift_out)
             resId=R.mipmap.icon_setting_out
         })
 
     }
 
     override fun initView() {
-        setPageTitle("分类展示")
+        setPageTitle(R.string.type_list_str)
         showView(tv_setting,tv_province)
 
-        tv_setting.text="书籍列表"
-        tv_province.text="分类管理"
+        tv_setting.text=getString(R.string.book_list_str)
+        tv_province.text=getString(R.string.type_manager_str)
 
         tv_province?.setOnClickListener {
             setTopSelectView()
@@ -81,9 +81,9 @@ class BookcaseTypeListActivity : BaseActivity() {
         PopupClick(this, popupBeans, tv_province, 5).builder().setOnSelectListener { item ->
             when (item.id) {
                 0 -> {
-                    InputContentDialog(this,"创建书籍分类").builder().setOnDialogClickListener{
+                    InputContentDialog(this,getString(R.string.type_create_str)).builder().setOnDialogClickListener{
                         if (ItemTypeDaoManager.getInstance().isExist(it,2)){
-                            showToast("已存在")
+                            showToast(R.string.existed)
                             return@setOnDialogClickListener
                         }
                         val bookTypeBean=ItemTypeBean()
@@ -93,9 +93,9 @@ class BookcaseTypeListActivity : BaseActivity() {
                         ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
 
                         rg_group.addView(getRadioButton(bookTypes.size, it,bookTypes.size==0))
-                        bookTypes.add(bookTypeBean)
                         //更新tab
                         if (bookTypes.isEmpty()){
+                            bookTypes.add(bookTypeBean)
                             typeStr=it
                             fetchData()
                         }
@@ -107,11 +107,11 @@ class BookcaseTypeListActivity : BaseActivity() {
                     for (i in types.indices){
                         lists.add(ItemList(i,types[i].title))
                     }
-                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
+                    ItemSelectorDialog(this,getString(R.string.type_delete_str),lists).builder().setOnDialogClickListener{
                         val typeNameStr=types[it].title
                         val books = mBookDaoManager.queryAllBook(typeNameStr)
                         if (books.size>0){
-                            showToast("分类存在书籍，无法删除")
+                            showToast(R.string.toast_type_exist_book)
                             return@setOnDialogClickListener
                         }
                         ItemTypeDaoManager.getInstance().deleteBean(types[it])

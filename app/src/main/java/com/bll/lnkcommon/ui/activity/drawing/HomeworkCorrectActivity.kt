@@ -2,7 +2,6 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import android.graphics.BitmapFactory
 import android.os.Handler
-import android.view.View
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -16,7 +15,6 @@ import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_homework_correct.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -61,7 +59,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         correctBean?.status=3
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik?.setPWEnabled(false)
+        elik?.setPWEnabled(false,false)
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
     override fun onDeleteSuccess() {
@@ -76,23 +74,22 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())
-        disMissView(tv_page_title)
-        iv_tool.visibility= View.INVISIBLE
         elik=iv_image.pwInterFace
+
         if (correctBean?.status==2)
         {
-            showView(tv_setting)
-            tv_setting.text="保存"
+            showView(tv_ok)
+            tv_ok.text="保存"
             images= correctBean?.submitUrl!!.split(",") as MutableList<String>
             loadPapers()
         }
         else{
-            elik?.setPWEnabled(false)
+            elik?.setPWEnabled(false,false)
             images= correctBean?.changeUrl!!.split(",") as MutableList<String>
             setContentImage()
         }
 
-        tv_setting.setOnClickListener {
+        tv_ok.setOnClickListener {
             showLoading()
             Handler().postDelayed( {
                 commitPapers()
@@ -157,7 +154,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
             GlideUtils.setImageUrl(this, images[posImage],iv_image)
         }
         else{
-            elik?.setPWEnabled(true)
+            elik?.setPWEnabled(true,true)
             val masterImage="${getPath()}/${posImage+1}.png"//原图
             GlideUtils.setImageFile(this, File(masterImage),iv_image)
 

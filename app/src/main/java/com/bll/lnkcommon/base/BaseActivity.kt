@@ -86,7 +86,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (!EasyPermissions.hasPermissions(this,Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO)){
-            EasyPermissions.requestPermissions(this,"请求权限",1,
+            EasyPermissions.requestPermissions(this,getString(R.string.permission_apply),1,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.RECORD_AUDIO
@@ -365,7 +365,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * @param perms       申请的权限的名字
      */
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Log.i("EasyPermissions", "获取成功的权限$perms")
+        Log.i("EasyPermissions", getString(R.string.permission_successfully)+perms)
     }
     /**
      * 当权限申请失败的时候执行的回调
@@ -383,11 +383,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         sb.replace(sb.length - 2, sb.length, "")
         //用户点击拒绝并不在询问时候调用
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            Toast.makeText(this, "已拒绝权限" + sb + "并不再询问", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_denied) + sb + getString(R.string.permission_ask_no_more), Toast.LENGTH_SHORT).show()
             AppSettingsDialog.Builder(this)
-                    .setRationale("此功能需要" + sb + "权限，否则无法正常使用，是否打开设置")
-                    .setPositiveButton("好")
-                    .setNegativeButton("不行")
+                    .setRationale(getString(R.string.permission_this_function_requires) + sb + getString(R.string.permission_unusable))
+                    .setPositiveButton(R.string.ok)
+                    .setNegativeButton(R.string.cancel)
                     .build()
                     .show()
         }

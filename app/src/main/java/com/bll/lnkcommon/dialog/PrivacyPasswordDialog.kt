@@ -49,7 +49,7 @@ class PrivacyPasswordDialog(private val context: Context) {
             val privacyPassword=SPUtil.getObj("${user?.accountId}PrivacyPassword",
                 PrivacyPassword::class.java)
             if (MD5Utils.digest(passwordStr) != privacyPassword?.password){
-                SToast.showText("密码错误")
+                SToast.showText(R.string.password_error)
                 return@setOnClickListener
             }
             listener?.onClick()

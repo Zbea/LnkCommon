@@ -35,20 +35,20 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
             GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,10)
 
             tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
-            tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-            tv_version?.text = "出版社： " + book.version
-            tv_info?.text = "简介： " + book.bookDesc
+            tv_price?.text =context.getString(R.string.price)+"： "  + if (book.price==0) context.getString(R.string.free) else book.price
+            tv_version?.text = context.getString(R.string.publish)+"： " + book.version
+            tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
 
             if (book.subjectName==0){
                 tv_course.visibility=View.GONE
             }else{
-                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1].desc
+                tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.courses[book.subjectName-1].desc
             }
 
             if (book.buyStatus == 1) {
-                btn_ok?.text = "点击下载"
+                btn_ok?.text = context.getString(R.string.click_download)
             } else {
-                btn_ok?.text = "点击购买"
+                btn_ok?.text = context.getString(R.string.click_buy)
             }
 
             if (book.loadSate==2){
@@ -64,7 +64,7 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
     fun setChangeStatus() {
         book.buyStatus=1
-        btn_ok?.text = "点击下载"
+        btn_ok?.text = context.getString(R.string.click_download)
     }
 
     fun setUnClickBtn(string: String){

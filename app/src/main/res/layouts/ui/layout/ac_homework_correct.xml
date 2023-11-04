@@ -5,20 +5,60 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page"
+    android:gravity="center_horizontal"
     >
 
     <include
         layout="@layout/common_title"
         />
 
-    <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:padding="1dp"
+        android:orientation="vertical"
+        >
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/iv_image"
+            android:layout_width="900dp"
+            android:layout_height="1140dp"
+            android:scaleType="fitCenter"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/drawing_bottom_height"
+            android:orientation="horizontal"
+            >
 
-    <include
-        layout="@layout/common_drawing_bottom"
-        />
+            <ImageView
+                android:id="@+id/iv_page_up"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_50"
+                android:scaleType="center"
+                android:src="@mipmap/icon_draw_page_up" />
+            <TextView
+                android:id="@+id/tv_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                />
+
+            <ImageView
+                android:id="@+id/iv_page_down"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/dp_50"
+                android:scaleType="center"
+                android:src="@mipmap/icon_draw_page_down" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

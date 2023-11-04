@@ -28,7 +28,7 @@ class DateDialog(private val context: Context){
             val year = mDatePicker?.year
             val month = mDatePicker?.month?.plus(1)
             val dayOfMonth = mDatePicker?.dayOfMonth
-            val time = "${year}年${month}月${dayOfMonth}日"
+            val time = "${year}-${month}-${dayOfMonth}"
             val dateToStamp = DateUtils.dateToStamp(year!!,month!!,dayOfMonth!!)
             dateListener?.getDate(time, dateToStamp)
         }

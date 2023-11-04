@@ -117,7 +117,6 @@ class BookcaseFragment:BaseFragment() {
      * 每天上传书籍
      */
     fun upload(tokenStr:String){
-        showToast("上传书籍")
         cloudList.clear()
         val maxBooks= mutableListOf<Book>()
         val books= BookDaoManager.getInstance().queryAllBook()

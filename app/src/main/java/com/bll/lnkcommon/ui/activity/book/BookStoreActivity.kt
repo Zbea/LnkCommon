@@ -166,7 +166,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     downLoadStart(book.bodyUrl,book)
                 } else {
                     book.loadSate =2
-                    showToast("已下载")
+                    showToast(R.string.downloaded)
                     mAdapter?.notifyItemChanged(position)
                     bookDetailsDialog?.setDissBtn()
                 }
@@ -217,13 +217,13 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     bookDetailsDialog?.dismiss()
                     Handler().postDelayed({
                         hideLoading()
-                        showToast(book.bookName+"下载完成")
+                        showToast(book.bookName+getString(R.string.download_success))
                     },500)
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()
-                    showToast(book.bookName+"下载失败")
+                    showToast(book.bookName+getString(R.string.download_fail))
                     bookDetailsDialog?.setChangeStatus()
                 }
             })

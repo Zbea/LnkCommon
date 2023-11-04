@@ -114,12 +114,12 @@ class RecordActivity : BaseActivity() {
             mPlayer?.apply {
                 if (isPlaying){
                     iv_play.setImageResource(R.mipmap.icon_record_play)
-                    tv_play.setText("播放")
+                    tv_play.text="播放"
                     pause()
                 }
                 else{
                     iv_play.setImageResource(R.mipmap.icon_record_pause)
-                    tv_play.setText("暂停")
+                    tv_play.text="暂停"
                     start()
                 }
 

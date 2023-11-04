@@ -15,12 +15,20 @@ object DataBeanManager {
     var provinces= mutableListOf<AreaBean>()
     var friends= mutableListOf<FriendList.FriendBean>()
 
-    val mainListTitle = arrayOf("首页","书架","期刊","笔记","应用","教材","作业")
-    private val cloudListTitle = arrayOf("书架","教材","笔记","日记","随笔","截图")
+    val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),
+        mContext.getString(R.string.tab_journal),mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
+        mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
 
-    val homeworkType = arrayOf("老师作业","学校考试","我的作业","我的批改")
+    private val cloudListTitle = arrayOf(mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_teaching)
+        ,mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_note),mContext.getString(R.string.free_note)
+        ,mContext.getString(R.string.screenshot))
 
-    val journalType = arrayOf("每日报刊","周期报刊","小说杂志","综合杂志","专业杂志")
+    val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.school_exam_str)
+        ,mContext.getString(R.string.my_homework),mContext.getString(R.string.my_homework_correct))
+
+    val journalType =  arrayOf(mContext.getString(R.string.journal_day),mContext.getString(R.string.journal_week)
+        ,mContext.getString(R.string.journal_fiction),mContext.getString(R.string.journal_comprehensive)
+        ,mContext.getString(R.string.journal_specialty))
 
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
@@ -197,16 +205,16 @@ object DataBeanManager {
     val popupSemesters: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(1, "上学期",true))
-            list.add(PopupBean(2,"下学期",false))
+            list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
+            list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
             return list
         }
 
     val popupSupplys: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(1, "官方",true))
-            list.add(PopupBean(2,"第三方",false))
+            list.add(PopupBean(1, mContext.getString(R.string.official_str),true))
+            list.add(PopupBean(2,mContext.getString(R.string.thirdParty_str),false))
             return list
         }
 

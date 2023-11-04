@@ -126,7 +126,7 @@ class SchoolSelectDialog(val context: Context, private val beans:MutableList<Sch
                 dialog.dismiss()
             }
             else{
-                SToast.showText("请选择学校")
+                SToast.showText(R.string.toast_selector_school)
             }
         }
         return this

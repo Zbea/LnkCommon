@@ -109,7 +109,7 @@ class HomeworkManagerFragment:BaseFragment() {
             rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            tv_course.text="选择科目"
+            tv_course.text=getString(R.string.selector_subject)
             when(id){
                 0->{
                     showView(tv_course)

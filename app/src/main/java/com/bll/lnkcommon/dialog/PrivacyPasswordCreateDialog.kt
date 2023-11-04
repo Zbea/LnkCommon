@@ -29,28 +29,28 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
         popWindowBeans.add(
             PopupBean(
                 0,
-                "您的姓名是？",
+                 context.getString(R.string.password_question_name),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 1,
-                "父亲姓名是？",
+                context.getString(R.string.password_question_father_name),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 2,
-                "您的生日是？",
+                context.getString(R.string.password_question_birthday),
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 3,
-                "最喜欢电影？",
+                context.getString(R.string.password_question_movie),
                 false
             )
         )
@@ -75,25 +75,25 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             val passwordAgainStr=etPasswordAgain?.text.toString()
             val answerStr=etPasswordQuestion?.text.toString()
             val questionStr=tvQuestion?.text.toString()
-            if (questionStr=="选择问题"){
+            if (questionStr==context.getString(R.string.password_question_select_str)){
                 return@setOnClickListener
             }
             if (answerStr.isEmpty()){
-                SToast.showText("请输入密保问题")
+                SToast.showText(R.string.password_question_str)
                 return@setOnClickListener
             }
 
             if (passwordStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(R.string.password_input)
                 return@setOnClickListener
             }
             if (passwordAgainStr.isEmpty()){
-                SToast.showText("请再次输入密码")
+                SToast.showText(R.string.password_again_error)
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(R.string.password_different)
                 return@setOnClickListener
             }
             val privacyPassword= PrivacyPassword()

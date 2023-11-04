@@ -44,20 +44,20 @@ class PrivacyPasswordFindDialog(private val context: Context) {
             val passwordFindStr=etPasswordFind?.text.toString()
 
             if (passwordFindStr.isEmpty()){
-                SToast.showText("请输入密保")
+                SToast.showText(R.string.password_question_str)
                 return@setOnClickListener
             }
 
             if (passwordFindStr!=privacyPassword?.answer){
-                SToast.showText("密保错误")
+                SToast.showText(R.string.password_question_error)
                 return@setOnClickListener
             }
             if (passwordStr.isEmpty()||passwordAgainStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(R.string.password_error)
                 return@setOnClickListener
             }
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(R.string.password_different)
                 return@setOnClickListener
             }
 

@@ -37,7 +37,7 @@ class WallpaperMyActivity:BaseActivity(){
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置壁纸"
+            name="设置"
             resId=R.mipmap.icon_setting_set
         })
     }

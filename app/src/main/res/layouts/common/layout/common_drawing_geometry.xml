@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="线"
+                android:text="@string/line"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -53,7 +53,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="矩形"
+                android:text="@string/rectangle"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/dp_5"
                 android:drawableRight="@mipmap/icon_bookstore_arrow_down"
-                android:text="圆"
+                android:text="@string/circle"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="圆弧"
+                android:text="@string/arc"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -143,7 +143,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="椭圆"
+                android:text="@string/oval"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -172,7 +172,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="垂线"
+                android:text="@string/vertical"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -201,7 +201,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="抛物线"
+                android:text="@string/parabola"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -230,7 +230,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="角度"
+                android:text="@string/angle"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -260,7 +260,7 @@
                 android:id="@+id/tv_axis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="坐标"
+                android:text="@string/axis"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 android:drawableRight="@mipmap/icon_bookstore_arrow_down"
@@ -290,7 +290,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="笔"
+                android:text="@string/pen"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_20"
                 />
@@ -324,7 +324,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="33dp"
                 android:gravity="center"
-                android:text="撤销"
+                android:text="@string/revocation"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
@@ -336,7 +336,7 @@
                 android:layout_height="33dp"
                 android:layout_marginTop="@dimen/dp_15"
                 android:gravity="center"
-                android:text="平行"
+                android:text="@string/parallel"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/rb_geometry_bg"
@@ -359,7 +359,7 @@
                 android:paddingStart="@dimen/dp_5"
                 android:drawableRight="@mipmap/icon_bookstore_arrow_down"
                 android:gravity="center"
-                android:text="黑线"
+                android:text="@string/line_black"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
@@ -371,7 +371,7 @@
                 android:layout_height="33dp"
                 android:layout_marginTop="@dimen/dp_15"
                 android:gravity="center"
-                android:text="刻度"
+                android:text="@string/scale"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/rb_geometry_bg"
@@ -392,7 +392,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="33dp"
                 android:gravity="center"
-                android:text="托盘"
+                android:text="@string/reduce"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
@@ -404,7 +404,7 @@
                 android:layout_height="33dp"
                 android:layout_marginTop="@dimen/dp_15"
                 android:gravity="center"
-                android:text="退出"
+                android:text="@string/quit"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"

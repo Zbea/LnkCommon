@@ -41,15 +41,15 @@ class PrivacyPasswordEditDialog(private val context: Context) {
             val passwordOldStr=etPasswordOld?.text.toString()
 
             if (MD5Utils.digest(passwordOldStr)!=privacyPassword?.password){
-                SToast.showText("原密码输入错误")
+                SToast.showText(R.string.password_old_error)
                 return@setOnClickListener
             }
             if (passwordStr.isEmpty()||passwordAgainStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(R.string.password_input)
                 return@setOnClickListener
             }
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(R.string.password_different)
                 return@setOnClickListener
             }
             privacyPassword?.password= MD5Utils.digest(privacyPassword?.password)

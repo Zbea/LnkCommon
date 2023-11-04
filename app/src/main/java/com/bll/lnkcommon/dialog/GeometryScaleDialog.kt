@@ -27,33 +27,33 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
         val et_height = dialog.findViewById<EditText>(R.id.et_height)
         when(currentGeometry){
             1->{
-                et_width.hint = "输入直线距离(mm)"
+                et_width.hint = context.getString(R.string.geometry_hint_lint_distance)
                 et_height.visibility= View.GONE
             }
             2->{
-                et_width.hint = "输入矩形宽度(mm)"
-                et_height.hint = "输入矩形高度(mm)"
+                et_width.hint =context.getString(R.string.geometry_hint_rectangle_width)
+                et_height.hint = context.getString(R.string.geometry_hint_rectangle_height)
             }
             3->{
                 if (type==0){
-                    et_width.hint = "输入圆半径(mm)"
+                    et_width.hint =context.getString(R.string.geometry_hint_circle_radius)
                 }
                 else{
-                    et_width.hint = "输入圆直径(mm)"
+                    et_width.hint =context.getString(R.string.geometry_hint_circle_diameter)
                 }
                 et_height.visibility= View.GONE
             }
             5->{
-                et_width.hint = "输入椭圆半宽度(mm)"
-                et_height.hint = "输入椭圆半高度(mm)"
+                et_width.hint = context.getString(R.string.geometry_hint_oval_half_width)
+                et_height.hint = context.getString(R.string.geometry_hint_oval_half_height)
             }
             8->{
-                et_width.hint = "输入角度"
+                et_width.hint = context.getString(R.string.geometry_hint_angle)
                 et_height.visibility= View.GONE
             }
             9->{
-                et_width.hint = "输入每格刻度"
-                et_height.hint = "输入每格长度(mm)"
+                et_width.hint = context.getString(R.string.geometry_hint_scale)
+                et_height.hint = context.getString(R.string.geometry_hint_scale_distance)
             }
         }
 

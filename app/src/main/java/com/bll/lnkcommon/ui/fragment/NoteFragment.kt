@@ -55,9 +55,9 @@ class NoteFragment:BaseFragment() {
     override fun initView() {
         pageSize=10
 
-        popupBeans.add(PopupBean(0, "笔记本管理", true))
-        popupBeans.add(PopupBean(1, "新建笔记本", false))
-        popupBeans.add(PopupBean(2, "新建主题", false))
+        popupBeans.add(PopupBean(0, getString(R.string.notebook_manager), true))
+        popupBeans.add(PopupBean(1, getString(R.string.notebook_create), false))
+        popupBeans.add(PopupBean(2, getString(R.string.note_create), false))
 
         setTitle(DataBeanManager.mainListTitle[3])
         showView(iv_manager)

@@ -66,9 +66,9 @@ class MainFragment:BaseFragment(),IRelationView {
         setTitle(DataBeanManager.mainListTitle[0])
         showView(iv_manager)
 
-        popNotes.add(PopupBean(0,"随笔",R.mipmap.icon_freenote))
-        popNotes.add(PopupBean(1,"日记",R.mipmap.icon_diary))
-        popNotes.add(PopupBean(2,"总览",R.mipmap.icon_plan))
+        popNotes.add(PopupBean(0,getString(R.string.free_note),R.mipmap.icon_freenote))
+        popNotes.add(PopupBean(1,getString(R.string.diary),R.mipmap.icon_diary))
+        popNotes.add(PopupBean(2,getString(R.string.overview),R.mipmap.icon_plan))
 
         ll_date.setOnClickListener {
             customStartActivity(Intent(activity,DateActivity::class.java))

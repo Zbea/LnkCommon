@@ -33,15 +33,15 @@ class CalenderDetailsDialog(private val context: Context, private val item: Cale
             GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,10)
 
             tv_title?.text = item.title
-            tv_year?.text="年份： "+item.year
-            tv_price?.text = "价格： " + if (item.price==0) "免费" else item.price
-            tv_info?.text = "简介： " + item.introduction
+            tv_year?.text=context.getString(R.string.year)+"： "+item.year
+            tv_price?.text ==context.getString(R.string.price)+"： " + if (item.price==0) context.getString(R.string.free) else item.price
+            tv_info?.text = "${context.getString(R.string.introduction)}： $item.introduction"
 
 
             if (item.buyStatus == 1) {
-                btn_ok?.text = "点击下载"
+                btn_ok?.text = context.getString(R.string.click_download)
             } else {
-                btn_ok?.text = "点击购买"
+                btn_ok?.text = context.getString(R.string.click_buy)
             }
 
             if (item.loadSate==2){
@@ -57,7 +57,7 @@ class CalenderDetailsDialog(private val context: Context, private val item: Cale
 
     fun setChangeStatus() {
         item.buyStatus=1
-        btn_ok?.text = "点击下载"
+        btn_ok?.text = context.getString(R.string.click_download)
     }
 
     fun setUnClickBtn(string: String){

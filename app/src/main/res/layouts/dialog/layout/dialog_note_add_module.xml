@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="模板"
+            android:text="@string/template"
             android:textColor="@color/black"
             android:textSize="26sp"
             android:textStyle="bold" />

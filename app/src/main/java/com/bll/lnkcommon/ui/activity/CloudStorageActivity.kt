@@ -51,10 +51,10 @@ class CloudStorageActivity:BaseActivity() {
                 when (position) {
                     0 -> switchFragment(lastFragment, bookcaseFragment)//书架
                     1 -> switchFragment(lastFragment, textbookFragment)//课本
-                    2 -> switchFragment(lastFragment, noteFragment)//作业
-                    3 -> switchFragment(lastFragment, diaryFragment)//考卷
-                    4 -> switchFragment(lastFragment, freeNoteFragment)//笔记
-                    5 -> switchFragment(lastFragment, screenshotFragment)//书画
+                    2 -> switchFragment(lastFragment, noteFragment)//笔记
+                    3 -> switchFragment(lastFragment, diaryFragment)//日记
+                    4 -> switchFragment(lastFragment, freeNoteFragment)//随笔
+                    5 -> switchFragment(lastFragment, screenshotFragment)//截图
                 }
                 lastPosition=position
             }

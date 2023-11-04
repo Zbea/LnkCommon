@@ -79,7 +79,7 @@
         android:paddingStart="@dimen/dp_10"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"
-        android:hint="学校"
+        android:hint="@string/school"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_gray_stroke_5dp_corner"
         />

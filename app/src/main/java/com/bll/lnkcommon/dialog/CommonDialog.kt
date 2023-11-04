@@ -14,8 +14,8 @@ class CommonDialog(private val context: Context) {
     private var isTitle = false
     private var contentStr = "" //提示文案
     private var contentStrId = 0
-    private var cancelStr = "取消" //取消文案
-    private var okStr = "确认" //确认文案
+    private var cancelStr = "" //取消文案
+    private var okStr = "" //确认文案
 
     fun setTitle(title: String): CommonDialog {
         this.titleStr = title
