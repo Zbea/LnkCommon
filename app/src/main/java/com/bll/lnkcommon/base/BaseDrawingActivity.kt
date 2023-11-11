@@ -47,6 +47,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private var isCurrent=false//当前支持的几何绘图笔形
     private var isScale=false//是否选中刻度
     private var currentGeometry=0
+    private var angle_num=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -282,12 +283,27 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                 elik?.setShifted(isCurrent&&isParallel)
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
-                reDrawGeometry(elik!!)
+                //如果当前是角度，需要画完后才能设置刻度
+                if (currentGeometry==8){
+                    angle_num+=1
+                    if (isEven(angle_num))
+                        reDrawGeometry(elik!!)
+                }
+                else{
+                    reDrawGeometry(elik!!)
+                }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                  onElikSave()
             }
         })
+    }
+
+    /**
+     * 是否是偶数
+     */
+    private fun isEven(number: Int): Boolean {
+        return number and 1 == 0
     }
 
     /**

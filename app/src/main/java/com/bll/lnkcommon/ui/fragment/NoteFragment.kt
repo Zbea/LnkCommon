@@ -160,10 +160,10 @@ class NoteFragment:BaseFragment() {
      */
     private fun findTabs() {
         notebooks.clear()
-        notebooks.add(ItemTypeBean().apply {
-            title = getString(R.string.note_tab_diary)
-        })
         if (isLoginState()){
+            notebooks.add(ItemTypeBean().apply {
+                title = getString(R.string.note_tab_diary)
+            })
             notebooks.addAll(ItemTypeDaoManager.getInstance().queryAll(1))
             if (positionType>=notebooks.size){
                 positionType=0

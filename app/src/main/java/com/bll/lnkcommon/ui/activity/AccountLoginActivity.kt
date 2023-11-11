@@ -47,9 +47,6 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
-        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-
         ed_user.setText("zhufeng4")
         ed_psw.setText("123456")
 

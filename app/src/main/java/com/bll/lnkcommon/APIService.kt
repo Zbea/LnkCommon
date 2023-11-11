@@ -250,7 +250,6 @@ interface APIService{
     @POST("student/job/parentChange")
     fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-
     /**
      * 获取分享列表
      */

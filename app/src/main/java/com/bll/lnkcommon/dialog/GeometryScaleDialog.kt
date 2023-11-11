@@ -10,6 +10,7 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.KeyboardUtils
+import com.bll.lnkcommon.utils.SToast
 
 class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int) {
 
@@ -73,8 +74,14 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                     }
                 }
                 else{
-                    dialog.dismiss()
-                    listener?.onClick(width.toFloat(),0f)
+                    val num=width.toFloat()
+                    if (currentGeometry==8&&num>360){
+                        SToast.showText("角度需要小于360°")
+                    }
+                    else{
+                        dialog.dismiss()
+                        listener?.onClick(num,0f)
+                    }
                 }
             }
         }

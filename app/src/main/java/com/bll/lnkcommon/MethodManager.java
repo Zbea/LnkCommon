@@ -37,7 +37,7 @@ public class MethodManager {
         DataBeanManager.INSTANCE.getStudents().clear();
         DataBeanManager.INSTANCE.getStudents().clear();
         EventBus.getDefault().post(Constants.STUDENT_EVENT);
-        ActivityManager.getInstance().finishAll();
+        ActivityManager.getInstance().finishOthers(MainActivity.class);
         context.startActivity(new Intent(context, AccountLoginActivity.class));
 
         //发出退出登录广播
