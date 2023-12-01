@@ -33,6 +33,7 @@ class PopupMultipleList(val context:Context, val list:MutableList<PopupBean>, va
             isFocusable=true // 设置PopupWindow可获得焦点
             isTouchable=true // 设置PopupWindow可触摸
             isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            isClippingEnabled = false
             if (this@PopupMultipleList.width!=0){
                 width=this@PopupMultipleList.width
             }

@@ -13,17 +13,16 @@ class HomeworkTypeAdapter(layoutResId: Int, data: List<HomeworkTypeList.Homework
 
     override fun convert(helper: BaseViewHolder, item: HomeworkTypeList.HomeworkTypeBean) {
         helper.apply {
-            setText(R.id.tv_name,item.name)
-            if (DataBeanManager.courses.size>0)
-                setText(R.id.tv_course,DataBeanManager.courses[item.subject-1].desc)
-
             if (item.type==1){
-                setImageResource(R.id.iv_image,R.color.color_transparent)
-                setBackgroundRes(R.id.iv_image,ToolUtils.getImageResId(mContext,item.imageUrl))
+                setText(R.id.tv_name,item.name)
+                if (DataBeanManager.courses.size>0)
+                    setText(R.id.tv_course,"(${DataBeanManager.courses[item.subject-1].desc})")
+                setImageResource(R.id.iv_image,R.mipmap.icon_homework_cover_1)
+                setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
             }
             else{
-                setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_5dp_corner)
                 GlideUtils.setImageRoundUrl(mContext, item.imageUrl, helper.getView(R.id.iv_image), 10)
+                setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_5dp_corner)
             }
         }
     }

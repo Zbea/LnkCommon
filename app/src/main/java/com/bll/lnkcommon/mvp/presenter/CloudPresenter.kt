@@ -10,11 +10,11 @@ class CloudPresenter(view: IContractView.ICloudView) : BasePresenter<IContractVi
     /**
      * 获取分类
      */
-    fun getType() {
+    fun getType(type:Int) {
         val map=HashMap<String,Any>()
-        map["size"]=1000
-        val type = RetrofitManager.service.getCloudType(map)
-        doRequest(type, object : Callback<MutableList<String>>(view) {
+        map["type"]=type
+        val manager = RetrofitManager.service.getCloudType(map)
+        doRequest(manager, object : Callback<MutableList<String>>(view) {
             override fun failed(tBaseResult: BaseResult<MutableList<String>>): Boolean {
                 return false
             }

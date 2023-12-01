@@ -58,14 +58,6 @@ class TextBookStoreActivity : BaseActivity(),
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
         books = bookStore.list
-        //修正数据
-        for (book in books){
-            when(tabId){
-                2,3->{
-                    book.version=bookVersion[book.bookVersion-1].desc
-                }
-            }
-        }
         mAdapter?.setNewData(books)
     }
 

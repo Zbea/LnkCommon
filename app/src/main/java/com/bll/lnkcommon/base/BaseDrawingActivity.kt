@@ -21,6 +21,7 @@ import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
+import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -422,7 +423,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this).builder()?.setDialogClickListener{
+        val type = if(this is PlanOverviewActivity){
+            0
+        } else{
+            1
+        }
+        AppToolDialog(this,type).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

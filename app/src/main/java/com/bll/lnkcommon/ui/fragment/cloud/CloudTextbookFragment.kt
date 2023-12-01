@@ -28,9 +28,10 @@ import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 class CloudTextbookFragment: BaseCloudFragment() {
-
+    private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<Book>()
     private var position=0
@@ -83,10 +84,15 @@ class CloudTextbookFragment: BaseCloudFragment() {
                     showLoading()
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
                     if (!book.drawUrl.isNullOrEmpty()){
+                        countDownTasks= CountDownLatch(2)
+                        downloadBook(book)
                         downloadBookDrawing(book)
-                    }else{
+                    }
+                    else{
+                        countDownTasks=CountDownLatch(1)
                         downloadBook(book)
                     }
+                    downloadSuccess(book)
                 } else {
                     showToast("已下载")
                 }
@@ -109,6 +115,35 @@ class CloudTextbookFragment: BaseCloudFragment() {
     }
 
     /**
+     * 下载完成
+     */
+    private fun downloadSuccess(book: Book){
+        //等待两个请求完成后刷新列表
+        Thread{
+            countDownTasks?.await()
+            requireActivity().runOnUiThread {
+                hideLoading()
+                val localBook = BookDaoManager.getInstance().queryTextBookByBookID(0,book.bookId)
+                if (localBook!=null){
+                    showToast(book.bookName+"下载成功")
+                    EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
+                }
+                else{
+                    if (FileUtils.isExistContent(book.bookDrawPath)){
+                        FileUtils.deleteFile(File(book.bookDrawPath))
+                    }
+                    if (FileUtils.isExistContent(book.bookPath)){
+                        FileUtils.deleteFile(File(book.bookPath))
+                    }
+                    showToast(book.bookName+"下载失败")
+                }
+            }
+            countDownTasks=null
+        }.start()
+    }
+
+
+    /**
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: Book){
@@ -125,7 +160,6 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun onFinish() {
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            downloadBook(book)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -134,8 +168,10 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun onStart() {
                         }
                     })
+                    countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    countDownTasks?.countDown()
                 }
             })
     }
@@ -159,29 +195,18 @@ class CloudTextbookFragment: BaseCloudFragment() {
                             BookDaoManager.getInstance().insertOrReplaceBook(book)
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                hideLoading()
-                                EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                                showToast(book.bookName+"下载成功")
-                            },500)
                         }
                         override fun onProgress(percentDone: Int) {
                         }
                         override fun onError(msg: String?) {
-                            hideLoading()
-                            //下载失败删掉已下载手写内容
-                            FileUtils.deleteFile(File(book.bookDrawPath))
-                            showToast(msg!!)
                         }
                         override fun onStart() {
                         }
                     })
+                    countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    //下载失败删掉已下载手写内容
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                    showToast(book.bookName+"下载失败")
+                    countDownTasks?.countDown()
                 }
             })
     }

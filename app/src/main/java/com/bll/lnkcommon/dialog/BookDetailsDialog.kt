@@ -36,7 +36,7 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
             tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
             tv_price?.text =context.getString(R.string.price)+"： "  + if (book.price==0) context.getString(R.string.free) else book.price
-            tv_version?.text = context.getString(R.string.publish)+"： " + book.version
+            tv_version?.text = context.getString(R.string.publish)+"： " + if (book.semester!=0)DataBeanManager.versions[book.version.toInt()-1].desc else book.version
             tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
 
             if (book.subjectName==0){

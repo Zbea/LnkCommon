@@ -2,6 +2,7 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkcommon.DataBeanManager
@@ -24,6 +25,7 @@ class HomeworkCreateDialog(val context: Context) {
         val tv_send = dialog.findViewById<TextView>(R.id.tv_send)
         val tv_course = dialog.findViewById<TextView>(R.id.tv_course)
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
+
         val pops=DataBeanManager.popupCourses
         tv_course.setOnClickListener {
             PopupRadioList(context,pops,tv_course,tv_course.width,5).builder()

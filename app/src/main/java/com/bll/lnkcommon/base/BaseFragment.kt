@@ -76,6 +76,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             DataBeanManager.courses=commonData.subject
         if (!commonData.typeGrade.isNullOrEmpty())
             DataBeanManager.typeGrades=commonData.typeGrade
+        if (!commonData.version.isNullOrEmpty())
+            DataBeanManager.versions=commonData.version
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -50,7 +50,7 @@ class HomeworkManagerFragment:BaseFragment() {
         initTab()
 
         tv_course.setOnClickListener {
-            PopupClick(requireActivity(), coursePops, tv_course,tv_course.width, 5).builder()
+            PopupClick(requireActivity(), coursePops, tv_course,140, 5).builder()
                 .setOnSelectListener {
                     tv_course.text = it.name
                     when(lastPosition){

@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.utils;
+package com.bll.lnkstudy.utils;
 
 import android.util.Log;
 
@@ -148,19 +148,40 @@ public class FileUtils {
      */
     public static List<File> getFiles(String path){
         List<File> files = new ArrayList<>();
-        if("".equals(path)){
+        if(path.isEmpty()){
             return null;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return files;
-        for (File value : tempList) {
-            if (value.isFile()) {
-                files.add(value);
+        if (tempList==null) return null;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
             }
         }
 //        //文件排序
         sortFiles(files);
+        return files;
+    }
+
+    /**
+     * 获取目录下文件夹
+     * @param path
+     * @return
+     */
+    public static List<File> getDirectorys(String path){
+        List<File> files = new ArrayList<>();
+        if(path==null||path.isEmpty()){
+            return null;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return null;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isDirectory()) {
+                files.add(tempList[i]);
+            }
+        }
         return files;
     }
 
@@ -178,7 +199,7 @@ public class FileUtils {
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
-        if (tempList==null) return files;
+        if (tempList==null) return null;
         for (int i = 0; i < tempList.length; i++) {
             File childFile=tempList[i];
             if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {
@@ -197,10 +218,12 @@ public class FileUtils {
      */
     public static void deleteFile(String path,String name){
         List<File> files=getFiles(path);
-        for (int i = 0; i < files.size(); i++) {
-            File file=files.get(i);
-            if (getFileName(file.getName()).equals(name)){
-                deleteFile(file);
+        if (files!=null){
+            for (int i = 0; i < files.size(); i++) {
+                File file=files.get(i);
+                if (getFileName(file.getName()).equals(name)){
+                    deleteFile(file);
+                }
             }
         }
     }
@@ -229,7 +252,6 @@ public class FileUtils {
             file.delete();
         }
     }
-
     /**
      * 文件夹排序
      * @param files
@@ -313,5 +335,15 @@ public class FileUtils {
 
     public static boolean isExist(String path){
         return new File(path).exists();
+    }
+
+    /**
+     * 判断文件夹是否存在内容
+     * @param path
+     * @return
+     */
+    public static boolean isExistContent(String path){
+        List<File> files=getFiles(path);
+        return files!=null&&files.size()>0;
     }
 }

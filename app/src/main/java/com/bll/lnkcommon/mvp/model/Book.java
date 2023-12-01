@@ -46,8 +46,6 @@ public class Book {
     public int loadSate;//0未下载 1正下载 2已下载
     @Transient
     public int buyStatus;//购买状态1
-    @Transient
-    public int bookVersion;//版本 作业本
     //教学教育数据
     @Transient
     public String title;

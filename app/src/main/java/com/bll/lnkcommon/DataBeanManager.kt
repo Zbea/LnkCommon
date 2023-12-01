@@ -11,6 +11,7 @@ object DataBeanManager {
     var grades= mutableListOf<Grade>()
     var typeGrades= mutableListOf<Grade>()
     var courses= mutableListOf<ItemList>()
+    var versions= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
     var provinces= mutableListOf<AreaBean>()
     var friends= mutableListOf<FriendList.FriendBean>()
@@ -20,7 +21,7 @@ object DataBeanManager {
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
 
     private val cloudListTitle = arrayOf(mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_teaching)
-        ,mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_note),mContext.getString(R.string.free_note)
+        ,mContext.getString(R.string.tab_note),mContext.getString(R.string.diary),mContext.getString(R.string.free_note)
         ,mContext.getString(R.string.screenshot))
 
     val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.school_exam_str)
@@ -229,24 +230,5 @@ object DataBeanManager {
             list.add(ItemList(6, "艺术才能"))
             return list
         }
-
-    //封面
-    fun homeworkCoverStr(): String{
-        val list= mutableListOf<ModuleBean>()
-        val moduleBean = ModuleBean()
-        moduleBean.resId = R.mipmap.icon_homework_cover_1
-        val moduleBean1 = ModuleBean()
-        moduleBean1.resId = R.mipmap.icon_homework_cover_2
-        val moduleBean2 = ModuleBean()
-        moduleBean2.resId = R.mipmap.icon_homework_cover_3
-        val moduleBean3 = ModuleBean()
-        moduleBean3.resId = R.mipmap.icon_homework_cover_4
-        list.add(moduleBean)
-        list.add(moduleBean1)
-        list.add(moduleBean2)
-        list.add(moduleBean3)
-        val index= Random().nextInt(list.size)
-        return ToolUtils.getImageResStr(mContext,list[index].resId)
-    }
 
 }

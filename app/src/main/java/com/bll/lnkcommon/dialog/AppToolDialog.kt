@@ -3,6 +3,7 @@ package com.bll.lnkcommon.dialog
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ import com.bll.lnkcommon.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context) {
+class AppToolDialog(val context: Context,val type:Int) {
 
     private var dialog:Dialog?=null
 
@@ -34,6 +35,17 @@ class AppToolDialog(val context: Context) {
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()
+        if (type==0){
+            var pos=-1
+            for (list in lists){
+                if (list.packageName==Constants.PACKAGE_GEOMETRY){
+                    pos=lists.indexOf(list)
+                }
+            }
+            if (pos>=0)
+                lists.removeAt(pos)
+        }
+
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)

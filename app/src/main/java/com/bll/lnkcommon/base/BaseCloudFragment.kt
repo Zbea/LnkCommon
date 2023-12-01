@@ -51,7 +51,7 @@ abstract class BaseCloudFragment : Fragment(), IContractView.ICloudView , IBaseV
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-
+    var types= mutableListOf<String>()
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据

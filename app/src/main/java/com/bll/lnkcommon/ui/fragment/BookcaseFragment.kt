@@ -25,15 +25,16 @@ import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import java.io.File
 
-class BookcaseFragment:BaseFragment() {
+class BookcaseFragment : BaseFragment() {
 
-    private var mAdapter: BookAdapter?=null
-    private var books= mutableListOf<Book>()//所有数据
-    private var bookTopBean:Book?=null
+    private var mAdapter: BookAdapter? = null
+    private var books = mutableListOf<Book>()//所有数据
+    private var bookTopBean: Book? = null
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
     }
+
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
 
@@ -41,32 +42,32 @@ class BookcaseFragment:BaseFragment() {
         findBook()
 
         tv_type.setOnClickListener {
-            if (isLoginState()){
+            if (isLoginState()) {
                 customStartActivity(Intent(activity, BookcaseTypeListActivity::class.java))
-            }
-            else{
+            } else {
                 customStartActivity(Intent(activity, AccountLoginActivity::class.java))
             }
         }
 
         ll_book_top.setOnClickListener {
-            if (bookTopBean!=null)
-                MethodManager.gotoBookDetails(requireActivity(),bookTopBean)
+            if (bookTopBean != null)
+                MethodManager.gotoBookDetails(requireActivity(), bookTopBean)
         }
     }
+
     override fun lazyLoad() {
         if (DataBeanManager.courses.isEmpty())
             mCommonPresenter.getCommon()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         mAdapter = BookAdapter(R.layout.item_bookcase, null).apply {
-            rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
+            rv_list.layoutManager = GridLayoutManager(activity, 4)//创建布局管理
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity,23f),28))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity, 23f), 28))
             setOnItemClickListener { adapter, view, position ->
-                val bookBean=books[position]
+                val bookBean = books[position]
                 MethodManager.gotoBookDetails(requireActivity(), bookBean)
             }
         }
@@ -75,20 +76,18 @@ class BookcaseFragment:BaseFragment() {
     /**
      * 查找本地书籍
      */
-    private fun findBook(){
-        if (isLoginState()){
-            books= BookDaoManager.getInstance().queryAllBook(true)
-            if (books.size==0){
-                bookTopBean=null
-            }
-            else{
-                bookTopBean=books[0]
+    private fun findBook() {
+        if (isLoginState()) {
+            books = BookDaoManager.getInstance().queryAllBook(true)
+            if (books.size == 0) {
+                bookTopBean = null
+            } else {
+                bookTopBean = books[0]
                 books.removeFirst()
             }
-        }
-        else{
+        } else {
             books.clear()
-            bookTopBean=null
+            bookTopBean = null
         }
         mAdapter?.setNewData(books)
         onChangeTopView()
@@ -96,75 +95,77 @@ class BookcaseFragment:BaseFragment() {
 
 
     //设置头部view显示 (当前页的第一个)
-    private fun onChangeTopView(){
-        if (bookTopBean!=null){
-            setImageUrl(bookTopBean?.imageUrl!!,iv_content_up)
-            setImageUrl(bookTopBean?.imageUrl!!,iv_content_down)
-            tv_name.text=bookTopBean?.bookName
-        }
-        else{
+    private fun onChangeTopView() {
+        if (bookTopBean != null) {
+            setImageUrl(bookTopBean?.imageUrl!!, iv_content_up)
+            setImageUrl(bookTopBean?.imageUrl!!, iv_content_down)
+            tv_name.text = bookTopBean?.bookName
+        } else {
             iv_content_up.setImageBitmap(null)
             iv_content_down.setImageBitmap(null)
-            tv_name.text=""
+            tv_name.text = ""
         }
     }
 
-    private fun setImageUrl(url: String,image: ImageView){
-        GlideUtils.setImageRoundUrl(activity,url,image,5)
+    private fun setImageUrl(url: String, image: ImageView) {
+        GlideUtils.setImageRoundUrl(activity, url, image, 5)
     }
 
     /**
      * 每天上传书籍
      */
-    fun upload(tokenStr:String){
+    fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks= mutableListOf<Book>()
-        val books= BookDaoManager.getInstance().queryAllBook()
-        for (book in books){
-            if (System.currentTimeMillis()>=book.time+Constants.halfYear){
-                maxBooks.add(book)
-                //判读是否存在手写内容
-                if (File(book.bookDrawPath).exists()){
-                    FileUploadManager(tokenStr).apply {
-                        startUpload(book.bookDrawPath,book.bookId.toString())
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=1
-                                zipUrl=book.bodyUrl
-                                downloadUrl=it
-                                subType=-1
-                                subTypeStr=book.subtypeStr
-                                date=System.currentTimeMillis()
-                                listJson= Gson().toJson(book)
-                                bookId=book.bookId
-                            })
-                            if (cloudList.size==maxBooks.size)
-                                mCloudUploadPresenter.upload(cloudList)
-                        }
+        val maxBooks = mutableListOf<Book>()
+        val books = BookDaoManager.getInstance().queryAllBook()
+        //遍历获取所有需要上传的书籍数目
+        for (item in books) {
+            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
+                maxBooks.add(item)
+            }
+        }
+        for (book in maxBooks) {
+            //判读是否存在手写内容
+            if (FileUtils.isExistContent(book.bookDrawPath)) {
+                FileUploadManager(tokenStr).apply {
+                    startUpload(book.bookDrawPath, book.bookId.toString())
+                    setCallBack {
+                        cloudList.add(CloudListBean().apply {
+                            type = 1
+                            zipUrl = book.bodyUrl
+                            downloadUrl = it
+                            subType = -1
+                            subTypeStr = book.subtypeStr
+                            date = System.currentTimeMillis()
+                            listJson = Gson().toJson(book)
+                            bookId = book.bookId
+                        })
+                        if (cloudList.size == maxBooks.size)
+                            mCloudUploadPresenter.upload(cloudList)
                     }
                 }
-                else{
-                    cloudList.add(CloudListBean().apply {
-                        type=1
-                        zipUrl=book.bodyUrl
-                        subType=-1
-                        subTypeStr=book.subtypeStr
-                        date=System.currentTimeMillis()
-                        listJson= Gson().toJson(book)
-                        bookId=book.bookId
-                    })
-                    if (cloudList.size==maxBooks.size)
-                        mCloudUploadPresenter.upload(cloudList)
-                }
+            } else {
+                cloudList.add(CloudListBean().apply {
+                    type = 1
+                    zipUrl = book.bodyUrl
+                    subType = -1
+                    subTypeStr = book.subtypeStr
+                    date = System.currentTimeMillis()
+                    listJson = Gson().toJson(book)
+                    bookId = book.bookId
+                })
+                if (cloudList.size == maxBooks.size)
+                    mCloudUploadPresenter.upload(cloudList)
             }
+
         }
     }
 
     //上传完成后删除书籍
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
-        for (item in cloudList){
-            val bookBean=BookDaoManager.getInstance().queryByBookID(1,item.bookId)
+        for (item in cloudList) {
+            val bookBean = BookDaoManager.getInstance().queryByBookID(1, item.bookId)
             //删除书籍
             FileUtils.deleteFile(File(bookBean.bookPath))
             FileUtils.deleteFile(File(bookBean.bookDrawPath))
@@ -174,7 +175,7 @@ class BookcaseFragment:BaseFragment() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.USER_EVENT){
+        if (msgFlag == Constants.USER_EVENT) {
             findBook()
         }
         if (msgFlag == Constants.BOOK_EVENT) {
