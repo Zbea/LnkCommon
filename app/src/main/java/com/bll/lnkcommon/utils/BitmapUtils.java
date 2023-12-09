@@ -227,6 +227,14 @@ public class BitmapUtils {
         return stream.toByteArray();
     }
 
+    public static byte[] drawableToByte(Bitmap bitmap){
+        if (bitmap==null)
+            return null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
     public static Drawable byteToDrawable(byte[] bytes){
         if (bytes==null)
             return null;

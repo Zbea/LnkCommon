@@ -137,7 +137,6 @@ class MainFragment:BaseFragment(),IRelationView {
                 presenter.getFriends()
             }
         }
-        setDeleteOldCalender()
         nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()
         setCalenderView()
@@ -183,18 +182,6 @@ class MainFragment:BaseFragment(),IRelationView {
         else{
             iv_date.setImageResource(0)
         }
-    }
-
-    /**
-     * 删掉过期台历
-     */
-    private fun setDeleteOldCalender(){
-        //删除过期台历
-        val oldItems=CalenderDaoManager.getInstance().queryListOld(DateUtils.getYear())
-        for (item in oldItems){
-            FileUtils.deleteFile(File(item.path))
-        }
-        CalenderDaoManager.getInstance().deleteBeans(oldItems)
     }
 
     /**
@@ -256,7 +243,7 @@ class MainFragment:BaseFragment(),IRelationView {
                 setCalenderView()
             }
             AUTO_REFRESH_YEAR_EVENT->{
-                setDeleteOldCalender()
+
             }
             AUTO_REFRESH_EVENT->{
                 nowDay=DateUtils.getStartOfDayInMillis()
@@ -284,7 +271,7 @@ class MainFragment:BaseFragment(),IRelationView {
         for (diaryBean in diarys){
             val fileName=DateUtils.longToString(diaryBean.date)
             val path=FileAddress().getPathDiary(fileName)
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -322,7 +309,7 @@ class MainFragment:BaseFragment(),IRelationView {
         for (item in beans){
             val fileName=DateUtils.longToString(item.date)
             val path=FileAddress().getPathFreeNote(fileName)
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -365,7 +352,7 @@ class MainFragment:BaseFragment(),IRelationView {
         for (item in screenTypes){
             val fileName=DateUtils.longToString(item.date)
             val path=item.path
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{

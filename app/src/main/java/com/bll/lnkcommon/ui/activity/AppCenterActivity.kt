@@ -174,11 +174,10 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         if (msgFlag==Constants.APP_INSTALL_EVENT){
             if (type==6){
                 val bean=apps[position]
-                val drawable=AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
                 val item=AppBean()
                 item.appName=bean.nickname
                 item.packageName=bean.packageName
-                item.imageByte= BitmapUtils.drawableToByte(drawable)
+                item.imageByte= AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
                 item.subType=1
                 AppDaoManager.getInstance().insertOrReplace(item)
                 EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)

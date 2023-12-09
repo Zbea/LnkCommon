@@ -80,9 +80,8 @@ class AppFragment:BaseFragment() {
 
 
     private fun initData() {
-        apps.clear()
         if (isLoginState()){
-            apps.addAll(AppUtils.scanLocalInstallAppList(requireActivity()))
+            apps=AppUtils.scanLocalInstallAppList(requireActivity())
         }
         mAdapter?.setNewData(apps)
     }

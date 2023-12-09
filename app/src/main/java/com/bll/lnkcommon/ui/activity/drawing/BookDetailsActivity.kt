@@ -43,26 +43,31 @@ class BookDetailsActivity:BaseDrawingActivity() {
         page=book?.pageIndex!!
 
         val catalogFilePath =FileAddress().getPathTextBookCatalog(book?.bookPath!!)
-        val catalogMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
-        catalogMsg=Gson().fromJson(catalogMsgStr, CatalogMsg::class.java)
-        if (catalogMsg==null) return
-        for (item in catalogMsg?.contents!!)
+        if (FileUtils.isExist(catalogFilePath))
         {
-            val catalogParentBean=CatalogParentBean()
-            catalogParentBean.title=item.title
-            catalogParentBean.pageNumber=item.pageNumber
-            catalogParentBean.picName=item.picName
-            for (ite in item.subItems){
-                val catalogChildBean= CatalogChildBean()
-                catalogChildBean.title=ite.title
-                catalogChildBean.pageNumber=ite.pageNumber
-                catalogChildBean.picName=ite.picName
-
-                catalogParentBean.addSubItem(catalogChildBean)
-                childItems.add(catalogChildBean)
+            val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(catalogFilePath)))
+            try {
+                catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
+            } catch (e: Exception) {
             }
-            parentItems.add(catalogParentBean)
-            catalogs.add(catalogParentBean)
+            if (catalogMsg!=null){
+                for (item in catalogMsg?.contents!!) {
+                    val catalogParent = CatalogParentBean()
+                    catalogParent.title = item.title
+                    catalogParent.pageNumber = item.pageNumber
+                    catalogParent.picName = item.picName
+                    for (ite in item.subItems) {
+                        val catalogChild = CatalogChildBean()
+                        catalogChild.title = ite.title
+                        catalogChild.pageNumber = ite.pageNumber
+                        catalogChild.picName = ite.picName
+                        catalogParent.addSubItem(catalogChild)
+                        childItems.add(catalogChild)
+                    }
+                    parentItems.add(catalogParent)
+                    catalogs.add(catalogParent)
+                }
+            }
         }
     }
 

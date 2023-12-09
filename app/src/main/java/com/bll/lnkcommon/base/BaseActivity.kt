@@ -54,26 +54,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var pageSize=0 //一页数据
     var mUser:User?=null
 
-    open fun navigationToFragment(fragment: Fragment?) {
-        if (fragment != null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.frame_layout, fragment, (fragment as Any?)!!.javaClass.simpleName)
-                .addToBackStack(null).commitAllowingStateLoss()
-        }
-    }
-
-    open fun popToStack(fragment: Fragment?) {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
-        }
-        fragmentManager.popBackStack()
-    }
-
-    override fun moveTaskToBack(nonRoot: Boolean): Boolean {
-        return super.moveTaskToBack(true)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -341,7 +321,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     fun deleteBook(book: Book){
         BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
         FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-        if (File(book.bookDrawPath).exists())
+        if (FileUtils.isExistContent(book.bookDrawPath))
             FileUtils.deleteFile(File(book.bookDrawPath))
         EventBus.getDefault().post(Constants.BOOK_EVENT)
     }

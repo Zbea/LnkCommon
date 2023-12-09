@@ -18,7 +18,6 @@ import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.ui.adapter.CloudNoteAdapter
-import com.bll.lnkcommon.ui.adapter.NoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils

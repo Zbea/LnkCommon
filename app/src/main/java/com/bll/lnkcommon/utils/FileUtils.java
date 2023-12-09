@@ -1,4 +1,4 @@
-package com.bll.lnkstudy.utils;
+package com.bll.lnkcommon.utils;
 
 import android.util.Log;
 

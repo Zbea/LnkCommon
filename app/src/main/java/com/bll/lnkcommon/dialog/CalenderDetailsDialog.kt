@@ -34,8 +34,8 @@ class CalenderDetailsDialog(private val context: Context, private val item: Cale
 
             tv_title?.text = item.title
             tv_year?.text=context.getString(R.string.year)+"： "+item.year
-            tv_price?.text ==context.getString(R.string.price)+"： " + if (item.price==0) context.getString(R.string.free) else item.price
-            tv_info?.text = "${context.getString(R.string.introduction)}： $item.introduction"
+            tv_price?.text =context.getString(R.string.price)+"： " + if (item.price==0) context.getString(R.string.free) else item.price
+            tv_info?.text = "${context.getString(R.string.introduction)}： ${item.introduction}"
 
 
             if (item.buyStatus == 1) {
