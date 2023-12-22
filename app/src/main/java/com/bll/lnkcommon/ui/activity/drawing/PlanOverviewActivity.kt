@@ -5,10 +5,15 @@ import com.bll.lnkcommon.Constants.weekTime
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.dialog.DateCalendarDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.ac_plan_overview.*
+import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
+import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
+import kotlinx.android.synthetic.main.ac_plan_overview.tv_date
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
@@ -80,6 +85,22 @@ class PlanOverviewActivity: BaseDrawingActivity() {
                 weekEndDate+=weekTime
             }
             setChangeDate()
+        }
+
+        tv_date.setOnClickListener {
+            DateCalendarDialog(this,45f,190f).builder().setOnDateListener{
+                if (type==1){
+                    val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
+                    nowYear=dateStr[0].toInt()
+                    nowMonth=dateStr[1].toInt()
+                }
+                else{
+                    val weekLong=DateUtils.getCurrentWeekTimeFrame(it)
+                    weekStartDate=weekLong[0]
+                    weekEndDate=weekLong[1]
+                }
+                setChangeDate()
+            }
         }
 
     }

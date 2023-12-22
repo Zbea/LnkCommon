@@ -9,9 +9,11 @@ import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
 
 
-class DateCalendarDialog(private val context: Context){
+class DateCalendarDialog(private val context: Context,private val x:Float,private val y:Float){
 
     private var dialog:Dialog?=null
+
+    constructor(context: Context):this(context,50f,150f)
 
     fun builder(): DateCalendarDialog {
         dialog= Dialog(context)
@@ -20,8 +22,8 @@ class DateCalendarDialog(private val context: Context){
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.TOP or  Gravity.END
-        layoutParams.y= DP2PX.dip2px(context,150f)
-        layoutParams.x=DP2PX.dip2px(context,50f)
+        layoutParams.y= DP2PX.dip2px(context,y)
+        layoutParams.x=DP2PX.dip2px(context,x)
         dialog?.show()
 
         val calendarView = dialog?.findViewById<CalendarView>(R.id.dp_date)

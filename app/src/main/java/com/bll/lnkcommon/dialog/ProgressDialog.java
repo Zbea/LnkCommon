@@ -23,7 +23,6 @@ public class ProgressDialog {
 
     public void createDialog() {
         mDialog = new Dialog(context);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = View.inflate(context, R.layout.dialog_progress, null);
         mDialog.setContentView(view);
         mDialog.setCanceledOnTouchOutside(false);
@@ -33,11 +32,6 @@ public class ProgressDialog {
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         //设置背景不变暗
         layoutParams.dimAmount=0f;
-        WindowManager wm = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();  //屏幕宽
-        int height = wm.getDefaultDisplay().getHeight();  //屏幕高
-        layoutParams.width = 250;
-        layoutParams.height = 250;
         window.setAttributes(layoutParams);
     }
 

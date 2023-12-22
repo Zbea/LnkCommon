@@ -57,7 +57,6 @@ class NoteFragment:BaseFragment() {
 
         popupBeans.add(PopupBean(0, getString(R.string.notebook_manager), true))
         popupBeans.add(PopupBean(1, getString(R.string.notebook_create), false))
-        popupBeans.add(PopupBean(2, getString(R.string.note_create), false))
 
         setTitle(DataBeanManager.mainListTitle[3])
         showView(iv_manager)
@@ -104,13 +103,18 @@ class NoteFragment:BaseFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                mAdapter?.remove(position)
                                 //删除笔记本
                                 NoteDaoManager.getInstance().deleteBean(note)
                                 //删除笔记本中的所有笔记
                                 NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.title)
                                 val path= FileAddress().getPathNote(note.typeStr,note.title)
                                 FileUtils.deleteFile(File(path))
+
+                                notes.remove(note)
+                                if (pageIndex>1&&notes.size==0){
+                                    pageIndex-=1
+                                }
+                                fetchData()
                             }
                         })
                 }
@@ -137,6 +141,15 @@ class NoteFragment:BaseFragment() {
                 }
             }
         }
+
+        val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
+        view.setOnClickListener {
+            NoteModuleAddDialog(requireContext(),1).builder()
+                ?.setOnDialogClickListener { moduleBean ->
+                    createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
+                }
+        }
+        mAdapter?.addFooterView(view)
     }
 
     //顶部弹出选择
@@ -145,12 +158,6 @@ class NoteFragment:BaseFragment() {
             when (item.id) {
                 0 -> customStartActivity(Intent(activity, NotebookManagerActivity::class.java))
                 1 -> addNoteBookType()
-                else -> {
-                    NoteModuleAddDialog(requireContext(),1).builder()
-                        ?.setOnDialogClickListener { moduleBean ->
-                            createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
-                        }
-                }
             }
         }
     }
@@ -242,9 +249,12 @@ class NoteFragment:BaseFragment() {
                 note.date = System.currentTimeMillis()
                 note.typeStr = typeStr
                 note.contentResId = resId
-                pageIndex=1
+
                 NoteDaoManager.getInstance().insertOrReplace(note)
-                EventBus.getDefault().post(NOTE_EVENT)
+                if(notes.size==10){
+                    pageIndex+=1
+                }
+                fetchData()
             }
     }
 

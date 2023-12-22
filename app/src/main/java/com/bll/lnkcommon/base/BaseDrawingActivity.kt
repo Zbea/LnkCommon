@@ -423,12 +423,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        val type = if(this is PlanOverviewActivity){
-            0
-        } else{
-            1
-        }
-        AppToolDialog(this,type).builder()?.setDialogClickListener{
+        AppToolDialog(this).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

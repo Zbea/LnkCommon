@@ -13,13 +13,14 @@ import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
+import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.BitmapUtils
 import com.bll.lnkcommon.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context,val type:Int) {
+class AppToolDialog(val context: Context) {
 
     private var dialog:Dialog?=null
 
@@ -35,17 +36,12 @@ class AppToolDialog(val context: Context,val type:Int) {
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()
-        if (type==0){
-            var pos=-1
-            for (list in lists){
-                if (list.packageName==Constants.PACKAGE_GEOMETRY){
-                    pos=lists.indexOf(list)
-                }
+        if (context is PlanOverviewActivity){
+            val appBean= AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
+            if (appBean!=null){
+                lists.remove(appBean)
             }
-            if (pos>=0)
-                lists.removeAt(pos)
         }
-
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)

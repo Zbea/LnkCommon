@@ -54,6 +54,17 @@ public class AppDaoManager {
     }
 
     /**
+     * 查找工具应用
+     * @param packageName
+     * @return
+     */
+    public AppBean queryAllByPackageName(String packageName) {
+        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
+        WhereCondition where2= AppBeanDao.Properties.Type.eq(2);
+        return dao.queryBuilder().where(whereUser,whereCondition,where2).build().unique();
+    }
+
+    /**
      * 获取工具应用
      * @return
      */
@@ -80,6 +91,11 @@ public class AppDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
+    /**
+     * 应用是否存储
+     * @param packageName
+     * @return
+     */
     public boolean isExist(String packageName){
         WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
         WhereCondition where2= AppBeanDao.Properties.SubType.eq(1);
@@ -87,6 +103,12 @@ public class AppDaoManager {
         return appBean!=null;
     }
 
+    /**
+     * 应用是否设置为菜单、工具
+     * @param packageName
+     * @param type
+     * @return
+     */
     public boolean isExist(String packageName,int type){
         WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
         WhereCondition where2= AppBeanDao.Properties.Type.eq(type);

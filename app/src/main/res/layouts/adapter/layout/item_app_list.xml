@@ -14,18 +14,17 @@
         />
 
     <LinearLayout
+        android:id="@+id/ll_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_20"
         >
-        <CheckBox
+        <ImageView
             android:id="@+id/cb_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/bg_check_selector"
-
             />
         <TextView
             android:id="@+id/tv_name"

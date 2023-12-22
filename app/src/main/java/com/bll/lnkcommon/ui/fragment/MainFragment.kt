@@ -211,7 +211,7 @@ class MainFragment:BaseFragment(),IRelationView {
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(activity,5)//创建布局管理
-        mAdapter = AppListAdapter(R.layout.item_main_app, 1,null)
+        mAdapter = AppListAdapter(R.layout.item_main_app, 0,null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
