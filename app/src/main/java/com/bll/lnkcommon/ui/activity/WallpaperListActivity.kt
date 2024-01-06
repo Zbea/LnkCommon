@@ -1,46 +1,29 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.content.Intent
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.BookDetailsDialog
-import com.bll.lnkcommon.dialog.CalenderDetailsDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
-import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.manager.WallpaperDaoManager
-import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.CalenderItemBean
-import com.bll.lnkcommon.mvp.model.CalenderList
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.WallpaperBean
 import com.bll.lnkcommon.mvp.model.WallpaperList
-import com.bll.lnkcommon.mvp.presenter.CalenderPresenter
 import com.bll.lnkcommon.mvp.presenter.WallpaperPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.ICalenderView
 import com.bll.lnkcommon.mvp.view.IContractView.IWallpaperView
-import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.ui.adapter.WallpaperAdapter
-import com.bll.lnkcommon.utils.*
-import com.bll.lnkcommon.utils.zip.IZipCallback
-import com.bll.lnkcommon.utils.zip.ZipUtils
+import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileMultitaskDownManager
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
-import java.io.File
-import java.text.DecimalFormat
 
 class WallpaperListActivity:BaseActivity(),IWallpaperView {
 

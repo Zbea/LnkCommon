@@ -1,5 +1,8 @@
 package com.bll.lnkcommon.ui.activity
 
+import android.graphics.Bitmap
+import android.graphics.Point
+import android.graphics.Rect
 import android.view.EinkPWInterface
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.dayLong
@@ -57,6 +60,15 @@ class DateEventActivity:BaseActivity() {
 
         val path=FileAddress().getPathDate(DateUtils.longToStringCalender(nowLong))+"/draw.png"
         elik?.setLoadFilePath(path, true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik?.saveBitmap(true) {}
+            }
+        })
     }
 
     override fun onDestroy() {

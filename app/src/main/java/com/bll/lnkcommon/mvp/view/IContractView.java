@@ -3,6 +3,7 @@ package com.bll.lnkcommon.mvp.view;
 import com.bll.lnkcommon.mvp.model.AccountOrder;
 import com.bll.lnkcommon.mvp.model.AccountXDList;
 import com.bll.lnkcommon.mvp.model.AppList;
+import com.bll.lnkcommon.mvp.model.AppUpdateBean;
 import com.bll.lnkcommon.mvp.model.BookStore;
 import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CalenderList;
@@ -64,6 +65,7 @@ public interface IContractView {
     //主页
     interface ICommonView extends IBaseView {
         void onCommon(CommonData commonData);
+        void onAppUpdate(AppUpdateBean item);
     }
 
     interface IBookStoreView extends IBaseView {

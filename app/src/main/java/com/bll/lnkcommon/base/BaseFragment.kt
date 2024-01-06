@@ -10,10 +10,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.R
+import com.bll.lnkcommon.*
+import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
@@ -26,6 +24,7 @@ import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.utils.*
+import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import org.greenrobot.eventbus.EventBus
@@ -62,6 +61,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var pageSize=0 //一页数据
     var privacyPassword: PrivacyPassword?=null
     var cloudList= mutableListOf<CloudListBean>()
+    private var updateDialog: AppUpdateDialog?=null
 
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
@@ -79,6 +79,14 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
     }
+
+    override fun onAppUpdate(item: AppUpdateBean) {
+        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
+            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+            downLoadStart(item)
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -291,6 +299,32 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
+    }
+
+    //下载应用
+    private fun downLoadStart(bean: AppUpdateBean){
+        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+            FileDownManager.SingleTaskCallBack {
+            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                if (task != null && task.isRunning) {
+                    requireActivity().runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                        updateDialog?.setUpdateBtn(s)
+                    }
+                }
+            }
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+            }
+            override fun completed(task: BaseDownloadTask?) {
+                updateDialog?.dismiss()
+                AppUtils.installApp(requireActivity(), targetFileStr)
+            }
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                updateDialog?.dismiss()
+            }
+        })
     }
 
     /**

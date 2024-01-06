@@ -14,9 +14,10 @@
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_60"
             android:layout_marginStart="52dp"
             android:layout_centerVertical="true"
+            android:paddingEnd="@dimen/dp_15"
             android:scaleType="center"
             android:src="@mipmap/icon_back" />
 
@@ -26,8 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/iv_back"
-            android:layout_marginStart="15dp"
-            android:text="标题"
             android:textColor="@color/black"
             android:textSize="@dimen/navigation_text" />
 
@@ -163,15 +162,42 @@
             />
 
     </LinearLayout>
-    
-    
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1104dp"
         android:layout_marginStart="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_30"
-        android:background="@drawable/bg_black_stroke_0dp_corner"/>
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_black_stroke_0dp_corner"/>
+
+        <LinearLayout
+            android:id="@+id/ll_plan"
+            android:layout_width="411.5dp"
+            android:layout_height="184dp"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:background="@drawable/bg_black_stroke_0dp_corner"
+            >
+            <TextView
+                android:id="@+id/tv_plan"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:text="月周计划"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

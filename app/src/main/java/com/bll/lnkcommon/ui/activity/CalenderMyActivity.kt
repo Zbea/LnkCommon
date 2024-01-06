@@ -69,9 +69,7 @@ class CalenderMyActivity:BaseActivity(){
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@CalenderMyActivity, 20f)
                 , DP2PX.dip2px(this@CalenderMyActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
-                val item =items[position]
-                item.loadSate=2
-                CalenderDetailsDialog(this@CalenderMyActivity,item).builder()
+                onLongClick()
             }
             setOnItemChildClickListener { adapter, view, position ->
                 val item=items[position]
@@ -79,11 +77,6 @@ class CalenderMyActivity:BaseActivity(){
                     val urls=item.previewUrl.split(",")
                     ImageDialog(this@CalenderMyActivity,urls).builder()
                 }
-            }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                this@CalenderMyActivity.position = position
-                onLongClick()
-                true
             }
         }
     }
@@ -107,8 +100,8 @@ class CalenderMyActivity:BaseActivity(){
     }
 
     override fun fetchData() {
-        val count=CalenderDaoManager.getInstance().queryList(DateUtils.getYear()).size
-        items=CalenderDaoManager.getInstance().queryList(DateUtils.getYear(),pageIndex,pageSize)
+        val count=CalenderDaoManager.getInstance().queryList().size
+        items=CalenderDaoManager.getInstance().queryList(pageIndex,pageSize)
         setPageNumber(count)
         mAdapter?.setNewData(items)
     }

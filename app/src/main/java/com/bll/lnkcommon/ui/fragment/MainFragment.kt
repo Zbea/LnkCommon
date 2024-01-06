@@ -47,6 +47,7 @@ class MainFragment:BaseFragment(),IRelationView {
     private var calenderPath=""
     private var popNotes= mutableListOf<PopupBean>()
     private var uploadType=0//上传类型
+    private var isChange=false
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         DataBeanManager.students=list
@@ -74,26 +75,18 @@ class MainFragment:BaseFragment(),IRelationView {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        iv_manager.setOnClickListener {
-            PopupClick(requireActivity(),popNotes,iv_manager,5).builder().setOnSelectListener{
-                when (it.id) {
-                    0 -> {
-                        startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
-                    }
-                    1->{
-                        if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                            PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
-                            }
-                        } else{
-                            startActivity(Intent(requireActivity(),DiaryActivity::class.java))
-                        }
-                    }
-                    else -> {
-                        startActivity(Intent(requireActivity(),PlanOverviewActivity::class.java))
-                    }
+        tv_diary.setOnClickListener {
+            if (privacyPassword!=null&&privacyPassword?.isSet==true){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    startActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
+            } else{
+                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
+        }
+
+        tv_free_note.setOnClickListener {
+            startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
         }
 
         v_up.setOnClickListener{
@@ -118,11 +111,12 @@ class MainFragment:BaseFragment(),IRelationView {
         iv_change.setOnClickListener {
             if (!isLoginState())
                 return@setOnClickListener
-            if (ll_calender.isVisible){
-                disMissView(ll_calender)
+            isChange=!isChange
+            if (isChange){
+                showView(ll_calender)
             }
             else{
-                showView(ll_calender)
+                disMissView(ll_calender)
             }
         }
 
@@ -136,6 +130,7 @@ class MainFragment:BaseFragment(),IRelationView {
                 presenter.getStudents()
                 presenter.getFriends()
             }
+            mCommonPresenter.getAppUpdate()
         }
         nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()
@@ -192,21 +187,24 @@ class MainFragment:BaseFragment(),IRelationView {
         nowDayPos=calenderUtils.elapsedTime()
         val item=CalenderDaoManager.getInstance().queryCalenderBean()
         if (item!=null){
-            showView(ll_calender)
+            showView(iv_change)
             calenderPath=item.path
             setCalenderBg()
         }
         else{
-            disMissView(ll_calender)
+            disMissView(iv_change)
         }
     }
 
     private fun setCalenderBg(){
-        val listFiles=FileUtils.getFiles(calenderPath)
-        if (listFiles!=null&&listFiles.size>nowDayPos-1){
-            val file=listFiles[nowDayPos-1]
-            GlideUtils.setImageFile(requireActivity(),file,iv_calender_bg)
+        val listFiles= FileUtils.getFiles(calenderPath) ?: return
+        val file=if (listFiles.size>nowDayPos-1){
+            listFiles[nowDayPos-1]
         }
+        else{
+            listFiles[listFiles.size-1]
+        }
+        GlideUtils.setImageFile(requireActivity(),file,iv_calender_bg)
     }
 
     private fun initRecyclerView(){

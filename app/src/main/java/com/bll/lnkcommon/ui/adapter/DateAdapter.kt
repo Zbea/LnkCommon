@@ -63,7 +63,6 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         else{
             rlImage.visibility= View.GONE
         }
-
     }
 
 

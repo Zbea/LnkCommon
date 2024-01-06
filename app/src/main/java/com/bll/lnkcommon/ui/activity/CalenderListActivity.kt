@@ -181,9 +181,6 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
         return download
     }
 
-    /**
-     * 下载完成书籍解压
-     */
     private fun unzip(item: CalenderItemBean, zipPath: String, fileTargetPath: String) {
         ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
@@ -226,8 +223,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"]=supply
-        map["years"]=DateUtils.getYear()
+        map["type"] = supply
         presenter.getList(map)
     }
 

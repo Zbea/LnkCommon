@@ -247,7 +247,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
                 privacyPassword=it
                 showView(tv_check_pad)
-                btn_psd_check.text="设置密码"
+                btn_psd_check.text="取消密码"
                 SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
                 EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
             }

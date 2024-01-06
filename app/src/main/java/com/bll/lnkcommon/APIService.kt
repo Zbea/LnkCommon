@@ -14,6 +14,12 @@ interface APIService{
      */
     @POST("file/token")
     fun getQiniuToken(): Observable<BaseResult<String>>
+    /**
+     * 获取更新
+     */
+    @GET("app/info/one?type=3")
+    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
+
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
     /**

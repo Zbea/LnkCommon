@@ -99,6 +99,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             val privacyPassword= PrivacyPassword()
             privacyPassword.question=tvQuestion.text.toString()
             privacyPassword.answer=answerStr
+            privacyPassword.isSet=true
             privacyPassword.password= MD5Utils.digest(passwordStr)
             val user= SPUtil.getObj("user", User::class.java)
             SPUtil.putObj("${user?.accountId}PrivacyPassword",privacyPassword)

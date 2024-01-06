@@ -55,19 +55,12 @@ public class CalenderDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public List<CalenderItemBean> queryListOld(int year) {
-        WhereCondition whereCondition= CalenderItemBeanDao.Properties.Year.lt(year);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(CalenderItemBeanDao.Properties.Date).build().list();
+    public List<CalenderItemBean> queryList() {
+        return dao.queryBuilder().where(whereUser).orderDesc(CalenderItemBeanDao.Properties.Date).build().list();
     }
 
-    public List<CalenderItemBean> queryList(int year) {
-        WhereCondition whereCondition= CalenderItemBeanDao.Properties.Year.eq(year);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(CalenderItemBeanDao.Properties.Date).build().list();
-    }
-
-    public List<CalenderItemBean> queryList(int year,int index,int size) {
-        WhereCondition whereCondition= CalenderItemBeanDao.Properties.Year.eq(year);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(CalenderItemBeanDao.Properties.Date)
+    public List<CalenderItemBean> queryList(int index,int size) {
+        return dao.queryBuilder().where(whereUser).orderDesc(CalenderItemBeanDao.Properties.Date)
                 .offset(index-1).limit(size)
                 .build().list();
     }

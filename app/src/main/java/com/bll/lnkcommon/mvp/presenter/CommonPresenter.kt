@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
+import com.bll.lnkcommon.mvp.model.AppUpdateBean
 import com.bll.lnkcommon.mvp.model.CommonData
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.BasePresenter
@@ -19,6 +20,20 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
             override fun success(tBaseResult: BaseResult<CommonData>) {
                 if (tBaseResult.data!=null)
                     view.onCommon(tBaseResult.data)
+            }
+        }, false)
+    }
+
+    //获取更新信息
+    fun getAppUpdate() {
+        val list= RetrofitManager.service.onAppUpdate()
+        doRequest(list, object : Callback<AppUpdateBean>(view) {
+            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
+                if (tBaseResult.data!=null)
+                    view.onAppUpdate(tBaseResult.data)
             }
         }, false)
     }
