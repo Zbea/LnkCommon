@@ -57,6 +57,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         showToast("批改成功")
         correctBean?.changeUrl=url
         correctBean?.status=3
+        disMissView(tv_ok)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik?.setPWEnabled(false,false)
@@ -70,7 +71,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         return R.layout.ac_homework_correct
     }
     override fun initData() {
-        correctBean= intent.getBundleExtra("bundle").getSerializable("correctBean") as CorrectBean?
+        correctBean= intent.getBundleExtra("bundle")?.getSerializable("correctBean") as CorrectBean?
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())

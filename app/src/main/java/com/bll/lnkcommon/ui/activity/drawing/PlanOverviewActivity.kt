@@ -9,7 +9,6 @@ import com.bll.lnkcommon.dialog.DateCalendarDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.ac_plan_overview.*
 import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
 import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
@@ -35,7 +34,6 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
     override fun initView() {
         setPageTitle("计划总览")
-        elik=v_content.pwInterFace
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

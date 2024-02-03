@@ -2,24 +2,27 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import PopupClick
 import PopupFreeNoteList
-import PopupRecordList
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.media.MediaRecorder
 import android.net.Uri
 import android.os.StrictMode
 import android.provider.MediaStore
-import android.view.View
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.*
+import com.bll.lnkcommon.dialog.InputContentDialog
+import com.bll.lnkcommon.dialog.ItemSelectorDialog
+import com.bll.lnkcommon.dialog.NoteModuleAddDialog
+import com.bll.lnkcommon.dialog.PopupShareNoteList
 import com.bll.lnkcommon.greendao.StringConverter
-import com.bll.lnkcommon.manager.*
-import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.manager.FreeNoteDaoManager
+import com.bll.lnkcommon.mvp.model.FreeNoteBean
+import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.mvp.model.ShareNoteList
 import com.bll.lnkcommon.mvp.presenter.ShareNotePresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IShareNoteView
 import com.bll.lnkcommon.utils.*
@@ -27,9 +30,8 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_free_note.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
-import org.greenrobot.eventbus.EventBus
+import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
-import java.io.IOException
 
 class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
@@ -122,12 +124,12 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         builder.detectFileUriExposure()
 
         disMissView(tv_page_title)
-        tv_name.text=freeNoteBean?.title
+        tv_title.text=freeNoteBean?.title
         elik=iv_image.pwInterFace
 
-        tv_name.setOnClickListener {
-            InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
-                tv_name.text=it
+        tv_title.setOnClickListener {
+            InputContentDialog(this,tv_title.text.toString()).builder().setOnDialogClickListener{
+                tv_title.text=it
                 freeNoteBean?.title=it
             }
         }
@@ -150,7 +152,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                     freeNoteBean=it
                     bgResList= freeNoteBean?.bgRes as MutableList<String>
                     images= freeNoteBean?.paths as MutableList<String>
-                    tv_name.text=freeNoteBean?.title
+                    tv_title.text=freeNoteBean?.title
                     setContentImage()
                 }
             }

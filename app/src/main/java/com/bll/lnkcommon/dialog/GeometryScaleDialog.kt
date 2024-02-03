@@ -48,13 +48,17 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                 et_width.hint = context.getString(R.string.geometry_hint_oval_half_width)
                 et_height.hint = context.getString(R.string.geometry_hint_oval_half_height)
             }
+            7->{
+                et_width.hint = "输入抛物线大小"
+                et_height.visibility= View.GONE
+            }
             8->{
                 et_width.hint = context.getString(R.string.geometry_hint_angle)
                 et_height.visibility= View.GONE
             }
             9->{
                 et_width.hint = context.getString(R.string.geometry_hint_scale)
-                et_height.hint = context.getString(R.string.geometry_hint_scale_distance)
+                et_height.visibility= View.GONE
             }
         }
 
