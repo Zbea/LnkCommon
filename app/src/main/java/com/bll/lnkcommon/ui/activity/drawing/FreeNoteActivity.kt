@@ -28,7 +28,9 @@ import com.bll.lnkcommon.mvp.view.IContractView.IShareNoteView
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
+import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.ac_free_note.*
+import kotlinx.android.synthetic.main.ac_free_note.v_content
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
@@ -123,9 +125,9 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         StrictMode.setVmPolicy(builder.build())
         builder.detectFileUriExposure()
 
-        disMissView(tv_page_title)
+        disMissView(tv_page_title,iv_catalog,iv_btn)
         tv_title.text=freeNoteBean?.title
-        elik=iv_image.pwInterFace
+        elik=v_content.pwInterFace
 
         tv_title.setOnClickListener {
             InputContentDialog(this,tv_title.text.toString()).builder().setOnDialogClickListener{
@@ -138,7 +140,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             NoteModuleAddDialog(this,1).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resFreenoteBg)
-                    iv_image.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    v_content.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }
         }
@@ -337,7 +339,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
      * 更换内容
      */
     private fun setContentImage(){
-        iv_image.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        v_content.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)){

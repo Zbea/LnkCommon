@@ -28,11 +28,13 @@
             android:scaleType="center"
             android:src="@mipmap/icon_draw_page_up" />
 
-        <View
+        <ImageView
             android:id="@+id/iv_catalog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="44dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_catalog" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,11 +71,18 @@
         >
 
         <View
-            android:id="@+id/iv_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             />
+
+        <ImageView
+            android:id="@+id/iv_btn"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="44dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_change" />
 
         <ImageView
             android:id="@+id/iv_page_down"

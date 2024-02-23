@@ -17,31 +17,21 @@ import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
-import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
-import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
-import kotlinx.android.synthetic.main.ac_drawing.v_content
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.ac_drawing_book.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_title.*
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
+abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var elik: EinkPWInterface? = null
     var isErasure=false
-    var isTitleClick=true//标题是否可以编
     private var circlePos=0
     private var axisPos=0
     private var isGeometry=false//是否处于几何绘图
@@ -90,8 +80,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
 
-        iv_back?.setOnClickListener { finish() }
-
         iv_tool?.setOnClickListener {
             showDialogAppTool()
         }
@@ -104,16 +92,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             else{
                 stopErasure()
-            }
-        }
-
-        tv_page_title?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_page_title.text.toString()
-                InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                    tv_page_title.text = string
-                    setDrawingTitle(string)
-                }
             }
         }
 
@@ -289,8 +267,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
                 if (elik?.curDrawObjStatus == true){
-                    reDrawGeometry(elik!!)
-
+                        reDrawGeometry(elik!!)
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
@@ -316,7 +293,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                             }
                             7->{
                                 val info=elik.curHandlerInfo
-                                elik.reDrawShape(if (setA(info)>0) width else -width ,info.split("&")[1].toFloat())
+                                elik.reDrawShape(if (getAValue(info)>0) width else -width ,info.split("&")[1].toFloat())
                             }
                             9 -> {
                                 elik.reDrawShape(width,5f)
@@ -328,6 +305,19 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                     }
             }
         }
+    }
+
+    /**
+     * 获取a值
+     */
+    private fun getAValue(info:String):Float{
+        val list= mutableListOf<String>()
+        val pattern= Pattern.compile("-?\\d+(\\.\\d+)") // 编译正则表达式，匹配连续的数字
+        val matcher= pattern.matcher(info) // 创建匹配器对象
+        while (matcher.find()){
+            list.add(matcher.group())
+        }
+        return list[0].toFloat()
     }
 
     /**
@@ -349,21 +339,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private fun setEilkAxis(){
         setCheckView(ll_axis)
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik?.setDrawAxisProperty(axisPos+1,10,5,isScale)
+        elik?.setDrawAxisProperty(axisPos+1, 10,5, isScale)
         currentGeometry=9
-    }
-
-    /**
-     * 获取a值
-     */
-    private fun setA(info:String):Float{
-        val list= mutableListOf<String>()
-        val pattern= Pattern.compile("-?\\d+(\\.\\d+)") // 编译正则表达式，匹配连续的数字
-        val matcher= pattern.matcher(info) // 创建匹配器对象
-        while (matcher.find()){
-            list.add(matcher.group())
-        }
-        return list[0].toFloat()
     }
 
     /**
@@ -421,18 +398,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 设置标题是否可以编辑
-     */
-    fun setDrawingTitleClick(boolean: Boolean){
-        isTitleClick=boolean
-    }
-
-
-    /**
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,0).builder().setDialogClickListener{
+        AppToolDialog(this,1).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -505,27 +474,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         isGeometry=false
     }
 
-    fun setPageTitle(title: String){
-        tv_title?.text=title
-    }
 
-    /**
-     * 标题a操作
-     */
-    open fun setDrawingTitle(title:String){
-    }
-    /**
-     * 是否登录
-     */
-    fun isLoginState():Boolean{
-        val mUser= SPUtil.getObj("user", User::class.java)
-        val token=SPUtil.getString("token")
-        return token.isNotEmpty() && mUser!=null
-    }
-
-    fun getUser(): User?{
-        return SPUtil.getObj("user", User::class.java)
-    }
     /**
      * 显示view
      */
@@ -613,7 +562,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        MethodManager.logoutFailure(this)
+        SToast.showText(R.string.login_timeout)
+        MethodManager.logout(this)
     }
 
     override fun hideLoading() {

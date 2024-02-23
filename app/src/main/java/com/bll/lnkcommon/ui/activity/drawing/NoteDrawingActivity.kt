@@ -42,19 +42,34 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+        disMissView(iv_btn)
         v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
         changeContent()
-
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
-
     }
 
     override fun setDrawingTitle(title: String) {
         noteContent?.title = title
         noteContents[page-1].title = title
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+    }
+
+    override fun onCatalog() {
+        var titleStr=""
+        val list= mutableListOf<ItemList>()
+        for (item in noteContents){
+            val itemBean= ItemList()
+            itemBean.name=item.title
+            itemBean.page=item.page
+            if (titleStr != item.title)
+            {
+                titleStr=item.title
+                list.add(itemBean)
+            }
+        }
+        CatalogDialog(this,list).builder().setOnDialogClickListener { position ->
+            page = noteContents[position].page
+            changeContent()
+        }
     }
 
 
@@ -78,36 +93,16 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
-        var titleStr=""
-        val list= mutableListOf<ItemList>()
-        for (item in noteContents){
-            val itemBean= ItemList()
-            itemBean.name=item.title
-            itemBean.page=item.page
-            if (titleStr != item.title)
-            {
-                titleStr=item.title
-                list.add(itemBean)
-            }
-
-        }
-        CatalogDialog(this,list,0).builder().setOnDialogClickListener { position ->
-            page = noteContents[position].page
-            changeContent()
-        }
-    }
-
     //翻页内容更新切换
     private fun changeContent() {
         noteContent = noteContents[page]
         tv_page_title.text=noteContent?.title
         tv_page.text = (page + 1).toString()
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
+    }
+
+    override fun onElikSave() {
+        elik?.saveBitmap(true) {}
     }
 
 

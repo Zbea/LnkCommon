@@ -1,9 +1,7 @@
 package com.bll.lnkcommon.dialog
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.util.Log
 import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +9,6 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
-import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.BitmapUtils
@@ -20,19 +16,26 @@ import com.bll.lnkcommon.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context) {
+class AppToolDialog(val context: Context,val type:Int) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): AppToolDialog? {
+    fun builder(): AppToolDialog {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
-        layoutParams.x=DP2PX.dip2px(context,10f)
-        layoutParams.y= DP2PX.dip2px(context,46f)
+        if (type==1){
+            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
+            layoutParams.x=DP2PX.dip2px(context,42f)
+            layoutParams.y= DP2PX.dip2px(context,5f)
+        }
+        else{
+            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
+            layoutParams.x=DP2PX.dip2px(context,5f)
+            layoutParams.y= DP2PX.dip2px(context,38f)
+        }
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()

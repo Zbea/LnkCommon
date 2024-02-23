@@ -114,6 +114,8 @@ class TextBookStoreActivity : BaseActivity(),
         setPageTitle("教材")
         showView(tv_province,tv_course,tv_grade,tv_semester)
 
+        mDialog?.setOutside(true)
+
         initRecyclerView()
         initTab()
     }

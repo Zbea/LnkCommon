@@ -12,6 +12,7 @@ public class CatalogMsg {
 
     public String title;
     public int totalCount=0;
+    public int startCount=1;
     public List<ContentsBean> contents;
 
     /**

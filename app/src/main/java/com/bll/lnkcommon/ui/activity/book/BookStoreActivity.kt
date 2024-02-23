@@ -90,6 +90,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         setPageTitle(tabStr)
         showView(tv_grade,ll_search)
 
+        mDialog?.setOutside(true)
+
         initRecyclerView()
 
         et_search.addTextChangedListener {

@@ -34,6 +34,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
+        elik=v_content.pwInterFace
         disMissView(tv_page_title)
         elik?.addOnTopView(ll_date)
         elik?.addOnTopView(tv_digest)
@@ -74,25 +75,24 @@ class DiaryActivity:BaseDrawingActivity() {
                     v_content.setImageResource(ToolUtils.getImageResId(this, bgRes))
                 }
         }
+    }
 
-        iv_catalog.setOnClickListener {
-            DiaryListDialog(this,nowLong).builder()?.setOnDialogClickListener(object : DiaryListDialog.OnDialogClickListener {
-                override fun onClick(diaryBean: DiaryBean) {
-                    saveDiary()
-                    nowLong=diaryBean.date
-                    changeContent()
+    override fun onCatalog() {
+        DiaryListDialog(this,nowLong).builder()?.setOnDialogClickListener(object : DiaryListDialog.OnDialogClickListener {
+            override fun onClick(diaryBean: DiaryBean) {
+                saveDiary()
+                nowLong=diaryBean.date
+                changeContent()
+            }
+            override fun onDelete(diaryBean: DiaryBean) {
+                for (i in 0.until(diaryBean.size)){
+                    val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
+                    elik?.freeCachePWBitmapFilePath(path, true)
                 }
-                override fun onDelete(diaryBean: DiaryBean) {
-                    for (i in 0.until(diaryBean.size)){
-                        val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
-                        elik?.freeCachePWBitmapFilePath(path, true)
-                    }
-                    FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
-                    DiaryDaoManager.getInstance().delete(diaryBean)
-                }
-            })
-        }
-
+                FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
+                DiaryDaoManager.getInstance().delete(diaryBean)
+            }
+        })
     }
 
     override fun onPageDown() {

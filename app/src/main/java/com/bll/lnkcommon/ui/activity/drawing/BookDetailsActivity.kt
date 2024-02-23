@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.base.BaseBookDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -17,12 +17,11 @@ import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing_book.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseDrawingActivity() {
+class BookDetailsActivity:BaseBookDrawingActivity() {
     private var book: Book?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()
@@ -31,6 +30,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
     private var count = 1
     private var page = 0 //当前页码
+    private var startCount=1
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing_book
@@ -72,24 +72,21 @@ class BookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        setDrawingTitleClick(false)
         if (catalogMsg!=null){
-            tv_page_title.text=catalogMsg?.title!!
             count=catalogMsg?.totalCount!!
+            startCount=catalogMsg?.startCount!!
         }
-
         updateScreen()
-
-        iv_catalog.setOnClickListener {
-            CatalogDialog(this,catalogs,1).builder().
-            setOnDialogClickListener { position ->
-                page = position-1
-                updateScreen()
-            }
-
-        }
-
     }
+
+    override fun onCatalog() {
+        CatalogDialog(this,catalogs,1,startCount).builder().
+        setOnDialogClickListener { position ->
+            page = position-1
+            updateScreen()
+        }
+    }
+
 
     override fun onPageDown() {
         if(page<count){
@@ -107,7 +104,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
     //单屏翻页
     private fun updateScreen(){
-        tv_page.text="${page+1}/$count"
+        tv_page.text = if (page+1-(startCount-1)>0) "${page + 1-(startCount-1)}" else ""
         loadPicture(page,elik!!,v_content)
     }
 

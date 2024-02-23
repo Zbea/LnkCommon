@@ -1,19 +1,19 @@
 package com.bll.lnkcommon.ui.activity
 
-import android.graphics.Bitmap
-import android.graphics.Point
-import android.graphics.Rect
-import android.view.EinkPWInterface
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.dayLong
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.DateDialog
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
+import kotlinx.android.synthetic.main.ac_date_event.iv_down
+import kotlinx.android.synthetic.main.ac_date_event.iv_up
+import kotlinx.android.synthetic.main.ac_date_event.tv_date
+import kotlinx.android.synthetic.main.ac_date_event.v_content
+import kotlinx.android.synthetic.main.ac_diary.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +35,7 @@ class DateEventActivity:BaseDrawingActivity() {
     override fun initView() {
         setPageTitle("日程")
         setContentView()
+        elik=v_content.pwInterFace
 
         iv_up.setOnClickListener {
             nowLong-=dayLong
