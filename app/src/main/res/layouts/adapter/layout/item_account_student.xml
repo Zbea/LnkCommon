@@ -40,6 +40,16 @@
         />
 
     <TextView
+        android:id="@+id/tv_set"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="权限设置"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
         android:id="@+id/tv_student_cancel"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

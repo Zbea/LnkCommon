@@ -72,9 +72,9 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
     }
     override fun initView() {
         setPageTitle("新年台历")
-        tv_setting.text="我的台历"
         tv_type.text="官方"
-        showView(tv_setting,tv_type)
+        showView(tv_type)
+        setSettingText("我的台历")
 
         tv_type.setOnClickListener {
             PopupRadioList(this,pops,tv_type,tv_type.width,5).builder().setOnSelectListener{

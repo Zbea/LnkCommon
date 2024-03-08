@@ -55,9 +55,9 @@ class WallpaperListActivity:BaseActivity(),IWallpaperView {
     }
     override fun initView() {
         setPageTitle("壁纸")
-        tv_setting.text="我的壁纸"
+        setSettingText("我的壁纸")
         tv_type.text="官方"
-        showView(tv_setting,tv_type)
+        showView(tv_type)
 
         tv_type.setOnClickListener {
             PopupRadioList(this,pops,tv_type,tv_type.width,5).builder().setOnSelectListener{

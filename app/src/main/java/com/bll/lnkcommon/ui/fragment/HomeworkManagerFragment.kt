@@ -21,6 +21,7 @@ class HomeworkManagerFragment:BaseFragment() {
     private var popupStudents = mutableListOf<PopupBean>()
 
     private var homeworkFragment: HomeworkFragment? = null
+    private var testPaperFragment: HomeworkFragment? = null
     private var examFragment: HomeworkFragment? = null
     private var myHomeworkFragment:MyHomeworkFragment?=null
     private var homeworkCorrectFragment:HomeworkCorrectFragment?=null
@@ -40,7 +41,8 @@ class HomeworkManagerFragment:BaseFragment() {
         val coursePops=DataBeanManager.popupCourses
 
         homeworkFragment = HomeworkFragment().newInstance(1)
-        examFragment = HomeworkFragment().newInstance(2)
+        testPaperFragment=HomeworkFragment().newInstance(2)
+        examFragment = HomeworkFragment().newInstance(3)
         myHomeworkFragment= MyHomeworkFragment()
         homeworkCorrectFragment= HomeworkCorrectFragment()
 
@@ -58,6 +60,9 @@ class HomeworkManagerFragment:BaseFragment() {
                             homeworkFragment?.onChangeCourse(it.name)
                         }
                         1->{
+                            testPaperFragment?.onChangeCourse(it.name)
+                        }
+                        2->{
                             examFragment?.onChangeCourse(it.name)
                         }
                     }
@@ -98,6 +103,7 @@ class HomeworkManagerFragment:BaseFragment() {
 
     private fun changeFragmentStudent(id:Int){
         homeworkFragment?.onChangeStudent(id)
+        testPaperFragment?.onChangeStudent(id)
         examFragment?.onChangeStudent(id)
         myHomeworkFragment?.onChangeStudent(id)
         homeworkCorrectFragment?.onChangeStudent(id)
@@ -119,14 +125,19 @@ class HomeworkManagerFragment:BaseFragment() {
                 1->{
                     showView(tv_course)
                     disMissView(iv_manager)
-                    switchFragment(lastFragment, examFragment)
+                    switchFragment(lastFragment, testPaperFragment)
                 }
                 2->{
+                    showView(tv_course)
+                    disMissView(iv_manager)
+                    switchFragment(lastFragment, examFragment)
+                }
+                3->{
                     showView(iv_manager)
                     disMissView(tv_course)
                     switchFragment(lastFragment, myHomeworkFragment)
                 }
-                3->{
+                4->{
                     disMissView(tv_course,iv_manager)
                     switchFragment(lastFragment, homeworkCorrectFragment)
                 }

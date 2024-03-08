@@ -143,6 +143,18 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         tv_title?.setText(titleId)
     }
 
+    fun setSettingText(s: String){
+        showView(tv_setting)
+        tv_setting.text=s
+    }
+
+    fun setImageBtn(resId: Int){
+        showView(iv_manager)
+        if (resId!=0){
+            iv_manager.setImageResource(resId)
+        }
+    }
+
     /**
      * 显示view
      */

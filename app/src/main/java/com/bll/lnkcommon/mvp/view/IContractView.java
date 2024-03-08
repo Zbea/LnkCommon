@@ -13,6 +13,7 @@ import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
 import com.bll.lnkcommon.mvp.model.JournalList;
+import com.bll.lnkcommon.mvp.model.MessageList;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.ShareNoteList;
@@ -143,6 +144,11 @@ public interface IContractView {
         void onList(CloudList item);
         void onType(List<String> types);
         void onDelete();
+    }
+
+    interface IMessageView extends IBaseView{
+        void onList(MessageList message);
+        void onCommitSuccess();
     }
 
 }

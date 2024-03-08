@@ -59,9 +59,9 @@ class BookcaseTypeListActivity : BaseActivity() {
 
     override fun initView() {
         setPageTitle(R.string.type_list_str)
-        showView(tv_setting,tv_province)
+        showView(tv_province)
 
-        tv_setting.text=getString(R.string.book_list_str)
+        setSettingText(getString(R.string.book_list_str))
         tv_province.text=getString(R.string.type_manager_str)
 
         tv_province?.setOnClickListener {

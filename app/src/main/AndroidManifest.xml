@@ -130,9 +130,6 @@
             android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom" />
         <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
-        <activity android:name=".ui.activity.RecordActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
         <activity android:name=".ui.activity.CalenderListActivity"
             android:launchMode="singleTask"
@@ -152,6 +149,10 @@
         <activity android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask"
             />
+        <activity android:name=".ui.activity.MessageListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.PermissionSettingActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

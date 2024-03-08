@@ -4,11 +4,15 @@ import android.app.Dialog
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.WalletBuyDialog
+import com.bll.lnkcommon.dialog.WalletStudentRechargeDialog
 import com.bll.lnkcommon.mvp.model.AccountOrder
 import com.bll.lnkcommon.mvp.model.AccountXDList
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.WalletPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.utils.SPUtil
@@ -57,7 +61,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initView() {
-        tv_xdmoney.text="学豆"+mUser?.balance
+        tv_xdmoney.text="青豆:  "+mUser?.balance
 
         tv_buy.setOnClickListener {
             if (xdList.size>0){
@@ -65,6 +69,17 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
             }
             else{
                 walletPresenter.getXdList(true)
+            }
+        }
+
+        tv_student.setOnClickListener {
+            if (DataBeanManager.students.size==0){
+                showToast("请先关联学生")
+                return@setOnClickListener
+            }
+            WalletStudentRechargeDialog(this,mUser?.balance!!).builder()?.setOnClickListener{
+                money,ids->
+
             }
         }
 

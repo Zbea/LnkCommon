@@ -22,10 +22,20 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_40"
         android:layout_marginEnd="@dimen/dp_40"
         android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/tv_xdmoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:text="青豆"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/black"
         />
 
     <LinearLayout
@@ -35,24 +45,29 @@
         android:layout_marginBottom="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_40"
         android:layout_marginEnd="@dimen/dp_40"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal"
         >
-        <TextView
-            android:id="@+id/tv_xdmoney"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="学豆"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            />
-
         <TextView
             android:id="@+id/tv_buy"
             android:layout_width="142dp"
             android:layout_height="48dp"
-            android:text="购买学豆"
+            android:text="购买青豆"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:background="@drawable/bg_gary_arch"
+            />
+
+        <View
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/tv_student"
+            android:layout_width="142dp"
+            android:layout_height="48dp"
+            android:text="学生转账"
             android:textSize="@dimen/sp_24"
             android:textColor="@color/black"
             android:gravity="center"

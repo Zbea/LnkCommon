@@ -15,7 +15,7 @@ class AccountStudentAdapter(layoutResId: Int,data: List<StudentBean>?) : BaseQui
             setText(R.id.tv_student_school,item.schoolName)
             if (DataBeanManager.grades.size>0)
                 setText(R.id.tv_student_grade,DataBeanManager.grades[item.grade-1].desc)
-            addOnClickListener(R.id.tv_student_cancel)
+            addOnClickListener(R.id.tv_student_cancel,R.id.tv_set)
         }
     }
 

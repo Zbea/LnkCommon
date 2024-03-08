@@ -377,17 +377,17 @@ class MainActivity : BaseActivity(),IQiniuView {
         when (msgFlag) {
             //每天上传
             Constants.AUTO_UPLOAD_DAY_EVENT -> {
-                if(isLoginState()){
-                    typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
-                    qiniuPresenter.getToken()
-                }
+//                if(isLoginState()){
+//                    typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
+//                    qiniuPresenter.getToken()
+//                }
             }
             //每年上传
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
-                if(isLoginState()){
-                    typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
-                    qiniuPresenter.getToken()
-                }
+//                if(isLoginState()){
+//                    typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
+//                    qiniuPresenter.getToken()
+//                }
             }
             Constants.SETTING_DATA_EVENT->{
                 clearSqlData()

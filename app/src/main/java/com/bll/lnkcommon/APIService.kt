@@ -282,4 +282,16 @@ interface APIService{
      */
     @GET("magazine/list")
     fun getJournalList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<JournalList>>
+
+    /**
+     * 消息列表
+     */
+    @GET("message/inform/list")
+    fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<MessageList>>
+    /**
+     * 发送消息
+     */
+    @POST("message/inform/insertStudent")
+    fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
 }

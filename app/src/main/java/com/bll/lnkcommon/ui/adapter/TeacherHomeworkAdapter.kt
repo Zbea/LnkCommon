@@ -35,6 +35,7 @@ class TeacherHomeworkAdapter(layoutResId: Int, data: List<TeacherHomeworkBean>?,
             }
 
             setVisible(R.id.iv_rank,type==2)
+            setGone(R.id.tv_status,type==1)
 
             addOnClickListener(R.id.iv_delete,R.id.iv_rank,R.id.tv_image_content,R.id.tv_image_commit,R.id.tv_image_correct)
         }

@@ -24,7 +24,7 @@ object DataBeanManager {
         ,mContext.getString(R.string.tab_note),mContext.getString(R.string.diary),mContext.getString(R.string.free_note)
         ,mContext.getString(R.string.screenshot))
 
-    val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.school_exam_str)
+    val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.classGroup_exam_str),mContext.getString(R.string.school_exam_str)
         ,mContext.getString(R.string.my_homework),mContext.getString(R.string.my_homework_correct))
 
     val journalType =  arrayOf(mContext.getString(R.string.journal_day),mContext.getString(R.string.journal_week)
@@ -230,5 +230,41 @@ object DataBeanManager {
             list.add(ItemList(6, "艺术才能"))
             return list
         }
+
+    val weeks: MutableList<DateWeek>
+        get() {
+            val list= mutableListOf<DateWeek>()
+            list.add(
+                DateWeek("周一",  2, false)
+            )
+            list.add(
+                DateWeek("周二",  3, false)
+            )
+            list.add(
+                DateWeek("周三",  4, false)
+            )
+            list.add(
+                DateWeek("周四",  5, false)
+            )
+            list.add(
+                DateWeek("周五",  6, false)
+            )
+            list.add(
+                DateWeek("周六",  7, false)
+            )
+            list.add(
+                DateWeek("周日",  8, false)
+            )
+            return list
+        }
+
+    fun getWeekStr(week:Int):String{
+        var weekStr=""
+        for (item in weeks){
+            if (item.week==week)
+                weekStr=item.name
+        }
+        return weekStr
+    }
 
 }

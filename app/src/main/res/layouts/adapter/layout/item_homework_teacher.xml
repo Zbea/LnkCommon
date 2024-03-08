@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_black_stroke_5dp_corner"
     android:orientation="vertical"
     android:padding="@dimen/dp_20">
 
-
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginTop="3dp"
+        android:text="通知"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_24"
+        android:textStyle="bold"/>
 
     <LinearLayout
+        android:id="@+id/ll_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/tv_status"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         >
-        <TextView
-            android:id="@+id/tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="通知"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
-            android:textStyle="bold"/>
+
         <TextView
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20" />
 
@@ -61,28 +64,20 @@
             android:src="@mipmap/icon_notebook_delete" />
     </LinearLayout>
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
+        android:layout_below="@+id/ll_title"
+        android:layout_alignStart="@id/ll_title"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_gravity="right"
         android:gravity="center_vertical"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="        "
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
-            android:textStyle="bold"/>
-        <TextView
             android:id="@+id/tv_date"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black_20"
             android:textSize="@dimen/sp_18" />
 
@@ -128,4 +123,4 @@
 
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -24,10 +24,10 @@ public class CalendarReminderUtils {
     private static String CALENDER_EVENT_URL = "content://com.android.calendar/events";
     private static String CALENDER_REMINDER_URL = "content://com.android.calendar/reminders";
 
-    private static String CALENDARS_NAME = "boohee";
-    private static String CALENDARS_ACCOUNT_NAME = "BOOHEE@boohee.com";
-    private static String CALENDARS_ACCOUNT_TYPE = "com.android.boohee";
-    private static String CALENDARS_DISPLAY_NAME = "BOOHEE";
+    private static String CALENDARS_NAME = "LnkCalender";
+    private static String CALENDARS_ACCOUNT_NAME = "lnkCommon";
+    private static String CALENDARS_ACCOUNT_TYPE = "com.bll.lnkCommon";
+    private static String CALENDARS_DISPLAY_NAME = "BLL";
 
     /**
      * 检查是否已经添加了日历账户，如果没有添加先添加一个日历账户再查询

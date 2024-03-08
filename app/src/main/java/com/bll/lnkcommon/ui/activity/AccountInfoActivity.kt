@@ -1,6 +1,8 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
@@ -95,8 +97,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     @SuppressLint("WrongConstant")
     override fun initView() {
         setPageTitle("我的账户")
-        showView(iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_friend_add)
+        setImageBtn(R.mipmap.icon_friend_add)
 
         initRecyclerView()
         initRecyclerViewFriend()
@@ -171,9 +172,18 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
-            if (view.id==R.id.tv_student_cancel){
-                type=0
-                cancel()
+            when(view.id){
+                R.id.tv_student_cancel->{
+                    type=0
+                    cancel()
+                }
+                R.id.tv_set->{
+                    val intent = Intent(this, PermissionSettingActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putSerializable("studentInfo", students[position])
+                    intent.putExtra("bundle", bundle)
+                    customStartActivity(intent)
+                }
             }
         }
     }

@@ -31,6 +31,19 @@
             >
 
             <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:drawableStart="@mipmap/icon_main_message"
+                android:drawablePadding="@dimen/dp_10"
+                android:gravity="center"
+                android:text="信息"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+
+            <TextView
                 android:id="@+id/tv_diary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

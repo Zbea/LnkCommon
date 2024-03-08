@@ -21,6 +21,7 @@ import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
 import com.bll.lnkcommon.ui.activity.DateActivity
+import com.bll.lnkcommon.ui.activity.MessageListActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
@@ -45,7 +46,6 @@ class MainFragment:BaseFragment(),IRelationView {
     private var nowDayPos=1
     private var nowDay=0L
     private var calenderPath=""
-    private var popNotes= mutableListOf<PopupBean>()
     private var uploadType=0//上传类型
     private var isChange=false
 
@@ -67,9 +67,11 @@ class MainFragment:BaseFragment(),IRelationView {
         setTitle(DataBeanManager.mainListTitle[0])
         showView(iv_manager)
 
-        popNotes.add(PopupBean(0,getString(R.string.free_note),R.mipmap.icon_freenote))
-        popNotes.add(PopupBean(1,getString(R.string.diary),R.mipmap.icon_diary))
-        popNotes.add(PopupBean(2,getString(R.string.overview),R.mipmap.icon_plan))
+        tv_message.setOnClickListener {
+            if (isLoginState()){
+                startActivity(Intent(requireActivity(),MessageListActivity::class.java))
+            }
+        }
 
         ll_date.setOnClickListener {
             customStartActivity(Intent(activity,DateActivity::class.java))
@@ -136,6 +138,16 @@ class MainFragment:BaseFragment(),IRelationView {
         setDateView()
         setCalenderView()
         findAppData()
+        setMessageView()
+    }
+
+    private fun setMessageView(){
+        if (isLoginState()&&DataBeanManager.students.size>0){
+            showView(tv_message)
+        }
+        else{
+            disMissView(tv_message)
+        }
     }
 
     /**
@@ -233,6 +245,9 @@ class MainFragment:BaseFragment(),IRelationView {
                 privacyPassword=getCheckPasswordObj()
                 lazyLoad()
                 setCalenderView()
+            }
+            Constants.STUDENT_EVENT->{
+                setMessageView()
             }
             DATE_DRAWING_EVENT -> {
                 setDateView()
