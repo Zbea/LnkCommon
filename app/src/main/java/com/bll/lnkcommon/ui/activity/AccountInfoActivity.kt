@@ -31,11 +31,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
     private var friends= mutableListOf<FriendList.FriendBean>()
-    private var requestfriends= mutableListOf<FriendList.FriendBean>()
     private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
     private var type=0//0学生1好友
-    private var requestPosition=0
     private var privacyPassword: PrivacyPassword?=null
 
     override fun onEditNameSuccess() {
@@ -46,6 +44,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     override fun onBind() {
         if (type==0){
             presenter.getStudents()
+        }
+        else{
+            presenter.getFriends()
         }
     }
     override fun onUnbind() {
@@ -71,16 +72,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         DataBeanManager.friends=friends
         mAdapterFriend?.setNewData(friends)
     }
-    override fun onAgree() {
-        requestfriends.removeAt(requestPosition)
-        presenter.getFriends()
-    }
-    override fun onDisagree() {
-        requestfriends.removeAt(requestPosition)
-    }
-    override fun onListRequestFriend(list: FriendList) {
-        requestfriends=list.list
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_account_info
@@ -90,14 +81,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mUser=getUser()
         presenter.getStudents()
         presenter.getFriends()
-        presenter.getRequestFriends()
         privacyPassword=SPUtil.getObj("${mUser?.accountId}PrivacyPassword", PrivacyPassword::class.java)
     }
 
     @SuppressLint("WrongConstant")
     override fun initView() {
         setPageTitle("我的账户")
-        setImageBtn(R.mipmap.icon_friend_add)
 
         initRecyclerView()
         initRecyclerViewFriend()
@@ -117,21 +106,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 btn_psd_check.text="设置密码"
             }
         }
-
-
-        iv_manager?.setOnClickListener {
-            PopupFriendRequestList(this,iv_manager,requestfriends).builder()
-                .setOnSelectListener{ position,type->
-                    requestPosition=position
-                    if (type==1) {
-                        presenter.disagreeFriend(requestfriends[position].id)
-                    }
-                    else{
-                        presenter.onAgreeFriend(requestfriends[position].id)
-                    }
-            }
-        }
-
 
         btn_edit_name.setOnClickListener {
             editName()

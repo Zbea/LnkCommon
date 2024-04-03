@@ -9,6 +9,8 @@ import com.bll.lnkcommon.mvp.model.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CalenderList;
 import com.bll.lnkcommon.mvp.model.CloudList;
 import com.bll.lnkcommon.mvp.model.CommonData;
+import com.bll.lnkcommon.mvp.model.ExamList;
+import com.bll.lnkcommon.mvp.model.ExamRankList;
 import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
@@ -47,9 +49,6 @@ public interface IContractView {
         void onUnbind();
         void onListStudent(List<StudentBean> beans);
         void onListFriend(FriendList list);
-        void onAgree();
-        void onDisagree();
-        void onListRequestFriend(FriendList list);
     }
 
     //钱包页面回调
@@ -95,7 +94,6 @@ public interface IContractView {
     interface IHomeworkView extends IBaseView{
         void onList(TeacherHomeworkList item);
         void onDeleteSuccess();
-        void onScore(List<Score> scores);
     }
 
     interface IMyHomeworkView extends IBaseView{
@@ -103,6 +101,11 @@ public interface IContractView {
         void onCreateSuccess();
         void onDeleteSuccess();
         void onSendSuccess();
+    }
+
+    interface IScoreRankView extends IBaseView{
+        void onScore(List<Score> scores);
+        void onExamScore(ExamRankList list);
     }
 
     interface IRelationView extends IBaseView{
@@ -149,6 +152,10 @@ public interface IContractView {
     interface IMessageView extends IBaseView{
         void onList(MessageList message);
         void onCommitSuccess();
+    }
+
+    interface IExamView extends IBaseView {
+        void onList(ExamList list);
     }
 
 }

@@ -42,21 +42,22 @@ abstract class Callback<T>(private var IBaseView: IBaseView) : Observer<BaseResu
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
 
-        val code = ExceptionHandle.handleException(e).code
-        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
-            SToast.showText(MyApplication.mContext.getString(R.string.net_work_error))
-        } else if (code == ExceptionHandle.ERROR.NETWORD_ERROR || code == ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.connect_server_timeout))
-        } else if (code == ExceptionHandle.ERROR.PARSE_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.parse_data_error))
-        } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
-        }else if(code==401)
-        {
-            IBaseView.login()
-        }
-        else {
-            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
+        when (ExceptionHandle.handleException(e).code) {
+            ExceptionHandle.ERROR.NETWORD_ERROR-> {
+                SToast.showText("网络连接失败")
+            }
+            ExceptionHandle.ERROR.SERVER_TIMEOUT_ERROR -> {
+                SToast.showText("请求超时")
+            }
+            ExceptionHandle.ERROR.PARSE_ERROR -> {
+                SToast.showText("数据解析错误")
+            }
+            ExceptionHandle.ERROR.HTTP_ERROR -> {
+                SToast.showText("服务器连接失败")
+            }
+            else -> {
+                SToast.showText("服务器开小差，请重试")
+            }
         }
         IBaseView.hideLoading()
     }

@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.Objects;
 
 import retrofit2.HttpException;
 
@@ -65,11 +66,10 @@ public class ExceptionHandle {
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ResponeThrowable(e, ERROR.NETWORD_ERROR);
-            ex.message = "连接失败";
+            ex.message = "网络连接失败";
             return ex;
         } else if (e instanceof SocketTimeoutException) {
-            //"无法连接到服务器"
-            ex = new ResponeThrowable(e, ERROR.SERVER_ADDRESS_ERROR);
+            ex = new ResponeThrowable(e, ERROR.SERVER_TIMEOUT_ERROR);
             ex.message = "连接服务器超时";
             return ex;
         } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
@@ -110,25 +110,21 @@ public class ExceptionHandle {
         public static final int HTTP_ERROR = 1003;
 
         /**
-         * 无法连接到服务器
+         * 服务器连接超时
          */
-        public static final int SERVER_ADDRESS_ERROR = 1004;
+        public static final int SERVER_TIMEOUT_ERROR = 1004;
 
         /**
          * 证书出错
          */
         public static final int SSL_ERROR = 1005;
-        /**
-         * 无网络
-         */
-        public static final int NO_NETWORK = 1006;
 
-        public static final int UNKONW_HOST_EXCEPTION = 1007;
+        public static final int UNKONW_HOST_EXCEPTION = 1006;
 
         /**
          * Token 过期
          */
-        public static final int TOKEN_EXPIRED_EXCEPTION = 1008;
+        public static final int TOKEN_EXPIRED_EXCEPTION = 1007;
     }
 
     public static class ResponeThrowable extends Exception {

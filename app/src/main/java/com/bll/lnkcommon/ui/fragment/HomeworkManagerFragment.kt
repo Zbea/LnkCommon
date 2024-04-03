@@ -9,6 +9,7 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.HomeworkCreateDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.ui.fragment.homework.ExamFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.ui.fragment.homework.MyHomeworkFragment
@@ -22,7 +23,7 @@ class HomeworkManagerFragment:BaseFragment() {
 
     private var homeworkFragment: HomeworkFragment? = null
     private var testPaperFragment: HomeworkFragment? = null
-    private var examFragment: HomeworkFragment? = null
+    private var examFragment: ExamFragment? = null
     private var myHomeworkFragment:MyHomeworkFragment?=null
     private var homeworkCorrectFragment:HomeworkCorrectFragment?=null
 
@@ -42,7 +43,7 @@ class HomeworkManagerFragment:BaseFragment() {
 
         homeworkFragment = HomeworkFragment().newInstance(1)
         testPaperFragment=HomeworkFragment().newInstance(2)
-        examFragment = HomeworkFragment().newInstance(3)
+        examFragment = ExamFragment()
         myHomeworkFragment= MyHomeworkFragment()
         homeworkCorrectFragment= HomeworkCorrectFragment()
 
@@ -52,7 +53,7 @@ class HomeworkManagerFragment:BaseFragment() {
         initTab()
 
         tv_course.setOnClickListener {
-            PopupClick(requireActivity(), coursePops, tv_course,140, 5).builder()
+            PopupClick(requireActivity(), coursePops, tv_course, 5).builder()
                 .setOnSelectListener {
                     tv_course.text = it.name
                     when(lastPosition){

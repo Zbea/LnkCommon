@@ -267,4 +267,22 @@ object DataBeanManager {
         return weekStr
     }
 
+    fun getCourseId(courseStr:String):Int{
+        var courseId=0
+        for (item in courses){
+            if (item.desc==courseStr)
+                courseId=item.type
+        }
+        return courseId
+    }
+
+    fun getCourseStr(courseId:Int):String{
+        var courseStr=""
+        for (item in courses){
+            if (item.type==courseId)
+                courseStr=item.desc
+        }
+        return courseStr
+    }
+
 }

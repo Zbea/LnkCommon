@@ -96,22 +96,6 @@ interface APIService{
     fun onFriendList(): Observable<BaseResult<FriendList>>
 
     /**
-     * 同意好友请求
-     */
-    @POST("add/friend/consent")
-    fun onAgreeFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 不同意好友
-     */
-    @POST("add/friend/delete")
-    fun onUnAgreeFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 请求列表
-     */
-    @GET("add/friend/list")
-    fun onRequestFriendList(): Observable<BaseResult<FriendList>>
-
-    /**
      * 短信信息 "/sms"
      */
     @GET("sms")
@@ -219,6 +203,16 @@ interface APIService{
     @GET("task/group/oneByStudentTaskId")
     fun getScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<Score>>>
 
+    /**
+     * 考试列表
+     */
+    @GET("parent/homework/studentExam")
+    fun getExams(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList>>
+    /**
+     * 成绩
+     */
+    @GET("parent/homework/allJob")
+    fun getExamScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamRankList>>
 
     /**
      * 作业列表

@@ -111,46 +111,4 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
         }, true)
     }
 
-    fun onAgreeFriend(id: Int) {
-        val map=HashMap<String,Any>()
-        map["id"]=id
-        val body = RequestUtils.getBody(map)
-        val editName = RetrofitManager.service.onAgreeFriend(body)
-        doRequest(editName, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onAgree()
-            }
-        }, true)
-    }
-
-    fun disagreeFriend(id: Int) {
-        val map=HashMap<String,Any>()
-        map["ids"]= arrayListOf(id).toArray()
-        val body = RequestUtils.getBody(map)
-        val editName = RetrofitManager.service.onUnAgreeFriend(body)
-        doRequest(editName, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDisagree()
-            }
-        }, true)
-    }
-
-    fun getRequestFriends() {
-        val editName = RetrofitManager.service.onRequestFriendList()
-        doRequest(editName, object : Callback<FriendList>(view) {
-            override fun failed(tBaseResult: BaseResult<FriendList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<FriendList>) {
-                if (tBaseResult.data!=null)
-                    view.onListRequestFriend(tBaseResult.data)
-            }
-        }, true)
-    }
 }

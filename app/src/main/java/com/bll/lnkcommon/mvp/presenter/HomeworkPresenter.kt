@@ -36,19 +36,4 @@ class HomeworkPresenter(view: IContractView.IHomeworkView) : BasePresenter<ICont
         }, true)
     }
 
-    fun onScore(id:Int) {
-        val map=HashMap<String,Any>()
-        map["id"]=id
-        val grade = RetrofitManager.service.getScore(map)
-        doRequest(grade, object : Callback<MutableList<Score>>(view) {
-            override fun failed(tBaseResult: BaseResult<MutableList<Score>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<MutableList<Score>>) {
-                if (!tBaseResult.data.isNullOrEmpty())
-                    view.onScore(tBaseResult.data)
-            }
-        }, true)
-    }
-
 }

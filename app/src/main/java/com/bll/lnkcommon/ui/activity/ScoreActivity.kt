@@ -4,11 +4,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.PopupRadioList
-import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.Score
-import com.bll.lnkcommon.mvp.model.StudentBean
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
+import com.bll.lnkcommon.mvp.presenter.ScoreRankPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.ScoreAdapter
 import com.bll.lnkcommon.utils.DP2PX
@@ -16,19 +14,27 @@ import com.bll.lnkcommon.widget.SpaceGridItemDecoScore
 import kotlinx.android.synthetic.main.ac_score.*
 import kotlinx.android.synthetic.main.common_title.*
 
-class ScoreActivity:BaseActivity(),IContractView.IHomeworkView{
+class ScoreActivity:BaseActivity(),IContractView.IScoreRankView{
 
-    private val mPresenter= HomeworkPresenter(this)
+    private val mPresenter= ScoreRankPresenter(this)
     private var mAdapter: ScoreAdapter?=null
-    private var datas= mutableListOf<Score>()
+    private var scores= mutableListOf<Score>()
 
-    override fun onList(item: TeacherHomeworkList?) {
-    }
-    override fun onDeleteSuccess() {
-    }
     override fun onScore(scores: MutableList<Score>) {
-        datas=scores
-        mAdapter?.setNewData(datas)
+        this.scores=scores
+        mAdapter?.setNewData(scores)
+    }
+
+    override fun onExamScore(list: ExamRankList) {
+        for (item in list.list){
+            scores.add(Score().apply {
+                classId=item.classId
+                className=item.className
+                score=item.score
+                name=item.studentName
+            })
+        }
+        mAdapter?.setNewData(scores)
     }
 
     override fun layoutId(): Int {
@@ -36,7 +42,14 @@ class ScoreActivity:BaseActivity(),IContractView.IHomeworkView{
     }
 
     override fun initData() {
-        mPresenter.onScore(intent.flags)
+        val type=intent.flags
+        val id=intent.getIntExtra("id",0)
+        if (type==1){
+            mPresenter.onScore(id)
+        }
+        else{
+            mPresenter.onExamScore(id)
+        }
     }
 
     override fun initView() {
@@ -46,7 +59,7 @@ class ScoreActivity:BaseActivity(),IContractView.IHomeworkView{
     }
 
     private fun initRecyclerView(){
-        mAdapter = ScoreAdapter(R.layout.item_score,datas)
+        mAdapter = ScoreAdapter(R.layout.item_score,null)
         rv_list.layoutManager = GridLayoutManager(this,2)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
