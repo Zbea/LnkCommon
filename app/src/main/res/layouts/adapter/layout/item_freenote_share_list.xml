@@ -25,7 +25,8 @@
         <ImageView
             android:id="@+id/iv_load"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="@dimen/dp_10"
             android:src="@mipmap/icon_share_download"
             />
 

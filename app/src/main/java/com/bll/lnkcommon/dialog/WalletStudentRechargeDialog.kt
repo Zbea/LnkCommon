@@ -49,7 +49,7 @@ class WalletStudentRechargeDialog(private val context: Context,private val money
         tvCancel?.setOnClickListener { dismiss() }
         tvOK?.setOnClickListener {
             val contentStr=et_content?.text.toString()
-            if (contentStr.isNotEmpty()&& getCheckIds().isNotEmpty())
+            if (contentStr.isNotEmpty()&& getCheckIds()!=0)
             {
                 dismiss()
                 listener?.onSend(contentStr.toInt(),getCheckIds())
@@ -63,13 +63,13 @@ class WalletStudentRechargeDialog(private val context: Context,private val money
         return this
     }
 
-    private fun getCheckIds():List<Int>{
-        val ids= mutableListOf<Int>()
+    private fun getCheckIds():Int{
+        var id=0
         for (item in students){
             if (item.isCheck)
-                ids.add(item.childId)
+                id=item.accountId
         }
-        return ids
+        return id
     }
 
     fun show(){
@@ -83,7 +83,7 @@ class WalletStudentRechargeDialog(private val context: Context,private val money
     private var listener: OnClickListener? = null
 
     fun interface OnClickListener {
-        fun onSend(money:Int,ids: List<Int>)
+        fun onSend(money:Int,id: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener?) {

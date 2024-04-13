@@ -53,8 +53,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         if (type==0){
             mAdapter?.remove(position)
             DataBeanManager.students=students
-            if (DataBeanManager.students.size==0)
-                EventBus.getDefault().post(Constants.STUDENT_EVENT)
+            EventBus.getDefault().post(Constants.STUDENT_EVENT)
         }
         else{
             mAdapterFriend?.remove(position)
@@ -62,10 +61,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
     }
     override fun onListStudent(bens: MutableList<StudentBean>) {
-        DataBeanManager.students=bens
         students=bens
         mAdapter?.setNewData(students)
-        EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        if (DataBeanManager.students!=bens){
+            DataBeanManager.students=bens
+            EventBus.getDefault().post(Constants.STUDENT_EVENT)
+        }
     }
     override fun onListFriend(list: FriendList) {
         friends=list.list
@@ -214,7 +215,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             }
             override fun ok() {
                 if (type==0){
-                    presenter.unbindStudent(students[position].childId)
+                    presenter.unbindStudent(students[position].accountId)
                 }
                 else{
                     presenter.unbindFriend(friends[position].id)
@@ -245,6 +246,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             }
         }
 
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (Constants.REFRESH_STUDENT_PERMISSION_EVENT==msgFlag){
+            presenter.getStudents()
+        }
     }
 
 

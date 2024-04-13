@@ -50,9 +50,14 @@ class MainFragment:BaseFragment(),IRelationView {
     private var isChange=false
 
     override fun onListStudents(list: MutableList<StudentBean>) {
-        DataBeanManager.students=list
         if (list.size>0){
-            SPUtil.putInt("studentId",list[0].childId)
+            showView(tv_message)
+        }
+        else{
+            disMissView(tv_message)
+        }
+        if (DataBeanManager.students != list){
+            DataBeanManager.students=list
             EventBus.getDefault().post(Constants.STUDENT_EVENT)
         }
     }
@@ -254,9 +259,6 @@ class MainFragment:BaseFragment(),IRelationView {
             }
             CALENDER_SET_EVENT->{
                 setCalenderView()
-            }
-            AUTO_REFRESH_YEAR_EVENT->{
-
             }
             AUTO_REFRESH_EVENT->{
                 nowDay=DateUtils.getStartOfDayInMillis()

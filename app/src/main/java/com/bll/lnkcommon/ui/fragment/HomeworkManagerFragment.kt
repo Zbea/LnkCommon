@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.common_radiogroup.*
 
 class HomeworkManagerFragment:BaseFragment() {
 
-    private var popupStudents = mutableListOf<PopupBean>()
-
     private var homeworkFragment: HomeworkFragment? = null
     private var testPaperFragment: HomeworkFragment? = null
     private var examFragment: ExamFragment? = null
@@ -35,9 +33,14 @@ class HomeworkManagerFragment:BaseFragment() {
         return R.layout.fragment_homework_manager
     }
     override fun initView() {
-        setTitle(DataBeanManager.mainListTitle[6])
+        setTitle(DataBeanManager.mainListTitle[5])
         showView(tv_course)
         iv_manager.setImageResource(R.mipmap.icon_add)
+
+        if (DataBeanManager.students.size>1){
+            showView(tv_student)
+            tv_student.text = DataBeanManager.students[0].nickname
+        }
 
         val coursePops=DataBeanManager.popupCourses
 
@@ -48,9 +51,6 @@ class HomeworkManagerFragment:BaseFragment() {
         homeworkCorrectFragment= HomeworkCorrectFragment()
 
         switchFragment(lastFragment, homeworkFragment)
-
-        initStudent()
-        initTab()
 
         tv_course.setOnClickListener {
             PopupClick(requireActivity(), coursePops, tv_course, 5).builder()
@@ -71,11 +71,10 @@ class HomeworkManagerFragment:BaseFragment() {
         }
 
         tv_student.setOnClickListener {
-            PopupRadioList(requireActivity(), popupStudents, tv_student, tv_student.width, 10).builder()
+            PopupRadioList(requireActivity(), DataBeanManager.popupStudents, tv_student, tv_student.width, 10).builder()
                 .setOnSelectListener {
                     tv_student.text = it.name
                     changeFragmentStudent(it.id)
-                    SPUtil.putInt("studentId",it.id)
                 }
         }
 
@@ -86,20 +85,10 @@ class HomeworkManagerFragment:BaseFragment() {
             }
         }
 
+        initTab()
+
     }
     override fun lazyLoad() {
-    }
-
-    private fun initStudent(){
-        popupStudents.clear()
-        if (DataBeanManager.students.size > 0) {
-            showView(tv_student)
-            for (item in DataBeanManager.students) {
-                popupStudents.add(PopupBean(item.accountId, item.nickname, DataBeanManager.students.indexOf(item) == 0))
-            }
-            tv_student.text = popupStudents[0].name
-            changeFragmentStudent(popupStudents[0].id)
-        }
     }
 
     private fun changeFragmentStudent(id:Int){
@@ -170,7 +159,19 @@ class HomeworkManagerFragment:BaseFragment() {
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == Constants.STUDENT_EVENT) {
-            initStudent()
+            if (DataBeanManager.students.size==1){
+                disMissView(tv_student)
+                changeFragmentStudent(DataBeanManager.students[0].accountId)
+            }
+            else if (DataBeanManager.students.size>1){
+                showView(tv_student)
+                tv_student.text = DataBeanManager.students[0].nickname
+                changeFragmentStudent(DataBeanManager.students[0].accountId)
+            }
+            else{
+                disMissView(tv_student)
+                changeFragmentStudent(0)
+            }
         }
     }
 

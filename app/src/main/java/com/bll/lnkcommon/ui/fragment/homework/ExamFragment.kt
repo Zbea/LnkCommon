@@ -47,7 +47,7 @@ class ExamFragment : BaseFragment(),IExamView {
         initRecyclerView()
 
         if(DataBeanManager.students.size>0)
-            studentId=DataBeanManager.students[0].childId
+            studentId=DataBeanManager.students[0].accountId
     }
 
     override fun lazyLoad() {
@@ -79,6 +79,8 @@ class ExamFragment : BaseFragment(),IExamView {
                     customStartActivity(Intent(requireActivity(),ScoreActivity::class.java)
                         .setFlags(2)
                         .putExtra("id",item.schoolExamJobId)
+                        .putExtra("classId",item.classId)
+                        .putExtra("className",item.className)
                     )
                 }
             }

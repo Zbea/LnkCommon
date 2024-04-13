@@ -73,12 +73,12 @@ object Constants {
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
         const val CHECK_PASSWORD_EVENT = "CheckPasswordEvent"
         const val SETTING_DATA_EVENT = "SettingDataEvent" //系统设置 一键下载
+        const val REFRESH_STUDENT_PERMISSION_EVENT = "RefreshStudentPermission"
 
         const val PACKAGE_WX="com.tencent.mm"
         const val PACKAGE_GEOMETRY="com.geometry"
         const val PACKAGE_READER = "com.geniatech.knote.reader"
 
-        const val ACTION_YEAR_REFRESH = "com.bll.lnkcommon.refresh.year"//每年刷新
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
         const val ACTION_UPLOAD_REFRESH = "com.bll.lnkcommon.upload"//每天3自动更新
         const val ACTION_UPLOAD_YEAR = "com.bll.lnkcommon.upload.year"//每年12月31 3点自动上传

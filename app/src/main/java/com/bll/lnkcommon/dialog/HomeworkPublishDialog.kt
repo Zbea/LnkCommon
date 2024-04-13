@@ -24,7 +24,7 @@ class HomeworkPublishDialog(val context: Context) {
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
 
         tv_date.setOnClickListener {
-            DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
+            CalendarSingleDialog(context).builder().setOnDateListener {  dateTim ->
                 tv_date.text=DateUtils.longToStringWeek(dateTim)
                 date=dateTim
             }

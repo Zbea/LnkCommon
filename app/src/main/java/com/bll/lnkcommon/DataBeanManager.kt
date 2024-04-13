@@ -16,8 +16,7 @@ object DataBeanManager {
     var provinces= mutableListOf<AreaBean>()
     var friends= mutableListOf<FriendList.FriendBean>()
 
-    val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),
-        mContext.getString(R.string.tab_journal),mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
+    val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
 
     private val cloudListTitle = arrayOf(mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_teaching)
@@ -26,10 +25,6 @@ object DataBeanManager {
 
     val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.classGroup_exam_str),mContext.getString(R.string.school_exam_str)
         ,mContext.getString(R.string.my_homework),mContext.getString(R.string.my_homework_correct))
-
-    val journalType =  arrayOf(mContext.getString(R.string.journal_day),mContext.getString(R.string.journal_week)
-        ,mContext.getString(R.string.journal_fiction),mContext.getString(R.string.journal_comprehensive)
-        ,mContext.getString(R.string.journal_specialty))
 
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
@@ -59,6 +54,15 @@ object DataBeanManager {
             val list= mutableListOf<PopupBean>()
             for (i in courses.indices){
                 list.add(PopupBean(courses[i].type, courses[i].desc, false))
+            }
+            return list
+        }
+
+    val popupStudents: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in students.indices) {
+                list.add(PopupBean(students[i].accountId, students[i].nickname, i == 0))
             }
             return list
         }
@@ -125,19 +129,14 @@ object DataBeanManager {
             name = mainListTitle[1]
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_qk)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_qk_check)
-            name = mainListTitle[2]
-        })
-        list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_note)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
-            name = mainListTitle[3]
+            name = mainListTitle[2]
         })
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_app)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
-            name = mainListTitle[4]
+            name = mainListTitle[3]
         })
         return list
     }

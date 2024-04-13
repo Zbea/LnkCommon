@@ -96,6 +96,28 @@ interface APIService{
     fun onFriendList(): Observable<BaseResult<FriendList>>
 
     /**
+     * 获取单个学生
+     */
+    @GET("parent/child/user")
+    fun getStudent(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<StudentBean>>
+
+    /**
+     * 添加学生权限
+     */
+    @POST("student/permission/insert")
+    fun onInsertPermissionTime(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 删除学生权限
+     */
+    @POST("student/permission/delete")
+    fun onDeletePermissionTime(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 修改权限
+     */
+    @POST("parent/child/updatePermission")
+    fun onUpdatePermissionAllow(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
      * 短信信息 "/sms"
      */
     @GET("sms")
@@ -121,7 +143,7 @@ interface APIService{
      * //获取学豆列表
      */
     @GET("wallets/list")
-    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountXDList>>
+    fun getSMoneyList(): Observable<BaseResult<MutableList<AccountQdBean>>>
     /**
      * 提交学豆订单
      */
@@ -132,6 +154,11 @@ interface APIService{
      */
     @GET("wallets/order/{id}")
     fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
+    /**
+     *学豆转学生
+     */
+    @POST("parent/child/transferToStudent")
+    fun transferQd(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 教材分类
@@ -280,12 +307,12 @@ interface APIService{
     /**
      * 消息列表
      */
-    @GET("message/inform/list")
+    @GET("message/inform/parentList")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<MessageList>>
     /**
      * 发送消息
      */
-    @POST("message/inform/insertStudent")
+    @POST("message/inform/parentToStudent")
     fun commitMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

@@ -59,7 +59,6 @@ public class MethodManager {
         ActivityManager.getInstance().finishOthers(MainActivity.class);
 
         DataBeanManager.INSTANCE.getStudents().clear();
-        DataBeanManager.INSTANCE.getStudents().clear();
         EventBus.getDefault().post(Constants.STUDENT_EVENT);
 
         //发出退出登录广播

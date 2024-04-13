@@ -35,6 +35,13 @@
             android:layout_marginStart="44dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_catalog" />
+
+        <ImageView
+            android:id="@+id/iv_other"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="44dp"
+            android:scaleType="center" />
     </LinearLayout>
 
     <LinearLayout

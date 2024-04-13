@@ -5,15 +5,10 @@ import com.bll.lnkcommon.Constants.dayLong
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.DateDialog
+import com.bll.lnkcommon.dialog.CalendarSingleDialog
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
-import kotlinx.android.synthetic.main.ac_date_event.iv_down
-import kotlinx.android.synthetic.main.ac_date_event.iv_up
-import kotlinx.android.synthetic.main.ac_date_event.tv_date
-import kotlinx.android.synthetic.main.ac_date_event.v_content
-import kotlinx.android.synthetic.main.ac_diary.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,7 +43,7 @@ class DateEventActivity:BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateDialog(this).builder().setOnDateListener { dateStr, dateTim ->
+            CalendarSingleDialog(this,45f,190f).builder().setOnDateListener { dateTim ->
                 nowLong=dateTim
                 setContentView()
             }
@@ -62,15 +57,9 @@ class DateEventActivity:BaseDrawingActivity() {
         elik?.setLoadFilePath(path, true)
     }
 
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
-        isDraw=true
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        if (isDraw)
-            EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
+        EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
     }
 
 }

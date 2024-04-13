@@ -31,12 +31,19 @@
             >
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
                 android:text="钱包付费"
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black_50"
+                android:text="（关闭后将不允许该学生使用青豆购买）"
                 />
 
             <Switch
@@ -58,19 +65,27 @@
             >
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
                 android:text="书架阅读"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black_50"
+                android:text="（关闭后将不允许该学生查看书籍）"
                 />
 
             <ImageView
                 android:id="@+id/iv_book_add"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_add"
                 />
             <Switch
@@ -94,23 +109,30 @@
             android:gravity="center_vertical"
             android:padding="@dimen/dp_20"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-
             >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:text="义教视频"
+                />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/sp_22"
-                android:textColor="@color/black"
-                android:text="义教视频"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/black_50"
+                android:text="（关闭后将不允许该学生观看义教视频）"
                 />
 
             <ImageView
                 android:id="@+id/iv_video_add"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_add"
                 />
 

@@ -6,10 +6,38 @@
     android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <include
+
+    <LinearLayout
         android:id="@+id/ll_title"
-        layout="@layout/common_title"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="52dp"
+            android:layout_centerVertical="true"
+            android:paddingEnd="@dimen/dp_15"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_function"
@@ -40,7 +68,7 @@
 
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             />
@@ -53,7 +81,7 @@
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableStart="@mipmap/icon_freenote_share_list"
             android:drawablePadding="@dimen/dp_5"
-            android:text="分享"
+            android:text="收件"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:gravity="center"

@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -57,7 +59,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
     override fun initView() {
         pageSize = 12
-        setTitle(DataBeanManager.mainListTitle[5])
+        setTitle(DataBeanManager.mainListTitle[4])
 
         initTab()
         initRecyclerView()
@@ -110,19 +112,14 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
         val beans = mutableListOf<ItemList>()
-        if (tabId == 3) {
-            beans.add(ItemList().apply {
-                name = "删除"
-                resId = R.mipmap.icon_setting_delete
-            })
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        if (tabId == 3&&DataBeanManager.students.size>0) {
             beans.add(ItemList().apply {
                 name = "设置作业"
                 resId = R.mipmap.icon_setting_set
-            })
-        } else {
-            beans.add(ItemList().apply {
-                name = "删除"
-                resId = R.mipmap.icon_setting_delete
             })
         }
 
@@ -135,19 +132,33 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                     mAdapter?.remove(position)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
                 } else {
-                    val studentId = SPUtil.getInt("studentId")
-                    if (studentId == 0) {
-                        showToast("请选择学生")
-                        return@setOnDialogClickListener
+                    val students=DataBeanManager.students
+                    if (students.size==1){
+                        val map = HashMap<String, Any>()
+                        map["name"] = book.bookName
+                        map["type"] = 2
+                        map["childId"] = students[0].accountId
+                        map["bookId"] = book.bookId
+                        map["imageUrl"] = book.imageUrl
+                        map["subject"] = book.subjectName
+                        presenter.createHomeworkType(map)
                     }
-                    val map = HashMap<String, Any>()
-                    map["name"] = book.bookName
-                    map["type"] = 2
-                    map["childId"] = studentId
-                    map["bookId"] = book.bookId
-                    map["imageUrl"] = book.imageUrl
-                    map["subject"] = book.subjectName
-                    presenter.createHomeworkType(map)
+                    else{
+                        val lists= mutableListOf<ItemList>()
+                        for (item in students){
+                            lists.add(ItemList(item.accountId,item.nickname))
+                        }
+                        ItemSelectorDialog(requireActivity(),"选择学生",lists).builder().setOnDialogClickListener{
+                            val map = HashMap<String, Any>()
+                            map["name"] = book.bookName
+                            map["type"] = 2
+                            map["childId"] = students[it].accountId
+                            map["bookId"] = book.bookId
+                            map["imageUrl"] = book.imageUrl
+                            map["subject"] = book.subjectName
+                            presenter.createHomeworkType(map)
+                        }
+                    }
                 }
             }
     }

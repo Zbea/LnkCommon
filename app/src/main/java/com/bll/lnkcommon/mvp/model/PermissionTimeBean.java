@@ -1,11 +1,10 @@
 package com.bll.lnkcommon.mvp.model;
 
-import java.util.List;
+import java.io.Serializable;
 
-public class PermissionTimeBean {
-
-    public List<Integer> weeks;
-    public String timeStr;
+public class PermissionTimeBean implements Serializable {
+    public int id;
+    public String weeks;
     public long startTime;
     public long endTime;
 

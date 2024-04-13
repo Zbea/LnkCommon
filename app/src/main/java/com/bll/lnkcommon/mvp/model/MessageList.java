@@ -8,7 +8,7 @@ public class MessageList {
     public int total;
     public List<MessageBean> list;
 
-    public class MessageBean {
+    public static class MessageBean {
 
         public int id;
         public String teacherName;
@@ -16,6 +16,7 @@ public class MessageList {
         public String content;
         public long date;
         public int sendType;
+        public int msgId;
 
     }
 }

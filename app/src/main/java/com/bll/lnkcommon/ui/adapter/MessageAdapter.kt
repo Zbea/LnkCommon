@@ -13,7 +13,7 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
         helper.apply {
             when(item.sendType){
                 1->{
-                    typeNameStr=item.teacherName
+                    typeNameStr="来自：${item.teacherName}"
                 }
                 2->{
                     typeNameStr=item.teacherName
@@ -21,10 +21,17 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
                 3-> {
                     typeNameStr="学校通知"
                 }
+                4->{
+                    typeNameStr = if (item.msgId!=0){
+                        item.teacherName
+                    } else{
+                        "来自："+item.teacherName
+                    }
+                }
             }
             setText(R.id.tv_message_name, typeNameStr)
             setText(R.id.tv_message_content,item.content)
-            setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date*1000))
+            setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date))
 
         }
     }

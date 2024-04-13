@@ -10,13 +10,10 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.BookDetailsDialog
-import com.bll.lnkcommon.dialog.CalenderDetailsDialog
+import com.bll.lnkcommon.dialog.CalenderBuyDetailsDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
-import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.CalenderDaoManager
-import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.mvp.model.CalenderList
 import com.bll.lnkcommon.mvp.model.PopupBean
@@ -24,7 +21,6 @@ import com.bll.lnkcommon.mvp.presenter.CalenderPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.ICalenderView
 import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
@@ -44,7 +40,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
     private val presenter=CalenderPresenter(this)
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null
-    private var detailsDialog:CalenderDetailsDialog?=null
+    private var detailsDialog:CalenderBuyDetailsDialog?=null
     private var position=0
     private var supply=1
     private var pops= mutableListOf<PopupBean>()
@@ -127,7 +123,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
 
 
     private fun showDetails(item: CalenderItemBean) {
-        detailsDialog = CalenderDetailsDialog(this, item)
+        detailsDialog = CalenderBuyDetailsDialog(this, item)
         detailsDialog?.builder()
         detailsDialog?.setOnClickListener {
             if (item.buyStatus==1){

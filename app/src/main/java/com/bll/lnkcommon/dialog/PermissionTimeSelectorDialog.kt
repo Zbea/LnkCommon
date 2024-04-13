@@ -26,9 +26,6 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val yearMonth=simpleDateFormat.format(Date())
-
         val tp_start_time = dialog?.findViewById<TimePicker>(R.id.tp_start_time)
         tp_start_time?.setIs24HourView(true)
 //        if (!item.startTimeStr.isNullOrEmpty()){
@@ -64,18 +61,16 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {
 
-            val startHour=tp_start_time?.hour
-            val startMinute=tp_start_time?.minute
-            val startStr="${getFormat(startHour!!)}:${getFormat(startMinute!!)}"
-            val startLong= DateUtils.date3Stamp("$yearMonth $startStr")-DateUtils.getStartOfDayInMillis()
+            val startHour=tp_start_time?.hour!!
+            val startMinute=tp_start_time.minute!!
+            val startLong= (startHour*60+startMinute)*60*1000L
 
-            val endHour=tp_end_time?.hour
-            val endMinute=tp_end_time?.minute
-            val endStr="${getFormat(endHour!!)}:${getFormat(endMinute!!)}"
-            val endLong=DateUtils.date3Stamp("$yearMonth $endStr")-DateUtils.getStartOfDayInMillis()
+            val endHour=tp_end_time?.hour!!
+            val endMinute=tp_end_time.minute!!
+            val endLong=(endHour*60+endMinute)*60*1000L
 
             if (endLong>startLong&&getSelectWeeks().size>0){
-                dateListener?.getDate(startStr,startLong,endStr,endLong,getSelectWeeks())
+                dateListener?.getDate(startLong,endLong,getSelectWeeks())
                 dismiss()
             }
         }
@@ -106,13 +101,6 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
                 selectWeeks.add(item)
         }
         return selectWeeks
-    }
-
-    /**
-     * 格式化时间
-     */
-    private fun getFormat(num:Int):String{
-        return if (num<10) "0$num" else "$num"
     }
 
     fun show() {
@@ -146,7 +134,7 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
     private var dateListener: OnDateListener? = null
 
     fun interface OnDateListener {
-        fun getDate(startStr: String,startLon: Long,endStr: String,endLon:Long,weeks:List<DateWeek>)
+        fun getDate(startLon: Long,endLon:Long,weeks:List<DateWeek>)
     }
 
     fun setOnDateListener(dateListener:OnDateListener) {

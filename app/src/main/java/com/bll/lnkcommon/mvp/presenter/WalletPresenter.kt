@@ -1,36 +1,39 @@
 package com.bll.lnkcommon.mvp.presenter
 
 import com.bll.lnkcommon.mvp.model.AccountOrder
-import com.bll.lnkcommon.mvp.model.AccountXDList
+import com.bll.lnkcommon.mvp.model.AccountQdBean
+import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.net.BasePresenter
-import com.bll.lnkcommon.net.BaseResult
-import com.bll.lnkcommon.net.Callback
-import com.bll.lnkcommon.net.RetrofitManager
+import com.bll.lnkcommon.net.*
 
 
 class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContractView.IWalletView>(view) {
 
-    //获取学豆列表
-    fun getXdList(boolean: Boolean) {
-
-        val map=HashMap<String,String>()
-        map["pageIndex"] = "1"
-        map["pageSize"] = "10"
-
-        val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountXDList>(view) {
-            override fun failed(tBaseResult: BaseResult<AccountXDList>): Boolean {
+    fun accounts() {
+        val account = RetrofitManager.service.accounts()
+        doRequest(account, object : Callback<User>(view) {
+            override fun failed(tBaseResult: BaseResult<User>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AccountXDList>) {
+            override fun success(tBaseResult: BaseResult<User>) {
+                view.getAccount(tBaseResult.data)
+            }
+        }, true)
+    }
+
+    //获取学豆列表
+    fun getXdList(boolean: Boolean) {
+        val list = RetrofitManager.service.getSMoneyList()
+        doRequest(list, object : Callback<MutableList<AccountQdBean>>(view) {
+            override fun failed(tBaseResult: BaseResult<MutableList<AccountQdBean>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<MutableList<AccountQdBean>>) {
                 view.onXdList(tBaseResult.data)
             }
 
         }, boolean)
-
     }
-
 
 
     //提交学豆订单
@@ -61,6 +64,19 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
         }, false)
     }
 
+    fun transferQd(map: HashMap<String,Any>)
+    {
+        val body=RequestUtils.getBody(map)
+        val post = RetrofitManager.service.transferQd(body)
+        doRequest(post, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.transferSuccess()
+            }
+        }, true)
+    }
 
 
 }

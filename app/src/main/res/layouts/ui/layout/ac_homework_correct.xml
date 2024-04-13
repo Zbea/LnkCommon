@@ -15,15 +15,12 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
-        android:padding="1dp"
         android:orientation="vertical"
         >
         <com.android.internal.widget.PreferenceImageView
-            android:id="@+id/iv_image"
-            android:layout_width="900dp"
-            android:layout_height="1140dp"
+            android:id="@+id/v_content"
+            android:layout_width="850dp"
+            android:layout_height="1182dp"
             android:scaleType="fitCenter"
             />
         <RelativeLayout

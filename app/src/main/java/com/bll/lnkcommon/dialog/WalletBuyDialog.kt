@@ -6,13 +6,13 @@ import android.widget.Button
 import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkcommon.mvp.model.AccountXDList
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.mvp.model.AccountQdBean
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class WalletBuyDialog(val context: Context, val list: List<AccountXDList.ListBean>) {
+class WalletBuyDialog(val context: Context, val list: List<AccountQdBean>) {
 
     private var dialog:Dialog?=null
     private var id=0
@@ -74,14 +74,14 @@ class WalletBuyDialog(val context: Context, val list: List<AccountXDList.ListBea
         this.listener = listener
     }
 
-    class AccountXdAdapter(layoutResId: Int, data: List<AccountXDList.ListBean>?) : BaseQuickAdapter<AccountXDList.ListBean, BaseViewHolder>(layoutResId, data) {
+    class AccountXdAdapter(layoutResId: Int, data: List<AccountQdBean>?) : BaseQuickAdapter<AccountQdBean, BaseViewHolder>(layoutResId, data) {
 
         var mPosition = 0
 
-        override fun convert(helper: BaseViewHolder, item: AccountXDList.ListBean) {
+        override fun convert(helper: BaseViewHolder, item: AccountQdBean) {
             helper.setText(R.id.tv_name,item.amount.toString())
             if (helper.adapterPosition==mPosition){
-                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_gray_solid_5dp_corner)
+                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_solid_5dp_corner)
                 helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.white) )
             }
             else{

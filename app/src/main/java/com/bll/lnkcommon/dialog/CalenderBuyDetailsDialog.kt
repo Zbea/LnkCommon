@@ -11,7 +11,7 @@ import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.utils.GlideUtils
 
 
-class CalenderDetailsDialog(private val context: Context, private val item: CalenderItemBean) {
+class CalenderBuyDetailsDialog(private val context: Context, private val item: CalenderItemBean) {
 
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null

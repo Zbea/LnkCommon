@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.CalenderDetailsDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
@@ -14,10 +13,8 @@ import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File

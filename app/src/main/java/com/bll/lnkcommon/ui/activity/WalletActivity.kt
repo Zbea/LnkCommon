@@ -7,12 +7,11 @@ import android.widget.ImageView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.WalletBuyDialog
 import com.bll.lnkcommon.dialog.WalletStudentRechargeDialog
 import com.bll.lnkcommon.mvp.model.AccountOrder
-import com.bll.lnkcommon.mvp.model.AccountXDList
-import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.model.AccountQdBean
+import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.WalletPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.utils.SPUtil
@@ -23,13 +22,14 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
 
     private var walletPresenter=WalletPresenter(this)
     private var xdDialog: WalletBuyDialog?=null
-    private var xdList= mutableListOf<AccountXDList.ListBean>()
+    private var xdList= mutableListOf<AccountQdBean>()
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
+    private var money=0
 
-    override fun onXdList(list: AccountXDList?) {
-        xdList= list?.list as MutableList<AccountXDList.ListBean>
+    override fun onXdList(list: MutableList<AccountQdBean>) {
+        xdList= list
     }
 
     override fun onXdOrder(order: AccountOrder?) {
@@ -51,6 +51,18 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
         }
     }
 
+    override fun transferSuccess() {
+        tv_xdmoney.text="青豆:  "+(mUser?.balance!!-money)
+        mUser?.balance=mUser?.balance!!-money
+        SPUtil.putObj("user",mUser!!)
+        showToast("转账成功")
+    }
+
+    override fun getAccount(user: User) {
+        mUser=user
+        tv_xdmoney.text="青豆:  "+mUser?.balance
+        SPUtil.putObj("user",mUser!!)
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_wallet
@@ -61,7 +73,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initView() {
-        tv_xdmoney.text="青豆:  "+mUser?.balance
+
 
         tv_buy.setOnClickListener {
             if (xdList.size>0){
@@ -78,12 +90,17 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
                 return@setOnClickListener
             }
             WalletStudentRechargeDialog(this,mUser?.balance!!).builder()?.setOnClickListener{
-                money,ids->
-
+                money,id->
+                this.money=money
+                val map=HashMap<String,Any>()
+                map["accountId"]=id
+                map["balance"]=money
+                walletPresenter.transferQd(map)
             }
         }
 
         walletPresenter.getXdList(false)
+        walletPresenter.accounts()
 
     }
 

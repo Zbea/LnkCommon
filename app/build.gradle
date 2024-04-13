@@ -36,7 +36,7 @@ android {
 
     greendao{
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 14
+        schemaVersion 15
         //dao的包名
         daoPackage 'com.bll.lnkcommon.greendao'
         //生成数据库文件的目录;
@@ -117,5 +117,6 @@ dependencies {
     implementation("net.lingala.zip4j:zip4j:2.11.1")
 
     implementation 'com.qiniu:qiniu-android-sdk:8.4.+'
+    implementation 'com.haibin:calendarview:3.7.1'
 
 }

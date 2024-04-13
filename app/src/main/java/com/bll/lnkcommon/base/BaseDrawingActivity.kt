@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
@@ -290,11 +291,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
                 if (elik?.curDrawObjStatus == true){
                     reDrawGeometry(elik!!)
-
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                 onElikSave()
+                elik?.saveBitmap(true) {}
             }
         })
     }
@@ -307,25 +307,28 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             return
         if (isScale){
             if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
-                GeometryScaleDialog(this,currentGeometry,circlePos).builder()
-                    ?.setOnDialogClickListener{
-                            width, height ->
-                        when (currentGeometry) {
-                            2, 5 -> {
-                                elik.reDrawShape(width,height)
-                            }
-                            7->{
-                                val info=elik.curHandlerInfo
-                                elik.reDrawShape(if (setA(info)>0) width else -width ,info.split("&")[1].toFloat())
-                            }
-                            9 -> {
-                                elik.reDrawShape(width,5f)
-                            }
-                            else -> {
-                                elik.reDrawShape(width,-1f)
+                Handler().postDelayed({
+                    v_content.invalidate()
+                    GeometryScaleDialog(this,currentGeometry,circlePos).builder()
+                        ?.setOnDialogClickListener{
+                                width, height ->
+                            when (currentGeometry) {
+                                2, 5 -> {
+                                    elik.reDrawShape(width,height)
+                                }
+                                7->{
+                                    val info=elik.curHandlerInfo
+                                    elik.reDrawShape(if (setA(info)>0) width else -width ,info.split("&")[1].toFloat())
+                                }
+                                9 -> {
+                                    elik.reDrawShape(width,5f)
+                                }
+                                else -> {
+                                    elik.reDrawShape(width,-1f)
+                                }
                             }
                         }
-                    }
+                },300)
             }
         }
     }
@@ -466,12 +469,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     }
 
-    /**
-     * 抬笔保存
-     */
-    open fun onElikSave(){
-
-    }
 
     /**
      * 设置擦除

@@ -31,7 +31,7 @@ class PopupShareNoteList(var context: Context, var view: View, val total:Int) {
     private var tv_page_total:TextView?=null
 
     fun builder(): PopupShareNoteList {
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_record_list, null, false)
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_freenote_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             // 设置PopupWindow的内容view

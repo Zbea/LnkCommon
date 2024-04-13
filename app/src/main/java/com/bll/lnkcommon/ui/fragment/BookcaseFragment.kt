@@ -135,7 +135,7 @@ class BookcaseFragment : BaseFragment() {
                             zipUrl = book.bodyUrl
                             downloadUrl = it
                             subType = -1
-                            subTypeStr = book.subtypeStr
+                            subTypeStr = book.subtypeStr.ifEmpty { "默认" }
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
@@ -149,7 +149,7 @@ class BookcaseFragment : BaseFragment() {
                     type = 1
                     zipUrl = book.bodyUrl
                     subType = -1
-                    subTypeStr = book.subtypeStr
+                    subTypeStr = book.subtypeStr.ifEmpty { "默认" }
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
                     bookId = book.bookId

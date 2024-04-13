@@ -17,6 +17,8 @@ public class ExamList {
         public int score;
         public long expTime;
         public String examName;
+        public int classId;
+        public String className;
     }
 
 }

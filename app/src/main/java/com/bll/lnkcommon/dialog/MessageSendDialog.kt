@@ -14,12 +14,9 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 
 class MessageSendDialog(private val context: Context) {
-
-    private var students= mutableListOf<StudentBean>()
-
     private var dialog: Dialog?=null
 
-    fun builder(): MessageSendDialog? {
+    fun builder(): MessageSendDialog {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_message_send)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -28,40 +25,20 @@ class MessageSendDialog(private val context: Context) {
         val tvOK = dialog?.findViewById<TextView>(R.id.tv_ok)
         val tvCancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
         val et_content = dialog?.findViewById<EditText>(R.id.et_content)
-        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-
-        students=DataBeanManager.students
-
-        val mAdapter=MyAdapter(R.layout.item_message_student,students)
-        rvList?.layoutManager=LinearLayoutManager(context)
-        rvList?.adapter=mAdapter
-        mAdapter.bindToRecyclerView(rvList)
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            students[position].isCheck=!students[position].isCheck
-            mAdapter.notifyItemChanged(position)
-        }
 
         tvCancel?.setOnClickListener { dismiss() }
         tvOK?.setOnClickListener {
             val contentStr=et_content?.text.toString()
-            if (contentStr.isNotEmpty()&& getCheckIds().isNotEmpty())
+            if (contentStr.isNotEmpty())
             {
                 dismiss()
-                listener?.onSend(contentStr,getCheckIds())
+                listener?.onSend(contentStr)
             }
         }
 
         return this
     }
 
-    private fun getCheckIds():List<Int>{
-        val ids= mutableListOf<Int>()
-        for (item in students){
-            if (item.isCheck)
-                ids.add(item.childId)
-        }
-        return ids
-    }
 
     fun show(){
         dialog?.show()
@@ -74,18 +51,11 @@ class MessageSendDialog(private val context: Context) {
     private var listener: OnClickListener? = null
 
     fun interface OnClickListener {
-        fun onSend(contentStr:String,ids: List<Int>)
+        fun onSend(contentStr:String)
     }
 
     fun setOnClickListener(listener: OnClickListener?) {
         this.listener = listener
     }
-
-     class MyAdapter(layoutResId:Int,classs:MutableList<StudentBean>):BaseQuickAdapter<StudentBean,BaseViewHolder>(layoutResId,classs){
-         override fun convert(helper: BaseViewHolder, item: StudentBean?) {
-             helper.setText(R.id.tv_class_name,item?.nickname )
-             helper.setChecked(R.id.cb_check,item?.isCheck!!)
-         }
-     }
 
 }

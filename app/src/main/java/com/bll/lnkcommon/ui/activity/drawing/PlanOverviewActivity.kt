@@ -2,19 +2,14 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 
 import com.bll.lnkcommon.Constants.weekTime
-import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.dialog.DateCalendarDialog
+import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.dialog.CalendarSingleDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.ac_plan_overview.*
-import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
-import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
-import kotlinx.android.synthetic.main.ac_plan_overview.tv_date
-import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import java.io.File
 
@@ -42,7 +37,6 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
         setPageTitle("计划总览")
-        elik=v_content.pwInterFace
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
@@ -90,7 +84,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog(this,45f,190f).builder().setOnDateListener{
+            CalendarSingleDialog(this,45f,200f).builder().setOnDateListener{
                 if (type==1){
                     val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
                     nowYear=dateStr[0].toInt()
@@ -166,9 +160,4 @@ class PlanOverviewActivity: BaseDrawingActivity() {
 
         elik?.setLoadFilePath(path, true)
     }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
-    }
-
 }

@@ -60,7 +60,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         disMissView(tv_ok)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik?.setPWEnabled(false,false)
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
     override fun onDeleteSuccess() {
@@ -75,7 +74,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         setPageTitle(correctBean?.content.toString())
-        elik=iv_image.pwInterFace
 
         if (correctBean?.status==2)
         {
@@ -85,7 +83,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
             loadPapers()
         }
         else{
-            elik?.setPWEnabled(false,false)
             images= correctBean?.changeUrl!!.split(",") as MutableList<String>
             setContentImage()
         }
@@ -129,7 +126,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
-                        hideLoading()
                         setContentImage()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -152,20 +148,15 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         tv_page.text="${posImage+1}/${images.size}"
         //批改成功后加载提交后的图片
         if (correctBean?.status==3){
-            GlideUtils.setImageUrl(this, images[posImage],iv_image)
+            GlideUtils.setImageUrl(this, images[posImage],v_content)
         }
         else{
-            elik?.setPWEnabled(true,true)
             val masterImage="${getPath()}/${posImage+1}.png"//原图
-            GlideUtils.setImageFile(this, File(masterImage),iv_image)
+            GlideUtils.setImageFile(this, File(masterImage),v_content)
 
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
         }
-    }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
     }
 
     /**

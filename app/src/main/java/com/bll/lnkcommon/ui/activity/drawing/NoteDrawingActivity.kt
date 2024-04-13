@@ -42,8 +42,13 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn)
+        disMissView(iv_catalog,iv_btn)
         v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
+
+        iv_other.setOnClickListener {
+            onCatalog()
+        }
+
         changeContent()
     }
 
@@ -100,11 +105,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         tv_page.text = (page + 1).toString()
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
     }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
-    }
-
 
     //创建新的作业内容
     private fun newNoteContent() {

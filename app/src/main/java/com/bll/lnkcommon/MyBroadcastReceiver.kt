@@ -37,10 +37,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 Log.d("debug","每年自动上传")
                 EventBus.getDefault().postSticky(Constants.AUTO_UPLOAD_YEAR_EVENT)
             }
-            Constants.ACTION_YEAR_REFRESH->{
-                Log.d("debug","每年更新")
-                EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_YEAR_EVENT)
-            }
             Constants.ACTION_DAY_REFRESH->{
                 Log.d("debug","每天刷新")
                 EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)

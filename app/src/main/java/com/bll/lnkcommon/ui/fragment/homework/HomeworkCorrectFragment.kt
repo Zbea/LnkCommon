@@ -48,7 +48,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         pageSize=6
         initRecyclerView()
         if(DataBeanManager.students.size>0)
-            studentId= DataBeanManager.students[0].childId
+            studentId= DataBeanManager.students[0].accountId
     }
 
     override fun lazyLoad() {

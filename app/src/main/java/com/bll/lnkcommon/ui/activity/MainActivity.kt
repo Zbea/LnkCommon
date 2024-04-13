@@ -50,7 +50,6 @@ class MainActivity : BaseActivity(),IQiniuView {
     private var appFragment: AppFragment? = null
     private var teachFragment: HomeworkManagerFragment?=null
     private var textbookFragment:TextbookFragment?=null
-    private var journalFragment:JournalFragment?=null
 
     private var typeEvent=""
 
@@ -97,7 +96,6 @@ class MainActivity : BaseActivity(),IQiniuView {
         appFragment = AppFragment()
         textbookFragment= TextbookFragment()
         teachFragment= HomeworkManagerFragment()
-        journalFragment=JournalFragment()
 
         switchFragment(lastFragment, mainFragment)
 
@@ -111,18 +109,16 @@ class MainActivity : BaseActivity(),IQiniuView {
             when (position) {
                 0 -> switchFragment(lastFragment, mainFragment)
                 1 -> switchFragment(lastFragment, bookcaseFragment)
-                2 -> switchFragment(lastFragment, journalFragment)
-                3 -> switchFragment(lastFragment, noteFragment)
-                4 -> switchFragment(lastFragment, appFragment)
-                5 -> switchFragment(lastFragment, textbookFragment)
-                6 -> switchFragment(lastFragment, teachFragment)
+                2 -> switchFragment(lastFragment, noteFragment)
+                3 -> switchFragment(lastFragment, appFragment)
+                4 -> switchFragment(lastFragment, textbookFragment)
+                5 -> switchFragment(lastFragment, teachFragment)
             }
             lastPosition=position
         }
 
         startRemindDayUpload()
         startRemind()
-        startRemind1Month()
         startRemind12Month()
 
         iv_user.setOnClickListener {
@@ -203,45 +199,6 @@ class MainActivity : BaseActivity(),IQiniuView {
         }
     }
 
-
-    /**
-     * 每年1月1 3点执行
-     */
-    private fun startRemind1Month() {
-        val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
-        val date=allDay*24*60*60*1000L
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH,0)
-            set(Calendar.DAY_OF_MONTH,1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            var selectLong = timeInMillis
-            if (System.currentTimeMillis()>selectLong){
-                set(Calendar.YEAR, DateUtils.getYear()+1)
-                selectLong=timeInMillis
-            }
-
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_YEAR_REFRESH
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                 PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                date, pendingIntent
-            )
-        }
-    }
-
     /**
      * 每年12月31 3点执行
      */
@@ -286,11 +243,11 @@ class MainActivity : BaseActivity(),IQiniuView {
 
     private fun refreshData(boolean: Boolean){
         if (boolean){
-            if (mData.size==5)
+            if (mData.size==4)
                 changeData()
         }
         else{
-            if (mData.size>5)
+            if (mData.size>4)
             {
                 mData.removeLast()
                 mData.removeLast()
@@ -304,12 +261,12 @@ class MainActivity : BaseActivity(),IQiniuView {
         mData.add(ItemList().apply {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
-            name = DataBeanManager.mainListTitle[5]
+            name = DataBeanManager.mainListTitle[4]
         })
         mData.add(ItemList().apply {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework_check)
-            name = DataBeanManager.mainListTitle[6]
+            name = DataBeanManager.mainListTitle[5]
         })
     }
 
@@ -377,17 +334,17 @@ class MainActivity : BaseActivity(),IQiniuView {
         when (msgFlag) {
             //每天上传
             Constants.AUTO_UPLOAD_DAY_EVENT -> {
-//                if(isLoginState()){
-//                    typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
-//                    qiniuPresenter.getToken()
-//                }
+                if(isLoginState()){
+                    typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
+                    qiniuPresenter.getToken()
+                }
             }
             //每年上传
             Constants.AUTO_UPLOAD_YEAR_EVENT -> {
-//                if(isLoginState()){
-//                    typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
-//                    qiniuPresenter.getToken()
-//                }
+                if(isLoginState()){
+                    typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
+                    qiniuPresenter.getToken()
+                }
             }
             Constants.SETTING_DATA_EVENT->{
                 clearSqlData()
@@ -401,12 +358,12 @@ class MainActivity : BaseActivity(),IQiniuView {
                 }
                 else{
                     refreshData(false)
-                    if (lastPosition==5){
+                    if (lastPosition==4){
                         switchFragment(textbookFragment, mainFragment)
                         lastPosition=0
                         mHomeAdapter?.updateItem(0, true)//更新新的位置
                     }
-                    if (lastPosition==6){
+                    if (lastPosition==5){
                         switchFragment(teachFragment, mainFragment)
                         lastPosition=0
                         mHomeAdapter?.updateItem(0, true)//更新新的位置

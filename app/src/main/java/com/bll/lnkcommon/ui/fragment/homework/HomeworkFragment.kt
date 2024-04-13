@@ -61,7 +61,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         initRecyclerView()
 
         if(DataBeanManager.students.size>0)
-            studentId=DataBeanManager.students[0].childId
+            studentId=DataBeanManager.students[0].accountId
     }
 
     override fun lazyLoad() {
