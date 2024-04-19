@@ -62,6 +62,11 @@ public class NoteContentDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
+    public boolean isExistContents(String type, String notebookTitle){
+        List<NoteContent> noteContents=queryAll(type,notebookTitle);
+        return !noteContents.isEmpty();
+    }
+
     public void editNoteTitles(String type, String notebookTitle,String editTitle){
         List<NoteContent> noteContents=queryAll(type,notebookTitle);
         for (NoteContent noteContent: noteContents) {

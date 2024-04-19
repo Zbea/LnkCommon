@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.dayLong
@@ -16,7 +16,6 @@ import java.util.*
 class DateEventActivity:BaseDrawingActivity() {
     private var mDate: Date?=null
     private var nowLong=0L
-    private var isDraw=false
 
     override fun layoutId(): Int {
         return R.layout.ac_date_event

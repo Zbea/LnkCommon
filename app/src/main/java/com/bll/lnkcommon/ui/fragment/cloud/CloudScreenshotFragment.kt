@@ -14,6 +14,7 @@ import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
+import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.ui.adapter.CloudDiaryAdapter
 import com.bll.lnkcommon.ui.adapter.CloudScreenshotAdapter
 import com.bll.lnkcommon.utils.DP2PX
@@ -56,43 +57,35 @@ class CloudScreenshotFragment: BaseCloudFragment() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
-                val item=items[position]
-                if (!ItemTypeDaoManager.getInstance().isExist(item.title+item.year,3)){
-                    showLoading()
-                    download(item)
-                }
-                else{
-                    showToast("已存在")
-                }
+                download(items[position])
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            setOnItemChildClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(items[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
-                        }
-                    })
-                true
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem(items[position])
+                            }
+                        })
+                }
             }
         }
     }
 
+    private fun deleteItem(item: ItemTypeBean){
+        val ids= mutableListOf<Int>()
+        ids.add(item.cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     private fun download(item: ItemTypeBean){
-        item.id=null//设置数据库id为null用于重新加入
-        item.path=item.path+item.year
         showLoading()
-        if (item.downloadUrl.isNullOrEmpty()){
-            ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            return
-        }
         val fileName= DateUtils.longToString(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
-        val fileTargetPath= FileAddress().getPathScreen(item.title+item.year)
+        val fileTargetPath= FileAddress().getPathScreen(item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -101,13 +94,17 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                    ZipUtils.unzip1(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            ItemTypeDaoManager.getInstance().insertOrReplace(item)
+                            if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("未分类")){
+                                item.id=null//设置数据库id为null用于重新加入
+                                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+                            }
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 showToast("下载成功")
+                                deleteItem(item)
                                 hideLoading()
                             },500)
                         }
@@ -133,6 +130,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
         map["page"]=pageIndex
         map["size"] = pageSize
         map["type"] = 6
+        map["subTypeStr"]="截图"
         mCloudPresenter.getList(map)
     }
 
@@ -144,7 +142,6 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 val itemTypeBean= Gson().fromJson(item.listJson, ItemTypeBean::class.java)
                 itemTypeBean.cloudId=item.id
                 itemTypeBean.downloadUrl=item.downloadUrl
-                itemTypeBean.year=item.year
                 items.add(itemTypeBean)
             }
         }

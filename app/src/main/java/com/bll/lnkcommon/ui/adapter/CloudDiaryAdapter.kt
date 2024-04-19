@@ -12,6 +12,7 @@ class CloudDiaryAdapter(layoutResId: Int, data: List<DiaryBean>?) : BaseQuickAda
     override fun convert(helper: BaseViewHolder, item: DiaryBean) {
         helper.setText(R.id.tv_title,item.title)
         helper.setText(R.id.tv_date, DateUtils.longToStringWeek1(item.date))
+        helper.addOnClickListener(R.id.iv_delete)
     }
 
 }

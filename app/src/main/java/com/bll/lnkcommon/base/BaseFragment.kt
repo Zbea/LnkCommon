@@ -18,6 +18,7 @@ import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkcommon.mvp.presenter.CommonPresenter
+import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.mvp.view.IContractView.ICloudUploadView
 import com.bll.lnkcommon.net.ExceptionHandle
@@ -38,10 +39,11 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import java.io.File
 
 
-abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,ICloudUploadView{
+abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,ICloudUploadView, IContractView.IQiniuView {
 
     var mCommonPresenter= CommonPresenter(this)
     var mCloudUploadPresenter=CloudUploadPresenter(this)
+    var mQiniuPresenter= QiniuPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -59,9 +61,12 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
-    var privacyPassword: PrivacyPassword?=null
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
+
+    override fun onToken(token: String) {
+        onUpload(token)
+    }
 
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
@@ -111,7 +116,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
-        privacyPassword=getCheckPasswordObj()
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -327,14 +331,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         })
     }
 
-    /**
-     * 获取查看密码
-     */
-    fun getCheckPasswordObj(): PrivacyPassword? {
-        return SPUtil.getObj("${getUser()?.accountId}PrivacyPassword",
-            PrivacyPassword::class.java)
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -384,6 +380,13 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
      * 每次翻页，刷新数据
      */
     open fun onRefreshData(){
+    }
+
+    /**
+     * 开始上传
+     */
+    open fun onUpload(token: String){
+
     }
 
     /**

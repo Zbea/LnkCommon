@@ -21,8 +21,9 @@ import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_drawing_book.*
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.util.regex.Pattern
 
 
@@ -401,7 +402,7 @@ abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,1).builder().setDialogClickListener{
+        AppToolDialog(this).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

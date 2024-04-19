@@ -37,10 +37,10 @@
 
     <ImageView
         android:id="@+id/iv_password"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_20"
-        android:src="@mipmap/icon_encrypt_check"/>
+        android:src="@mipmap/icon_encrypt"/>
 
 
     <ImageView
@@ -51,10 +51,17 @@
         android:src="@mipmap/icon_notebook_edit"/>
 
     <ImageView
+        android:id="@+id/iv_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:src="@mipmap/icon_upload"/>
+
+    <ImageView
         android:id="@+id/iv_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:src="@mipmap/icon_notebook_delete"/>
+        android:layout_marginEnd="@dimen/dp_20"
+        android:src="@mipmap/icon_delete"/>
 
 </LinearLayout>

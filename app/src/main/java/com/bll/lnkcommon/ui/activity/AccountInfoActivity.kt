@@ -34,7 +34,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
     private var type=0//0学生1好友
-    private var privacyPassword: PrivacyPassword?=null
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -82,7 +81,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mUser=getUser()
         presenter.getStudents()
         presenter.getFriends()
-        privacyPassword=SPUtil.getObj("${mUser?.accountId}PrivacyPassword", PrivacyPassword::class.java)
     }
 
     @SuppressLint("WrongConstant")
@@ -98,16 +96,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
         }
 
-        if (privacyPassword!=null){
-            showView(tv_check_pad)
-            if (privacyPassword?.isSet == true){
-                btn_psd_check.text="取消密码"
-            }
-            else{
-                btn_psd_check.text="设置密码"
-            }
-        }
-
         btn_edit_name.setOnClickListener {
             editName()
         }
@@ -120,10 +108,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         btn_add_friend.setOnClickListener {
             type=1
             add()
-        }
-
-        btn_psd_check.setOnClickListener {
-            setPassword()
         }
 
         btn_logout.setOnClickListener {
@@ -222,30 +206,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 }
             }
         })
-    }
-
-    /**
-     * 设置查看密码
-     */
-    private fun setPassword(){
-        if (privacyPassword==null){
-            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
-                privacyPassword=it
-                showView(tv_check_pad)
-                btn_psd_check.text="取消密码"
-                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
-                EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
-            }
-        }
-        else{
-            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
-                privacyPassword?.isSet=!privacyPassword?.isSet!!
-                btn_psd_check.text=if (privacyPassword?.isSet==true) "取消密码" else "设置密码"
-                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
-                EventBus.getDefault().post(Constants.CHECK_PASSWORD_EVENT)
-            }
-        }
-
     }
 
     override fun onEventBusMessage(msgFlag: String) {

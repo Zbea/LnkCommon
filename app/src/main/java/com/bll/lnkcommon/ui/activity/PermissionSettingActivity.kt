@@ -46,19 +46,21 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
     }
 
     override fun onChangeSuccess() {
-        if (type==1){
-            mStudentBean?.isAllowMoney=!mStudentBean?.isAllowMoney!!
-            st_money.isChecked=mStudentBean?.isAllowMoney!!
-        }
-        else if (type==2){
-            mStudentBean?.isAllowBook=!mStudentBean?.isAllowBook!!
-            st_book.isChecked=mStudentBean?.isAllowBook!!
-            setBookStateView()
-        }
-        else if (type==3){
-            mStudentBean?.isAllowVideo=!mStudentBean?.isAllowVideo!!
-            st_video.isChecked=mStudentBean?.isAllowVideo!!
-            setVideoStateView()
+        when (type) {
+            1 -> {
+                mStudentBean?.isAllowMoney=!mStudentBean?.isAllowMoney!!
+                st_money.isChecked=mStudentBean?.isAllowMoney!!
+            }
+            2 -> {
+                mStudentBean?.isAllowBook=!mStudentBean?.isAllowBook!!
+                st_book.isChecked=mStudentBean?.isAllowBook!!
+                setBookStateView()
+            }
+            3 -> {
+                mStudentBean?.isAllowVideo=!mStudentBean?.isAllowVideo!!
+                st_video.isChecked=mStudentBean?.isAllowVideo!!
+                setVideoStateView()
+            }
         }
     }
 

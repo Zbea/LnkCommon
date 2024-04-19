@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +8,19 @@
     >
 
     <include
+        android:id="@+id/ll_title"
         layout="@layout/common_title"
         />
 
+    <include
+        layout="@layout/common_drawing_tool"
+        />
+
     <RelativeLayout
+        android:id="@+id/ll_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_title"
         android:layout_marginTop="@dimen/dp_15"
         >
 
@@ -95,12 +102,9 @@
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/ll_date"
+        android:layout_marginStart="@dimen/drawing_book_height"
         android:src="@mipmap/icon_freenote_bg_1"
-        android:layout_weight="1"
         />
 
-    <include
-        layout="@layout/common_drawing_bottom"
-        />
-
-</LinearLayout>
+</RelativeLayout>

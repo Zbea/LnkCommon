@@ -4,19 +4,14 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
-import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.DiaryDaoManager
-import com.bll.lnkcommon.manager.NoteContentDaoManager
-import com.bll.lnkcommon.manager.NoteDaoManager
-import com.bll.lnkcommon.mvp.model.*
-import com.bll.lnkcommon.ui.adapter.BookAdapter
+import com.bll.lnkcommon.mvp.model.CloudList
+import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.ui.adapter.CloudDiaryAdapter
-import com.bll.lnkcommon.ui.adapter.CloudNoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileDownManager
@@ -25,10 +20,8 @@ import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
-import org.greenrobot.eventbus.EventBus
+import kotlinx.android.synthetic.main.fragment_cloud_list.*
 import java.io.File
 
 class CloudDiaryFragment: BaseCloudFragment() {
@@ -59,35 +52,39 @@ class CloudDiaryFragment: BaseCloudFragment() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
+                this@CloudDiaryFragment.position=position
                 val item=items[position]
                 val localItem=DiaryDaoManager.getInstance().queryBean(item.date)
                 if (localItem==null){
-                    showLoading()
                     download(item)
                 }
                 else{
                     showToast("已存在")
                 }
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            setOnItemChildClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(items[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
-                        }
-                    })
-                true
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem(items[position])
+                            }
+                        })
+                }
             }
         }
     }
 
+    private fun deleteItem(item:DiaryBean){
+        val ids= mutableListOf<Int>()
+        ids.add(item.cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     private fun download(item:DiaryBean){
-        item.id=null//设置数据库id为null用于重新加入
         showLoading()
         val fileName=DateUtils.longToString(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
@@ -102,6 +99,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
+                            item.id=null//设置数据库id为null用于重新加入
                             DiaryDaoManager.getInstance().insertOrReplace(item)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))

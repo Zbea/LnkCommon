@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.PopupBean
@@ -15,7 +16,10 @@ import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.SToast
 
 
-class PrivacyPasswordCreateDialog(private val context: Context) {
+/**
+ * 0日记 1密本
+ */
+class PrivacyPasswordCreateDialog(private val context: Context,private val type:Int=0) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
@@ -101,8 +105,8 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             privacyPassword.answer=answerStr
             privacyPassword.isSet=true
             privacyPassword.password= MD5Utils.digest(passwordStr)
-            val user= SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}PrivacyPassword",privacyPassword)
+
+            MethodManager.savePrivacyPassword(type, privacyPassword)
 
             dialog.dismiss()
             listener?.onClick(privacyPassword)

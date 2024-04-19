@@ -5,18 +5,15 @@ import android.content.Intent
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.Constants.CHECK_PASSWORD_EVENT
-import com.bll.lnkcommon.Constants.NOTE_BOOK_MANAGER_EVENT
+import com.bll.lnkcommon.Constants.NOTE_TYPE_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.NOTE_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
-import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.InputContentDialog
-import com.bll.lnkcommon.dialog.NoteModuleAddDialog
+import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.manager.NoteContentDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
@@ -24,6 +21,7 @@ import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
@@ -48,6 +46,7 @@ class NoteFragment:BaseFragment() {
     private var position = 0 //当前笔记标记
     private var positionType = 0//当前笔记本标记
     private var typeStr=""
+    private var privacyPassword:PrivacyPassword?=null
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -60,6 +59,8 @@ class NoteFragment:BaseFragment() {
 
         setTitle(DataBeanManager.mainListTitle[3])
         showView(iv_manager)
+
+        privacyPassword=MethodManager.getPrivacyPassword(1)
 
         iv_manager?.setOnClickListener {
             if (isLoginState()){
@@ -84,8 +85,8 @@ class NoteFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
-                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+            if (positionType==0&&privacyPassword!=null&&!note.isCancelPassword){
+                PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
                     gotoNote(note)
                 }
             }
@@ -133,11 +134,41 @@ class NoteFragment:BaseFragment() {
                         }
                 }
                 R.id.iv_password->{
-                    PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                        note.isCancelPassword=!note.isCancelPassword
-                        mAdapter?.notifyItemChanged(position)
-                        NoteDaoManager.getInstance().insertOrReplace(note)
+                    if (privacyPassword==null){
+                        PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                            privacyPassword=it
+                            mAdapter?.notifyDataSetChanged()
+                            showToast("密本密码设置成功")
+                        }
                     }
+                    else{
+                        val titleStr=if (note.isCancelPassword) "确定设置密码？" else "确定取消密码？"
+                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                                    note.isCancelPassword=!note.isCancelPassword
+                                    NoteDaoManager.getInstance().insertOrReplace(note)
+                                    mAdapter?.notifyItemChanged(position)
+                                }
+                            }
+                        })
+                    }
+                }
+                R.id.iv_upload->{
+                    val noteContents = NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
+                    if (noteContents.size==0){
+                        showToast("主题没有内容无法上传")
+                        return@setOnItemChildClickListener
+                    }
+                    CommonDialog(requireActivity()).setContent("确定上传主题到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            mQiniuPresenter.getToken()
+                        }
+                    })
                 }
             }
         }
@@ -261,18 +292,14 @@ class NoteFragment:BaseFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             USER_EVENT->{
-                privacyPassword=getCheckPasswordObj()
+                privacyPassword=MethodManager.getPrivacyPassword(1)
                 positionType=0
                 findTabs()
             }
-            NOTE_BOOK_MANAGER_EVENT->{
+            NOTE_TYPE_REFRESH_EVENT->{
                 findTabs()
             }
             NOTE_EVENT->{
-                fetchData()
-            }
-            CHECK_PASSWORD_EVENT->{
-                privacyPassword=getCheckPasswordObj()
                 fetchData()
             }
         }
@@ -284,70 +311,42 @@ class NoteFragment:BaseFragment() {
             notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
             val total = NoteDaoManager.getInstance().queryAll(typeStr)
             setPageNumber(total.size)
-            for (item in notes){
-                item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
-            }
             mAdapter?.setNewData(notes)
         }
     }
 
-    /**
-     * 上传
-     */
-    fun upload(token:String){
+    override fun onUpload(token: String) {
         cloudList.clear()
-        val nullItems= mutableListOf<Note>()
-        for (noteType in notebooks){
-            //查找到这个分类的所有内容，然后遍历上传所有内容
-            val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
-            for (item in notes){
-                val path=FileAddress().getPathNote(noteType.title,item.title)
-                val fileName=item.title
-                //获取笔记所有内容
-                val noteContents = NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.title)
-                //如果此笔记还没有开始书写，则不用上传源文件
-                if (noteContents.size>0){
-                    FileUploadManager(token).apply {
-                        startUpload(path,fileName)
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=3
-                                subType=-1
-                                subTypeStr=item.typeStr
-                                year=DateUtils.getYear()
-                                date=System.currentTimeMillis()
-                                listJson= Gson().toJson(item)
-                                contentJson= Gson().toJson(noteContents)
-                                downloadUrl=it
-                            })
-                            //当加入上传的内容等于全部需要上传时候，则上传
-                            if (cloudList.size== NoteDaoManager.getInstance().queryAll().size-nullItems.size)
-                                mCloudUploadPresenter.upload(cloudList)
-                        }
-                    }
-                }
-                else{
-                    //没有内容不上传
-                    nullItems.add(item)
-                }
+        val note=notes[position]
+        val path=FileAddress().getPathNote(note.typeStr,note.title)
+        //获取笔记所有内容
+        val noteContents = NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
+        FileUploadManager(token).apply {
+            startUpload(path,note.title)
+            setCallBack{
+                cloudList.add(CloudListBean().apply {
+                    type=3
+                    subType=ToolUtils.getDateId()
+                    subTypeStr=note.typeStr
+                    date=note.date
+                    listJson= Gson().toJson(note)
+                    contentJson= Gson().toJson(noteContents)
+                    skip=1
+                    downloadUrl=it
+                })
+                mCloudUploadPresenter.upload(cloudList)
             }
         }
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
-        for (i in notebooks.indices){
-            val notes= NoteDaoManager.getInstance().queryAll(notebooks[i].title)
-            //删除该笔记分类中的所有笔记本及其内容
-            for (note in notes){
-                NoteDaoManager.getInstance().deleteBean(note)
-                NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
-                val path= FileAddress().getPathNote(note.typeStr,note.title)
-                FileUtils.deleteFile(File(path))
-            }
-        }
-        ItemTypeDaoManager.getInstance().clear(1)
-        EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
+        val note=notes[position]
+        NoteDaoManager.getInstance().deleteBean(note)
+        NoteContentDaoManager.getInstance().deleteType(typeStr,note.title)
+        val path= FileAddress().getPathNote(typeStr,note.title)
+        FileUtils.deleteFile(File(path))
+        mAdapter?.remove(position)
     }
 
 }

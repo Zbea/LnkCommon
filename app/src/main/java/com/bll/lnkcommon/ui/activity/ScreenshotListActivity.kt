@@ -51,7 +51,7 @@ class ScreenshotListActivity : BaseActivity() {
 
     override fun initView() {
         pageSize = 12
-        setPageTitle("截图列表（未分类）")
+        setPageTitle("图库列表")
 
         initRecycleView()
         getFetchFiles()

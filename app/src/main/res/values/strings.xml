@@ -104,10 +104,10 @@
     <string name="password_question_str">输入密保</string>
     <string name="password_question_error">密保错误</string>
     <string name="password_question_select_str">选择问题</string>
-    <string name="password_question_name">您的姓名是？</string>
-    <string name="password_question_father_name">父亲姓名是？</string>
-    <string name="password_question_birthday">您的生日是？</string>
-    <string name="password_question_movie">最喜欢电影？</string>
+    <string name="password_question_name">好友姓名？</string>
+    <string name="password_question_father_name">父亲姓名？</string>
+    <string name="password_question_birthday">我的爱好？</string>
+    <string name="password_question_movie">最爱电影？</string>
     <string name="password_set">设置密码</string>
     <string name="password_set_question">设置密保</string>
     <string name="main_menu_str">首页菜单</string>

@@ -12,7 +12,8 @@ class CloudFreeNoteAdapter(layoutResId: Int, data: List<FreeNoteBean>?) : BaseQu
 
     override fun convert(helper: BaseViewHolder, item: FreeNoteBean) {
         helper.setText(R.id.tv_title,item.title)
-        helper.setText(R.id.tv_date, DateUtils.longToStringData(item.date))
+        helper.setText(R.id.tv_date, DateUtils.longToStringWeek1(item.date))
+        helper.addOnClickListener(R.id.iv_delete)
     }
 
 }

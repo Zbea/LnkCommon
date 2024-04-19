@@ -10,7 +10,7 @@ import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
@@ -35,9 +35,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(tv_page_title,iv_btn,iv_catalog)
+        disMissView(iv_catalog)
         elik?.addOnTopView(ll_date)
-        elik?.addOnTopView(tv_theme)
 
         iv_up.setOnClickListener {
             val lastDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,0)
@@ -78,7 +77,7 @@ class DiaryActivity:BaseDrawingActivity() {
             }
         }
 
-        tv_theme.setOnClickListener {
+        iv_btn.setOnClickListener {
             NoteModuleAddDialog(this, 0).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)

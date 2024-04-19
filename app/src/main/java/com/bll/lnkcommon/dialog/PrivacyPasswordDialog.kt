@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.User
@@ -14,9 +15,9 @@ import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.SToast
 
 
-class PrivacyPasswordDialog(private val context: Context) {
+class PrivacyPasswordDialog(private val context: Context,private val type:Int=0) {
 
-    fun builder(): PrivacyPasswordDialog? {
+    fun builder(): PrivacyPasswordDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_check_password)
         val window = dialog.window!!
@@ -30,24 +31,23 @@ class PrivacyPasswordDialog(private val context: Context) {
 
         tvFind.setOnClickListener {
             dialog.dismiss()
-            PrivacyPasswordFindDialog(context).builder()
+            PrivacyPasswordFindDialog(context,type).builder()
         }
 
         val tvEdit = dialog.findViewById<TextView>(R.id.tv_edit_password)
         tvEdit.setOnClickListener {
             dialog.dismiss()
-            PrivacyPasswordEditDialog(context).builder()
+            PrivacyPasswordEditDialog(context,type).builder()
         }
 
         btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
             if (passwordStr.isEmpty()){
+                SToast.showText(R.string.password_input)
                 return@setOnClickListener
             }
-            val user= SPUtil.getObj("user", User::class.java)
-            val privacyPassword=SPUtil.getObj("${user?.accountId}PrivacyPassword",
-                PrivacyPassword::class.java)
+            val privacyPassword=MethodManager.getPrivacyPassword(type)
             if (MD5Utils.digest(passwordStr) != privacyPassword?.password){
                 SToast.showText(R.string.password_error)
                 return@setOnClickListener

@@ -148,11 +148,11 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                         for (item in students){
                             lists.add(ItemList(item.accountId,item.nickname))
                         }
-                        ItemSelectorDialog(requireActivity(),"选择学生",lists).builder().setOnDialogClickListener{
+                        ItemSelectorDialog(requireActivity(),"选择学生",lists).builder().setOnDialogClickListener{pos->
                             val map = HashMap<String, Any>()
                             map["name"] = book.bookName
                             map["type"] = 2
-                            map["childId"] = students[it].accountId
+                            map["childId"] = students[pos].accountId
                             map["bookId"] = book.bookId
                             map["imageUrl"] = book.imageUrl
                             map["subject"] = book.subjectName
@@ -177,7 +177,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             }
         }
         for (book in maxBooks) {
-            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)
+            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)+1
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {

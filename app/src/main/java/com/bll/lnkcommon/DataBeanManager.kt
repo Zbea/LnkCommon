@@ -20,7 +20,7 @@ object DataBeanManager {
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
 
     private val cloudListTitle = arrayOf(mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_teaching)
-        ,mContext.getString(R.string.tab_note),mContext.getString(R.string.diary),mContext.getString(R.string.free_note)
+        ,mContext.getString(R.string.tab_note),mContext.getString(R.string.diary)
         ,mContext.getString(R.string.screenshot))
 
     val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.classGroup_exam_str),mContext.getString(R.string.school_exam_str)
@@ -97,14 +97,9 @@ object DataBeanManager {
             name = cloudListTitle[3]
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_freenote)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_freenote_check)
-            name = cloudListTitle[4]
-        })
-        list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_screenshot)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_screenshot_check)
-            name = cloudListTitle[5]
+            name = cloudListTitle[4]
         })
         return list
     }

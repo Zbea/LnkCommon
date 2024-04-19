@@ -56,34 +56,35 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
+                this@CloudFreeNoteFragment.position=position
                 val item=items[position]
                 if (!FreeNoteDaoManager.getInstance().isExist(item.date)){
-                    showLoading()
                     download(item)
                 }
-                else{
-                    showToast("已存在")
-                }
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            setOnItemChildClickListener { adapter, view, position ->
                 this@CloudFreeNoteFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(items[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
-                        }
-                    })
-                true
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem()
+                            }
+                        })
+                }
             }
         }
     }
 
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(items[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
+    }
+
     private fun download(item: FreeNoteBean){
-        item.id=null//设置数据库id为null用于重新加入
         showLoading()
         val fileName=DateUtils.longToString(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
@@ -98,11 +99,13 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
+                            item.id=null//设置数据库id为null用于重新加入
                             FreeNoteDaoManager.getInstance().insertOrReplace(item)
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 showToast("下载成功")
+                                deleteItem()
                                 hideLoading()
                             },500)
                         }

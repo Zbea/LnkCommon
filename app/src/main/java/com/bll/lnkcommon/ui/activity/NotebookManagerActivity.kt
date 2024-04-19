@@ -75,7 +75,7 @@ class NotebookManagerActivity : BaseActivity() {
     //设置刷新通知
     private fun setNotify(){
         mAdapter?.notifyDataSetChanged()
-        EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
+        EventBus.getDefault().post(Constants.NOTE_TYPE_REFRESH_EVENT)
     }
 
     //删除

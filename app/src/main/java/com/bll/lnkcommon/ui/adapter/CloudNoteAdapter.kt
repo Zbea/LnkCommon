@@ -12,8 +12,9 @@ class CloudNoteAdapter(layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<N
         helper.setText(R.id.tv_title,item.title)
         helper.setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date))
         helper.setGone(R.id.iv_password,false)
-        helper.setGone(R.id.iv_delete,false)
         helper.setGone(R.id.iv_edit,false)
+        helper.setGone(R.id.iv_upload,false)
+        helper.addOnClickListener(R.id.iv_delete)
     }
 
 }

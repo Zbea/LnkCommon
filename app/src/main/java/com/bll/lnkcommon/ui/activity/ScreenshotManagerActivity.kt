@@ -56,8 +56,8 @@ class ScreenshotManagerActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("截图管理")
-        setSettingText("截图列表")
+        setPageTitle("图库管理")
+        setSettingText("图库列表")
         showView(tv_province)
         tv_province.text="分类管理"
 

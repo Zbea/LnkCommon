@@ -16,7 +16,8 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_drawing_book.*
+import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -33,7 +34,7 @@ class BookDetailsActivity:BaseBookDrawingActivity() {
     private var startCount=1
 
     override fun layoutId(): Int {
-        return R.layout.ac_drawing_book
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -72,6 +73,7 @@ class BookDetailsActivity:BaseBookDrawingActivity() {
     }
 
     override fun initView() {
+        disMissView(iv_btn)
         if (catalogMsg!=null){
             count=catalogMsg?.totalCount!!
             startCount=catalogMsg?.startCount!!

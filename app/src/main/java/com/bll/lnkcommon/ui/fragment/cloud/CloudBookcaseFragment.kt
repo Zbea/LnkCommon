@@ -77,6 +77,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
+                this@CloudBookcaseFragment.position=position
                 val book=books[position]
                 val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
                 if (localBook == null) {
@@ -102,14 +103,18 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(books[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem(books[position])
                         }
                     })
                 true
             }
         }
+    }
+
+    private fun deleteItem(book: Book){
+        val ids= mutableListOf<Int>()
+        ids.add(book.cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -123,6 +128,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                 hideLoading()
                 val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
                 if (localBook!=null){
+                    deleteItem(book)
                     showToast(book.bookName+"下载成功")
                 }
                 else{
@@ -209,6 +215,8 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     }
 
     override fun onCloudType(types: MutableList<String>) {
+        types.remove("默认")
+        types.add(0,"默认")
         this.types=types
         if (types.size>0){
             initTab()

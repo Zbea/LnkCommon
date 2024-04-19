@@ -21,7 +21,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_free_note.*
 import kotlinx.android.synthetic.main.ac_free_note.v_content
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
@@ -111,7 +111,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             fetchShareNotes(1,false)
     }
     override fun initView() {
-        disMissView(tv_page_title,iv_catalog,iv_btn)
+        disMissView(iv_catalog,iv_btn)
         tv_name.text=freeNoteBean?.title
 
         tv_name.setOnClickListener {

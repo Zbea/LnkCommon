@@ -78,6 +78,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
+                this@CloudTextbookFragment.position=position
                 val book=books[position]
                 val localBook = BookDaoManager.getInstance().queryByBookID(0,book.bookId)
                 if (localBook == null) {
@@ -104,14 +105,18 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(books[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
+                            deleteItem(books[position])
                         }
                     })
                 true
             }
         }
+    }
+
+    private fun deleteItem(book: Book){
+        val ids= mutableListOf<Int>()
+        ids.add(book.cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -126,6 +131,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
                 val localBook = BookDaoManager.getInstance().queryTextBookByBookID(0,book.bookId)
                 if (localBook!=null){
                     showToast(book.bookName+"下载成功")
+                    deleteItem(book)
                     EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
                 }
                 else{

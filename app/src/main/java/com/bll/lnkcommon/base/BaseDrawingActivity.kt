@@ -21,15 +21,10 @@ import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
-import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
-import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
-import kotlinx.android.synthetic.main.ac_drawing.v_content
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -105,16 +100,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             else{
                 stopErasure()
-            }
-        }
-
-        tv_page_title?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_page_title.text.toString()
-                InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                    tv_page_title.text = string
-                    setDrawingTitle(string)
-                }
             }
         }
 
@@ -435,7 +420,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,0).builder().setDialogClickListener{
+        AppToolDialog(this).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

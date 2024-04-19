@@ -7,6 +7,7 @@ import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.model.Book;
+import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
@@ -109,6 +110,34 @@ public class MethodManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
+    }
+
+    /**
+     * 保存私密密码
+     * type 0日记1密本
+     * @param privacyPassword
+     */
+    public static void savePrivacyPassword(int type,PrivacyPassword privacyPassword){
+        if (type==0){
+            SPUtil.INSTANCE.putObj("privacyPasswordDiary",privacyPassword);
+        }
+        else{
+            SPUtil.INSTANCE.putObj("privacyPasswordNote",privacyPassword);
+        }
+    }
+
+    /**
+     * 获取私密密码
+     * type 0日记1密本
+     * @return
+     */
+    public static PrivacyPassword getPrivacyPassword(int type){
+         if (type==0){
+             return SPUtil.INSTANCE.getObj("privacyPasswordDiary", PrivacyPassword.class);
+        }
+        else{
+             return SPUtil.INSTANCE.getObj("privacyPasswordNote", PrivacyPassword.class);
+        }
     }
     
 }

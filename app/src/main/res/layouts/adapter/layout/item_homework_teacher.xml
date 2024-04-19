@@ -61,7 +61,7 @@
             android:id="@+id/iv_delete"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_notebook_delete" />
+            android:src="@mipmap/icon_delete" />
     </LinearLayout>
 
     <LinearLayout

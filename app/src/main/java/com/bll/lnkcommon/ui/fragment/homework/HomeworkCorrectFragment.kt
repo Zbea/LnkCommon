@@ -31,8 +31,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         mAdapter?.setNewData(homeworks)
     }
 
-    override fun onToken(token: String?) {
-    }
     override fun onUpdateSuccess() {
     }
     override fun onDeleteSuccess() {

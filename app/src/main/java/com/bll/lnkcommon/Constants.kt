@@ -52,14 +52,11 @@ object Constants {
         val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
-        const val AUTO_REFRESH_YEAR_EVENT = "AutoRefreshYearEvent"
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent" //每天刷新
-        const val AUTO_UPLOAD_DAY_EVENT = "AutoUploadDayEvent" //每天3点自动上传
-        const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadYearEvent" //每天3点自动上传
         const val DATE_DRAWING_EVENT = "DateDrawingEvent" //日历手写事件
         const val BOOK_EVENT = "BookEvent"
         const val TEXT_BOOK_EVENT = "TextBookEvent"
-        const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
+        const val NOTE_TYPE_REFRESH_EVENT = "NoteTypeRefreshEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val STUDENT_EVENT="StudentEvent"
         const val HOMEWORK_CORRECT_EVENT="CorrectEvent"
@@ -71,19 +68,15 @@ object Constants {
         const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"
         const val CALENDER_EVENT = "CalenderEvent"
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
-        const val CHECK_PASSWORD_EVENT = "CheckPasswordEvent"
-        const val SETTING_DATA_EVENT = "SettingDataEvent" //系统设置 一键下载
+        const val SETTING_DATA_UPLOAD_EVENT = "SettingDataUploadEvent" //系统设置 一键下载
         const val REFRESH_STUDENT_PERMISSION_EVENT = "RefreshStudentPermission"
 
-        const val PACKAGE_WX="com.tencent.mm"
         const val PACKAGE_GEOMETRY="com.geometry"
         const val PACKAGE_READER = "com.geniatech.knote.reader"
 
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
-        const val ACTION_UPLOAD_REFRESH = "com.bll.lnkcommon.upload"//每天3自动更新
-        const val ACTION_UPLOAD_YEAR = "com.bll.lnkcommon.upload.year"//每年12月31 3点自动上传
         //广播
-        const val DATA_BROADCAST_EVENT = "com.android.settings.importdatasgl"
+        const val DATA_UPLOAD_BROADCAST_EVENT = "com.htfyun.blackwhitebar.uploaddata"
         const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
         const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"
 }

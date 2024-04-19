@@ -1,20 +1,19 @@
 package com.bll.lnkcommon.ui.fragment
 
-import PopupClick
 import android.content.Intent
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.Constants.AUTO_REFRESH_YEAR_EVENT
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
-import com.bll.lnkcommon.Constants.CHECK_PASSWORD_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.manager.*
 import com.bll.lnkcommon.mvp.model.*
@@ -24,7 +23,6 @@ import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.MessageListActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
-import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
@@ -32,7 +30,6 @@ import com.bll.lnkcommon.utils.date.Solar
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
@@ -48,6 +45,7 @@ class MainFragment:BaseFragment(),IRelationView {
     private var calenderPath=""
     private var uploadType=0//上传类型
     private var isChange=false
+    private var privacyPassword:PrivacyPassword?=null
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
@@ -72,6 +70,8 @@ class MainFragment:BaseFragment(),IRelationView {
         setTitle(DataBeanManager.mainListTitle[0])
         showView(iv_manager)
 
+        privacyPassword=MethodManager.getPrivacyPassword(0)
+
         tv_message.setOnClickListener {
             if (isLoginState()){
                 startActivity(Intent(requireActivity(),MessageListActivity::class.java))
@@ -84,12 +84,35 @@ class MainFragment:BaseFragment(),IRelationView {
 
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                     startActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
             } else{
                 startActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
+        }
+
+        tv_diary.setOnLongClickListener {
+            if (privacyPassword==null){
+                PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                    privacyPassword=it
+                    showToast("日记密码设置成功")
+                }
+            }
+            else{
+                val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword!!.isSet=!privacyPassword!!.isSet
+                            MethodManager.savePrivacyPassword(0,privacyPassword)
+                        }
+                    }
+                })
+            }
+            return@setOnLongClickListener true
         }
 
         tv_free_note.setOnClickListener {
@@ -247,7 +270,7 @@ class MainFragment:BaseFragment(),IRelationView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
-                privacyPassword=getCheckPasswordObj()
+                privacyPassword=MethodManager.getPrivacyPassword(0)
                 lazyLoad()
                 setCalenderView()
             }
@@ -265,9 +288,6 @@ class MainFragment:BaseFragment(),IRelationView {
                 setDateView()
                 setCalenderView()
                 findAppData()
-            }
-            CHECK_PASSWORD_EVENT->{
-                privacyPassword=getCheckPasswordObj()
             }
         }
     }
@@ -292,9 +312,9 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=4
-                            subType=-1
+                            subType=ToolUtils.getDateId()
                             subTypeStr="日记"
-                            year=DateUtils.getYear()
+                            year=diaryBean.year
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(diaryBean)
                             downloadUrl=it
@@ -330,7 +350,7 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=5
-                            subType=-1
+                            subType=ToolUtils.getDateId()
                             subTypeStr="随笔"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
@@ -363,7 +383,7 @@ class MainFragment:BaseFragment(),IRelationView {
         itemTypeBean.title="未分类"
         itemTypeBean.date=System.currentTimeMillis()
         itemTypeBean.path=FileAddress().getPathScreen("未分类")
-        screenTypes.add(itemTypeBean)
+        screenTypes.add(0,itemTypeBean)
         for (item in screenTypes){
             val fileName=DateUtils.longToString(item.date)
             val path=item.path
@@ -373,11 +393,11 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=6
-                            subType=-1
-                            subTypeStr=item.title
-                            year=DateUtils.getYear()
+                            subType=ToolUtils.getDateId()
+                            subTypeStr="截图"
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)
+                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传

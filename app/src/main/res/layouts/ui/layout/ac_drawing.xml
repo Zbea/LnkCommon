@@ -5,20 +5,24 @@
     android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
-    <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/drawing_bottom_height"
-        android:scaleType="fitCenter" />
+        android:orientation="horizontal"
+        >
 
-    <include
-        android:id="@+id/ll_bottom"
-        layout="@layout/common_drawing_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/drawing_bottom_height"
-        android:layout_alignParentBottom="true"
-        />
+        <include
+            layout="@layout/common_drawing_tool"
+            />
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
 
     <include
         android:id="@+id/ll_geometry"
@@ -30,8 +34,9 @@
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_above="@+id/ll_bottom"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"
