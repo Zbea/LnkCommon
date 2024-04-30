@@ -28,7 +28,7 @@ class AppToolDialog(val context: Context) {
         val layoutParams =window.attributes
         layoutParams.gravity = Gravity.BOTTOM or Gravity.START
         layoutParams.x=DP2PX.dip2px(context,42f)
-        layoutParams.y= DP2PX.dip2px(context,5f)
+        layoutParams.y= DP2PX.dip2px(context,10f)
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()

@@ -15,15 +15,12 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
                 1->{
                     typeNameStr="来自：${item.teacherName}"
                 }
-                2->{
-                    typeNameStr=item.teacherName
-                }
                 3-> {
                     typeNameStr="学校通知"
                 }
                 4->{
                     typeNameStr = if (item.msgId!=0){
-                        item.teacherName
+                        "发送："+item.teacherName
                     } else{
                         "来自："+item.teacherName
                     }

@@ -71,6 +71,8 @@
             <intent-filter>
                 <action android:name="com.bll.lnkcommon.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -109,7 +111,6 @@
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
             android:launchMode="singleTask"
             />
-        <activity android:name=".ui.activity.book.BookListActivity"/>
         <activity android:name=".ui.activity.AppCenterActivity"
             android:launchMode="singleTask"
             />
@@ -120,12 +121,13 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.DateActivity"/>
-        <activity android:name=".ui.activity.drawing.DateEventActivity"/>
+        <activity android:name=".ui.activity.drawing.DateEventActivity"
+            android:theme="@style/activityCustom"
+            />
         <activity android:name=".ui.activity.ScoreActivity"/>
         <activity android:name=".ui.activity.drawing.HomeworkCorrectActivity"/>
         <activity
             android:name=".ui.activity.WalletActivity"
-            android:windowSoftInputMode="adjustPan"
             android:theme="@style/activityCustom" />
         <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
@@ -143,7 +145,6 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.ScreenshotListActivity"/>
         <activity android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask"
             />

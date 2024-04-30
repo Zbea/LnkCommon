@@ -11,19 +11,15 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
-import com.bll.lnkcommon.utils.FileUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import java.io.File
 import kotlin.math.ceil
 
-class PopupFreeNoteList(var context: Context, var view: View) {
+class PopupFreeNoteList(var context: Context, var view: View,private var date:Long) {
 
     private var list= mutableListOf<FreeNoteBean>()
     private var mPopupWindow: PopupWindow? = null
@@ -78,38 +74,13 @@ class PopupFreeNoteList(var context: Context, var view: View) {
 
         val rvList = popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        mAdapter = MAdapter(R.layout.item_free_note, list)
+        mAdapter = MAdapter(R.layout.item_free_note, list,date)
         rvList.adapter=mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             onSelectListener?.onSelect(list[position])
             dismiss()
         }
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            val item=list[position]
-            if (view.id==R.id.iv_delete){
-                CommonDialog(context).setContent(R.string.tips_is_delete).builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            FreeNoteDaoManager.getInstance().deleteBean(item)
-                            FileUtils.deleteFile(File(FileAddress().getPathFreeNote(DateUtils.longToString(item.date))))
-                            mAdapter?.remove(position)
-                            if (list.size==0){
-                                if (pageIndex>1){
-                                    pageIndex-=1
-                                    findFreeNotes()
-                                }
-                                else{
-                                    ll_page_number.visibility=View.INVISIBLE
-                                }
-                            }
-                        }
-                    })
-            }
-        }
-
         findFreeNotes()
 
         show()
@@ -146,12 +117,12 @@ class PopupFreeNoteList(var context: Context, var view: View) {
     }
 
 
-    private class MAdapter(layoutResId: Int, data: List<FreeNoteBean>?) :
+    private class MAdapter(layoutResId: Int, data: List<FreeNoteBean>?,private val date: Long) :
         BaseQuickAdapter<FreeNoteBean, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: FreeNoteBean) {
             helper.setText(R.id.tv_title, item.title)
-            helper.addOnClickListener(R.id.iv_delete)
+            helper.setVisible(R.id.iv_now,date==item.date)
         }
 
     }

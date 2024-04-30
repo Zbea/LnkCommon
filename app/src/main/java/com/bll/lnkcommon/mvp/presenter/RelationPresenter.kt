@@ -34,4 +34,17 @@ class RelationPresenter(view: IContractView.IRelationView) : BasePresenter<ICont
         }, false)
     }
 
+    fun getMessageTotal(){
+        val list= RetrofitManager.service.getMessages()
+        doRequest(list, object : Callback<Int>(view) {
+            override fun failed(tBaseResult: BaseResult<Int>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Int>) {
+                    view.onMessageTotal(tBaseResult.data!!)
+            }
+        })
+    }
+
+
 }

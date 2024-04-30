@@ -1,11 +1,12 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
-import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
+import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
+import com.bll.lnkcommon.Constants.STUDENT_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
@@ -19,16 +20,15 @@ import com.bll.lnkcommon.manager.*
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
-import com.bll.lnkcommon.ui.activity.DateActivity
-import com.bll.lnkcommon.ui.activity.MessageListActivity
+import com.bll.lnkcommon.ui.activity.*
+import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
-import com.bll.lnkcommon.ui.adapter.AppListAdapter
+import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -38,29 +38,35 @@ import java.util.Date
 class MainFragment:BaseFragment(),IRelationView {
 
     private val presenter=RelationPresenter(this)
-    private var apps= mutableListOf<AppBean>()
-    private var mAdapter: AppListAdapter?=null
     private var nowDayPos=1
     private var nowDay=0L
     private var calenderPath=""
     private var uploadType=0//上传类型
     private var isChange=false
+    private var isShow=false//是否存在台历
     private var privacyPassword:PrivacyPassword?=null
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
-            showView(tv_message)
+            showView(ll_message)
         }
         else{
-            disMissView(tv_message)
+            disMissView(ll_message)
         }
         if (DataBeanManager.students != list){
             DataBeanManager.students=list
-            EventBus.getDefault().post(Constants.STUDENT_EVENT)
+            EventBus.getDefault().post(STUDENT_EVENT)
         }
     }
     override fun onListFriend(list: FriendList) {
         DataBeanManager.friends=list.list
+    }
+
+    override fun onMessageTotal(total: Int) {
+        if (total>SPUtil.getInt("messageTotal")){
+            showView(iv_message_tips)
+        }
+        SPUtil.putInt("messageTotal",total)
     }
 
     override fun getLayoutId(): Int {
@@ -68,13 +74,13 @@ class MainFragment:BaseFragment(),IRelationView {
     }
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
-        showView(iv_manager)
 
         privacyPassword=MethodManager.getPrivacyPassword(0)
 
-        tv_message.setOnClickListener {
+        ll_message.setOnClickListener {
             if (isLoginState()){
-                startActivity(Intent(requireActivity(),MessageListActivity::class.java))
+                disMissView(iv_message_tips)
+                customStartActivity(Intent(requireActivity(),MessageListActivity::class.java))
             }
         }
 
@@ -82,17 +88,17 @@ class MainFragment:BaseFragment(),IRelationView {
             customStartActivity(Intent(activity,DateActivity::class.java))
         }
 
-        tv_diary.setOnClickListener {
+        ll_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                    customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
             } else{
-                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
         }
 
-        tv_diary.setOnLongClickListener {
+        ll_diary.setOnLongClickListener {
             if (privacyPassword==null){
                 PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
                     privacyPassword=it
@@ -115,14 +121,33 @@ class MainFragment:BaseFragment(),IRelationView {
             return@setOnLongClickListener true
         }
 
-        tv_free_note.setOnClickListener {
-            startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
+        ll_freenote.setOnClickListener {
+            customStartActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
+        }
+
+        ll_plan.setOnClickListener {
+            customStartActivity(Intent(requireActivity(),PlanOverviewActivity::class.java))
+        }
+
+        ll_screenshot.setOnClickListener {
+            if (isLoginState()){
+                customStartActivity(Intent(requireActivity(),ScreenshotManagerActivity::class.java))
+            }
+            else{
+                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+            }
+        }
+
+        iv_date.setOnClickListener {
+            val intent = Intent(requireActivity(), DateEventActivity::class.java)
+            intent.putExtra("date",nowDay)
+            customStartActivity(intent)
         }
 
         v_up.setOnClickListener{
             nowDay-=Constants.dayLong
             setDateView()
-            if (nowDayPos>1){
+            if (isShow&&nowDayPos>1){
                 nowDayPos-=1
                 setCalenderBg()
             }
@@ -132,7 +157,7 @@ class MainFragment:BaseFragment(),IRelationView {
             nowDay+=Constants.dayLong
             setDateView()
             val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
-            if (nowDayPos<=allDay){
+            if (isShow&&nowDayPos<=allDay){
                 nowDayPos+=1
                 setCalenderBg()
             }
@@ -143,14 +168,33 @@ class MainFragment:BaseFragment(),IRelationView {
                 return@setOnClickListener
             isChange=!isChange
             if (isChange){
-                showView(ll_calender)
+                showView(iv_calender)
             }
             else{
-                disMissView(ll_calender)
+                disMissView(iv_calender)
             }
         }
 
-        initRecyclerView()
+        iv_change.setOnLongClickListener {
+            val boolean=SPUtil.getBoolean("isShowCalender")
+            val titleStr=if (boolean) "默认显示日程？" else "默认显示台历？"
+            CommonDialog(requireActivity()).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    if (boolean){
+                        SPUtil.putBoolean("isShowCalender",false)
+                        disMissView(iv_calender)
+                    }
+                    else{
+                        SPUtil.putBoolean("isShowCalender",true)
+                        showView(iv_calender)
+                    }
+                }
+            }
+            return@setOnLongClickListener true
+        }
+
     }
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())) {
@@ -159,22 +203,22 @@ class MainFragment:BaseFragment(),IRelationView {
             if (isLoginState()){
                 presenter.getStudents()
                 presenter.getFriends()
+                presenter.getMessageTotal()
             }
             mCommonPresenter.getAppUpdate()
         }
         nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()
-        setCalenderView()
-        findAppData()
+        showCalenderView()
         setMessageView()
     }
 
     private fun setMessageView(){
         if (isLoginState()&&DataBeanManager.students.size>0){
-            showView(tv_message)
+            showView(ll_message)
         }
         else{
-            disMissView(tv_message)
+            disMissView(ll_message)
         }
     }
 
@@ -220,22 +264,45 @@ class MainFragment:BaseFragment(),IRelationView {
     }
 
     /**
-     * 设置台历
+     * 是否显示台历
      */
-    private fun setCalenderView(){
-        val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(nowDay))
-        nowDayPos=calenderUtils.elapsedTime()
+    private fun showCalenderView(){
         val item=CalenderDaoManager.getInstance().queryCalenderBean()
-        if (item!=null){
-            showView(iv_change)
+        isShow=item!=null
+        if (isShow){
             calenderPath=item.path
-            setCalenderBg()
+            showView(iv_change,iv_calender)
+            setCalenderView()
         }
         else{
-            disMissView(iv_change)
+            isChange=false
+            disMissView(iv_change,iv_calender)
         }
     }
 
+    /**
+     * 设置台历内容
+     */
+    private fun setCalenderView(){
+        if (isShow){
+            val calenderUtils=CalenderUtils(DateUtils.longToStringDataNoHour(nowDay))
+            nowDayPos=calenderUtils.elapsedTime()
+            setCalenderBg()
+            if (SPUtil.getBoolean("isShowCalender"))
+            {
+                isChange=true
+                showView(iv_calender)
+            }
+            else{
+                isChange=false
+                disMissView(iv_calender)
+            }
+        }
+    }
+
+    /**
+     * 设置台历图片
+     */
     private fun setCalenderBg(){
         val listFiles= FileUtils.getFiles(calenderPath) ?: return
         val file=if (listFiles.size>nowDayPos-1){
@@ -244,50 +311,31 @@ class MainFragment:BaseFragment(),IRelationView {
         else{
             listFiles[listFiles.size-1]
         }
-        GlideUtils.setImageFile(requireActivity(),file,iv_calender_bg)
+        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
-
-    private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(activity,5)//创建布局管理
-        mAdapter = AppListAdapter(R.layout.item_main_app, 0,null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val packageName= apps[position].packageName
-            AppUtils.startAPP(activity,packageName)
-        }
-    }
-
-    /**
-     * 查找菜单应用
-     */
-    private fun findAppData(){
-        apps= AppDaoManager.getInstance().queryMenu()
-        mAdapter?.setNewData(apps)
-    }
-
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
                 privacyPassword=MethodManager.getPrivacyPassword(0)
                 lazyLoad()
-                setCalenderView()
             }
-            Constants.STUDENT_EVENT->{
+            STUDENT_EVENT->{
                 setMessageView()
             }
             DATE_DRAWING_EVENT -> {
                 setDateView()
             }
             CALENDER_SET_EVENT->{
-                setCalenderView()
+                showCalenderView()
             }
             AUTO_REFRESH_EVENT->{
                 nowDay=DateUtils.getStartOfDayInMillis()
                 setDateView()
-                setCalenderView()
-                findAppData()
+                showCalenderView()
+            }
+            NETWORK_CONNECTION_COMPLETE_EVENT->{
+                lazyLoad()
             }
         }
     }

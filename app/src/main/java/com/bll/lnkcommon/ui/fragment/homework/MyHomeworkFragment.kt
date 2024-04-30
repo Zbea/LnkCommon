@@ -1,5 +1,7 @@
 package com.bll.lnkcommon.ui.fragment.homework
 
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
@@ -13,7 +15,9 @@ import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.fragment_my_homework.*
+import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.fragment_homework.*
+import kotlinx.android.synthetic.main.fragment_homework.rv_list
 
 class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
 
@@ -41,7 +45,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_my_homework
+        return R.layout.fragment_homework
     }
     override fun initView() {
         pageSize=9
@@ -55,6 +59,13 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),50f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         mAdapter = HomeworkTypeAdapter(R.layout.item_my_homework, null).apply {
             rv_list.layoutManager = GridLayoutManager(activity, 3)
             rv_list.adapter = this

@@ -2,8 +2,9 @@ package com.bll.lnkcommon.ui.fragment
 
 import PopupClick
 import android.content.Intent
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants.NOTE_TYPE_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.NOTE_EVENT
@@ -26,15 +27,12 @@ import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_radiogroup.*
+import kotlinx.android.synthetic.main.fragment_list_type.*
 import kotlinx.android.synthetic.main.common_title.*
-import kotlinx.android.synthetic.main.fragment_note.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class NoteFragment:BaseFragment() {
@@ -49,7 +47,7 @@ class NoteFragment:BaseFragment() {
     private var privacyPassword:PrivacyPassword?=null
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_note
+        return R.layout.fragment_list_type
     }
     override fun initView() {
         pageSize=10
@@ -72,13 +70,19 @@ class NoteFragment:BaseFragment() {
         }
 
         initRecyclerView()
-        findTabs()
+        initTabs()
     }
 
     override fun lazyLoad() {
     }
 
     private fun initRecyclerView() {
+
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(0, DP2PX.dip2px(requireActivity(),20f), 0,0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mAdapter = NoteAdapter(R.layout.item_note, null)
         rv_list.adapter = mAdapter
@@ -175,9 +179,14 @@ class NoteFragment:BaseFragment() {
 
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            NoteModuleAddDialog(requireContext(),1).builder()
+            ModuleSelectDialog(requireContext(),1,DataBeanManager.noteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
+                    if (isLoginState()){
+                        createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
+                    }
+                    else{
+                        showToast("未登录，请登录账号")
+                    }
                 }
         }
         mAdapter?.addFooterView(view)
@@ -196,56 +205,36 @@ class NoteFragment:BaseFragment() {
     /**
      * tab数据设置
      */
-    private fun findTabs() {
+    private fun initTabs() {
         notebooks.clear()
         if (isLoginState()){
-            notebooks.add(ItemTypeBean().apply {
+            notebooks=ItemTypeDaoManager.getInstance().queryAll(1)
+            notebooks.add(0,ItemTypeBean().apply {
                 title = getString(R.string.note_tab_diary)
             })
-            notebooks.addAll(ItemTypeDaoManager.getInstance().queryAll(1))
             if (positionType>=notebooks.size){
                 positionType=0
             }
+            for (item in notebooks){
+                item.isCheck=false
+            }
+            notebooks[positionType].isCheck=true
             typeStr = notebooks[positionType].title
-            initTab()
             fetchData()
         }
         else{
-            initTab()
             notes.clear()
+            setPageNumber(0)
             mAdapter?.setNewData(notes)
         }
-
+        mTabTypeAdapter?.setNewData(notebooks)
     }
 
-    //设置头部索引
-    private fun initTab() {
-        rg_group.removeAllViews()
-        for (i in notebooks.indices) {
-            rg_group.addView(getRadioButton(i,positionType, notebooks[i].title, notebooks.size - 1))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            positionType=id
-            typeStr=notebooks[positionType].title
-            pageIndex=1
-            fetchData()
-        }
-    }
-
-    private fun getRadioButton(i:Int,check:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == check
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
+    override fun onTabClickListener(view: View, position: Int) {
+        positionType=position
+        typeStr=notebooks[position].title
+        pageIndex=1
+        fetchData()
     }
 
     //新建笔记分类
@@ -260,9 +249,8 @@ class NoteFragment:BaseFragment() {
                     noteBook.type=1
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
-                    notebooks.add(noteBook)
                     ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
-                    initTab()
+                    mTabTypeAdapter?.addData(noteBook)
                 }
             }
     }
@@ -294,10 +282,10 @@ class NoteFragment:BaseFragment() {
             USER_EVENT->{
                 privacyPassword=MethodManager.getPrivacyPassword(1)
                 positionType=0
-                findTabs()
+                initTabs()
             }
             NOTE_TYPE_REFRESH_EVENT->{
-                findTabs()
+                initTabs()
             }
             NOTE_EVENT->{
                 fetchData()

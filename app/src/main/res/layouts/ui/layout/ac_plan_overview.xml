@@ -12,12 +12,8 @@
         layout="@layout/common_title"
         />
 
-    <include
-        layout="@layout/common_drawing_tool"
-        />
-
     <RelativeLayout
-        android:id="@+id/ll_date"
+        android:id="@+id/ll_function"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_title"
@@ -102,9 +98,13 @@
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_date"
-        android:layout_marginStart="@dimen/drawing_book_height"
+        android:layout_below="@+id/ll_function"
         android:src="@mipmap/icon_freenote_bg_1"
+        android:layout_marginStart="@dimen/drawing_tool_height"
+        />
+
+    <include
+        layout="@layout/common_drawing_tool"
         />
 
 </RelativeLayout>

@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,8 @@ public class FreeNoteBean {
     public long userId;
     public String title;
     public long date;
+    public boolean isSave;
+    public int page;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
@@ -28,14 +31,15 @@ public class FreeNoteBean {
     public int cloudId;
     @Transient
     public String downloadUrl;
-
-    @Generated(hash = 1800919848)
+    @Generated(hash = 203331839)
     public FreeNoteBean(Long id, long userId, String title, long date,
-            List<String> paths, List<String> bgRes) {
+            boolean isSave, int page, List<String> paths, List<String> bgRes) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.date = date;
+        this.isSave = isSave;
+        this.page = page;
         this.paths = paths;
         this.bgRes = bgRes;
     }
@@ -65,6 +69,18 @@ public class FreeNoteBean {
     }
     public void setDate(long date) {
         this.date = date;
+    }
+    public boolean getIsSave() {
+        return this.isSave;
+    }
+    public void setIsSave(boolean isSave) {
+        this.isSave = isSave;
+    }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
     }
     public List<String> getPaths() {
         return this.paths;

@@ -6,12 +6,16 @@
     android:paddingTop="@dimen/statusbar_height"
     >
 
+    <include
+        layout="@layout/common_drawing_tool"
+        />
+
     <com.android.internal.widget.PreferenceImageView
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@mipmap/icon_diary_details_bg_1"
-        android:layout_marginStart="@dimen/drawing_book_height"
+        android:layout_marginStart="@dimen/drawing_tool_height"
         />
 
     <LinearLayout
@@ -49,10 +53,6 @@
             android:src="@mipmap/icon_date_arrow_down"
             />
     </LinearLayout>
-
-    <include
-        layout="@layout/common_drawing_tool"
-        />
 
     <include
         android:id="@+id/ll_geometry"

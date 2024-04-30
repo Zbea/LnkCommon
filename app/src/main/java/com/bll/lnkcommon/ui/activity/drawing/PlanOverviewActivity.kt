@@ -36,7 +36,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
-        setPageTitle("计划总览")
+        setPageTitle("月周计划")
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

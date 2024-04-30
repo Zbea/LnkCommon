@@ -50,6 +50,10 @@ public class NoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public Note queryBean(long id) {
+        WhereCondition whereCondition=NoteDao.Properties.Id.eq(id);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).build().unique();
+    }
     public List<Note> queryAll() {
         return dao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Date).build().list();
     }

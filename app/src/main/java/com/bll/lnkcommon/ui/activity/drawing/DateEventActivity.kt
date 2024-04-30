@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DateEventActivity:BaseDrawingActivity() {
-    private var mDate: Date?=null
     private var nowLong=0L
 
     override fun layoutId(): Int {
@@ -22,8 +21,7 @@ class DateEventActivity:BaseDrawingActivity() {
     }
 
     override fun initData() {
-        mDate = intent.getBundleExtra("bundle")?.getSerializable("dateBean") as Date
-        nowLong=mDate?.time!!
+        nowLong=intent.getLongExtra("date",0)
     }
 
     override fun initView() {

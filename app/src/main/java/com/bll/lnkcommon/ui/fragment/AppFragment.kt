@@ -7,6 +7,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.AppMenuDialog
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
@@ -25,22 +26,12 @@ class AppFragment:BaseFragment() {
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
     private var position=0
-    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_app
     }
 
     override fun initView() {
-        longBeans.add(ItemList().apply {
-            name=getString(R.string.menu)
-            resId=R.mipmap.icon_setting_menu
-        })
-        longBeans.add(ItemList().apply {
-            name=getString(R.string.uninstall)
-            resId=R.mipmap.icon_setting_uninstall
-        })
-
         setTitle(DataBeanManager.mainListTitle[4])
 
         initRecyclerView()
@@ -64,16 +55,13 @@ class AppFragment:BaseFragment() {
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
-            LongClickManageDialog(requireActivity(),apps[position].appName,longBeans).builder().setOnDialogClickListener{
-                when (it) {
-                    0 -> {
-                        AppMenuDialog(requireActivity(),apps[position]).builder()
-                    }
-                    else -> {
-                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
-                    }
+            CommonDialog(requireActivity()).setContent("确认卸载应用？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
                 }
-            }
+                override fun ok() {
+                    AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                }
+            })
             true
         }
     }

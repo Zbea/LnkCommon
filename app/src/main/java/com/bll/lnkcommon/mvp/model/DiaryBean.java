@@ -24,6 +24,7 @@ public class DiaryBean {
     public int year;
     public int month;
     public String bgRes;
+    public int page;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths=new ArrayList<>();
     @Transient
@@ -31,9 +32,9 @@ public class DiaryBean {
     @Transient
     public String downloadUrl;
 
-    @Generated(hash = 199989628)
+    @Generated(hash = 325776954)
     public DiaryBean(Long id, long userId, String title, long date, int year,
-            int month, String bgRes, List<String> paths) {
+            int month, String bgRes, int page, List<String> paths) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -41,6 +42,7 @@ public class DiaryBean {
         this.year = year;
         this.month = month;
         this.bgRes = bgRes;
+        this.page = page;
         this.paths = paths;
     }
     @Generated(hash = 1749744078)
@@ -88,11 +90,18 @@ public class DiaryBean {
     public void setBgRes(String bgRes) {
         this.bgRes = bgRes;
     }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
+    }
     public List<String> getPaths() {
         return this.paths;
     }
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
+
 
 }

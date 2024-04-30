@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
 
+import com.bll.lnkcommon.utils.DP2PX;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarUtil;
 import com.haibin.calendarview.MonthView;
@@ -106,14 +107,12 @@ public class SingleMonthView extends MonthView {
                     calendar.isCurrentDay() ? mCurDayTextPaint :
                             calendar.isCurrentMonth() ? mCurMonthTextPaint : mOtherMonthTextPaint);
         }
-
         //日期是否可用？拦截
         if (onCalendarIntercept(calendar)) {
             canvas.drawText(calendar.isCurrentDay() ? "今" : String.valueOf(calendar.getDay()),
                     cx,
                     baselineY,
                     mOtherMonthTextPaint);
-
 //            canvas.drawLine(x + mH, y + mH, x + mItemWidth - mH, y + mItemHeight - mH, mDisablePaint);
         }
 

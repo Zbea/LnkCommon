@@ -6,6 +6,7 @@ import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.manager.NoteContentDaoManager
+import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
@@ -27,15 +28,15 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        val bundle = intent.getBundleExtra("bundle")
-        note = bundle?.getSerializable("noteBundle") as Note
+        val id = intent.getLongExtra("noteId",0)
+        note=NoteDaoManager.getInstance().queryBean(id)
         typeStr = note?.typeStr.toString()
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,note?.title)
 
         if (noteContents.size > 0) {
             noteContent = noteContents[noteContents.size - 1]
-            page = noteContents.size - 1
+            page = note?.page!!
         } else {
             newNoteContent()
         }
@@ -101,7 +102,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //翻页内容更新切换
     private fun changeContent() {
         noteContent = noteContents[page]
-        tv_page.text = (page + 1).toString()
+        tv_page.text = "${page+1}/${noteContents.size}"
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
     }
 
@@ -127,6 +128,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.id=id
 
         noteContents.add(noteContent!!)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        note?.page=page
+        NoteDaoManager.getInstance().insertOrReplace(note)
     }
 
 }

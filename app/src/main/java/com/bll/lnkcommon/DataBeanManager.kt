@@ -1,9 +1,7 @@
 package com.bll.lnkcommon
 
-import android.content.ClipData.Item
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
-import com.bll.lnkcommon.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
@@ -136,8 +134,43 @@ object DataBeanManager {
         return list
     }
 
+    val textBookTypes: MutableList<ItemTypeBean>
+        get() {
+            val list= mutableListOf<ItemTypeBean>()
+            list.add(ItemTypeBean().apply {
+                id=1
+                title = "我的课本"
+                isCheck=true
+            })
+            list.add(ItemTypeBean().apply {
+                id=2
+                title = "参考课本"
+                isCheck=false
+            })
+            list.add(ItemTypeBean().apply {
+                id=3
+                title = "我的教辅本"
+                isCheck=false
+            })
+            list.add(ItemTypeBean().apply {
+                id=4
+                title = "参考教辅本"
+                isCheck=false
+            })
+            return list
+        }
+
+    fun getTextBookTypeId(str:String):Int{
+        var id=0
+        for (item in textBookTypes){
+            if (item.title==str)
+                id=item.id.toInt()
+        }
+        return id
+    }
+
     //日记内容选择
-    val noteModuleDiary: MutableList<ModuleBean>
+    val diaryModules: MutableList<ModuleBean>
         get() {
             val list= mutableListOf<ModuleBean>()
             list.add(ModuleBean().apply {
@@ -153,45 +186,55 @@ object DataBeanManager {
             return list
         }
 
-    //笔记本内容选择
-    val noteModuleBook: MutableList<ModuleBean>
+    val freenoteModules: MutableList<ModuleBean>
         get() {
             val list= mutableListOf<ModuleBean>()
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
-                resFreenoteBg=R.mipmap.icon_freenote_bg_0
+            })
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.note_type_hgb)
+                resId = R.mipmap.icon_note_module_bg_1
+                resContentId = R.mipmap.icon_freenote_bg_1
+            })
+            return list
+        }
+
+    //笔记本内容选择
+    val noteModules: MutableList<ModuleBean>
+        get() {
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.note_type_kbb)
+                resId = R.drawable.bg_gray_stroke_10dp_corner
+                resContentId = 0
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
-                resFreenoteBg=R.mipmap.icon_freenote_bg_1
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
-                resFreenoteBg=R.mipmap.icon_freenote_bg_2
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
-                resFreenoteBg=R.mipmap.icon_freenote_bg_3
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
-                resFreenoteBg=R.mipmap.icon_freenote_bg_4
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
-                resFreenoteBg=R.mipmap.icon_freenote_bg_5
             })
             return list
         }

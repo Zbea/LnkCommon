@@ -1,20 +1,19 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.model.Book
-import com.bll.lnkcommon.mvp.model.CloudListBean
-import com.bll.lnkcommon.mvp.model.HomeworkTypeList
-import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
@@ -22,12 +21,10 @@ import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_radiogroup.*
-import kotlinx.android.synthetic.main.fragment_app.*
+import kotlinx.android.synthetic.main.fragment_list_type.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -39,6 +36,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     private var textBook = ""//用来区分课本类型
     private var tabId = 0
     private var position = 0
+    private var textTypes= mutableListOf<ItemTypeBean>()
 
     override fun onList(homeworkTypeList: HomeworkTypeList?) {
     }
@@ -54,7 +52,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_textbook
+        return R.layout.fragment_list_type
     }
 
     override fun initView() {
@@ -63,7 +61,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
         initTab()
         initRecyclerView()
-
     }
 
     override fun lazyLoad() {
@@ -73,20 +70,25 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     private fun initTab() {
-        val tabStrs = DataBeanManager.textbookType
-        textBook = tabStrs[0]
-        for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            tabId = id
-            textBook = tabStrs[id]
-            pageIndex = 1
-            fetchData()
-        }
+        textTypes=DataBeanManager.textBookTypes
+        textBook=textTypes[0].title
+        mTabTypeAdapter?.setNewData(textTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        tabId = position
+        textBook = textTypes[position].title
+        pageIndex = 1
+        fetchData()
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
@@ -177,7 +179,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             }
         }
         for (book in maxBooks) {
-            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)+1
+            val subTypeId = DataBeanManager.getTextBookTypeId(book.subtypeStr)
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {

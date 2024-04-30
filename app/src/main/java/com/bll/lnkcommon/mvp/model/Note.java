@@ -23,6 +23,7 @@ public class Note implements Serializable {
     public String title;
     public String typeStr;//笔记分类id
     public long date; //创建时间
+    public int page;
     public String contentResId; //笔记内容背景id
     public boolean isCancelPassword;//取消加密
     @Transient
@@ -31,14 +32,15 @@ public class Note implements Serializable {
     public String downloadUrl;
     @Transient
     public String contentJson;
-    @Generated(hash = 150613865)
-    public Note(Long id, long userId, String title, String typeStr, long date, String contentResId,
-            boolean isCancelPassword) {
+    @Generated(hash = 147899366)
+    public Note(Long id, long userId, String title, String typeStr, long date, int page,
+            String contentResId, boolean isCancelPassword) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.typeStr = typeStr;
         this.date = date;
+        this.page = page;
         this.contentResId = contentResId;
         this.isCancelPassword = isCancelPassword;
     }
@@ -75,6 +77,12 @@ public class Note implements Serializable {
     public void setDate(long date) {
         this.date = date;
     }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
+    }
     public String getContentResId() {
         return this.contentResId;
     }
@@ -87,5 +95,5 @@ public class Note implements Serializable {
     public void setIsCancelPassword(boolean isCancelPassword) {
         this.isCancelPassword = isCancelPassword;
     }
-    
+
 }

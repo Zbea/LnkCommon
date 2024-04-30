@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
-import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.CloudUploadPresenter
@@ -24,19 +23,18 @@ import com.bll.lnkcommon.mvp.view.IContractView.ICloudUploadView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
+import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
 import com.bll.lnkcommon.utils.*
+import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.liulishuo.filedownloader.BaseDownloadTask
-import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import java.io.File
 
 
 abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,ICloudUploadView, IContractView.IQiniuView {
@@ -63,6 +61,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var pageSize=0 //一页数据
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
+    var mTabTypeAdapter:TabTypeAdapter?=null
 
     override fun onToken(token: String) {
         onUpload(token)
@@ -116,6 +115,9 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
+        if (rv_tab!=null){
+            initTabView()
+        }
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -236,6 +238,31 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         }
     }
 
+    private fun initTabView(){
+        rv_tab.layoutManager = FlowLayoutManager()//创建布局管理
+        mTabTypeAdapter = TabTypeAdapter(R.layout.item_tab_type, null).apply {
+            rv_tab.adapter = this
+            bindToRecyclerView(rv_tab)
+            setOnItemClickListener { adapter, view, position ->
+                for (item in mTabTypeAdapter?.data!!){
+                    item.isCheck=false
+                }
+                val item=mTabTypeAdapter?.data!![position]
+                item.isCheck=true
+                mTabTypeAdapter?.notifyDataSetChanged()
+
+                onTabClickListener(view,position)
+            }
+        }
+    }
+
+    /**
+     * tab点击监听
+     */
+    open fun onTabClickListener(view:View, position:Int){
+
+    }
+
     /**
      * 是否登录
      */
@@ -290,9 +317,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         EventBus.getDefault().post(Constants.NOTE_EVENT)
 
         val intent = Intent(activity, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("noteBundle",note)
-        intent.putExtra("bundle",bundle)
+        intent.putExtra("noteId",note.id)
         customStartActivity(intent)
     }
 
@@ -307,7 +332,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
 
     //下载应用
     private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        val targetFileStr= FileAddress().getPathApk("lnkcommon")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

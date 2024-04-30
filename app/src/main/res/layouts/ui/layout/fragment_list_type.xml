@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
-    android:paddingTop="@dimen/statusbar_height"
-    android:orientation="vertical">
+    >
 
-    <include layout="@layout/common_title"/>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/common_fragment_title"
+        />
 
-    <com.bll.lnkcommon.widget.FlowRadioGroup
-        android:id="@+id/rg_group"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginStart="110dp"
         android:layout_marginEnd="40dp"
-        android:orientation="horizontal" />
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
         />
 
-    <include layout="@layout/common_page_number"
-        android:visibility="gone"/>
-
+    <include
+        android:id="@+id/ll_page_number"
+        layout="@layout/common_page_number" />
 
 </LinearLayout>

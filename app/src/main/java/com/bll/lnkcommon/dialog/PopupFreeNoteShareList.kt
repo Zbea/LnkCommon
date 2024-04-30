@@ -18,7 +18,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlin.math.ceil
 
-class PopupShareNoteList(var context: Context, var view: View, val total:Int) {
+class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int) {
 
     private var lists= mutableListOf<ShareNoteList.ShareNoteBean>()
     private var mPopupWindow: PopupWindow? = null
@@ -30,7 +30,7 @@ class PopupShareNoteList(var context: Context, var view: View, val total:Int) {
     private var tv_page_current:TextView?=null
     private var tv_page_total:TextView?=null
 
-    fun builder(): PopupShareNoteList {
+    fun builder(): PopupFreeNoteShareList {
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_freenote_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -74,11 +74,13 @@ class PopupShareNoteList(var context: Context, var view: View, val total:Int) {
             ImageDialog(context,item.paths.split(","),item.bgRes.split(",")).builder()
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.iv_load){
-                onClickListener?.onDownload(position)
-            }
-            if (view.id==R.id.iv_delete){
-                onClickListener?.onDelete(position)
+            when (view.id) {
+                R.id.iv_load -> {
+                    onClickListener?.onDownload(position)
+                }
+                R.id.iv_delete -> {
+                    onClickListener?.onDelete(position)
+                }
             }
         }
 

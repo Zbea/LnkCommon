@@ -150,5 +150,6 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        setPageNumber(items.size)
     }
 }

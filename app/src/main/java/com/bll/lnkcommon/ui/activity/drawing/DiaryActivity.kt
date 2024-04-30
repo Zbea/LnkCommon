@@ -1,10 +1,11 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarDiaryDialog
-import com.bll.lnkcommon.dialog.NoteModuleAddDialog
+import com.bll.lnkcommon.dialog.ModuleSelectDialog
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.DateUtils
@@ -78,7 +79,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-            NoteModuleAddDialog(this, 0).builder()
+            ModuleSelectDialog(this, 0,DataBeanManager.diaryModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
@@ -118,9 +119,9 @@ class DiaryActivity:BaseDrawingActivity() {
      * 切换日记
      */
     private fun changeContent(){
-        posImage=0
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
+        posImage=diaryBean?.page!!
         setContentImage()
     }
 
@@ -145,6 +146,7 @@ class DiaryActivity:BaseDrawingActivity() {
         if (!File(path).list().isNullOrEmpty()){
             diaryBean?.userId=if (isLoginState()) getUser()?.accountId else 0
             diaryBean?.paths = images
+            diaryBean?.page=posImage
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
         }
     }

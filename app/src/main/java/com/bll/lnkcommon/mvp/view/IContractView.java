@@ -113,6 +113,7 @@ public interface IContractView {
     interface IRelationView extends IBaseView{
         void onListStudents(List<StudentBean> list);
         void onListFriend(FriendList list);
+        void onMessageTotal(int total);
     }
     interface IHomeworkCorrectView extends IBaseView{
         void onList(HomeworkCorrectList list);
@@ -127,11 +128,6 @@ public interface IContractView {
         void onDeleteSuccess();
         void onShare();
     }
-
-    interface IJournalView extends IBaseView{
-        void onList(JournalList list);
-    }
-
 
     interface IQiniuView extends IBaseView {
         void onToken(String token);

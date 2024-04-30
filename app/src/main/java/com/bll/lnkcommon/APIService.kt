@@ -299,16 +299,15 @@ interface APIService{
     fun getWallpaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<WallpaperList>>
 
     /**
-     * 期刊列表
-     */
-    @GET("magazine/list")
-    fun getJournalList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<JournalList>>
-
-    /**
      * 消息列表
      */
     @GET("message/inform/parentList")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<MessageList>>
+    /**
+     * 消息列表
+     */
+    @GET("message/inform/childCount")
+    fun getMessages(): Observable<BaseResult<Int>>
     /**
      * 发送消息
      */

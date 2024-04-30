@@ -1,9 +1,7 @@
 package com.bll.lnkcommon.ui.adapter
 
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.FriendList
-import com.bll.lnkcommon.mvp.model.StudentBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

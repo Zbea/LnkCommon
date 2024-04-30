@@ -215,8 +215,8 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     }
 
     override fun onCloudType(types: MutableList<String>) {
-        types.remove("默认")
-        types.add(0,"默认")
+        types.remove("全部")
+        types.add(0,"全部")
         this.types=types
         if (types.size>0){
             initTab()
@@ -240,5 +240,6 @@ class CloudBookcaseFragment:BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        setPageNumber(books.size)
     }
 }

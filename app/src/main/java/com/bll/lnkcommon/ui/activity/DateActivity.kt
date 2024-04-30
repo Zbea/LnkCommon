@@ -77,13 +77,9 @@ open class DateActivity: BaseActivity() {
             }
         }
 
-        tv_plan.setOnClickListener {
-            startActivity(Intent(this, PlanOverviewActivity::class.java))
-        }
-
-        Thread(Runnable {
+        Thread {
             getDates()
-        }).start()
+        }.start()
     }
 
     private fun initRecycler(){
@@ -96,9 +92,7 @@ open class DateActivity: BaseActivity() {
             val dateBean=dates[position]
             if (dateBean.year!=0){
                 val intent = Intent(this, DateEventActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("dateBean", dateBean)
-                intent.putExtra("bundle", bundle)
+                intent.putExtra("date",dateBean.time)
                 customStartActivity(intent)
             }
         }
@@ -155,10 +149,20 @@ open class DateActivity: BaseActivity() {
             dates.add(getDateBean(yearNow,monthNow,i,true))
         }
 
-        for (i in 0 until 42-dates.size){
+        if (dates.size>35){
+            //补齐下月天数
+            for (i in 0 until 42-dates.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-            dates.add(Date())
+                dates.add(Date())
+            }
+        }
+        else{
+            for (i in 0 until 35-dates.size){
+//                val day=i+1
+//                dates.add(getDateBean(nextYear,nextMonth,day,false))
+                dates.add(Date())
+            }
         }
 
         runOnUiThread {

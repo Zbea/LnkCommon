@@ -7,12 +7,10 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         >
 
         <ImageView
@@ -28,6 +26,8 @@
             android:id="@+id/tv_name"
             android:layout_width="180dp"
             android:layout_height="50dp"
+            android:layout_toRightOf="@id/iv_back"
+            android:layout_centerVertical="true"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:ellipsize="end"
             android:gravity="center"
@@ -35,9 +35,18 @@
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="26sp" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:src="@mipmap/icon_save" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_function"
@@ -51,11 +60,11 @@
             android:id="@+id/tv_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="73dp"
+            android:layout_marginStart="100dp"
             android:layout_marginEnd="@dimen/dp_30"
             android:text="格式"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
 
 
         <TextView
@@ -63,9 +72,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分享"
+            android:layout_marginEnd="@dimen/dp_30"
             android:textColor="@color/black"
-            android:textSize="22sp" />
-
+            android:textSize="24sp" />
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -83,7 +99,7 @@
             android:drawablePadding="@dimen/dp_5"
             android:text="收件"
             android:textColor="@color/black"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:gravity="center"
             />
 
@@ -91,12 +107,12 @@
             android:id="@+id/tv_free_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="53dp"
-            android:drawableStart="@mipmap/icon_freenote"
+            android:layout_marginEnd="50dp"
+            android:drawableStart="@mipmap/icon_freenote_list"
             android:drawablePadding="@dimen/dp_5"
             android:text="随笔"
             android:textColor="@color/black"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:gravity="center"
             />
 
@@ -111,7 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_function"
-        android:layout_marginStart="@dimen/drawing_book_height"
+        android:layout_marginStart="@dimen/drawing_tool_height"
         android:src="@mipmap/icon_freenote_bg_1" />
 
     <include
@@ -128,7 +144,6 @@
         android:layout_height="60dp"
         android:layout_marginStart="@dimen/dp_50"
         android:layout_marginBottom="@dimen/dp_10"
-        android:layout_alignParentBottom="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

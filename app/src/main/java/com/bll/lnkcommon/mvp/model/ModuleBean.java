@@ -6,5 +6,4 @@ public class ModuleBean {
     public String name;
     public int resContentId;
     public int resId;
-    public int resFreenoteBg;//随笔背景图
 }

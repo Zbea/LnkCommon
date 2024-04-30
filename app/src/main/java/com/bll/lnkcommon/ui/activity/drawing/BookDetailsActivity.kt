@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.base.BaseBookDrawingActivity
+import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseBookDrawingActivity() {
+class BookDetailsActivity:BaseDrawingActivity() {
     private var book: Book?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()

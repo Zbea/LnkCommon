@@ -6,72 +6,9 @@
     android:background="@color/bg_page"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="33dp"
-            android:textColor="@color/black"
-            android:textSize="36sp"
-            />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_25"
-            android:orientation="horizontal"
-            android:gravity="center"
-            >
-
-            <TextView
-                android:id="@+id/tv_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:drawableStart="@mipmap/icon_main_message"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:text="信息"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-
-            <TextView
-                android:id="@+id/tv_diary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:drawableStart="@mipmap/icon_diary"
-                android:drawablePadding="@dimen/dp_10"
-                android:gravity="center"
-                android:text="日记"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/tv_free_note"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_60"
-                android:text="随笔"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:drawablePadding="@dimen/dp_10"
-                android:drawableStart="@mipmap/icon_freenote"
-                />
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
+    <include
+        layout="@layout/common_fragment_title"
+        />
 
     <RelativeLayout
         android:layout_width="740dp"
@@ -80,15 +17,15 @@
         android:layout_marginTop="@dimen/dp_20"
         android:background="@mipmap/icon_date_bg"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="@dimen/dp_20"
-        android:paddingBottom="20dp"
-        android:paddingStart="17dp"
-        android:paddingEnd="17dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="13dp"
+        android:paddingEnd="13dp"
         >
         <LinearLayout
             android:id="@+id/ll_date"
             android:layout_width="match_parent"
-            android:layout_height="158dp"
+            android:layout_height="160dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             >
@@ -159,55 +96,42 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_date"
-            android:scaleType="centerInside"
-            android:src="@mipmap/icon_freenote_bg_1"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"/>
+            android:scaleType="fitCenter"
+            android:src="@mipmap/icon_freenote_bg_1" />
         <ImageView
             android:id="@+id/iv_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_date"
-            android:scaleType="centerInside"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"/>
+            android:scaleType="fitCenter" />
 
-        <RelativeLayout
-            android:id="@+id/ll_calender"
+        <ImageView
+            android:id="@+id/iv_calender"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_date"
-            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="fitCenter"
             android:visibility="gone"
-            >
-            <ImageView
-                android:id="@+id/iv_calender_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_marginBottom="@dimen/dp_5"/>
+            />
 
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/v_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:src="@mipmap/icon_main_up"
+            />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/ll_date"
-            android:orientation="horizontal"
-            >
-            <View
-                android:id="@+id/v_up"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-
-            <View
-                android:id="@+id/v_down"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/v_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@mipmap/icon_main_down"
+            />
 
         <ImageView
             android:id="@+id/iv_change"
@@ -221,13 +145,152 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="52dp"
-        />
+        android:layout_marginTop="@dimen/dp_10"
+        android:gravity="center"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_freenote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="98dp"
+                android:layout_height="98dp"
+                android:src="@mipmap/icon_freenote"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="随笔"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_diary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="98dp"
+                android:layout_height="98dp"
+                android:src="@mipmap/icon_diary"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="日记本"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_plan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="98dp"
+                android:layout_height="98dp"
+                android:src="@mipmap/icon_plan"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="月周计划"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_screenshot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="98dp"
+                android:layout_height="98dp"
+                android:src="@mipmap/icon_main_screenshot"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="截图列表"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <RelativeLayout
+                android:layout_width="98dp"
+                android:layout_height="98dp">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/icon_main_message"
+                    />
+
+                <ImageView
+                    android:id="@+id/iv_message_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:layout_margin="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:src="@drawable/bg_cricle_black" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="消息"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

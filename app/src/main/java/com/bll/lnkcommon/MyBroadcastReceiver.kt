@@ -5,6 +5,9 @@ import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.net.wifi.WifiManager
 import android.os.PowerManager
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
@@ -27,6 +30,23 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Constants.DATA_UPLOAD_BROADCAST_EVENT->{
                 Log.d("debug","上传")
                 EventBus.getDefault().postSticky(Constants.SETTING_DATA_UPLOAD_EVENT)
+            }
+            //监听网络变化
+            ConnectivityManager.CONNECTIVITY_ACTION->{
+                val isNet=intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)
+                Log.d("debug", "监听网络变化$isNet")
+                if (isNet)
+                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
+            }
+            //wifi监听
+            WifiManager.NETWORK_STATE_CHANGED_ACTION->{
+                val info: NetworkInfo? = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)
+                if (info!!.state.equals(NetworkInfo.State.CONNECTED)) {
+                    val isNet = NetworkInfo.State.CONNECTED == info.state && info.isAvailable
+                    Log.d("debug", "wifi监听网络变化$isNet")
+                    if (isNet)
+                        EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
+                }
             }
         }
     }

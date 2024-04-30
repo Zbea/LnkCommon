@@ -28,7 +28,7 @@ class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0,val
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-        layoutParams.y=DP2PX.dip2px(context,5f)
+        layoutParams.y=DP2PX.dip2px(context,10f)
         layoutParams.x=DP2PX.dip2px(context,42f)
         dialog?.show()
 
