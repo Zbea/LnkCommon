@@ -198,8 +198,6 @@ class MainFragment:BaseFragment(),IRelationView {
     }
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())) {
-            if (DataBeanManager.courses.isEmpty())
-                mCommonPresenter.getCommon()
             if (isLoginState()){
                 presenter.getStudents()
                 presenter.getFriends()
@@ -360,7 +358,6 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=4
-                            subType=ToolUtils.getDateId()
                             subTypeStr="日记"
                             year=diaryBean.year
                             date=System.currentTimeMillis()
@@ -398,7 +395,6 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=5
-                            subType=ToolUtils.getDateId()
                             subTypeStr="随笔"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
@@ -428,7 +424,7 @@ class MainFragment:BaseFragment(),IRelationView {
         val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
         val nullItems= mutableListOf<ItemTypeBean>()
         val itemTypeBean=ItemTypeBean()
-        itemTypeBean.title="未分类"
+        itemTypeBean.title="全部"
         itemTypeBean.date=System.currentTimeMillis()
         itemTypeBean.path=FileAddress().getPathScreen("未分类")
         screenTypes.add(0,itemTypeBean)
@@ -441,11 +437,9 @@ class MainFragment:BaseFragment(),IRelationView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=6
-                            subType=ToolUtils.getDateId()
                             subTypeStr="截图"
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)
-                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传

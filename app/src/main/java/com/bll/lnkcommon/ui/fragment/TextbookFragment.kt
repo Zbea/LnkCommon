@@ -64,8 +64,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     override fun lazyLoad() {
-        if (DataBeanManager.courses.isEmpty())
-            mCommonPresenter.getCommon()
         fetchData()
     }
 
@@ -189,7 +187,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                             type = 2
                             zipUrl = book.bodyUrl
                             downloadUrl = it
-                            subType = subTypeId
                             subTypeStr = book.subtypeStr
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
@@ -203,7 +200,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                 cloudList.add(CloudListBean().apply {
                     type = 2
                     zipUrl = book.bodyUrl
-                    subType = subTypeId
                     subTypeStr = book.subtypeStr
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)

@@ -56,8 +56,6 @@ class BookcaseFragment : BaseFragment() {
     }
 
     override fun lazyLoad() {
-        if (DataBeanManager.courses.isEmpty())
-            mCommonPresenter.getCommon()
     }
 
     private fun initRecyclerView() {
@@ -134,7 +132,6 @@ class BookcaseFragment : BaseFragment() {
                             type = 1
                             zipUrl = book.bodyUrl
                             downloadUrl = it
-                            subType = -1
                             subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
@@ -148,7 +145,6 @@ class BookcaseFragment : BaseFragment() {
                 cloudList.add(CloudListBean().apply {
                     type = 1
                     zipUrl = book.bodyUrl
-                    subType = -1
                     subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)

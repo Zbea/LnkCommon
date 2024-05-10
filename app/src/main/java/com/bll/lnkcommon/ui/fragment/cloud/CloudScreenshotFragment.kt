@@ -7,15 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
-import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
-import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.mvp.model.Note
-import com.bll.lnkcommon.ui.adapter.CloudDiaryAdapter
 import com.bll.lnkcommon.ui.adapter.CloudScreenshotAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
@@ -23,7 +18,6 @@ import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
@@ -35,7 +29,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list
     }
 
     override fun initView() {
@@ -85,7 +79,6 @@ class CloudScreenshotFragment: BaseCloudFragment() {
         showLoading()
         val fileName= DateUtils.longToString(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
-        val fileTargetPath= FileAddress().getPathScreen(item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -94,9 +87,9 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip1(zipPath, fileTargetPath, object : IZipCallback {
+                    ZipUtils.unzip1(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
-                            if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("未分类")){
+                            if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("全部")){
                                 item.id=null//设置数据库id为null用于重新加入
                                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
                             }

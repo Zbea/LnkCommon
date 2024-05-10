@@ -18,10 +18,9 @@ import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import java.io.File
 
 class CloudDiaryFragment: BaseCloudFragment() {
@@ -30,7 +29,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list
     }
 
     override fun initView() {

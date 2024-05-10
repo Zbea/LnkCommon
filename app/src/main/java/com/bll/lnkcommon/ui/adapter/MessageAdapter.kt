@@ -28,7 +28,7 @@ class MessageAdapter(layoutResId: Int, data: MutableList<MessageList.MessageBean
             }
             setText(R.id.tv_message_name, typeNameStr)
             setText(R.id.tv_message_content,item.content)
-            setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date))
+            setText(R.id.tv_message_time, DateUtils.longToStringWeek2(item.date))
 
         }
     }

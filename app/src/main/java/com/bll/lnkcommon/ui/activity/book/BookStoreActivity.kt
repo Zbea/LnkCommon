@@ -1,6 +1,9 @@
 package com.bll.lnkcommon.ui.activity.book
 
 import android.os.Handler
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.DataBeanManager
@@ -20,7 +23,7 @@ import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_bookstore.*
+import kotlinx.android.synthetic.main.ac_list_type.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
 
@@ -58,7 +61,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             subType=types[0].type
             initTab()
         }
-
         fetchData()
     }
 
@@ -70,7 +72,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_bookstore
+        return R.layout.ac_list_type
     }
 
     override fun initData() {
@@ -128,20 +130,29 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         fetchData()
     }
 
-
-    //设置tab分类
-    private fun initTab() {
+    private fun initTab(){
         for (i in subTypeList.indices) {
-            rg_group.addView(getRadioButton(i,subTypeList[i].desc,subTypeList.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=subTypeList[i].desc
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            subTypeStr = subTypeList[i].desc
-            subType=subTypeList[i].type
-            typeFindData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
+    override fun onTabClickListener(view: View, position: Int) {
+        subTypeStr = subTypeList[position].desc
+        subType=subTypeList[position].type
+        typeFindData()
+    }
+
+
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, books)
         rv_list.adapter = mAdapter

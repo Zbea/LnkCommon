@@ -48,7 +48,9 @@ open class DateActivity: BaseActivity() {
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    getDates()
+                    Thread{
+                        getDates()
+                    }.start()
                 }
                 yearPop?.show()
             }
@@ -68,7 +70,9 @@ open class DateActivity: BaseActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    getDates()
+                    Thread {
+                        getDates()
+                    }.start()
                 }
                 monthPop?.show()
             }

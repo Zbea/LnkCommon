@@ -62,6 +62,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter:TabTypeAdapter?=null
+    val itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onToken(token: String) {
         onUpload(token)
@@ -117,6 +118,9 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         isViewPrepare = true
         if (rv_tab!=null){
             initTabView()
+        }
+        if (NetworkUtil.isNetworkAvailable(requireActivity())&&DataBeanManager.courses.size==0){
+            mCommonPresenter.getCommon()
         }
         initCommonTitle()
         initView()
@@ -290,22 +294,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
                 showView(ll_page_number)
             }
         }
-    }
-
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
     }
 
     /**

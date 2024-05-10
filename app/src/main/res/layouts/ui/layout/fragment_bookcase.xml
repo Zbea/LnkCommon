@@ -19,7 +19,7 @@
             android:text="我的阅读"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24"
-            android:textStyle="bold" />
+            />
 
         <TextView
             android:id="@+id/tv_type"

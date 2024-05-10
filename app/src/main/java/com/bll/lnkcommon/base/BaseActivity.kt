@@ -28,6 +28,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
@@ -57,6 +58,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var pageSize=0 //一页数据
     var mUser:User?=null
     var mTabTypeAdapter:TabTypeAdapter?=null
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -324,38 +326,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showLog(resId:Int){
         Log.d("debug",getString(resId))
-    }
-
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
-    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = isCheck
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
     }
 
     /**

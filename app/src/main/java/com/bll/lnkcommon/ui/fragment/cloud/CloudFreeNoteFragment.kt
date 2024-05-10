@@ -7,14 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
-import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
-import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
-import com.bll.lnkcommon.ui.adapter.CloudDiaryAdapter
 import com.bll.lnkcommon.ui.adapter.CloudFreeNoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
@@ -22,7 +18,6 @@ import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
@@ -34,7 +29,7 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list
     }
 
     override fun initView() {

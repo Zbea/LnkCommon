@@ -314,12 +314,10 @@ class NoteFragment:BaseFragment() {
             setCallBack{
                 cloudList.add(CloudListBean().apply {
                     type=3
-                    subType=ToolUtils.getDateId()
                     subTypeStr=note.typeStr
                     date=note.date
                     listJson= Gson().toJson(note)
                     contentJson= Gson().toJson(noteContents)
-                    skip=1
                     downloadUrl=it
                 })
                 mCloudUploadPresenter.upload(cloudList)

@@ -14,8 +14,8 @@ android {
         applicationId "com.bll.lnkcommon"
         minSdk 26
         targetSdk 32
-        versionCode 5
-        versionName "V1.0.2"
+        versionCode 9
+        versionName "V1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

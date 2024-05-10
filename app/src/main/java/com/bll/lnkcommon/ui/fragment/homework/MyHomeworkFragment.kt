@@ -15,9 +15,7 @@ import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.ac_list_type.*
-import kotlinx.android.synthetic.main.fragment_homework.*
-import kotlinx.android.synthetic.main.fragment_homework.rv_list
+import kotlinx.android.synthetic.main.fragment_list.*
 
 class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
 
@@ -45,7 +43,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_homework
+        return R.layout.fragment_list
     }
     override fun initView() {
         pageSize=9

@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
 import android.view.View
@@ -54,7 +55,10 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         if (item.year!=0){
             val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
             if (File(path).exists()){
-                GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+                try {
+                    ivImage.setImageBitmap(BitmapFactory.decodeFile(path))
+                } catch (e: Exception) {
+                }
             }
             else{
                 rlImage.visibility= View.GONE

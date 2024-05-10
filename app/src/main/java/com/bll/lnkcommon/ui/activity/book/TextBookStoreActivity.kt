@@ -1,6 +1,9 @@
 package com.bll.lnkcommon.ui.activity.book
 
 import android.os.Handler
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
@@ -22,16 +25,13 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.ac_bookstore.rg_group
+import kotlinx.android.synthetic.main.ac_list_type.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
-import java.util.concurrent.locks.ReentrantLock
 
-class TextBookStoreActivity : BaseActivity(),
-    IContractView.IBookStoreView {
+class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private var tabId = 0
     private var tabStr = ""
@@ -87,7 +87,7 @@ class TextBookStoreActivity : BaseActivity(),
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_bookstore
+        return R.layout.ac_list_type
     }
 
     override fun initData() {
@@ -183,31 +183,33 @@ class TextBookStoreActivity : BaseActivity(),
 
     }
 
-
-    //设置tab分类
-    private fun initTab() {
+    private fun initTab(){
         for (i in tabList.indices) {
-            rg_group.addView(getRadioButton(i, tabList[i], tabList.size - 1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=tabList[i]
+                isCheck=i==0
+            })
         }
-
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when(i){
-                0,2->{
-                    showView(tv_course,tv_grade,tv_semester,tv_province)
-                    disMissView(tv_type)
-                }
-                1,3->{
-                    showView(tv_grade,tv_course,tv_semester)
-                    disMissView(tv_province,tv_type)
-                }
-            }
-            tabId = i
-            tabStr = tabList[i]
-            pageIndex = 1
-            fetchData()
-        }
-
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        when(position){
+            0,2->{
+                showView(tv_course,tv_grade,tv_semester,tv_province)
+                disMissView(tv_type)
+            }
+            1,3->{
+                showView(tv_grade,tv_course,tv_semester)
+                disMissView(tv_province,tv_type)
+            }
+        }
+        tabId = position
+        tabStr = tabList[position]
+        pageIndex = 1
+        fetchData()
+    }
+
 
     /**
      * 得到课本主类型
@@ -217,6 +219,11 @@ class TextBookStoreActivity : BaseActivity(),
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, books)
         rv_list.adapter = mAdapter

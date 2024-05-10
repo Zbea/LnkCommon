@@ -116,7 +116,7 @@ class ScreenshotManagerActivity:BaseActivity() {
         screenTypes=ItemTypeDaoManager.getInstance().queryAll(3)
         screenTypes.add(ItemTypeBean().apply {
             path=FileAddress().getPathScreen("未分类")
-            title="未分类"
+            title="全部"
         })
         screenTypes[tabPos].isCheck=true
         mTabTypeAdapter?.setNewData(screenTypes)

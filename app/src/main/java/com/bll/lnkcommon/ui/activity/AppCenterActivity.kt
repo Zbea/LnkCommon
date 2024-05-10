@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.ui.activity
 
-import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,17 +9,13 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.manager.AppDaoManager
-import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.mvp.model.AppList
-import com.bll.lnkcommon.mvp.model.CommonData
-import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.AppCenterPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AppCenterListAdapter
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_app_center.*
-import kotlinx.android.synthetic.main.ac_app_center.rv_list
+import kotlinx.android.synthetic.main.ac_list_type.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -57,7 +52,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_app_center
+        return R.layout.ac_list_type
     }
 
     override fun initData() {
@@ -72,13 +67,18 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     private fun initTab(){
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i,types[i].desc,types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i].desc
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            type=types[i].type
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        type=types[position].type
+        pageIndex=1
         fetchData()
     }
 

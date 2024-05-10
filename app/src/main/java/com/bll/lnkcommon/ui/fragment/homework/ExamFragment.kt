@@ -1,27 +1,22 @@
 package com.bll.lnkcommon.ui.fragment.homework
 
 import android.content.Intent
-import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.mvp.model.ExamList
-import com.bll.lnkcommon.mvp.model.Score
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList.TeacherHomeworkBean
 import com.bll.lnkcommon.mvp.presenter.ExamPresenter
-import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IExamView
-import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.ExamAdapter
-import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
+import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_homework.rv_list
+import kotlinx.android.synthetic.main.fragment_list.*
 
 class ExamFragment : BaseFragment(),IExamView {
     private val presenter=ExamPresenter(this)
@@ -38,7 +33,7 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_homework
+        return R.layout.fragment_list
     }
 
     override fun initView() {
@@ -56,6 +51,13 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),50f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mAdapter = ExamAdapter(R.layout.item_homework_exam, null)
         rv_list.adapter = mAdapter

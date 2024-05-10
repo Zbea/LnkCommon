@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.fragment
 
 import PopupClick
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
@@ -8,14 +9,15 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.HomeworkCreateDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
-import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.fragment.homework.ExamFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
 import com.bll.lnkcommon.ui.fragment.homework.MyHomeworkFragment
-import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.common_fragment_title.tv_course
+import kotlinx.android.synthetic.main.common_title.*
 
 class HomeworkManagerFragment:BaseFragment() {
 
@@ -99,42 +101,48 @@ class HomeworkManagerFragment:BaseFragment() {
         homeworkCorrectFragment?.onChangeStudent(id)
     }
 
-    private fun initTab() {
+    private fun initTab(){
         val tabStrs = DataBeanManager.homeworkType
         for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=tabStrs[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            tv_course.text=getString(R.string.selector_subject)
-            when(id){
-                0->{
-                    showView(tv_course)
-                    disMissView(iv_manager)
-                    switchFragment(lastFragment, homeworkFragment)
-                }
-                1->{
-                    showView(tv_course)
-                    disMissView(iv_manager)
-                    switchFragment(lastFragment, testPaperFragment)
-                }
-                2->{
-                    showView(tv_course)
-                    disMissView(iv_manager)
-                    switchFragment(lastFragment, examFragment)
-                }
-                3->{
-                    showView(iv_manager)
-                    disMissView(tv_course)
-                    switchFragment(lastFragment, myHomeworkFragment)
-                }
-                4->{
-                    disMissView(tv_course,iv_manager)
-                    switchFragment(lastFragment, homeworkCorrectFragment)
-                }
-            }
-            lastPosition=id
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        tv_course.text=getString(R.string.selector_subject)
+        when(position){
+            0->{
+                showView(tv_course)
+                disMissView(iv_manager)
+                switchFragment(lastFragment, homeworkFragment)
+            }
+            1->{
+                showView(tv_course)
+                disMissView(iv_manager)
+                switchFragment(lastFragment, testPaperFragment)
+            }
+            2->{
+                showView(tv_course)
+                disMissView(iv_manager)
+                switchFragment(lastFragment, examFragment)
+            }
+            3->{
+                showView(iv_manager)
+                disMissView(tv_course)
+                switchFragment(lastFragment, myHomeworkFragment)
+            }
+            4->{
+                disMissView(tv_course,iv_manager)
+                switchFragment(lastFragment, homeworkCorrectFragment)
+            }
+        }
+        lastPosition=position
+    }
+
 
     //页码跳转
     private fun switchFragment(from: Fragment?, to: Fragment?) {

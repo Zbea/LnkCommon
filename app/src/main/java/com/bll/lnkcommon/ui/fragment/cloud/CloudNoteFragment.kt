@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +26,6 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -54,14 +54,19 @@ class CloudNoteFragment: BaseCloudFragment() {
     private fun initTab(){
         noteTypeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            noteType=id
-            noteTypeStr=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        noteType=position
+        noteTypeStr=types[position]
+        pageIndex=1
         fetchData()
     }
 

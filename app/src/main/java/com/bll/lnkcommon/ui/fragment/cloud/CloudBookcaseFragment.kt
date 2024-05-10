@@ -1,18 +1,17 @@
 package com.bll.lnkcommon.ui.fragment.cloud
 
-import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
-import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.mvp.model.CloudList
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
@@ -24,9 +23,7 @@ import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -53,13 +50,18 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     private fun initTab(){
         bookTypeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            bookTypeStr=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        bookTypeStr=types[position]
+        pageIndex=1
         fetchData()
     }
 
@@ -71,6 +73,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             DP2PX.dip2px(activity,28f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
@@ -182,10 +185,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: Book) {
-        val formatStr=book.bodyUrl.substring(book.bodyUrl.lastIndexOf("."))
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
-        FileDownManager.with(activity).create(book.bodyUrl).setPath(targetFileStr)
+        FileDownManager.with(activity).create(book.bodyUrl).setPath(book.bookPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
