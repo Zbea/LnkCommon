@@ -61,13 +61,18 @@
             />
 
     </LinearLayout>
-    <com.android.internal.widget.PreferenceImageView
-        android:id="@+id/v_content"
+    <RelativeLayout
         android:layout_width="714dp"
-        android:layout_height="840dp"
-        android:scaleType="fitCenter"
-        android:src="@mipmap/icon_freenote_bg_1"
-        />
+        android:layout_height="840dp">
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content"
+            android:layout_width="714dp"
+            android:layout_height="840dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/icon_date_event_bg"
+            />
+    </RelativeLayout>
+
 
 
 </LinearLayout>

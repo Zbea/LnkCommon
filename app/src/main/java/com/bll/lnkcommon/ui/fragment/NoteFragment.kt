@@ -31,7 +31,7 @@ import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_list_type.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
 
@@ -47,7 +47,7 @@ class NoteFragment:BaseFragment() {
     private var privacyPassword:PrivacyPassword?=null
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_list_type
+        return R.layout.fragment_list_tab
     }
     override fun initView() {
         pageSize=10

@@ -24,7 +24,7 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_list_type.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -52,7 +52,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_list_type
+        return R.layout.fragment_list_tab
     }
 
     override fun initView() {

@@ -19,7 +19,7 @@ import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkFragment : BaseFragment(),IHomeworkView {
 
@@ -53,7 +53,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {

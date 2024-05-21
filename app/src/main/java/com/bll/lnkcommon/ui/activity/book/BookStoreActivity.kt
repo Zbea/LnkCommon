@@ -23,7 +23,7 @@ import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
 
@@ -72,7 +72,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {

@@ -193,7 +193,8 @@ class MainActivity : BaseActivity(),IQiniuView {
      * 清除本地所有数据
      */
     private fun clearSqlData(){
-        SPUtil.putObj("PrivacyPassword","")
+        SPUtil.removeObj("privacyPasswordDiary")
+        SPUtil.removeObj("privacyPasswordNote")
 
         MyApplication.mDaoSession?.clear()
         AppDaoManager.getInstance().clear()

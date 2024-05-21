@@ -37,7 +37,7 @@ import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.widget.FlowLayoutManager
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus

@@ -23,7 +23,7 @@ import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -35,7 +35,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_type
+        return R.layout.fragment_cloud_list_tab
     }
 
     override fun initView() {

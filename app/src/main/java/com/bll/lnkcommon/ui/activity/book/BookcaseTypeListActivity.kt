@@ -22,7 +22,7 @@ import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 
 /**
@@ -40,7 +40,7 @@ class BookcaseTypeListActivity : BaseActivity() {
     private var longBeans = mutableListOf<ItemList>()
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {

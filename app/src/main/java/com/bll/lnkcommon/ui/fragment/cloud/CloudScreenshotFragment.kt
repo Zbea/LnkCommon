@@ -20,7 +20,7 @@ import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
 import java.io.File
 
 class CloudScreenshotFragment: BaseCloudFragment() {
@@ -29,7 +29,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {

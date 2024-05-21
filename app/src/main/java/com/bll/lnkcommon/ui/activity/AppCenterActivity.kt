@@ -15,7 +15,7 @@ import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AppCenterListAdapter
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_list_type.rv_list
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -52,7 +52,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {

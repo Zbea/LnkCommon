@@ -97,7 +97,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_date"
             android:scaleType="fitCenter"
-            android:src="@mipmap/icon_freenote_bg_1" />
+            android:src="@mipmap/icon_date_event_bg" />
         <ImageView
             android:id="@+id/iv_date"
             android:layout_width="match_parent"

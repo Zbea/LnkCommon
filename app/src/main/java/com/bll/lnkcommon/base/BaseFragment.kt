@@ -28,7 +28,7 @@ import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus

@@ -14,13 +14,11 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.ScreenshotAdapter
-import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
@@ -38,7 +36,7 @@ class ScreenshotManagerActivity:BaseActivity() {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {

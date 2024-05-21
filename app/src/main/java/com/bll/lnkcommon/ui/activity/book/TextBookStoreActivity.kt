@@ -25,7 +25,7 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -87,7 +87,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {

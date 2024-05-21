@@ -26,7 +26,7 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -39,7 +39,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_type
+        return R.layout.fragment_cloud_list_tab
     }
 
     override fun initView() {
