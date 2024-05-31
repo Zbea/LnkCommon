@@ -77,6 +77,11 @@ class MainActivity : BaseActivity(),IQiniuView {
 
     override fun initView() {
 
+        val isTips=SPUtil.getBoolean("SpecificationTips")
+        if (!isTips){
+            showView(ll_tips)
+        }
+
         setLoginView()
 
         mainFragment = MainFragment()
@@ -115,6 +120,11 @@ class MainActivity : BaseActivity(),IQiniuView {
             else{
                 customStartActivity(Intent(this,AccountLoginActivity::class.java))
             }
+        }
+
+        ll_tips.setOnClickListener {
+            disMissView(ll_tips)
+            SPUtil.putBoolean("SpecificationTips",true)
         }
 
     }

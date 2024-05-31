@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="height">1363dp</dimen>
+    <dimen name="width">1021dp</dimen>
     <dimen name="date_add_event_height">60dp</dimen>
     <dimen name="navigation_height">90dp</dimen>
     <dimen name="main_content_title_height">48dp</dimen>

@@ -58,7 +58,7 @@
     <string name="lengthen">延长</string>
     <string name="excision">切除</string>
     <string name="revocation">撤销</string>
-    <string name="parallel">平行</string>
+    <string name="parallel">正交</string>
     <string name="grayLine">灰线</string>
     <string name="reduce">托盘</string>
     <string name="circle_1">圆心</string>
@@ -169,7 +169,7 @@
     <string name="journal_comprehensive">综合杂志</string>
     <string name="journal_specialty">专业杂志</string>
 
-    <string name="notebook_manager">笔记本管理</string>
-    <string name="notebook_create">新建笔记本</string>
+    <string name="notebook_manager">管理笔记本</string>
+    <string name="notebook_create">创建笔记本</string>
     <string name="note_create">新建主题</string>
 </resources>

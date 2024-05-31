@@ -13,7 +13,7 @@ import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.manager.NoteContentDaoManager
 import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.ui.adapter.NotebookManagerAdapter
+import com.bll.lnkcommon.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_list.*
@@ -25,7 +25,7 @@ import java.util.*
 class NotebookManagerActivity : BaseActivity() {
 
     private var noteBooks= mutableListOf<ItemTypeBean>()
-    private var mAdapter: NotebookManagerAdapter? = null
+    private var mAdapter: ItemTypeManagerAdapter? = null
     private var position=0
 
     override fun layoutId(): Int {
@@ -50,7 +50,7 @@ class NotebookManagerActivity : BaseActivity() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = NotebookManagerAdapter(R.layout.item_notebook_manager, noteBooks)
+        mAdapter = ItemTypeManagerAdapter(R.layout.item_notebook_manager, noteBooks)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->

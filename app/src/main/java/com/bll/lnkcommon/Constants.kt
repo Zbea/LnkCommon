@@ -69,6 +69,7 @@ object Constants {
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
         const val SETTING_DATA_UPLOAD_EVENT = "SettingDataUploadEvent" //系统设置 一键下载
         const val REFRESH_STUDENT_PERMISSION_EVENT = "RefreshStudentPermission"
+        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"//截图管理刷新
 
         const val PACKAGE_GEOMETRY="com.geometry"
         const val PACKAGE_READER = "com.geniatech.knote.reader"

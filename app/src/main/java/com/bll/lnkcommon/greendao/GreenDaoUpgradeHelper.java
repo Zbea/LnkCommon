@@ -22,7 +22,7 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
 
                     @Override
                     public void onDropAllTables(Database db, boolean ifExists) {
-                        DaoMaster.dropAllTables(db, true);
+                        DaoMaster.dropAllTables(db, ifExists);
                     }
 
                 },

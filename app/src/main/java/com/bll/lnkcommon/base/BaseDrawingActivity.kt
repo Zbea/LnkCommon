@@ -33,10 +33,8 @@ import kotlinx.android.synthetic.main.common_title.*
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
+abstract class BaseDrawingActivity : BaseActivity() {
 
-    var mDialog: ProgressDialog? = null
-    var mSaveState:Bundle?=null
     var elik: EinkPWInterface? = null
     var isErasure=false
     var isTitleClick=true//标题是否可以编
@@ -49,47 +47,20 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initCreate() {
+        onInStanceElik()
 
-        mSaveState=savedInstanceState
-        setContentView(layoutId())
-        initCommonTitle()
-
-        setStatusBarColor(ContextCompat.getColor(this, R.color.white))
-
-        if (v_content!=null){
-            elik = v_content?.pwInterFace
-        }
-
-        mDialog = ProgressDialog(this)
-        initData()
-        initView()
-
+        initClick()
         initGeometryView()
     }
 
+    open fun onInStanceElik(){
+        if (v_content!=null){
+            elik = v_content?.pwInterFace
+        }
+    }
 
-    /**
-     *  加载布局
-     */
-    abstract fun layoutId(): Int
-
-    /**
-     * 初始化数据
-     */
-    abstract fun initData()
-
-    /**
-     * 初始化 View
-     */
-    abstract fun initView()
-
-    @SuppressLint("WrongViewCast")
-    fun initCommonTitle() {
-
-        iv_back?.setOnClickListener { finish() }
-
+    private fun initClick(){
         iv_tool?.setOnClickListener {
             showDialogAppTool()
         }
@@ -411,7 +382,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         ll_angle?.setBackgroundResource(R.color.color_transparent)
         ll_axis?.setBackgroundResource(R.color.color_transparent)
         ll_pen?.setBackgroundResource(R.color.color_transparent)
-        view.setBackgroundResource(R.drawable.bg_black_stroke_0dp_corner)
+        view.setBackgroundResource(R.drawable.bg_geometry_select)
     }
 
     /**
@@ -502,141 +473,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         isGeometry=false
     }
 
-    fun setPageTitle(title: String){
-        tv_title?.text=title
-    }
-
     /**
      * 标题a操作
      */
     open fun setDrawingTitle(title:String){
     }
-    /**
-     * 是否登录
-     */
-    fun isLoginState():Boolean{
-        val mUser= SPUtil.getObj("user", User::class.java)
-        val token=SPUtil.getString("token")
-        return token.isNotEmpty() && mUser!=null
-    }
 
-    fun getUser(): User?{
-        return SPUtil.getObj("user", User::class.java)
-    }
-    /**
-     * 显示view
-     */
-    protected fun showView(view: View?) {
-        if (view != null && view.visibility != View.VISIBLE) {
-            view.visibility = View.VISIBLE
-        }
-    }
-
-    /**
-     * 显示view
-     */
-    protected fun showView(vararg views: View?) {
-        for (view in views) {
-            if (view != null && view.visibility != View.VISIBLE) {
-                view.visibility = View.VISIBLE
-            }
-        }
-    }
-
-
-    /**
-     * 消失view
-     */
-    protected fun disMissView(view: View?) {
-        if (view != null && view.visibility != View.GONE) {
-            view.visibility = View.GONE
-        }
-    }
-
-    /**
-     * 消失view
-     */
-    protected fun disMissView(vararg views: View?) {
-        for (view in views) {
-            if (view != null && view.visibility != View.GONE) {
-                view.visibility = View.GONE
-            }
-        }
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    protected fun setStatusBarColor(statusColor: Int) {
-        val window = window
-        //取消状态栏透明
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        //添加Flag把状态栏设为可绘制模式
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        //设置状态栏颜色
-        window.statusBarColor = statusColor
-        //设置系统状态栏处于可见状态
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        //让view不根据系统窗口来调整自己的布局
-        val mContentView = window.findViewById<View>(Window.ID_ANDROID_CONTENT) as ViewGroup
-        val mChildView = mContentView.getChildAt(0)
-        if (mChildView != null) {
-            ViewCompat.setFitsSystemWindows(mChildView, false)
-            ViewCompat.requestApplyInsets(mChildView)
-        }
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun hideKeyboard(){
-        KeyboardUtils.hideSoftKeyboard(this)
-    }
-
-    fun showToast(s:String){
-        SToast.showText(s)
-    }
-
-    fun showToast(sId:Int){
-        SToast.showText(sId)
-    }
-
-    fun showLog(s:String){
-        Log.d("debug",s)
-    }
-    fun showLog(sId:Int){
-        Log.d("debug",getString(sId))
-    }
-
-    override fun addSubscription(d: Disposable) {
-    }
-    override fun login() {
-        MethodManager.logoutFailure(this)
-    }
-
-    override fun hideLoading() {
-        mDialog?.dismiss()
-    }
-
-    override fun showLoading() {
-        mDialog!!.show()
-    }
-
-    override fun fail(msg: String) {
-        showToast(msg)
-    }
-
-    override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
-        showLog(R.string.connect_server_timeout)
-    }
-    override fun onComplete() {
-        showLog(R.string.request_success)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mDialog!!.dismiss()
-        hideKeyboard()
-    }
 
 }
 

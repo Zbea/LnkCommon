@@ -83,6 +83,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (rv_tab!=null){
             initTabView()
         }
+        initCreate()
         initData()
         initView()
     }
@@ -101,6 +102,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 初始化 View
      */
     abstract fun initView()
+
+    /**
+     * 初始化onCreate
+     */
+    open fun initCreate(){
+    }
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {

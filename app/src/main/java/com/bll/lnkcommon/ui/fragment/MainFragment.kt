@@ -131,7 +131,7 @@ class MainFragment:BaseFragment(),IRelationView {
 
         ll_screenshot.setOnClickListener {
             if (isLoginState()){
-                customStartActivity(Intent(requireActivity(),ScreenshotManagerActivity::class.java))
+                customStartActivity(Intent(requireActivity(),ScreenshotListActivity::class.java))
             }
             else{
                 customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))

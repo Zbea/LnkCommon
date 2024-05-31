@@ -141,7 +141,7 @@
             android:launchMode="singleTask"
             />
         <activity android:name=".ui.activity.WallpaperMyActivity"/>
-        <activity android:name=".ui.activity.ScreenshotManagerActivity"
+        <activity android:name=".ui.activity.ScreenshotListActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
@@ -152,6 +152,8 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.PermissionSettingActivity" />
+        <activity android:name=".ui.activity.drawing.FileDrawingActivity" />
+        <activity android:name=".ui.activity.ScreenshotManagerActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
