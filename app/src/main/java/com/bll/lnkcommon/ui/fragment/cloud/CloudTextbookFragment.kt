@@ -91,12 +91,12 @@ class CloudTextbookFragment: BaseCloudFragment() {
                     //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
                     if (!book.drawUrl.isNullOrEmpty()){
                         countDownTasks= CountDownLatch(2)
-                        downloadBook(book)
+                        selectBookOrZip(book)
                         downloadBookDrawing(book)
                     }
                     else{
                         countDownTasks=CountDownLatch(1)
-                        downloadBook(book)
+                        selectBookOrZip(book)
                     }
                     downloadSuccess(book)
                 } else {
@@ -153,12 +153,20 @@ class CloudTextbookFragment: BaseCloudFragment() {
         }.start()
     }
 
+    private fun selectBookOrZip(book: Book){
+        if (position<2){
+            downloadBook(book)
+        }
+        else{
+            downloadBookZip(book)
+        }
+    }
 
     /**
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: Book){
-        val fileName = book.bookId.toString()+"draw"//文件名
+        val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
@@ -190,10 +198,10 @@ class CloudTextbookFragment: BaseCloudFragment() {
     /**
      * 下载书籍
      */
-    private fun downloadBook(book: Book) {
+    private fun downloadBookZip(book: Book) {
         val fileName = book.bookId.toString()//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.bodyUrl).setPath(zipPath)
+        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
@@ -214,6 +222,27 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun onStart() {
                         }
                     })
+                    countDownTasks?.countDown()
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    countDownTasks?.countDown()
+                }
+            })
+    }
+
+    /**
+     * 下载书籍
+     */
+    private fun downloadBook(book: Book) {
+        FileDownManager.with(activity).create(book.bodyUrl).setPath(book.bookPath)
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    book.id=null
+                    BookDaoManager.getInstance().insertOrReplaceBook(book)
                     countDownTasks?.countDown()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

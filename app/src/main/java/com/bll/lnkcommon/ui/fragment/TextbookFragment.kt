@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ItemSelectorDialog
@@ -95,10 +96,15 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
-            val intent = Intent(activity, BookDetailsActivity::class.java)
-            intent.putExtra("book_id", book.bookId)
-            intent.putExtra("book_type", book.typeId)
-            customStartActivity(intent)
+            if (tabId<2){
+                MethodManager.gotoBookDetails(requireActivity(),book)
+            }
+            else{
+                val intent = Intent(activity, BookDetailsActivity::class.java)
+                intent.putExtra("book_id", book.bookId)
+                intent.putExtra("book_type", book.typeId)
+                customStartActivity(intent)
+            }
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
@@ -177,7 +183,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             }
         }
         for (book in maxBooks) {
-            val subTypeId = DataBeanManager.getTextBookTypeId(book.subtypeStr)
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {

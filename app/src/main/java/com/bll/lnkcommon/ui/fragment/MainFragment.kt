@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
@@ -254,7 +255,9 @@ class MainFragment:BaseFragment(),IRelationView {
 
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDay))+"/draw.png"
         if (File(path).exists()){
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+//            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+            val myBitmap= BitmapFactory.decodeFile(path)
+            iv_date.setImageBitmap(myBitmap)
         }
         else{
             iv_date.setImageResource(0)

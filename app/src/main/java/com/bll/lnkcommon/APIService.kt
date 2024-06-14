@@ -107,6 +107,11 @@ interface APIService{
     @POST("student/permission/insert")
     fun onInsertPermissionTime(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改学生权限
+     */
+    @POST("student/permission/update")
+    fun onEditPermissionTime(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 删除学生权限
      */
     @POST("student/permission/delete")

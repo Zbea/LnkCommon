@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.model.User
@@ -17,6 +18,7 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
     private val presenter= LoginPresenter(this)
     private var token=""
+    private var statusBarValue=0
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
@@ -28,6 +30,8 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
         user?.token=token
         SPUtil.putObj("user",user!!)
         EventBus.getDefault().post(Constants.USER_EVENT)
+
+        MethodManager.setStatusBarValue(statusBarValue)
 
         val intent = Intent()
         intent.putExtra("token", token)
@@ -47,6 +51,9 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+        statusBarValue= MethodManager.getStatusBarValue()
+        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
+
         val account=SPUtil.getString("account")
         val password=SPUtil.getString("password")
 

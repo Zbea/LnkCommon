@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@mipmap/icon_diary_details_bg_1"
-        android:layout_marginStart="@dimen/drawing_tool_height"
+        android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
     <LinearLayout
@@ -69,6 +69,7 @@
         android:layout_height="60dp"
         android:layout_margin="@dimen/dp_10"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

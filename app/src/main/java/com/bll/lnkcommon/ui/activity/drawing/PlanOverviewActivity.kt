@@ -156,8 +156,8 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         if (!images.contains(path)) {
             images.add(path)
         }
-        tv_page.text = "${posImage + 1}/${images.size}"
-
+        tv_page.text = "${posImage + 1}"
+        tv_page_total.text="${images.size}"
         elik?.setLoadFilePath(path, true)
     }
 }

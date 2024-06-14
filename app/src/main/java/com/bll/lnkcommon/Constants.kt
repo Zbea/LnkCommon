@@ -27,6 +27,7 @@ object Constants {
         const val halfYear=180*24*60*60*1000
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
+        const val STATUS_BAR_SHOW=2147483647//永不消失
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"

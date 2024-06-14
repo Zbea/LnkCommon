@@ -188,7 +188,7 @@ public class FileUtils {
         }
         else {
             List<File> pageFiles = new ArrayList<>();
-            for (int i = (pageIndex-1)*pageIndex; i < files.size() ; i++) {
+            for (int i = (pageIndex-1)*pageSize; i < files.size() ; i++) {
                 pageFiles.add(files.get(i));
             }
             return pageFiles;
@@ -311,44 +311,6 @@ public class FileUtils {
     }
 
     /**
-     * 删除子文件夹 不包括自身
-     * @param file
-     */
-    public static void deleteFile1(File file){
-        if (file == null || !file.exists() )
-            return;
-        // 判断传递进来的是文件还是文件夹,如果是文件,直接删除,如果是文件夹,则判断文件夹里面有没有东西
-        if (file.isDirectory()) {
-            // 如果是目录,就删除目录下所有的文件和文件夹
-            File[] files = file.listFiles();
-            // 遍历目录下的文件和文件夹
-            for (File f : files) {
-                // 如果是文件,就删除
-                if (f.isFile()) {
-                    // 删除文件
-                    f.delete();
-                } else{
-                    // 如果是文件夹,就递归调用文件夹的方法
-                    deleteFile(f);
-                }
-            }
-        }
-    }
-
-    /**
-     * 删除本地提错本
-     * @param path
-     */
-    public static void deleteHomework(String path){
-        File[] files = new File(path).listFiles();
-        for (File f :files){
-            if (f.isDirectory()&&f.getName().contains("错题本")){
-                deleteFile(f);
-            }
-        }
-    }
-
-    /**
      * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
      * @param files
      */
@@ -406,6 +368,7 @@ public class FileUtils {
                 return false;
             }
             Files.copy(Paths.get(oldPathName) ,Paths.get(newPathName) , StandardCopyOption.REPLACE_EXISTING);
+            oldFile.delete();
 //            File newFile = new File(newPathName);
 //            if (!newFile.exists()){
 //                newFile.getParentFile().mkdirs();

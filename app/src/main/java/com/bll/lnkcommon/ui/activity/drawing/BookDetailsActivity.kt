@@ -106,7 +106,8 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
     //单屏翻页
     private fun updateScreen(){
-        tv_page.text = if (page+1-(startCount-1)>0) "${page + 1-(startCount-1)}/${count-startCount}" else ""
+        tv_page.text = if (page+1-(startCount-1)>0) "${page + 1-(startCount-1)}" else ""
+        tv_page_total.text="${count-startCount}"
         loadPicture(page,elik!!,v_content)
     }
 

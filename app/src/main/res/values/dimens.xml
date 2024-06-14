@@ -11,7 +11,9 @@
     <dimen name="xtab_height">50dp</dimen>
     <dimen name="dialog_padding">40dp</dimen>
     <dimen name="drawing_bottom_height">38dp</dimen>
-    <dimen name="drawing_tool_height">42dp</dimen>
+    <dimen name="drawing_tool_width">42dp</dimen>
+    <dimen name="drawing_tool_height">50dp</dimen>
+    <dimen name="drawing_tool_dimens">50dp</dimen>
 
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_8">8dp</dimen>

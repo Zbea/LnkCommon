@@ -65,7 +65,9 @@ class NotebookManagerActivity : BaseActivity() {
                 val date=noteBooks[0].date//拿到最小时间
                 noteBooks[position].date=date-1000
                 ItemTypeDaoManager.getInstance().insertOrReplace(noteBooks[position])
-                Collections.swap(noteBooks,position,0)
+                noteBooks.sortWith(Comparator { item1, item2 ->
+                    return@Comparator item1.date.compareTo(item2.date)
+                })
                 setNotify()
             }
         }

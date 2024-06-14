@@ -11,6 +11,9 @@
         >
         <include
             layout="@layout/common_drawing_tool"
+            android:layout_marginTop="@dimen/statusbar_height"
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"
             />
         <com.android.internal.widget.PreferenceImageView
             android:id="@+id/v_content"
@@ -42,6 +45,7 @@
         android:layout_height="60dp"
         android:layout_margin="@dimen/dp_10"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"

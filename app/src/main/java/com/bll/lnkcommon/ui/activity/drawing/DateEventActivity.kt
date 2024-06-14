@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
+import android.os.Handler
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.dayLong
 import com.bll.lnkcommon.FileAddress
@@ -56,7 +57,10 @@ class DateEventActivity:BaseDrawingActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
+        stopErasure()
+        Handler().postDelayed(Runnable {
+            EventBus.getDefault().post(Constants.DATE_DRAWING_EVENT)
+        },500)
     }
 
 }

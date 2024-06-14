@@ -84,7 +84,9 @@ class ScreenshotManagerActivity : BaseActivity() {
                         val date=items[0].date
                         item.date=date-1000
                         ItemTypeDaoManager.getInstance().insertOrReplace(item)
-                        Collections.swap(items,position,0)
+                        items.sortWith(Comparator { item1, item2 ->
+                            return@Comparator item1.date.compareTo(item2.date)
+                        })
                         EventBus.getDefault().post(Constants.SCREENSHOT_MANAGER_EVENT)
                         notifyDataSetChanged()
                     }

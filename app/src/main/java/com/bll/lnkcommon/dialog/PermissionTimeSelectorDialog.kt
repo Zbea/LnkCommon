@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.DateWeek
+import com.bll.lnkcommon.mvp.model.PermissionTimeBean
 import com.bll.lnkcommon.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -16,9 +17,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class PermissionTimeSelectorDialog(private val context: Context,private val weekSelects:List<Int>) {
+class PermissionTimeSelectorDialog(private val context: Context, private var weekSelects:List<Int>, private val item:PermissionTimeBean?) {
     private var dialog:Dialog?=null
     private var weeks= DataBeanManager.weeks
+    private var checkWeeks= mutableListOf<Int>()
+
+    constructor(context: Context,weekSelects: List<Int>):this(context, weekSelects, null)
 
     fun builder(): PermissionTimeSelectorDialog {
         dialog =Dialog(context)
@@ -26,19 +30,26 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 
+
         val tp_start_time = dialog?.findViewById<TimePicker>(R.id.tp_start_time)
         tp_start_time?.setIs24HourView(true)
-//        if (!item.startTimeStr.isNullOrEmpty()){
-//            tp_start_time?.hour=item.startTimeStr.split(":")[0].toInt()
-//            tp_start_time?.minute=item.startTimeStr.split(":")[1].toInt()
-//        }
-
         val tp_end_time = dialog?.findViewById<TimePicker>(R.id.tp_end_time)
         tp_end_time?.setIs24HourView(true)
-//        if (!item.endTimeStr.isNullOrEmpty()){
-//            tp_end_time?.hour=item.endTimeStr.split(":")[0].toInt()
-//            tp_end_time?.minute=item.endTimeStr.split(":")[1].toInt()
-//        }
+
+        if (item!=null){
+            val startStr=DateUtils.longToHour2(item.startTime)
+            tp_start_time?.hour=startStr.split(":")[0].toInt()
+            tp_start_time?.minute=startStr.split(":")[1].toInt()
+
+            val endStr=DateUtils.longToHour2(item.endTime)
+            tp_end_time?.hour=endStr.split(":")[0].toInt()
+            tp_end_time?.minute=endStr.split(":")[1].toInt()
+
+            val week=item.weeks.split(",")
+            for (i in week){
+                checkWeeks.add(i.toInt())
+            }
+        }
 
         initWeeks()
 
@@ -84,7 +95,12 @@ class PermissionTimeSelectorDialog(private val context: Context,private val week
         for (i in weekSelects){
             for (item in weeks){
                 if (item.week==i){
-                    item.isSelected=true
+                    if (checkWeeks.contains(i)){
+                        item.isCheck=true
+                    }
+                    else{
+                        item.isSelected=true
+                    }
                 }
             }
         }

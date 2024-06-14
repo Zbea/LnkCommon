@@ -2,6 +2,7 @@ package com.bll.lnkcommon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings;
 
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
@@ -108,7 +109,6 @@ public class MethodManager {
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user!=null?user.accountId:0);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
     }
 
@@ -138,6 +138,23 @@ public class MethodManager {
         else{
              return SPUtil.INSTANCE.getObj("privacyPasswordNote", PrivacyPassword.class);
         }
+    }
+
+    /**
+     * 获取状态栏的值
+     * @return
+     */
+    public static int getStatusBarValue(){
+        return Settings.System.getInt(MyApplication.Companion.getMContext().getContentResolver(), "statusbar_hide_time", 0);
+    }
+
+    /**
+     * 设置状态栏的值
+     *
+     * @return
+     */
+    public static void setStatusBarValue(int value){
+        Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
     }
     
 }

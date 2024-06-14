@@ -160,6 +160,7 @@ public interface IContractView {
         void onStudent(StudentBean studentBean);
         void onSuccess();
         void onChangeSuccess();
+        void onEditSuccess();
     }
 
 }

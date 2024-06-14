@@ -129,6 +129,23 @@ public class DateUtils {
         }
     }
 
+    /**
+     * 时间戳转换为字符串类型
+     *
+     * @return
+     */
+    public static String longToHour2(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(getStartOfDayInMillis()+date);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String longToStringWeek(long date) {
         if(0 == date){
             return null;

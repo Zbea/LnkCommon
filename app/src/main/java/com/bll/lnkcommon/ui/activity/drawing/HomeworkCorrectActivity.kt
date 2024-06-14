@@ -15,6 +15,8 @@ import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_homework_correct.*
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -145,7 +147,8 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
      */
     private fun setContentImage(){
         hideLoading()
-        tv_page.text="${posImage+1}/${images.size}"
+        tv_page.text="${posImage+1}"
+        tv_page_total.text="${images.size}"
         //批改成功后加载提交后的图片
         if (correctBean?.status==3){
             GlideUtils.setImageUrl(this, images[posImage],v_content)

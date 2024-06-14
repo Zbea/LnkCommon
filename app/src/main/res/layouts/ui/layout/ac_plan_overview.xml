@@ -100,7 +100,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_function"
         android:src="@mipmap/icon_freenote_bg_1"
-        android:layout_marginStart="@dimen/drawing_tool_height"
+        android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
     <include

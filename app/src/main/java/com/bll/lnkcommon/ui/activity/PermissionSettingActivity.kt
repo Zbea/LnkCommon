@@ -7,6 +7,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.PermissionTimeSelectorDialog
+import com.bll.lnkcommon.mvp.model.DateWeek
 import com.bll.lnkcommon.mvp.model.PermissionTimeBean
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.PermissionSettingPresenter
@@ -25,6 +26,10 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
     private var bookTimes= mutableListOf<PermissionTimeBean>()
     private var videoTimes= mutableListOf<PermissionTimeBean>()
     private var type=0
+    private var position=0
+    private var weekStr=""
+    private var startLong=0L
+    private var endLong=0L
 
     override fun onStudent(studentBean: StudentBean) {
         mStudentBean=studentBean
@@ -45,6 +50,7 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
         mPresenter.onStudent(mStudentBean?.accountId!!)
     }
 
+
     override fun onChangeSuccess() {
         when (type) {
             1 -> {
@@ -61,6 +67,23 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
                 st_video.isChecked=mStudentBean?.isAllowVideo!!
                 setVideoStateView()
             }
+        }
+    }
+
+    override fun onEditSuccess() {
+        if (type==2){
+            val item=bookTimes[position]
+            item.startTime=startLong
+            item.endTime=endLong
+            item.weeks=weekStr
+            mBookAdapter?.notifyItemChanged(position)
+        }
+        else{
+            val item=videoTimes[position]
+            item.startTime=startLong
+            item.endTime=endLong
+            item.weeks=weekStr
+            mVideoAdapter?.notifyItemChanged(position)
         }
     }
 
@@ -111,57 +134,27 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
         }
 
         iv_book_add.setOnClickListener {
-            val weeks= mutableListOf<Int>()
-            for (item in bookTimes){
-                val week=item.weeks.split(",")
-                for (i in week){
-                    weeks.add(i.toInt())
-                }
-            }
-            PermissionTimeSelectorDialog(this, weeks).builder().setOnDateListener{
+            PermissionTimeSelectorDialog(this, getWeeks(1)).builder().setOnDateListener{
                 startLon,endLon,weeks->
-                var week=""
-                for (i in weeks.indices){
-                    week += if (i == weeks.size - 1) {
-                        "${weeks[i].week}"
-                    } else {
-                        "${weeks[i].week},"
-                    }
-                }
                 val map=HashMap<String,Any>()
                 map["type"]=1
                 map["startTime"]=startLon
                 map["endTime"]=endLon
                 map["userId"]=mStudentBean?.accountId!!
-                map["weeks"]=week
+                map["weeks"]=getWeekStr(weeks)
                 mPresenter.onInsertTime(map)
             }
         }
 
         iv_video_add.setOnClickListener {
-            val weeks= mutableListOf<Int>()
-            for (item in videoTimes){
-                val week=item.weeks.split(",")
-                for (i in week){
-                    weeks.add(i.toInt())
-                }
-            }
-            PermissionTimeSelectorDialog(this, weeks).builder().setOnDateListener{
+            PermissionTimeSelectorDialog(this, getWeeks(2)).builder().setOnDateListener{
                     startLon,endLon,weeks->
-                var week=""
-                for (i in weeks.indices){
-                    week += if (i == weeks.size - 1) {
-                        "${weeks[i].week}"
-                    } else {
-                        "${weeks[i].week},"
-                    }
-                }
                 val map=HashMap<String,Any>()
                 map["type"]=2
                 map["startTime"]=startLon
                 map["endTime"]=endLon
                 map["userId"]=mStudentBean?.accountId!!
-                map["weeks"]=week
+                map["weeks"]=getWeekStr(weeks)
                 mPresenter.onInsertTime(map)
             }
         }
@@ -176,6 +169,25 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
                     map["id"]=bookTimes[position].id
                     map["userId"]=mStudentBean?.accountId!!
                     mPresenter.onDeleteTime(map)
+                }
+            }
+            setOnItemClickListener { adapter, view, position ->
+                this@PermissionSettingActivity.position=position
+                type=2
+                val item=bookTimes[position]
+                PermissionTimeSelectorDialog(this@PermissionSettingActivity, getWeeks(1),item).builder().setOnDateListener{
+                        startLon,endLon,weeks->
+                    startLong=startLon
+                    endLong=endLon
+                    weekStr=getWeekStr(weeks)
+                    val map=HashMap<String,Any>()
+                    map["type"]=1
+                    map["startTime"]=startLon
+                    map["endTime"]=endLon
+                    map["userId"]=mStudentBean?.accountId!!
+                    map["weeks"]=weekStr
+                    map["id"]=item.id
+                    mPresenter.onEditTime(map)
                 }
             }
         }
@@ -193,8 +205,51 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
                     mPresenter.onDeleteTime(map)
                 }
             }
+            setOnItemClickListener { adapter, view, position ->
+                this@PermissionSettingActivity.position=position
+                type=3
+                val item=videoTimes[position]
+                PermissionTimeSelectorDialog(this@PermissionSettingActivity, getWeeks(1),item).builder().setOnDateListener{
+                        startLon,endLon,weeks->
+                    startLong=startLon
+                    endLong=endLon
+                    weekStr=getWeekStr(weeks)
+                    val map=HashMap<String,Any>()
+                    map["type"]=2
+                    map["startTime"]=startLon
+                    map["endTime"]=endLon
+                    map["userId"]=mStudentBean?.accountId!!
+                    map["weeks"]=weekStr
+                    map["id"]=item.id
+                    mPresenter.onEditTime(map)
+                }
+            }
         }
 
+    }
+
+    private fun getWeeks(type:Int):List<Int>{
+        val weeks= mutableListOf<Int>()
+        val list=if (type==1) bookTimes else videoTimes
+        for (item in list){
+            val week=item.weeks.split(",")
+            for (i in week){
+                weeks.add(i.toInt())
+            }
+        }
+        return weeks
+    }
+
+    private fun getWeekStr(weeks:List<DateWeek>):String{
+        var week=""
+        for (i in weeks.indices){
+            week += if (i == weeks.size - 1) {
+                "${weeks[i].week}"
+            } else {
+                "${weeks[i].week},"
+            }
+        }
+        return week
     }
 
     private fun setBookStateView(){

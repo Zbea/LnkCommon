@@ -19,6 +19,7 @@ import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
@@ -275,9 +276,14 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
      */
     private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
         showLoading()
-        val fileName =  MD5Utils.digest(book.bookId.toString())//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileDownManager.with(this).create(url).setPath(zipPath)
+        val fileName =  book.bookId.toString()//文件名
+        val path = if (tabId>1){
+            FileAddress().getPathZip(fileName)
+        } else{
+            val formatStr=book.bodyUrl.substring(book.bodyUrl.lastIndexOf("."))
+            FileAddress().getPathBook(fileName+formatStr)
+        }
+        val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -294,8 +300,25 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    val fileTargetPath = FileAddress().getPathTextBook(fileName)
-                    unzip(book, zipPath, fileTargetPath)
+                    book.apply {
+                        loadSate = 2
+                        category = 0
+                        typeId=getHostType()
+                        subtypeStr=tabStr
+                        time = System.currentTimeMillis()//下载时间用于排序
+                    }
+                    if (tabId<2){
+                        book.bookPath = path
+                        book.bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                        BookDaoManager.getInstance().insertOrReplaceBook(book)
+                        refreshView(book)
+                    }
+                    else{
+                        val fileTargetPath = FileAddress().getPathTextBook(fileName)
+                        book.bookPath = fileTargetPath
+                        book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
+                        unzip(book, path, fileTargetPath)
+                    }
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -314,25 +337,10 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private fun unzip(book: Book, zipPath: String, fileTargetPath: String) {
         ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                book.apply {
-                    loadSate = 2
-                    category = 0
-                    typeId=getHostType()
-                    subtypeStr=tabStr
-                    time = System.currentTimeMillis()//下载时间用于排序
-                    bookPath = fileTargetPath
-                    bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
-                }
                 //下载解压完成后更新存储的book
                 BookDaoManager.getInstance().insertOrReplaceBook(book)
-                EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                //更新列表
-                mAdapter?.notifyDataSetChanged()
-                bookDetailsDialog?.dismiss()
-                Handler().postDelayed({
-                    hideLoading()
-                    showToast(book.bookName+"下载成功")
-                },500)
+                FileUtils.deleteFile(File(zipPath))
+                refreshView(book)
             }
             override fun onProgress(percentDone: Int) {
             }
@@ -344,6 +352,17 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             override fun onStart() {
             }
         })
+    }
+
+    private fun refreshView(book: Book){
+        EventBus.getDefault().post(TEXT_BOOK_EVENT)
+        //更新列表
+        mAdapter?.notifyDataSetChanged()
+        bookDetailsDialog?.dismiss()
+        Handler().postDelayed({
+            hideLoading()
+            showToast(book.bookName+"下载成功")
+        },500)
     }
 
 

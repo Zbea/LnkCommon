@@ -47,7 +47,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         disMissView(iv_btn)
         v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
 
-        tv_page.setOnClickListener {
+        ll_page.setOnClickListener {
             InputContentDialog(this,noteContent?.title!!).builder().setOnDialogClickListener { string ->
                 noteContent?.title = string
                 noteContents[page-1].title = string
@@ -102,7 +102,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     //翻页内容更新切换
     private fun changeContent() {
         noteContent = noteContents[page]
-        tv_page.text = "${page+1}/${noteContents.size}"
+        tv_page.text = "${page+1}"
+        tv_page_total.text="${noteContents.size}"
         elik?.setLoadFilePath(noteContent?.filePath!!, true)
     }
 

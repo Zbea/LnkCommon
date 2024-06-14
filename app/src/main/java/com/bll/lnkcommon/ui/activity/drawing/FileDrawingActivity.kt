@@ -54,7 +54,8 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             pageIndex=pageCount-1
             return
         }
-        tv_page.text = "${pageIndex+1}/$pageCount"
+        tv_page.text = "${pageIndex+1}"
+        tv_page_total.text="$pageCount"
         loadPicture(pageIndex, elik!!, iv_content)
     }
 
