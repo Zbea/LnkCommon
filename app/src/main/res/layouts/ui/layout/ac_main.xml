@@ -55,7 +55,7 @@
         android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="150dp"
+        android:layout_marginEnd="145dp"
         android:gravity="end"
         android:visibility="gone"
         android:orientation="vertical"

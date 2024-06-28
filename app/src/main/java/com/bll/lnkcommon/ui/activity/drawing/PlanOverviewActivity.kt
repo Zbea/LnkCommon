@@ -124,7 +124,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         }
         images.clear()
         if (File(path).exists()){
-            for (file in FileUtils.getFiles(path,"tch")){
+            for (file in FileUtils.getAscFiles(path,"tch")){
                 images.add(file.path)
             }
         }
@@ -147,10 +147,10 @@ class PlanOverviewActivity: BaseDrawingActivity() {
      */
     private fun setContentImage() {
         val path = if (type==1){
-            FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.png"
+            FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.tch"
         }
         else{
-            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))+ "/${posImage + 1}.png"
+            FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))+ "/${posImage + 1}.tch"
         }
         //判断路径是否已经创建
         if (!images.contains(path)) {

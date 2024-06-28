@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.BookDetailsDialog
@@ -280,8 +281,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         val path = if (tabId>1){
             FileAddress().getPathZip(fileName)
         } else{
-            val formatStr=book.bodyUrl.substring(book.bodyUrl.lastIndexOf("."))
-            FileAddress().getPathBook(fileName+formatStr)
+            FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.bodyUrl))
         }
         val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {

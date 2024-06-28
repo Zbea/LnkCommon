@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
@@ -157,5 +158,12 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         presenter.getHomeworks(map)
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT ->{
+                lazyLoad()
+            }
+        }
+    }
 
 }

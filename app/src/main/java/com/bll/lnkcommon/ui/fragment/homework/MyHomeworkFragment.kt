@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.fragment.homework
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
@@ -131,6 +132,14 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         map["page"]=pageIndex
         map["childId"]=studentId
         presenter.getHomeworks(map)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT ->{
+                lazyLoad()
+            }
+        }
     }
 
 }

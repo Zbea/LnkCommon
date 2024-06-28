@@ -31,6 +31,7 @@ object Constants {
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
+        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -74,13 +75,21 @@ object Constants {
 
         const val PACKAGE_GEOMETRY="com.geometry"
         const val PACKAGE_READER = "com.geniatech.knote.reader"
+        const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
 
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
+        const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
         //广播
         const val DATA_UPLOAD_BROADCAST_EVENT = "com.htfyun.blackwhitebar.uploaddata"
         const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
         const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
+
+        //OTA SN前缀
+        const val PERSIST_OTA_SN_PREFIX = "persist.ota.sn.prefix"
+        const val SN = "SN"
+        const val KEY = "Key"
+        const val VERSION_NO = "VersionNO"
 }
 
 

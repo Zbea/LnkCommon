@@ -26,21 +26,19 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <!--android 10.0使用wifi api新添加的权限-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
-    <permission  android:name="android.permission.INSTALL_PACKAGES"
-        tools:ignore="ReservedSystemPermission" />
+    <uses-permission  android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions,ReservedSystemPermission" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ReservedSystemPermission" />
+    <uses-permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission  android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -50,6 +48,13 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.REBOOT"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECOVERY"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
 
     <application
         android:allowBackup="true"
@@ -73,6 +78,7 @@
                 <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="com.htfyun.blackwhitebar.refresh"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -83,6 +89,7 @@
 
         <activity android:name=".ui.activity.AccountLoginActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustPan"
@@ -107,12 +114,16 @@
         <activity android:name=".ui.activity.book.TextBookStoreActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.BookDetailsActivity"/>
+        <activity android:name=".ui.activity.drawing.BookDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.AppCenterActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.AccountInfoActivity"
             android:windowSoftInputMode="adjustPan"
@@ -120,40 +131,70 @@
         <activity android:name=".ui.activity.AccountRegisterActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.DateActivity"/>
+        <activity android:name=".ui.activity.DateActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.drawing.DateEventActivity"
             android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.ScoreActivity"/>
-        <activity android:name=".ui.activity.drawing.HomeworkCorrectActivity"/>
+        <activity android:name=".ui.activity.ScoreActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.HomeworkCorrectActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".ui.activity.WalletActivity"
-            android:theme="@style/activityCustom" />
-        <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
-        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
+            android:theme="@style/activityCustom"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.FreeNoteActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.PlanOverviewActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.CalenderListActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.CalenderMyActivity"/>
-        <activity android:name=".ui.activity.AppToolActivity"/>
-        <activity android:name=".ui.activity.drawing.DiaryActivity"/>
+        <activity android:name=".ui.activity.CalenderMyActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.AppToolActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.DiaryActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.WallpaperListActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.WallpaperMyActivity"/>
+        <activity android:name=".ui.activity.WallpaperMyActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.ScreenshotListActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PermissionSettingActivity" />
-        <activity android:name=".ui.activity.drawing.FileDrawingActivity" />
-        <activity android:name=".ui.activity.ScreenshotManagerActivity" />
+        <activity android:name=".ui.activity.PermissionSettingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.FileDrawingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.ScreenshotManagerActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

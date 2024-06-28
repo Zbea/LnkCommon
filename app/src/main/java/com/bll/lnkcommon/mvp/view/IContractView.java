@@ -20,6 +20,7 @@ import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.ShareNoteList;
 import com.bll.lnkcommon.mvp.model.StudentBean;
+import com.bll.lnkcommon.mvp.model.SystemUpdateInfo;
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.mvp.model.WallpaperList;
@@ -28,6 +29,10 @@ import com.bll.lnkcommon.net.IBaseView;
 import java.util.List;
 
 public interface IContractView {
+
+    interface ISystemView extends IBaseView{
+        void onUpdateInfo(SystemUpdateInfo item);
+    }
 
     //登录
     interface ILoginView extends IBaseView {

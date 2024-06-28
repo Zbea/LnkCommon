@@ -8,6 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.BookDetailsDialog
@@ -196,9 +197,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     //下载book
     private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
         showLoading()
-        val formatStr=book.bodyUrl.substring(book.bodyUrl.lastIndexOf("."))
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
+        val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.bodyUrl))
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {

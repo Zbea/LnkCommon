@@ -14,13 +14,16 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.AppSystemUpdateDialog
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.manager.*
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
+import com.bll.lnkcommon.mvp.presenter.SystemUpdateManagerPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
+import com.bll.lnkcommon.mvp.view.IContractView.ISystemView
 import com.bll.lnkcommon.ui.activity.*
 import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
@@ -30,14 +33,16 @@ import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import com.google.gson.Gson
+import com.htfy.params.ServerParams
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class MainFragment:BaseFragment(),IRelationView {
+class MainFragment:BaseFragment(),IRelationView,ISystemView {
 
+    private val mSystemUpdateManagerPresenter=SystemUpdateManagerPresenter(this)
     private val presenter=RelationPresenter(this)
     private var nowDayPos=1
     private var nowDay=0L
@@ -46,6 +51,10 @@ class MainFragment:BaseFragment(),IRelationView {
     private var isChange=false
     private var isShow=false//是否存在台历
     private var privacyPassword:PrivacyPassword?=null
+
+    override fun onUpdateInfo(item: SystemUpdateInfo) {
+        AppSystemUpdateDialog(requireActivity(),item).builder()
+    }
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
@@ -205,6 +214,12 @@ class MainFragment:BaseFragment(),IRelationView {
                 presenter.getMessageTotal()
             }
             mCommonPresenter.getAppUpdate()
+
+            val systemUpdateMap = HashMap<String, String>()
+            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
+            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
+            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
+            mSystemUpdateManagerPresenter.checkSystemUpdate(systemUpdateMap)
         }
         nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()
@@ -305,7 +320,7 @@ class MainFragment:BaseFragment(),IRelationView {
      * 设置台历图片
      */
     private fun setCalenderBg(){
-        val listFiles= FileUtils.getFiles(calenderPath) ?: return
+        val listFiles= FileUtils.getAscFiles(calenderPath) ?: return
         val file=if (listFiles.size>nowDayPos-1){
             listFiles[nowDayPos-1]
         }

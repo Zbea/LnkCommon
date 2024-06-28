@@ -10,6 +10,7 @@ import android.net.NetworkInfo
 import android.net.wifi.WifiManager
 import android.os.PowerManager
 import android.util.Log
+import com.bll.lnkcommon.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
 
 class MyBroadcastReceiver : BroadcastReceiver() {
@@ -46,6 +47,11 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                     Log.d("debug", "wifi监听网络变化$isNet")
                     if (isNet)
                         EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
+                }
+            }
+            Constants.NET_REFRESH->{
+                if (NetworkUtil.isNetworkAvailable(context)){
+                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
                 }
             }
         }

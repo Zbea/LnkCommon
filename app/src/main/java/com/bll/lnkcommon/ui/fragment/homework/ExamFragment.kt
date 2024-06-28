@@ -4,7 +4,9 @@ import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ImageDialog
@@ -14,6 +16,7 @@ import com.bll.lnkcommon.mvp.view.IContractView.IExamView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.ExamAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
@@ -79,7 +82,7 @@ class ExamFragment : BaseFragment(),IExamView {
                 }
                 R.id.iv_rank->{
                     customStartActivity(Intent(requireActivity(),ScoreActivity::class.java)
-                        .setFlags(2)
+                        .setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                         .putExtra("id",item.schoolExamJobId)
                         .putExtra("classId",item.classId)
                         .putExtra("className",item.className)
@@ -125,5 +128,12 @@ class ExamFragment : BaseFragment(),IExamView {
         presenter.getExams(map)
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT ->{
+                lazyLoad()
+            }
+        }
+    }
 
 }

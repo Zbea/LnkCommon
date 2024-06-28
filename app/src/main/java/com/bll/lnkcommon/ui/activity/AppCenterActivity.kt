@@ -61,7 +61,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     override fun initData() {
         pageSize=8
-        types= arrayListOf("应用","工具")
+        types= arrayListOf("新闻报刊","实用工具","书籍阅读","期刊杂志")
         popSupplys=DataBeanManager.popupSupplys
         supply=popSupplys[0].id
     }

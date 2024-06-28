@@ -103,12 +103,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         fetchData()
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.HOMEWORK_CORRECT_EVENT){
-            fetchData()
-        }
-    }
-
     override fun onRefreshData() {
         lazyLoad()
     }
@@ -121,4 +115,14 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         mPresenter.getCorrects(map)
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT ->{
+                lazyLoad()
+            }
+            Constants.HOMEWORK_CORRECT_EVENT->{
+                fetchData()
+            }
+        }
+    }
 }

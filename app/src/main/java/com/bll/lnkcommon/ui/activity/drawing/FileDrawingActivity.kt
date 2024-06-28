@@ -21,7 +21,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     override fun initData() {
         pageIndex = intent.getIntExtra("pageIndex", 0)
         path= intent.getStringExtra("pagePath").toString()
-        pageCount=FileUtils.getFiles(path).size
+        pageCount=FileUtils.getAscFiles(path).size
     }
 
     override fun initView() {
@@ -61,7 +61,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
-        val files = FileUtils.getFiles(path)
+        val files = FileUtils.getAscFiles(path)
         if (index<files.size){
             val showFile=files[index]
             if (showFile != null) {

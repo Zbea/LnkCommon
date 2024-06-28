@@ -156,5 +156,14 @@ public class MethodManager {
     public static void setStatusBarValue(int value){
         Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
     }
-    
+
+    /**
+     * 获取url的格式后缀
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url){
+        return url.substring(url.lastIndexOf("."));
+    }
+
 }
