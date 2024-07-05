@@ -53,7 +53,6 @@ public interface IContractView {
         void onBind();
         void onUnbind();
         void onListStudent(List<StudentBean> beans);
-        void onListFriend(FriendList list);
     }
 
     //钱包页面回调
@@ -117,7 +116,6 @@ public interface IContractView {
 
     interface IRelationView extends IBaseView{
         void onListStudents(List<StudentBean> list);
-        void onListFriend(FriendList list);
         void onMessageTotal(int total);
     }
     interface IHomeworkCorrectView extends IBaseView{
@@ -128,10 +126,14 @@ public interface IContractView {
     }
 
     interface IShareNoteView extends IBaseView{
-        void onList(ShareNoteList list);
+        void onReceiveList(ShareNoteList list);
+        void onShareList(ShareNoteList list);
         void onToken(String token);
         void onDeleteSuccess();
         void onShare();
+        void onBind();
+        void onUnbind();
+        void onListFriend(FriendList list);
     }
 
     interface IQiniuView extends IBaseView {

@@ -34,19 +34,12 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             //监听网络变化
             ConnectivityManager.CONNECTIVITY_ACTION->{
-                val isNet=intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)
-                Log.d("debug", "监听网络变化$isNet")
-                if (isNet)
-                    EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
-            }
-            //wifi监听
-            WifiManager.NETWORK_STATE_CHANGED_ACTION->{
-                val info: NetworkInfo? = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)
+                val info: NetworkInfo? = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO)
                 if (info!!.state.equals(NetworkInfo.State.CONNECTED)) {
                     val isNet = NetworkInfo.State.CONNECTED == info.state && info.isAvailable
-                    Log.d("debug", "wifi监听网络变化$isNet")
+                    Log.d("debug", "监听网络变化$isNet")
                     if (isNet)
-                        EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
+                        EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT)
                 }
             }
             Constants.NET_REFRESH->{

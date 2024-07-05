@@ -11,9 +11,10 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ShareNoteList
+import com.bll.lnkcommon.R
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlin.math.ceil
@@ -73,16 +74,6 @@ class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int
             val item=lists[position]
             ImageDialog(context,item.paths.split(","),item.bgRes.split(",")).builder()
         }
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            when (view.id) {
-                R.id.iv_load -> {
-                    onClickListener?.onDownload(position)
-                }
-                R.id.iv_delete -> {
-                    onClickListener?.onDelete(position)
-                }
-            }
-        }
 
         pageCount = ceil(total.toDouble() / pageSize).toInt()
         if (total == 0) {
@@ -100,10 +91,6 @@ class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int
     fun setData(beans:MutableList<ShareNoteList.ShareNoteBean>){
         lists=beans
         mAdapter?.setNewData(lists)
-    }
-
-    fun deleteData(position: Int){
-        mAdapter?.remove(position)
     }
 
     fun dismiss() {
@@ -127,11 +114,7 @@ class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int
 
     interface OnClickListener{
         fun onPage(pageIndex: Int)
-        fun onDelete(position: Int)
-        fun onDownload(position: Int)
     }
-
-
 
     class MyAdapter(layoutResId: Int, data: MutableList<ShareNoteList.ShareNoteBean>?) : BaseQuickAdapter<ShareNoteList.ShareNoteBean, BaseViewHolder>(layoutResId, data) {
 
@@ -139,7 +122,7 @@ class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int
             helper.apply {
                 setText(R.id.tv_title,item.title)
                 setText(R.id.tv_name,item.nickname)
-                addOnClickListener(R.id.iv_load,R.id.iv_delete)
+                setText(R.id.tv_time,DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
             }
         }
     }

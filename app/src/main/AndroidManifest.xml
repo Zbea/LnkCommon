@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
-
+    <!--      android:sharedUserId="android.uid.system"  -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -76,8 +76,6 @@
             <intent-filter>
                 <action android:name="com.bll.lnkcommon.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.STATE_CHANGE" />
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
             </intent-filter>
             <intent-filter>

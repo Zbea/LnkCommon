@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_20"
         android:maxLines="1"
+        android:gravity="center"
         android:layout_marginTop="@dimen/dp_10"
         android:textColor="@color/black"/>
 

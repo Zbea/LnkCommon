@@ -97,7 +97,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             if (tabId<2){
-                MethodManager.gotoBookDetails(requireActivity(),book)
+                MethodManager.gotoBookDetails(requireActivity(),2,book)
             }
             else{
                 val intent = Intent(activity, BookDetailsActivity::class.java)

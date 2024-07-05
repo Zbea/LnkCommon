@@ -20,9 +20,11 @@ public class FreeNoteBean {
     public Long id;
     public long userId;
     public String title;
+    @Unique
     public long date;
     public boolean isSave;
     public int page;
+    public Integer type;//0自建 1下载
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
@@ -31,15 +33,18 @@ public class FreeNoteBean {
     public int cloudId;
     @Transient
     public String downloadUrl;
-    @Generated(hash = 203331839)
+
+    @Generated(hash = 1840328203)
     public FreeNoteBean(Long id, long userId, String title, long date,
-            boolean isSave, int page, List<String> paths, List<String> bgRes) {
+            boolean isSave, int page, Integer type, List<String> paths,
+            List<String> bgRes) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.date = date;
         this.isSave = isSave;
         this.page = page;
+        this.type = type;
         this.paths = paths;
         this.bgRes = bgRes;
     }
@@ -82,6 +87,12 @@ public class FreeNoteBean {
     public void setPage(int page) {
         this.page = page;
     }
+    public Integer getType() {
+        return this.type;
+    }
+    public void setType(Integer type) {
+        this.type = type;
+    }
     public List<String> getPaths() {
         return this.paths;
     }
@@ -94,5 +105,6 @@ public class FreeNoteBean {
     public void setBgRes(List<String> bgRes) {
         this.bgRes = bgRes;
     }
+
     
 }

@@ -68,9 +68,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
             EventBus.getDefault().post(STUDENT_EVENT)
         }
     }
-    override fun onListFriend(list: FriendList) {
-        DataBeanManager.friends=list.list
-    }
 
     override fun onMessageTotal(total: Int) {
         if (total>SPUtil.getInt("messageTotal")){
@@ -210,7 +207,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         if (NetworkUtil.isNetworkAvailable(requireActivity())) {
             if (isLoginState()){
                 presenter.getStudents()
-                presenter.getFriends()
                 presenter.getMessageTotal()
             }
             mCommonPresenter.getAppUpdate()

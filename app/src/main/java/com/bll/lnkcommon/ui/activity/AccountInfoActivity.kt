@@ -9,12 +9,9 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.*
-import com.bll.lnkcommon.mvp.model.PrivacyPassword
-import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.ui.adapter.AccountFriendAdapter
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.utils.SPUtil
@@ -30,8 +27,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var nickname=""
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
-    private var friends= mutableListOf<FriendList.FriendBean>()
-    private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
     private var type=0//0学生1好友
 
@@ -41,23 +36,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         tv_name.text = nickname
     }
     override fun onBind() {
-        if (type==0){
-            presenter.getStudents()
-        }
-        else{
-            presenter.getFriends()
-        }
+        presenter.getStudents()
     }
     override fun onUnbind() {
-        if (type==0){
-            mAdapter?.remove(position)
-            DataBeanManager.students=students
-            EventBus.getDefault().post(Constants.STUDENT_EVENT)
-        }
-        else{
-            mAdapterFriend?.remove(position)
-            DataBeanManager.friends=friends
-        }
+        mAdapter?.remove(position)
+        DataBeanManager.students=students
+        EventBus.getDefault().post(Constants.STUDENT_EVENT)
     }
     override fun onListStudent(bens: MutableList<StudentBean>) {
         students=bens
@@ -67,11 +51,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             EventBus.getDefault().post(Constants.STUDENT_EVENT)
         }
     }
-    override fun onListFriend(list: FriendList) {
-        friends=list.list
-        DataBeanManager.friends=friends
-        mAdapterFriend?.setNewData(friends)
-    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_account_info
@@ -80,7 +60,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     override fun initData() {
         mUser=getUser()
         presenter.getStudents()
-        presenter.getFriends()
     }
 
     @SuppressLint("WrongConstant")
@@ -88,7 +67,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         setPageTitle("我的账户")
 
         initRecyclerView()
-        initRecyclerViewFriend()
 
         mUser?.apply {
             tv_user.text = account
@@ -102,11 +80,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
         btn_add.setOnClickListener {
             type=0
-            add()
-        }
-
-        btn_add_friend.setOnClickListener {
-            type=1
             add()
         }
 
@@ -147,20 +120,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
     }
 
-    private fun initRecyclerViewFriend(){
-        rv_list_friend.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapterFriend = AccountFriendAdapter(R.layout.item_account_friend,null)
-        rv_list_friend.adapter = mAdapterFriend
-        mAdapterFriend?.bindToRecyclerView(rv_list_friend)
-        mAdapterFriend?.setOnItemChildClickListener { adapter, view, position ->
-            this.position=position
-            if (view.id==R.id.tv_friend_cancel){
-                type=1
-                cancel()
-            }
-        }
-    }
-
     /**
      * 修改名称
      */
@@ -176,15 +135,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
      * 关联
      */
     private fun add(){
-        val str=if (type==0) "输入学生账号" else "输入好友账号"
-        InputContentDialog(this,str).builder()
+        InputContentDialog(this,"输入学生账号").builder()
             .setOnDialogClickListener { string ->
-                if (type==0){
-                    presenter.onBindStudent(string)
-                }
-                else{
-                    presenter.onBindFriend(string)
-                }
+                presenter.onBindStudent(string)
             }
     }
 
@@ -192,18 +145,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
      * 取消关联
      */
     private fun cancel(){
-        val str=if (type==0) "取消学生关联?" else "取消好友关联?"
-        CommonDialog(this).setContent(str).builder().setDialogClickListener(object :
+        CommonDialog(this).setContent( "取消学生关联?").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
             override fun ok() {
-                if (type==0){
-                    presenter.unbindStudent(students[position].accountId)
-                }
-                else{
-                    presenter.unbindFriend(friends[position].id)
-                }
+                presenter.unbindStudent(students[position].accountId)
             }
         })
     }

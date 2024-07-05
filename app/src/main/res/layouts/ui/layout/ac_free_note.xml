@@ -40,11 +40,31 @@
         <ImageView
             android:id="@+id/iv_save"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/iv_add_friend"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:src="@mipmap/icon_save" />
+
+
+        <ImageView
+            android:id="@+id/iv_add_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/iv_friends"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:src="@mipmap/icon_group_create" />
+
+        <ImageView
+            android:id="@+id/iv_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dp_50"
-            android:src="@mipmap/icon_save" />
+            android:src="@mipmap/icon_group_user" />
+
 
     </RelativeLayout>
 
@@ -89,13 +109,26 @@
             android:layout_weight="1"
             />
 
-
         <TextView
             android:id="@+id/tv_share_list"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableStart="@mipmap/icon_freenote_share_list"
+            android:drawablePadding="@dimen/dp_5"
+            android:text="发送"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:gravity="center"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_receive_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:drawableStart="@mipmap/icon_freenote_receive_list"
             android:drawablePadding="@dimen/dp_5"
             android:text="收件"
             android:textColor="@color/black"

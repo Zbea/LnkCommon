@@ -15,6 +15,7 @@ public class ShareNoteList {
         public String bgRes;
         public String nickname;
         public long time;
+        public String createTime;
     }
 
 }

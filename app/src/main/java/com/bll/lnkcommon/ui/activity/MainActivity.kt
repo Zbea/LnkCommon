@@ -4,6 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -50,6 +53,8 @@ class MainActivity : BaseActivity(),IQiniuView {
     private var teachFragment: HomeworkManagerFragment?=null
     private var textbookFragment:TextbookFragment?=null
 
+    private val myBroadcastReceiver=MyBroadcastReceiver()
+
     override fun onToken(token: String) {
         bookcaseFragment?.upload(token)
         textbookFragment?.upload(token)
@@ -62,7 +67,6 @@ class MainActivity : BaseActivity(),IQiniuView {
     }
 
     override fun initData() {
-
         val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
         val type= object : TypeToken<List<AreaBean>>() {}.type
         DataBeanManager.provinces = Gson().fromJson(areaJson, type)
@@ -76,6 +80,11 @@ class MainActivity : BaseActivity(),IQiniuView {
 
 
     override fun initView() {
+        val intentFilter= IntentFilter()
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        registerReceiver(myBroadcastReceiver,intentFilter)
 
         val isTips=SPUtil.getBoolean("SpecificationTips")
         if (!isTips){
@@ -218,7 +227,6 @@ class MainActivity : BaseActivity(),IQiniuView {
         RecordDaoManager.getInstance().clear()
         WallpaperDaoManager.getInstance().clear()
 
-        FileUtils.deleteFile(File(Constants.BOOK_DRAW_PATH))
         FileUtils.deleteFile(File(Constants.BOOK_PATH))
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
@@ -288,6 +296,13 @@ class MainActivity : BaseActivity(),IQiniuView {
                     }
                 }
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (myBroadcastReceiver!=null){
+            unregisterReceiver(myBroadcastReceiver)
         }
     }
 

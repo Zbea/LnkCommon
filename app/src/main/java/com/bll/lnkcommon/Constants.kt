@@ -50,7 +50,6 @@ object Constants {
         val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
         //解压的目录
         val BOOK_PATH =Environment.getExternalStoragePublicDirectory("Books").absolutePath
-        val BOOK_DRAW_PATH= Environment.getExternalStoragePublicDirectory("Notes").absolutePath
         val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志

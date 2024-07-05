@@ -1,6 +1,5 @@
 package com.bll.lnkcommon
 
-import com.bll.lnkcommon.Constants.BOOK_DRAW_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
 import com.bll.lnkcommon.Constants.FREE_NOTE_PATH
 import com.bll.lnkcommon.Constants.HOMEWORK_PATH
@@ -34,7 +33,7 @@ class FileAddress {
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_DRAW_PATH/${getUserId()}/$fileName"
+        return "$BOOK_PATH/${getUserId()}/${fileName}draw"
     }
 
     fun getPathTextBook(fileName: String):String{

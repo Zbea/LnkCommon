@@ -76,7 +76,7 @@ public class MethodManager {
      * @param context
      * @param bookBean
      */
-    public static void gotoBookDetails(Context context, Book bookBean)  {
+    public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
         User user=SPUtil.INSTANCE.getObj("user", User.class);
 
@@ -100,6 +100,19 @@ public class MethodManager {
             result.put(jsonObject);
         }
 
+        String format = MethodManager.getUrlFormat(bookBean.bookPath);
+        int key_type = 0;
+        if (type==1){
+            if (format.contains("pdf")) {
+                key_type = 1;
+            } else {
+                key_type = 0;
+            }
+        }
+        else {
+            key_type=2;
+        }
+
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
         intent.setPackage(Constants.PACKAGE_READER);
@@ -108,6 +121,9 @@ public class MethodManager {
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user!=null?user.accountId:0);
+        intent.putExtra("type", type);
+        intent.putExtra("drawPath", bookBean.bookDrawPath);
+        intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

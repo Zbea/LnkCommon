@@ -12,7 +12,6 @@ object DataBeanManager {
     var versions= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
     var provinces= mutableListOf<AreaBean>()
-    var friends= mutableListOf<FriendList.FriendBean>()
 
     val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))

@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -388,6 +389,18 @@ public class DateUtils {
         }
 
         return 0;
+    }
+
+    /**
+     * 字符串日期时间格式化为long型
+     * @param dateStr
+     * @return
+     * @throws ParseException
+     */
+    public static long dateStrToLong(String dateStr) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        Date date = sdf.parse(dateStr);
+        return date.getTime();
     }
 
 
