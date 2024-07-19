@@ -55,23 +55,21 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
     override fun onToken(token: String) {
         showLoading()
         //分享只能是有手写页面
-        val sImages= mutableListOf<String>()
         val sBgRes= mutableListOf<String>()
+        val imagePaths= mutableListOf<String>()
         for (i in images.indices){
-            if (File(images[i]).exists()){
-                sImages.add(images[i])
+            val path=images[i]
+            if (File(path).exists()){
+                imagePaths.add(path)
                 sBgRes.add(bgResList[i])
             }
         }
-        if (sImages.size==0){
+        if (imagePaths.size==0){
             hideLoading()
             showToast("暂无分享内容")
             return
         }
-        val imagePaths= mutableListOf<String>()
-        for (path in sImages){
-            imagePaths.add(path.replace("tch","png"))
-        }
+
         FileImageUploadManager(token, imagePaths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
@@ -317,7 +315,12 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     private fun initFreeNote(){
         bgResList= freeNoteBean?.bgRes as MutableList<String>
-        images= freeNoteBean?.paths as MutableList<String>
+        if (!freeNoteBean?.paths.isNullOrEmpty()) {
+            images= freeNoteBean?.paths as MutableList<String>
+        }
+        else{
+            images.clear()
+        }
         tv_name.text=freeNoteBean?.title
     }
 
@@ -331,7 +334,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.userId=if (isLoginState()) getUser()?.accountId else 0
         freeNoteBean?.bgRes= arrayListOf(bgRes)
-        freeNoteBean?.paths= arrayListOf()
+        freeNoteBean?.type=0
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
@@ -340,7 +343,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
      */
     private fun setContentImage(){
         v_content.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)){
             images.add(path)
@@ -352,7 +355,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     private fun saveFreeNote(){
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
-        if (!File(path).list().isNullOrEmpty()){
+        if (FileUtils.isExistContent(path)){
             freeNoteBean?.paths = images
             freeNoteBean?.bgRes = bgResList
             freeNoteBean?.page=posImage
@@ -364,15 +367,12 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
      * 下载分享随笔
      */
     private fun downloadShareNote(item:ShareNoteList.ShareNoteBean){
-        val date=System.currentTimeMillis()
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(date))
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(item.date))
         val savePaths= mutableListOf<String>()
-        val tchPaths= mutableListOf<String>()
         val urls=item.paths.split(",")
         for (i in urls.indices)
         {
             savePaths.add(path+"/${i+1}.png")
-            tchPaths.add(path+"/${i+1}.tch")
         }
         FileMultitaskDownManager.with(this).create(urls).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -382,10 +382,10 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                     val freeNoteBean= FreeNoteBean()
                     freeNoteBean.userId=getUser()?.accountId!!
                     freeNoteBean.title=item.title
-                    freeNoteBean.date=date
+                    freeNoteBean.date=item.date
                     freeNoteBean.isSave=true
                     freeNoteBean.bgRes=StringConverter().convertToEntityProperty(item.bgRes)
-                    freeNoteBean.paths=tchPaths
+                    freeNoteBean.paths=savePaths
                     freeNoteBean.type=1
                     FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
                     showToast("下载成功")

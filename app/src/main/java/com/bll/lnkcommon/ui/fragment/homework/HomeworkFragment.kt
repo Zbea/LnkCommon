@@ -19,7 +19,6 @@ import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkFragment : BaseFragment(),IHomeworkView {

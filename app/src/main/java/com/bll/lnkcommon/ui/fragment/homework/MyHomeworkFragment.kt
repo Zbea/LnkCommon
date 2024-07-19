@@ -15,6 +15,7 @@ import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
@@ -59,9 +60,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),30f),
-            DP2PX.dip2px(requireActivity(),50f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -69,7 +68,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
             rv_list.layoutManager = GridLayoutManager(activity, 3)
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 85))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3, 85))
             setOnItemClickListener { adapter, view, position ->
                 sendHomework(homeworkTypes[position])
             }

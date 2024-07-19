@@ -17,7 +17,6 @@ import com.bll.lnkcommon.ui.activity.drawing.HomeworkCorrectActivity
 import com.bll.lnkcommon.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {

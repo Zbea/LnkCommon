@@ -316,14 +316,16 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
      * 设置台历图片
      */
     private fun setCalenderBg(){
-        val listFiles= FileUtils.getAscFiles(calenderPath) ?: return
-        val file=if (listFiles.size>nowDayPos-1){
-            listFiles[nowDayPos-1]
+        val listFiles= FileUtils.getAscFiles(calenderPath)
+        if (listFiles.size>0){
+            val file=if (listFiles.size>nowDayPos-1){
+                listFiles[nowDayPos-1]
+            }
+            else{
+                listFiles[listFiles.size-1]
+            }
+            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
         }
-        else{
-            listFiles[listFiles.size-1]
-        }
-        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
 
     override fun onEventBusMessage(msgFlag: String) {

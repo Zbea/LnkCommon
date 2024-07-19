@@ -9,6 +9,7 @@ import com.bll.lnkcommon.dialog.ModuleSelectDialog
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -143,7 +144,7 @@ class DiaryActivity:BaseDrawingActivity() {
 
     private fun saveDiary() {
         val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong))
-        if (!File(path).list().isNullOrEmpty()){
+        if (FileUtils.isExistContent(path)){
             diaryBean?.userId=if (isLoginState()) getUser()?.accountId else 0
             diaryBean?.paths = images
             diaryBean?.page=posImage

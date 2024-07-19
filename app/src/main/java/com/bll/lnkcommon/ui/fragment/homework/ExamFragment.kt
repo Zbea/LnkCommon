@@ -6,7 +6,6 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ImageDialog
@@ -16,9 +15,7 @@ import com.bll.lnkcommon.mvp.view.IContractView.IExamView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.adapter.ExamAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class ExamFragment : BaseFragment(),IExamView {

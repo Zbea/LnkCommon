@@ -29,8 +29,8 @@ object Constants {
         const val weekTime=7*24*60*60*1000
         const val STATUS_BAR_SHOW=2147483647//永不消失
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
         const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
