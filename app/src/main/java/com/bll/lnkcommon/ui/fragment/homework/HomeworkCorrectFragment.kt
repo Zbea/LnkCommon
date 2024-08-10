@@ -17,6 +17,7 @@ import com.bll.lnkcommon.ui.activity.drawing.HomeworkCorrectActivity
 import com.bll.lnkcommon.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
@@ -69,7 +70,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 55))
+        rv_list?.addItemDecoration(SpaceItemDeco(55))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]

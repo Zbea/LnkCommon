@@ -85,7 +85,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     private fun download(item:DiaryBean){
         showLoading()
-        val fileName=DateUtils.longToString(item.date)
+        val fileName=DateUtils.longToStringCalender(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
         val fileTargetPath= FileAddress().getPathDiary(fileName)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)

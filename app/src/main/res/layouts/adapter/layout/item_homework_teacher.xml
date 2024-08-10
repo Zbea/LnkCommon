@@ -82,39 +82,14 @@
             android:textSize="@dimen/sp_18" />
 
         <TextView
-            android:id="@+id/tv_image_content"
+            android:id="@+id/tv_answer"
             android:layout_width="80dp"
             android:layout_height="35dp"
             android:layout_marginStart="@dimen/dp_20"
             android:gravity="center"
-            android:text="作业内容"
+            android:text="作业答案"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16"
-            android:visibility="gone"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            />
-        <TextView
-            android:id="@+id/tv_image_commit"
-            android:layout_width="80dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="@dimen/dp_20"
-            android:gravity="center"
-            android:text="提交内容"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:visibility="gone"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            />
-        <TextView
-            android:id="@+id/tv_image_correct"
-            android:layout_width="80dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="@dimen/dp_20"
-            android:gravity="center"
-            android:text="老师批改"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:visibility="gone"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 

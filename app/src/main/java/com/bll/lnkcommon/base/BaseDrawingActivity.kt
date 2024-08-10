@@ -417,8 +417,9 @@ abstract class BaseDrawingActivity : BaseActivity() {
     /**
      * 设置不能手写
      */
-    fun setViewElikUnable(view:View){
-        elik?.addOnTopView(view)
+    fun setViewElikUnable(vararg views: View?){
+        for (view in views)
+            elik?.addOnTopView(view)
     }
 
     /**

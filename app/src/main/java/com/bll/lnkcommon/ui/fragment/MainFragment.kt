@@ -366,7 +366,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         val nullItems= mutableListOf<DiaryBean>()
         val diarys=DiaryDaoManager.getInstance().queryList()
         for (diaryBean in diarys){
-            val fileName=DateUtils.longToString(diaryBean.date)
+            val fileName=DateUtils.longToStringCalender(diaryBean.date)
             val path=FileAddress().getPathDiary(fileName)
             if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {

@@ -14,8 +14,7 @@ import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_homework_correct.*
-import kotlinx.android.synthetic.main.ac_homework_correct.tv_page
+import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -59,7 +58,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         showToast("批改成功")
         correctBean?.changeUrl=url
         correctBean?.status=3
-        disMissView(tv_ok)
+        disMissView(tv_save)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
@@ -69,18 +68,17 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_homework_correct
+        return R.layout.ac_drawing
     }
     override fun initData() {
         correctBean= intent.getBundleExtra("bundle")?.getSerializable("correctBean") as CorrectBean?
     }
     override fun initView() {
-        setPageTitle(correctBean?.content.toString())
+        disMissView(iv_btn,iv_tool,iv_catalog)
 
         if (correctBean?.status==2)
         {
-            showView(tv_ok)
-            tv_ok.text="保存"
+            showView(tv_save)
             images= correctBean?.submitUrl!!.split(",") as MutableList<String>
             loadPapers()
         }
@@ -89,7 +87,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
             setContentImage()
         }
 
-        tv_ok.setOnClickListener {
+        tv_save.setOnClickListener {
             showLoading()
             Handler().postDelayed( {
                 commitPapers()
@@ -151,6 +149,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         tv_page_total.text="${images.size}"
         //批改成功后加载提交后的图片
         if (correctBean?.status==3){
+            elik?.setPWEnabled(false)
             GlideUtils.setImageUrl(this, images[posImage],v_content)
         }
         else{

@@ -28,6 +28,8 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_homework),mContext.getString(R.string.textbook_tab_homework_other)
     )
 
+    var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
+
     val popupGrades: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()

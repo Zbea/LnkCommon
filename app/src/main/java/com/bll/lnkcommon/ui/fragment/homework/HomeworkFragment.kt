@@ -16,9 +16,11 @@ import com.bll.lnkcommon.mvp.model.TeacherHomeworkList.TeacherHomeworkBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
+import com.bll.lnkcommon.ui.activity.drawing.HomeworkDetailsActivity
 import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkFragment : BaseFragment(),IHomeworkView {
@@ -84,7 +86,15 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         rv_list.adapter = mAdapterHomework
         mAdapterHomework?.bindToRecyclerView(rv_list)
         mAdapterHomework?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco(0, 0, 0, 60))
+        rv_list?.addItemDecoration(SpaceItemDeco( 60))
+        mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
+            val item=homeworks[position]
+            val intent= Intent(requireActivity(), HomeworkDetailsActivity::class.java)
+            val bundle= Bundle()
+            bundle.putSerializable("homeworkBean", item)
+            intent.putExtra("bundle", bundle)
+            customStartActivity(intent)
+        }
         mAdapterHomework?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]
@@ -101,20 +111,11 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
                             }
                         })
                 }
-                R.id.tv_image_content->{
-                    setImageView(item.homeworkContent)
-                }
-                R.id.tv_image_commit->{
-                    setImageView(item.submitContent)
-                }
-                R.id.tv_image_correct->{
-                    setImageView(item.correctContent)
+                R.id.tv_answer->{
+                    setImageView(item.answerUrl)
                 }
                 R.id.iv_rank->{
-                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java)
-                        .setFlags(1)
-                        .putExtra("id",item.studentTaskId)
-                    )
+                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(index).putExtra("id",item.studentTaskId))
                 }
             }
         }

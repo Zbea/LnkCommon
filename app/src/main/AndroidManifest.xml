@@ -119,7 +119,7 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.AppCenterActivity"
+        <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
@@ -153,10 +153,6 @@
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.CalenderListActivity"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.CalenderMyActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -164,10 +160,6 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.DiaryActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <activity android:name=".ui.activity.WallpaperListActivity"
-            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.WallpaperMyActivity"
@@ -191,6 +183,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ScreenshotManagerActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.drawing.HomeworkDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             />
 

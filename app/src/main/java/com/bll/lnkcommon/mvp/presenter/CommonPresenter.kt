@@ -13,7 +13,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
     fun getCommon() {
         val editName = RetrofitManager.service.getCommonGrade()
-        doRequest(editName, object : Callback<CommonData>(view) {
+        doRequest(editName, object : Callback<CommonData>(view,false) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }
@@ -27,7 +27,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
     //获取更新信息
     fun getAppUpdate() {
         val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view) {
+        doRequest(list, object : Callback<AppUpdateBean>(view,false) {
             override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
                 return false
             }
