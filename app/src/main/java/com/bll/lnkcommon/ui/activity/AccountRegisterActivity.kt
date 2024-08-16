@@ -10,6 +10,7 @@ import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.presenter.RegisterPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.utils.MD5Utils
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 
@@ -36,7 +37,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
 
     override fun onEditPsd() {
         showToast("修改密码成功")
-        finish()
+        setIntent()
     }
 
     override fun layoutId(): Int {
@@ -52,13 +53,13 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
         when (flags) {
             2 -> {
                 setPageTitle("修改密码")
-                ll_name.visibility= View.GONE
-                ll_user.visibility=View.GONE
+                disMissView(ll_name,ll_user)
                 btn_register.text="提交"
             }
             1 -> {
                 setPageTitle("找回密码")
-                ll_name.visibility= View.GONE
+                disMissView(ll_name)
+                ed_user.setText(SPUtil.getString("account"))
                 btn_register.text="提交"
             }
             else -> {

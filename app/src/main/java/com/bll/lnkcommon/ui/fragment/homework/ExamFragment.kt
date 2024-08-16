@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.fragment.homework
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,11 +9,14 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.mvp.model.ExamList
 import com.bll.lnkcommon.mvp.presenter.ExamPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IExamView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
+import com.bll.lnkcommon.ui.activity.drawing.ExamDetailsActivity
+import com.bll.lnkcommon.ui.activity.drawing.HomeworkDetailsActivity
 import com.bll.lnkcommon.ui.adapter.ExamAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
@@ -31,6 +35,10 @@ class ExamFragment : BaseFragment(),IExamView {
         setPageNumber(item.total)
         exams=item.list
         mAdapter?.setNewData(exams)
+    }
+
+    override fun onDeleteSuccess() {
+        mAdapter?.remove(position)
     }
 
     override fun getLayoutId(): Int {
@@ -60,41 +68,49 @@ class ExamFragment : BaseFragment(),IExamView {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mAdapter = ExamAdapter(R.layout.item_homework_exam, null)
+        mAdapter = ExamAdapter(R.layout.item_homework_teacher, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceItemDeco( 60))
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            val item=exams[position]
+            val intent= Intent(requireActivity(), ExamDetailsActivity::class.java)
+            val bundle= Bundle()
+            bundle.putSerializable("examBean", item)
+            intent.putExtra("bundle", bundle)
+            customStartActivity(intent)
+        }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val item=exams[position]
             when(view.id){
-                R.id.tv_image_content->{
-                    setImageView(item.examUrl)
-                }
-                R.id.tv_image_commit->{
-                    setImageView(item.studentUrl)
-                }
-                R.id.tv_image_correct->{
-                    setImageView(item.teacherUrl)
-                }
-                R.id.iv_rank->{
+                R.id.tv_rank->{
                     customStartActivity(Intent(requireActivity(),ScoreActivity::class.java)
-                        .setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        .setFlags(0)
                         .putExtra("id",item.schoolExamJobId)
                     )
+                }
+                R.id.iv_delete->{
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
+                        object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                val map=HashMap<String,Any>()
+                                map["id"]=item.id
+                                presenter.deleteExam(map)
+                            }
+                        })
+                }
+                R.id.tv_answer->{
+                    val images=item.answerUrl.split(",").toList()
+                    ImageDialog(requireActivity(),images).builder()
                 }
             }
         }
     }
 
-    /**
-     * 查看图片
-     */
-    private fun setImageView(path:String){
-        val images=path.split(",").toList()
-        ImageDialog(requireActivity(),images).builder()
-    }
 
     fun onChangeStudent(id:Int){
         pageIndex=1

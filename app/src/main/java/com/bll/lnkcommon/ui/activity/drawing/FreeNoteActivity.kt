@@ -124,7 +124,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             createFreeNote()
         }
         posImage=freeNoteBean?.page!!
-        if (isLoginState()){
+        if (isLoginState()&&NetworkUtil.isNetworkAvailable(this)){
             presenter.getFriends()
             fetchReceiveNotes(1,false)
             fetchShareNotes(1,false)

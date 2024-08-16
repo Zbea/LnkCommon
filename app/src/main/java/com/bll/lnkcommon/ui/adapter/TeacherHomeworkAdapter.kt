@@ -17,9 +17,9 @@ class TeacherHomeworkAdapter(layoutResId: Int, data: List<TeacherHomeworkBean>?,
             setText(R.id.tv_commitDate,if (item.submitTime==0L)"" else DateUtils.longToStringWeek(item.submitTime)+"提交")
             setGone(R.id.tv_answer,!item.answerUrl.isNullOrEmpty())
 
-            setVisible(R.id.iv_rank,type==2)
+            setVisible(R.id.tv_rank,type==2)
 
-            addOnClickListener(R.id.iv_delete,R.id.iv_rank,R.id.tv_answer)
+            addOnClickListener(R.id.iv_delete,R.id.tv_rank,R.id.tv_answer)
         }
     }
 

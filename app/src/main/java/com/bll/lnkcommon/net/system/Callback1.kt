@@ -26,10 +26,6 @@ abstract class Callback1<T> : Observer<BaseResult1<T>> {
     }
 
     override fun onNext(@NonNull tBaseResult: BaseResult1<T>) {
-        if (!tBaseResult.Error.isNullOrEmpty()) {
-            IBaseView.fail(tBaseResult.Error)
-            return
-        }
         if (tBaseResult.Code == 200) {
             success(tBaseResult)
         } else {
@@ -38,7 +34,8 @@ abstract class Callback1<T> : Observer<BaseResult1<T>> {
                     IBaseView.login()
                 }
                 else -> {
-                    IBaseView.fail(tBaseResult.Error)
+                    if (isShowToast)
+                        IBaseView.fail(tBaseResult.Error)
                     failed(tBaseResult)
                 }
             }

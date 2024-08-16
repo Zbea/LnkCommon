@@ -188,6 +188,9 @@
         <activity android:name=".ui.activity.drawing.HomeworkDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.drawing.ExamDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

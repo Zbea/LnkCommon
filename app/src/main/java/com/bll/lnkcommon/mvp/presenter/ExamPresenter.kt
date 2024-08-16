@@ -20,4 +20,17 @@ class ExamPresenter(view: IContractView.IExamView) : BasePresenter<IContractView
         }, false)
     }
 
+    fun deleteExam(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val grade = RetrofitManager.service.deleteExams(body)
+        doRequest(grade, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDeleteSuccess()
+            }
+        }, true)
+    }
+
 }

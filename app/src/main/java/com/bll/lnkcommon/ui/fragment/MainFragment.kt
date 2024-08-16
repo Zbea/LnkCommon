@@ -39,6 +39,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Random
 
 class MainFragment:BaseFragment(),IRelationView,ISystemView {
 
@@ -322,7 +323,8 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 listFiles[nowDayPos-1]
             }
             else{
-                listFiles[listFiles.size-1]
+//                listFiles[listFiles.size-1]
+                listFiles[Random().nextInt(listFiles.size)]
             }
             GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
         }
@@ -493,5 +495,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
             }
         }
     }
+
 
 }

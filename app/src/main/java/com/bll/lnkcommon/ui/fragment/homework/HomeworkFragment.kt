@@ -112,22 +112,16 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
                         })
                 }
                 R.id.tv_answer->{
-                    setImageView(item.answerUrl)
+                    val images=item.answerUrl.split(",").toList()
+                    ImageDialog(requireActivity(),images).builder()
                 }
-                R.id.iv_rank->{
+                R.id.tv_rank->{
                     customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(index).putExtra("id",item.studentTaskId))
                 }
             }
         }
     }
 
-    /**
-     * 查看图片
-     */
-    private fun setImageView(path:String){
-        val images=path.split(",").toList()
-        ImageDialog(requireActivity(),images).builder()
-    }
 
     fun onChangeStudent(id:Int){
         pageIndex=1

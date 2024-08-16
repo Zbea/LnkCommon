@@ -248,6 +248,11 @@ interface APIService{
     @GET("parent/homework/studentExam")
     fun getExams(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList>>
     /**
+     * 删除
+     */
+    @POST("parent/homework/deleteExam")
+    fun deleteExams(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 成绩
      */
     @GET("parent/homework/allJob")

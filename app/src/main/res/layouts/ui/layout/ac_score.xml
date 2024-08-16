@@ -24,7 +24,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_weight="1">
             <TextView
-                android:layout_width="140dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
@@ -33,7 +33,7 @@
                 />
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
@@ -42,7 +42,7 @@
                 />
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
@@ -71,7 +71,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:layout_width="140dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
@@ -80,7 +80,7 @@
                 />
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
@@ -89,7 +89,7 @@
                 />
 
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"

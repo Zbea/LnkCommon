@@ -2,15 +2,15 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.mvp.model.ExamList
 import com.bll.lnkcommon.mvp.model.ExamScoreItem
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
-class HomeworkDetailsActivity:BaseDrawingActivity() {
+class ExamDetailsActivity:BaseDrawingActivity() {
 
-    private var homeworkBean:TeacherHomeworkList.TeacherHomeworkBean?=null
+    private var examBean:ExamList.ExamBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
 
@@ -19,32 +19,20 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun initData() {
-        homeworkBean=intent.getBundleExtra("bundle")?.getSerializable("homeworkBean") as TeacherHomeworkList.TeacherHomeworkBean
-        when (homeworkBean?.status!!){
-            1->{
-                images= homeworkBean?.homeworkContent?.split(",") as MutableList<String>
-            }
-            2->{
-                images= homeworkBean?.submitContent?.split(",") as MutableList<String>
-            }
-            3->{
-                images= homeworkBean?.correctContent?.split(",") as MutableList<String>
-            }
-        }
-        scoreMode=homeworkBean?.questionMode!!
-        correctMode=homeworkBean?.questionType!!
-        if (homeworkBean?.question?.isNotEmpty() == true)
-            currentScores= scoreJsonToList(homeworkBean?.question!!) as MutableList<ExamScoreItem>
-        if (homeworkBean?.answerUrl?.isNotEmpty()==true)
-            answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
+        examBean=intent.getBundleExtra("bundle")?.getSerializable("examBean") as ExamList.ExamBean
+        images= examBean?.teacherUrl?.split(",") as MutableList<String>
+        scoreMode=examBean?.questionMode!!
+        correctMode=examBean?.questionType!!
+        if (examBean?.question?.isNotEmpty() == true)
+            currentScores= scoreJsonToList(examBean?.question!!) as MutableList<ExamScoreItem>
+        if (examBean?.answerUrl?.isNotEmpty()==true)
+            answerImages= examBean?.answerUrl!!.split(",") as MutableList<String>
     }
 
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setViewElikUnable(iv_score,ll_score)
-
-        if (homeworkBean?.status==3)
-            showView(iv_score)
+        showView(iv_score)
         if (correctMode<3){
             showView(rv_list_score)
             disMissView(rv_list_multi)
@@ -61,11 +49,11 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
             disMissView(tv_answer)
         }
 
-        tv_correct_title.text=homeworkBean?.title
-        tv_total_score.text=homeworkBean?.score!!.toString()
+        tv_correct_title.text=examBean?.examName
+        tv_total_score.text=examBean?.score!!.toString()
 
-        initScoreView()
         setContentImage()
+        initScoreView()
     }
 
 

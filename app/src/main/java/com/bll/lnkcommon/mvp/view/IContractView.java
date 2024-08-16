@@ -161,6 +161,7 @@ public interface IContractView {
 
     interface IExamView extends IBaseView {
         void onList(ExamList list);
+        void onDeleteSuccess();
     }
 
     interface IPermissionSettingView extends IBaseView {

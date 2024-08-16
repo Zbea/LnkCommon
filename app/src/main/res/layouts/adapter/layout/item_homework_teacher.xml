@@ -52,12 +52,6 @@
             android:textSize="@dimen/sp_20" />
 
         <ImageView
-            android:id="@+id/iv_rank"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_rank"
-            android:layout_marginEnd="@dimen/dp_10"/>
-        <ImageView
             android:id="@+id/iv_delete"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
@@ -80,6 +74,18 @@
             android:layout_weight="1"
             android:textColor="@color/black_20"
             android:textSize="@dimen/sp_18" />
+
+        <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:text="成绩排行"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
 
         <TextView
             android:id="@+id/tv_answer"

@@ -8,22 +8,32 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.*
+import com.bll.lnkcommon.mvp.model.ExamScoreItem
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
+import com.bll.lnkcommon.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkcommon.ui.adapter.TopicScoreAdapter
 import com.bll.lnkcommon.utils.*
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
+import com.bll.lnkcommon.widget.SpaceItemDeco
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -46,6 +56,10 @@ abstract class BaseDrawingActivity : BaseActivity() {
     private var isScale=false//是否选中刻度
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
+    var scoreMode=0
+    var correctMode=0
+    var answerImages= mutableListOf<String>()
+    var currentScores= mutableListOf<ExamScoreItem>()
 
     override fun initCreate() {
         onInStanceElik()
@@ -420,6 +434,101 @@ abstract class BaseDrawingActivity : BaseActivity() {
     fun setViewElikUnable(vararg views: View?){
         for (view in views)
             elik?.addOnTopView(view)
+    }
+
+    /**
+     * 格式序列化  题目分数转行list集合
+     */
+    fun scoreJsonToList(json:String):List<ExamScoreItem>{
+        var items= mutableListOf<ExamScoreItem>()
+        if (correctMode<3){
+            items= Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+            for (item in items){
+                item.sort=items.indexOf(item)
+            }
+        }
+        else{
+            val scores= Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+            for (i in scores.indices){
+                items.add(ExamScoreItem().apply {
+                    sort=i
+                    if (scoreMode==1){
+                        var totalLabel=0
+                        for (item in scores[i]){
+                            totalLabel+=item.label
+                        }
+                        label=totalLabel
+                        var totalItem=0
+                        for (item in scores[i]){
+                            totalItem+= getScore(item.score)
+                        }
+                        score=totalItem.toString()
+                    }
+                    else{
+                        var totalRight=0
+                        for (item in scores[i]){
+                            item.score=item.result.toString()
+                            if (item.result==1) {
+                                totalRight+= 1
+                            }
+                        }
+                        score=totalRight.toString()
+                    }
+                    for (item in scores[i]){
+                        item.sort=scores[i].indexOf(item)
+                    }
+                    childScores=scores[i]
+                })
+            }
+        }
+        return items
+    }
+
+    private fun getScore(scoreStr: String?): Int {
+        return if (scoreStr == null || scoreStr.isEmpty() || !TextUtils.isDigitsOnly(scoreStr)) {
+            0
+        } else {
+            Integer.valueOf(scoreStr)
+        }
+    }
+
+    /**
+     * 设置成绩分数
+     */
+    fun initScoreView(){
+        iv_correct_close?.setOnClickListener {
+            disMissView(ll_score)
+            showView(iv_score)
+        }
+
+        iv_score?.setOnClickListener {
+            disMissView(iv_score)
+            showView(ll_score)
+        }
+
+        tv_answer?.setOnClickListener {
+            if (answerImages.size>0)
+                ImageDialog(this, answerImages).builder()
+        }
+
+        if (correctMode>0){
+            if (correctMode<3){
+                rv_list_score?.layoutManager = GridLayoutManager(this,2)
+                TopicScoreAdapter(R.layout.item_topic_child_score,scoreMode,correctMode,currentScores).apply {
+                    rv_list_score?.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                }
+                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this,15f)))
+            }
+            else{
+                rv_list_multi?.layoutManager = LinearLayoutManager(this)
+                TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,currentScores).apply {
+                    rv_list_multi?.adapter = this
+                    bindToRecyclerView(rv_list_multi)
+                }
+                rv_list_multi.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this,15f)))
+            }
+        }
     }
 
     /**

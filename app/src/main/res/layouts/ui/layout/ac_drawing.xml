@@ -60,7 +60,7 @@
         android:layout_alignParentEnd="true"
         android:padding="1dp"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="10dp"
         android:visibility="gone"
         android:src="@mipmap/icon_app_correct_score"
         android:background="@drawable/bg_black_stroke_0dp_corner"
