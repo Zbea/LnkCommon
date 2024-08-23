@@ -132,7 +132,7 @@ class DiaryActivity:BaseDrawingActivity() {
     private fun setContentImage() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
         v_content.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)

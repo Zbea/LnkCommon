@@ -119,7 +119,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
             book?.pageUrl=showFile.path //设置当前页面路径
             GlideUtils.setImageFile(this,showFile,view)
 
-            val drawPath=book?.bookDrawPath+"/${index+1}.tch"
+            val drawPath=book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath,true)
         }
     }
