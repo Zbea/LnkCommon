@@ -3,8 +3,10 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_60"
+    android:paddingStart="@dimen/dp_20"
+    android:paddingEnd="@dimen/dp_20"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_line_bottom"
+    android:background="@drawable/bg_gray_stroke_10dp_corner"
     >
 
     <TextView
@@ -12,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:lines="1"
         android:ellipsize="end"
         android:textColor="@color/black"
@@ -23,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textColor="@color/black"
         />
 

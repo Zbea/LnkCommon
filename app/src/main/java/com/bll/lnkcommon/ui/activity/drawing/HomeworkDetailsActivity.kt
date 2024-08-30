@@ -42,6 +42,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setViewElikUnable(iv_score,ll_score)
+        setPWEnabled(false)
 
         if (homeworkBean?.status==3)
             showView(iv_score)

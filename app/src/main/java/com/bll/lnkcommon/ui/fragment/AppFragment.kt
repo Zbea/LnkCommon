@@ -32,7 +32,7 @@ class AppFragment:BaseFragment() {
     }
 
     override fun initView() {
-        setTitle(DataBeanManager.mainListTitle[4])
+        setTitle(DataBeanManager.mainListTitle[3])
 
         initRecyclerView()
 

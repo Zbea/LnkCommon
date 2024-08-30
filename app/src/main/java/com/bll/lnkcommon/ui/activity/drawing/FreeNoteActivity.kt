@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
-import PopupFreeNoteFriendsList
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -40,7 +39,6 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     private var friendIds= mutableListOf<Int>()
     private var friends= mutableListOf<FriendList.FriendBean>()
-    private var posFriend=0
 
     override fun onReceiveList(list: ShareNoteList) {
         receiveNotes=list.list
@@ -105,7 +103,13 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
     }
 
     override fun onUnbind() {
-        friends.removeAt(posFriend)
+        val iterator = friends.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (friendIds.contains(item.friendId)) {
+                iterator.remove()
+            }
+        }
         showToast("解绑好友成功")
     }
 
@@ -132,9 +136,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
 
     }
     override fun initView() {
-        disMissView(iv_catalog,iv_btn)
-
-        iv_save.setOnClickListener {
+        tv_save.setOnClickListener {
             freeNoteBean?.isSave=true
             saveFreeNote()
             createFreeNote()
@@ -150,7 +152,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             }
         }
 
-        tv_theme.setOnClickListener {
+        iv_btn.setOnClickListener {
             ModuleSelectDialog(this,0,DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
@@ -174,18 +176,13 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                         createFreeNote()
                         posImage=0
                     }
-                    showView(iv_save)
+                    showView(tv_save)
                     initFreeNote()
                     setContentImage()
                 }
             })
         }
 
-        tv_free_list.setOnClickListener {
-            PopupFreeNoteList(this,tv_free_list,freeNoteBean!!.date).builder().setOnSelectListener{
-                setChangeFreeNote(it)
-            }
-        }
 
         tv_receive_list.setOnClickListener {
             if (!isLoginState()){
@@ -248,13 +245,18 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                 showToast("未加好友")
                 return@setOnClickListener
             }
-            FriendSelectorDialog(this,friends).builder().setOnDialogClickListener{
-                friendIds= it as MutableList<Int>
-                presenter.getToken()
+            FreeNoteFriendManageDialog(this,friends).builder().setOnDialogClickListener{ type, ids->
+                if (type==0){
+                    friendIds= ids as MutableList<Int>
+                    presenter.getToken()
+                }
+                else{
+                    presenter.unbindFriend(ids)
+                }
             }
         }
 
-        iv_add_friend.setOnClickListener {
+        tv_add.setOnClickListener {
             if (!isLoginState()){
                 showToast("未登录")
                 return@setOnClickListener
@@ -265,20 +267,10 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                 }
         }
 
-        iv_friends.setOnClickListener {
-            if (!isLoginState()){
-                showToast("未登录")
-                return@setOnClickListener
-            }
-            PopupFreeNoteFriendsList(this,friends,iv_friends).builder().setOnSelectListener{pos,item->
-                posFriend=pos
-                presenter.unbindFriend(item.id)
-            }
-        }
-
         initFreeNote()
         setContentImage()
     }
+
 
     /**
      * 切换随笔
@@ -289,28 +281,12 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         posImage=freeNoteBean?.page!!
         initFreeNote()
         if (freeNoteBean?.isSave==true){
-            disMissView(iv_save)
+            disMissView(tv_save)
         }
         else{
-            showView(iv_save)
+            showView(tv_save)
         }
         setContentImage()
-    }
-
-    override fun onPageDown() {
-        posImage+=1
-        if (posImage>=bgResList.size){
-            bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
-            bgResList.add(bgRes)
-        }
-        setContentImage()
-    }
-
-    override fun onPageUp() {
-        if (posImage>0){
-            posImage-=1
-            setContentImage()
-        }
     }
 
     private fun initFreeNote(){
@@ -336,6 +312,28 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         freeNoteBean?.bgRes= arrayListOf(bgRes)
         freeNoteBean?.type=0
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+    }
+
+    override fun onCatalog() {
+        CatalogFreeNoteDialog(this,freeNoteBean!!.date).builder().setOnItemClickListener{
+            setChangeFreeNote(it)
+        }
+    }
+
+    override fun onPageDown() {
+        posImage+=1
+        if (posImage>=bgResList.size){
+            bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
+            bgResList.add(bgRes)
+        }
+        setContentImage()
+    }
+
+    override fun onPageUp() {
+        if (posImage>0){
+            posImage-=1
+            setContentImage()
+        }
     }
 
     /**
@@ -376,7 +374,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
         }
         FileMultitaskDownManager.with(this).create(urls).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     val freeNoteBean= FreeNoteBean()

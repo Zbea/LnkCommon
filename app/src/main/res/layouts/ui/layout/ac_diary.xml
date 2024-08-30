@@ -14,7 +14,7 @@
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/icon_diary_details_bg_1"
+        android:background="@mipmap/icon_diary_details_bg_1"
         android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
@@ -53,6 +53,19 @@
             android:src="@mipmap/icon_date_arrow_down"
             />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_digest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="120dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center"
+        android:text="摘要"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_24" />
 
     <include
         android:id="@+id/ll_geometry"

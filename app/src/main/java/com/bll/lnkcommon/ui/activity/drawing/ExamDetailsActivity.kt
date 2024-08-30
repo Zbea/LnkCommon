@@ -32,6 +32,7 @@ class ExamDetailsActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setViewElikUnable(iv_score,ll_score)
+        setPWEnabled(false)
         showView(iv_score)
         if (correctMode<3){
             showView(rv_list_score)

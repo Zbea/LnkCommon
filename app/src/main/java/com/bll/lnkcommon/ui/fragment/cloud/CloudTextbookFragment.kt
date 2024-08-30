@@ -277,7 +277,6 @@ class CloudTextbookFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
-        setPageNumber(books.size)
     }
 
 }

@@ -6,13 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.*
 import com.bll.lnkcommon.Constants.NOTE_TYPE_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.NOTE_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
-import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
@@ -26,13 +23,11 @@ import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
-import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileUploadManager
-import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.utils.ToolUtils
+import com.bll.lnkcommon.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class NoteFragment:BaseFragment() {
@@ -50,13 +45,12 @@ class NoteFragment:BaseFragment() {
         return R.layout.fragment_list_tab
     }
     override fun initView() {
+        setTitle(DataBeanManager.mainListTitle[2])
+        showView(iv_manager)
         pageSize=10
 
         popupBeans.add(PopupBean(0, getString(R.string.notebook_manager)))
         popupBeans.add(PopupBean(1, getString(R.string.notebook_create)))
-
-        setTitle(DataBeanManager.mainListTitle[3])
-        showView(iv_manager)
 
         privacyPassword=MethodManager.getPrivacyPassword(1)
 
@@ -170,7 +164,12 @@ class NoteFragment:BaseFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            mQiniuPresenter.getToken()
+                            if (NetworkUtil.isNetworkAvailable(requireActivity())){
+                                mQiniuPresenter.getToken()
+                            }
+                            else{
+                                showToast("网络连接失败")
+                            }
                         }
                     })
                 }

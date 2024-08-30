@@ -54,12 +54,16 @@ class MainActivity : BaseActivity(),IQiniuView {
     private var textbookFragment:TextbookFragment?=null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
+    private var eventType = ""
 
     override fun onToken(token: String) {
-        bookcaseFragment?.upload(token)
-        textbookFragment?.upload(token)
-        mainFragment?.uploadDiary(token)
-        mainFragment?.uploadScreenShot(token)
+        when(eventType){
+            Constants.SETTING_DATA_UPLOAD_EVENT->{
+                bookcaseFragment?.upload(token)
+                textbookFragment?.upload(token)
+                mainFragment?.uploadScreenShot(token)
+            }
+        }
     }
 
     override fun layoutId(): Int {
@@ -271,6 +275,7 @@ class MainActivity : BaseActivity(),IQiniuView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             Constants.SETTING_DATA_UPLOAD_EVENT->{
+                eventType=Constants.SETTING_DATA_UPLOAD_EVENT
                 if(isLoginState()){
                     qiniuPresenter.getToken()
                 }
@@ -301,9 +306,7 @@ class MainActivity : BaseActivity(),IQiniuView {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (myBroadcastReceiver!=null){
-            unregisterReceiver(myBroadcastReceiver)
-        }
+        unregisterReceiver(myBroadcastReceiver)
     }
 
 }

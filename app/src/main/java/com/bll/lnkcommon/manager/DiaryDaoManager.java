@@ -84,6 +84,16 @@ public class DiaryDaoManager {
         return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
+    public List<DiaryBean> queryList(long startLong,long endLong) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+    public List<DiaryBean> queryListByTitle() {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Title.isNotNull();
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
     public List<Long> queryLongList(int year,int month) {
         List<Long> times=new ArrayList<>();
         WhereCondition whereCondition= DiaryBeanDao.Properties.Year.eq(year);

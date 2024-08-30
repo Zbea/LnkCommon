@@ -1,10 +1,12 @@
 package com.bll.lnkcommon.utils.zip;
 
 import com.bll.lnkcommon.Constants;
+import com.bll.lnkcommon.FileAddress;
 
 import net.lingala.zip4j.util.Zip4jUtil;
 
 import java.io.File;
+import java.util.List;
 
 
 public class ZipUtils {
@@ -24,6 +26,21 @@ public class ZipUtils {
         String destinationStr= Constants.INSTANCE.getZIP_PATH()+File.separator + fileName + ".zip";
         ZipManager.zip(targetStr,destinationStr,callback);
 
+    }
+
+    /**
+     * 压缩
+     * @param targetPaths 目标文件路径集合
+     * @param fileName 压缩文件名称
+     * @param callback
+     */
+    public static void zip(List<String> targetPaths, String fileName, IZipCallback callback){
+        if(targetPaths.isEmpty()){
+            callback.onError("目标文件不存在");
+            return;
+        }
+        String destinationStr=new FileAddress().getPathZip(fileName);
+        ZipManager.zip(targetPaths,destinationStr,"",callback);
     }
 
     /**

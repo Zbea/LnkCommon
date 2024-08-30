@@ -9,9 +9,8 @@
         android:id="@+id/ll_tips"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="60dp"
-        android:gravity="end"
+        android:layout_marginStart="80dp"
+        android:gravity="start"
         android:orientation="vertical"
         android:visibility="gone"
         >
@@ -37,11 +36,12 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/dp_45"
         android:layout_marginTop="@dimen/dp_45"
-        android:src="@mipmap/icon_back"/>
+        android:src="@mipmap/icon_close"/>
 
 
     <ImageView

@@ -88,9 +88,9 @@ class ShareNotePresenter(view: IContractView.IShareNoteView):BasePresenter<ICont
         }, true)
     }
 
-    fun unbindFriend(id: Int) {
+    fun unbindFriend(ids: List<Int>) {
         val map=HashMap<String,Any>()
-        map["ids"]= arrayListOf(id).toArray()
+        map["ids"]= ids
         val body = RequestUtils.getBody(map)
         val editName = RetrofitManager.service.onUnbindFriend(body)
         doRequest(editName, object : Callback<Any>(view) {

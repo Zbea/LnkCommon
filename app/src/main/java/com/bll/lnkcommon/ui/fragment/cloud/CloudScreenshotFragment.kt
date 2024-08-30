@@ -18,6 +18,7 @@ import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
+import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
@@ -33,7 +34,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=20
+        pageSize=15
         initRecyclerView()
     }
 
@@ -43,7 +44,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,50f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,50f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         mAdapter = CloudScreenshotAdapter(R.layout.item_cloud_diary, null).apply {
@@ -67,6 +68,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 }
             }
         }
+        rv_list.addItemDecoration(SpaceItemDeco(20))
     }
 
     private fun deleteItem(item: ItemTypeBean){
@@ -77,8 +79,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     private fun download(item: ItemTypeBean){
         showLoading()
-        val fileName= DateUtils.longToString(item.date)
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(DateUtils.longToString(item.date))
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -89,7 +90,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip1(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
-                            if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("全部")){
+                            if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&item.path!=FileAddress().getPathScreen("未分类")){
                                 item.id=null//设置数据库id为null用于重新加入
                                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
                             }
@@ -143,6 +144,5 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
-        setPageNumber(items.size)
     }
 }

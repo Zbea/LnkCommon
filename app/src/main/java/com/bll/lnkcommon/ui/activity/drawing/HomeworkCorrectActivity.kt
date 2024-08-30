@@ -89,9 +89,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
         tv_save.setOnClickListener {
             showLoading()
-            Handler().postDelayed( {
-                commitPapers()
-            },1000)
+            commitPapers()
         }
 
     }
@@ -114,18 +112,18 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
      * 下载学生作业
      */
     private fun loadPapers(){
-        showLoading()
         val savePaths= mutableListOf<String>()
         for (i in images.indices){
             savePaths.add(getPath()+"/${i+1}.png")
         }
-        val files = FileUtils.getAscFiles(getPath())
-        if (files.isNullOrEmpty()) {
+        if (FileUtils.isExistContent(getPath())) {
+            showLoading()
             FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                     }
                     override fun completed(task: BaseDownloadTask?) {
+                        hideLoading()
                         setContentImage()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -144,15 +142,15 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
-        hideLoading()
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         //批改成功后加载提交后的图片
         if (correctBean?.status==3){
-            elik?.setPWEnabled(false)
+            setPWEnabled(false)
             GlideUtils.setImageUrl(this, images[posImage],v_content)
         }
         else{
+            setPWEnabled(true)
             val masterImage="${getPath()}/${posImage+1}.png"//原图
             GlideUtils.setImageFile(this, File(masterImage),v_content)
 

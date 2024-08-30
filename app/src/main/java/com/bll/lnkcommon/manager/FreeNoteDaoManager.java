@@ -3,11 +3,7 @@ package com.bll.lnkcommon.manager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.DaoSession;
 import com.bll.lnkcommon.greendao.FreeNoteBeanDao;
-import com.bll.lnkcommon.greendao.NoteDao;
-import com.bll.lnkcommon.greendao.RecordBeanDao;
 import com.bll.lnkcommon.mvp.model.FreeNoteBean;
-import com.bll.lnkcommon.mvp.model.Note;
-import com.bll.lnkcommon.mvp.model.RecordBean;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.utils.SPUtil;
 
@@ -57,37 +53,40 @@ public class FreeNoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public List<FreeNoteBean> queryList( int page, int pageSize) {
-        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(0);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date)
-                .offset((page-1)*pageSize).limit(pageSize).build().list();
-    }
-
     public FreeNoteBean queryBean() {
         WhereCondition whereCondition= FreeNoteBeanDao.Properties.IsSave.eq(false);
         List<FreeNoteBean> items=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
-        if (items.size()>0){
-            return items.get(0);
-        }
-        else {
+        if (items.size()==0){
             return null;
         }
+        if (items.size()>1){
+            for (int i = 1; i < items.size()-1; i++) {
+                FreeNoteBean item= items.get(i);
+                item.isSave=true;
+                insertOrReplace(item);
+            }
+        }
+        return items.get(0);
     }
 
     public FreeNoteBean queryByDate(long date){
         WhereCondition whereCondition= FreeNoteBeanDao.Properties.Date.eq(date);
-        List<FreeNoteBean> items=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
-        if (items.size()>0){
-            return items.get(0);
-        }
-        else {
-            return null;
-        }
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().unique();
     }
 
     public List<FreeNoteBean> queryList() {
-        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(0);
+        return dao.queryBuilder().where(whereUser).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+    }
+
+    public List<FreeNoteBean> queryListByType(int type) {
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+    }
+
+    public List<FreeNoteBean> queryListByType(int page, int pageSize) {
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(0);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date)
+                .offset((page-1)*pageSize).limit(pageSize).build().list();
     }
 
     public boolean isExist(long date) {

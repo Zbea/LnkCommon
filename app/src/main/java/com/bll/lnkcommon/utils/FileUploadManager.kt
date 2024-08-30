@@ -16,9 +16,28 @@ class FileUploadManager(private val uploadToken:String) {
     fun startUpload(targetStr: String, fileName: String){
         autoZip(targetStr,fileName)
     }
+    fun startUpload(targetPaths: List<String>, fileName: String){
+        autoZip(targetPaths,fileName)
+    }
 
     private fun autoZip(targetStr: String, fileName: String) {
         ZipUtils.zip(targetStr, fileName, object : IZipCallback {
+            override fun onStart() {
+            }
+            override fun onProgress(percentDone: Int) {
+            }
+            override fun onFinish() {
+                val path = FileAddress().getPathZip(fileName)
+                upload(path)
+            }
+            override fun onError(msg: String?) {
+                Log.d("debug","onError ${fileName}:$msg")
+            }
+        })
+    }
+
+    private fun autoZip(targetPaths: List<String>, fileName: String) {
+        ZipUtils.zip(targetPaths, fileName, object : IZipCallback {
             override fun onStart() {
             }
             override fun onProgress(percentDone: Int) {
