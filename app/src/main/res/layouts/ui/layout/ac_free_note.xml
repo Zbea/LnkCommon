@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="180dp"
+            android:layout_width="200dp"
             android:layout_height="50dp"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:ellipsize="end"
@@ -45,13 +45,13 @@
         <TextView
             android:id="@+id/tv_add"
             android:layout_width="100dp"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="@dimen/dp_45"
             android:layout_marginEnd="@dimen/dp_40"
             android:gravity="center"
-            android:text="好友+"
+            android:text="好友 +"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             android:textColor="@color/black"
-            android:textSize="26sp" />
+            android:textSize="@dimen/sp_24" />
 
 
     </LinearLayout>
@@ -70,7 +70,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="@dimen/dp_30"
-            android:drawableStart="@mipmap/icon_freenote_share_list"
+            android:drawableStart="@mipmap/icon_freenote_share"
             android:drawablePadding="@dimen/dp_5"
             android:text="分享"
             android:textColor="@color/black"
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="删除"
-            android:layout_marginEnd="@dimen/dp_50"
+            android:layout_marginEnd="65dp"
             android:textColor="@color/black"
             android:textSize="24sp" />
 

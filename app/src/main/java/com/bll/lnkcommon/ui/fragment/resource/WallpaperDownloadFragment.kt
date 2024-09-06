@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ImageDialog
@@ -50,7 +51,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             fetchData()
         }
     }

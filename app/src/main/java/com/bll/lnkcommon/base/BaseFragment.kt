@@ -119,7 +119,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (rv_tab!=null){
             initTabView()
         }
-        if (NetworkUtil.isNetworkAvailable(requireActivity())&&DataBeanManager.courses.size==0){
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&DataBeanManager.courses.size==0){
             mCommonPresenter.getCommon()
         }
         initCommonTitle()

@@ -3,17 +3,13 @@ package com.bll.lnkcommon.ui.fragment
 import DialogClick
 import android.content.Intent
 import android.graphics.BitmapFactory
-import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.*
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
 import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
 import com.bll.lnkcommon.Constants.STUDENT_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
-import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.*
 import com.bll.lnkcommon.manager.*
@@ -162,7 +158,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                             diaryStartLong=startLong
                             diaryEndLong=endLong
                             diaryUploadTitleStr=titleStr
-                            if (NetworkUtil.isNetworkAvailable(requireActivity())){
+                            if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
                                 mQiniuPresenter.getToken()
                             }
                             else{
@@ -263,7 +259,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
 
     }
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())) {
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             if (isLoginState()){
                 presenter.getStudents()
                 presenter.getMessageTotal()

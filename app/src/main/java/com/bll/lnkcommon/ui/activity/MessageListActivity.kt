@@ -3,7 +3,6 @@ package com.bll.lnkcommon.ui.activity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
@@ -14,12 +13,8 @@ import com.bll.lnkcommon.mvp.presenter.MessagePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.MessageAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity:BaseActivity(),IContractView.IMessageView {
 

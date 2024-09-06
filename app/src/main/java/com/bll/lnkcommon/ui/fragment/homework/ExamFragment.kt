@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -16,7 +17,6 @@ import com.bll.lnkcommon.mvp.presenter.ExamPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IExamView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.activity.drawing.ExamDetailsActivity
-import com.bll.lnkcommon.ui.activity.drawing.HomeworkDetailsActivity
 import com.bll.lnkcommon.ui.adapter.ExamAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
@@ -55,7 +55,7 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
             fetchData()
     }
 

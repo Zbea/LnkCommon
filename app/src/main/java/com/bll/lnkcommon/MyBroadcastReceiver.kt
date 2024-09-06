@@ -1,14 +1,11 @@
 package com.bll.lnkcommon
 
 import android.annotation.SuppressLint
-import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.net.wifi.WifiManager
-import android.os.PowerManager
 import android.util.Log
 import com.bll.lnkcommon.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
@@ -43,7 +40,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 }
             }
             Constants.NET_REFRESH->{
-                if (NetworkUtil.isNetworkAvailable(context)){
+                if (NetworkUtil(context).isNetworkConnected()){
                     EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
                 }
             }

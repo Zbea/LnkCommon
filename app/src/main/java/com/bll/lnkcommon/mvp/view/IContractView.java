@@ -14,7 +14,6 @@ import com.bll.lnkcommon.mvp.model.ExamRankList;
 import com.bll.lnkcommon.mvp.model.FriendList;
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList;
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList;
-import com.bll.lnkcommon.mvp.model.JournalList;
 import com.bll.lnkcommon.mvp.model.MessageList;
 import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
@@ -125,7 +124,7 @@ public interface IContractView {
         void onDeleteSuccess();
     }
 
-    interface IShareNoteView extends IBaseView{
+    interface IFreeNoteView extends IBaseView{
         void onReceiveList(ShareNoteList list);
         void onShareList(ShareNoteList list);
         void onToken(String token);

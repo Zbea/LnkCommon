@@ -1,25 +1,17 @@
 package com.bll.lnkcommon.ui.fragment
 
-import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.AppMenuDialog
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
-import com.bll.lnkcommon.mvp.model.ItemList
-import com.bll.lnkcommon.ui.activity.*
-import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkcommon.ui.adapter.AppListAdapter
 import com.bll.lnkcommon.utils.AppUtils
-import com.bll.lnkcommon.utils.BitmapUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_title.tv_setting
-import kotlinx.android.synthetic.main.fragment_app.rv_list
+import kotlinx.android.synthetic.main.fragment_app.*
 
 class AppFragment:BaseFragment() {
 

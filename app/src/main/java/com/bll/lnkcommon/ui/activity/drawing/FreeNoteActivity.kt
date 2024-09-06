@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.*
@@ -10,8 +11,8 @@ import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
 import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.ShareNoteList
-import com.bll.lnkcommon.mvp.presenter.ShareNotePresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IShareNoteView
+import com.bll.lnkcommon.mvp.presenter.FreeNotePresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IFreeNoteView
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
@@ -20,9 +21,9 @@ import kotlinx.android.synthetic.main.ac_free_note.v_content
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
-class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
+class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
 
-    private val presenter=ShareNotePresenter(this)
+    private val presenter=FreeNotePresenter(this)
     private var bgRes=""
     private var freeNoteBean:FreeNoteBean?=null
     private var posImage=0
@@ -43,11 +44,13 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
     override fun onReceiveList(list: ShareNoteList) {
         receiveNotes=list.list
         receiveTotal=list.total
+        receivePopWindow?.setData(receiveNotes)
     }
 
     override fun onShareList(list: ShareNoteList) {
         shareNotes=list.list
         shareTotal=list.total
+        sharePopWindow?.setData(shareNotes)
     }
 
     override fun onToken(token: String) {
@@ -62,23 +65,15 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
                 sBgRes.add(bgResList[i])
             }
         }
-        if (imagePaths.size==0){
-            hideLoading()
-            showToast("暂无分享内容")
-            return
-        }
-
         FileImageUploadManager(token, imagePaths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    val urls=ToolUtils.getImagesStr(urls)
-                    val bgs=ToolUtils.getImagesStr(sBgRes)
                     val map=HashMap<String,Any>()
                     map["userIds"]=friendIds
                     map["title"]=freeNoteBean?.title!!
-                    map["bgRes"]=bgs
-                    map["paths"]=urls
+                    map["bgRes"]=ToolUtils.getImagesStr(sBgRes)
+                    map["paths"]=ToolUtils.getImagesStr(urls)
                     map["date"]=freeNoteBean?.date!!
                     presenter.commitShare(map)
                 }
@@ -128,7 +123,7 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             createFreeNote()
         }
         posImage=freeNoteBean?.page!!
-        if (isLoginState()&&NetworkUtil.isNetworkAvailable(this)){
+        if (isLoginState()&&NetworkUtil(this).isNetworkConnected()){
             presenter.getFriends()
             fetchReceiveNotes(1,false)
             fetchShareNotes(1,false)
@@ -247,8 +242,14 @@ class FreeNoteActivity:BaseDrawingActivity(),IShareNoteView {
             }
             FreeNoteFriendManageDialog(this,friends).builder().setOnDialogClickListener{ type, ids->
                 if (type==0){
-                    friendIds= ids as MutableList<Int>
-                    presenter.getToken()
+                    val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
+                    if (FileUtils.isExistContent(path)){
+                        friendIds= ids as MutableList<Int>
+                        presenter.getToken()
+                    }
+                    else{
+                        showToast("暂无分享内容")
+                    }
                 }
                 else{
                     presenter.unbindFriend(ids)

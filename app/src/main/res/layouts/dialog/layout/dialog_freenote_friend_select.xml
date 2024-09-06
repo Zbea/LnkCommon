@@ -35,7 +35,7 @@
             android:id="@+id/iv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_freenote_share_list"
+            android:src="@mipmap/icon_freenote_share_1"
             />
 
     </LinearLayout>

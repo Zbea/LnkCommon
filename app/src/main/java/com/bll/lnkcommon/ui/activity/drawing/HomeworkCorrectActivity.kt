@@ -12,6 +12,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkcommon.utils.*
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -25,6 +26,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     private val presenter=HomeworkCorrectPresenter(this)
     private var correctBean:CorrectBean?=null
     private var images= mutableListOf<String>()
+    private val savePaths= mutableListOf<String>()
     private var posImage=0
     private val commitItems = mutableListOf<ItemList>()
     private var url=""
@@ -75,11 +77,15 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
+        elik?.addOnTopView(tv_save)
 
         if (correctBean?.status==2)
         {
             showView(tv_save)
             images= correctBean?.submitUrl!!.split(",") as MutableList<String>
+            for (i in images.indices){
+                savePaths.add(getPath()+"/${i+1}.png")
+            }
             loadPapers()
         }
         else{
@@ -112,11 +118,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
      * 下载学生作业
      */
     private fun loadPapers(){
-        val savePaths= mutableListOf<String>()
-        for (i in images.indices){
-            savePaths.add(getPath()+"/${i+1}.png")
-        }
-        if (FileUtils.isExistContent(getPath())) {
+        if (!FileUtils.isExistContent(getPath())) {
             showLoading()
             FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -145,17 +147,15 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         //批改成功后加载提交后的图片
-        if (correctBean?.status==3){
-            setPWEnabled(false)
-            GlideUtils.setImageUrl(this, images[posImage],v_content)
-        }
-        else{
+        if (correctBean?.status==2){
             setPWEnabled(true)
-            val masterImage="${getPath()}/${posImage+1}.png"//原图
-            GlideUtils.setImageFile(this, File(masterImage),v_content)
-
+            GlideUtils.setImageFile(this, File(savePaths[posImage]),v_content)
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
+        }
+        else{
+            setPWEnabled(false)
+            GlideUtils.setImageUrl(this, images[posImage],v_content)
         }
     }
 
@@ -181,18 +181,13 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         //手写,图片合图
         for (i in images.indices){
             val index=i+1
-            val masterImage="${getPath()}/${index}.png"//原图
+            val path=savePaths[i]
             val drawPath = getPathDrawStr(index)
             Thread {
-                val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap!=null){
-                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this,mergeBitmap, masterImage)
-                }
+                BitmapUtils.mergeBitmap(path, drawPath)
                 commitItems.add(ItemList().apply {
                     id = i
-                    url = masterImage
+                    url = path
                 })
                 if (commitItems.size==images.size){
                     commitItems.sort()

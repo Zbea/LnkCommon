@@ -164,7 +164,7 @@ class NoteFragment:BaseFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            if (NetworkUtil.isNetworkAvailable(requireActivity())){
+                            if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
                                 mQiniuPresenter.getToken()
                             }
                             else{

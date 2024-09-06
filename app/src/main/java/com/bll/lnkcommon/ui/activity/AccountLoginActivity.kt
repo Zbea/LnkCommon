@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.model.User
@@ -88,7 +89,7 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
 
     override fun onResume() {
         super.onResume()
-        if (NetworkUtil.isNetworkAvailable(this)) {
+        if (NetworkUtil(this).isNetworkConnected()) {
             disMissView(ll_tips)
         } else {
             showView(ll_tips)
