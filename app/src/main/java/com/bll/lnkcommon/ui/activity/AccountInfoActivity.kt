@@ -167,4 +167,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mUser?.let { SPUtil.putObj("user", it) }
     }
 
+    override fun onRefreshData() {
+        presenter.getStudents()
+    }
+
 }

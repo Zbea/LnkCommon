@@ -404,9 +404,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 setDateView()
                 showCalenderView()
             }
-            NETWORK_CONNECTION_COMPLETE_EVENT->{
-                lazyLoad()
-            }
         }
     }
 

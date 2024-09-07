@@ -200,4 +200,5 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
             }
         }
     }
+
 }

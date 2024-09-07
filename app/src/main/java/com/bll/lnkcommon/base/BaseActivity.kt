@@ -433,7 +433,21 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-        onEventBusMessage(msgFlag)
+        when(msgFlag){
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                onRefreshData()
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
+    }
+
+    /**
+     * 数据刷新
+     */
+    open fun onRefreshData(){
+
     }
 
     /**

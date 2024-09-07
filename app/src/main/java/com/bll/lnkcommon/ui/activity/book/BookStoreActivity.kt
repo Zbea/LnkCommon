@@ -270,4 +270,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         presenter.getBooks(map)
     }
 
+    override fun onRefreshData() {
+        presenter.getBookType()
+    }
 }

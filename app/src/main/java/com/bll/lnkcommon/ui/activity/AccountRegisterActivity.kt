@@ -178,5 +178,4 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
         finish()
     }
 
-
 }

@@ -11,6 +11,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkcommon.*
+import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.NoteDaoManager
@@ -380,7 +381,14 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
-        onEventBusMessage(msgFlag)
+        when(msgFlag){
+            NETWORK_CONNECTION_COMPLETE_EVENT->{
+                lazyLoad()
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
     }
 
     /**

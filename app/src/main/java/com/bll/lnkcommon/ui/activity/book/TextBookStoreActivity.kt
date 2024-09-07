@@ -65,6 +65,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     override fun onType(bookStoreType: BookStoreType) {
         if (!bookStoreType.bookLibType.isNullOrEmpty()){
+            subTypeList.clear()
             val types=bookStoreType.bookLibType
             for (item in types){
                 subTypeList.add(PopupBean(item.type,item.desc,types.indexOf(item)==0))
@@ -406,5 +407,9 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 presenter.getHomeworkBooks(map)
             }
         }
+    }
+
+    override fun onRefreshData() {
+        presenter.getBookType()
     }
 }

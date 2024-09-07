@@ -95,4 +95,7 @@ class MessageListActivity:BaseActivity(),IContractView.IMessageView {
         mMessagePresenter.getList(map)
     }
 
+    override fun onRefreshData() {
+        fetchData()
+    }
 }
