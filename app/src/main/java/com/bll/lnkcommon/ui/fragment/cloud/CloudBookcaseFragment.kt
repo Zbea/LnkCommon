@@ -81,23 +81,14 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudBookcaseFragment.position=position
-                val book=books[position]
-                val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
-                if (localBook == null) {
-                    showLoading()
-                    //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-                    if (!book.drawUrl.isNullOrEmpty()){
-                        countDownTasks= CountDownLatch(2)
-                        downloadBook(book)
-                        downloadBookDrawing(book)
-                    }else{
-                        countDownTasks= CountDownLatch(1)
-                        downloadBook(book)
-                    }
-                    downloadSuccess(book)
-                } else {
-                    showToast("已下载")
-                }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudBookcaseFragment.position=position
@@ -106,7 +97,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            deleteItem(books[position])
+                            deleteItem()
                         }
                     })
                 true
@@ -114,7 +105,28 @@ class CloudBookcaseFragment:BaseCloudFragment() {
         }
     }
 
-    private fun deleteItem(book: Book){
+    private fun downloadItem(){
+        val book=books[position]
+        val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
+        if (localBook == null) {
+            showLoading()
+            //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
+            if (!book.drawUrl.isNullOrEmpty()){
+                countDownTasks= CountDownLatch(2)
+                downloadBook(book)
+                downloadBookDrawing(book)
+            }else{
+                countDownTasks= CountDownLatch(1)
+                downloadBook(book)
+            }
+            downloadSuccess(book)
+        } else {
+            showToast("已下载")
+        }
+    }
+
+    private fun deleteItem(){
+        val book=books[position]
         val ids= mutableListOf<Int>()
         ids.add(book.cloudId)
         mCloudPresenter.deleteCloud(ids)
@@ -131,7 +143,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                 hideLoading()
                 val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
                 if (localBook!=null){
-                    deleteItem(book)
+                    deleteItem()
                     showToast(book.bookName+"下载成功")
                 }
                 else{

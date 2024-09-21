@@ -528,6 +528,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                     FileUtils.deleteFile(File(path))
                     DiaryDaoManager.getInstance().delete(item)
                 }
+                showToast("日记上传成功")
             }
             2->{
                 val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))

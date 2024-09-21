@@ -12,7 +12,7 @@ class CloudDiaryAdapter(layoutResId: Int, data: List<CloudListBean>?) : BaseQuic
 
     override fun convert(helper: BaseViewHolder, item: CloudListBean) {
         helper.setText(R.id.tv_title,item.subTypeStr)
-        helper.setText(R.id.tv_date, DateUtils.longToStringWeek1(item.date))
+        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date))
         helper.addOnClickListener(R.id.iv_delete)
     }
 

@@ -11,7 +11,7 @@ class NoteAdapter(layoutResId: Int, data: List<Note>?) : BaseQuickAdapter<Note, 
 
     override fun convert(helper: BaseViewHolder, item: Note) {
         helper.setText(R.id.tv_title,item.title)
-        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoYear(item.date))
+        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date))
         helper.setVisible(R.id.iv_password,item.typeStr==mContext.getString(R.string.note_tab_diary))
         if (MethodManager.getPrivacyPassword(1)!=null)
             helper.setImageResource(R.id.iv_password,if (item.isCancelPassword) R.mipmap.icon_encrypt_cancel else R.mipmap.icon_encrypt_check)

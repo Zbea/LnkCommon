@@ -146,17 +146,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-
-    fun showSearchView(isShow:Boolean) {
-       if (isShow){
-            showView(ll_search)
-        }
-        else{
-            disMissView(ll_search)
-        }
-    }
-
-
     fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }

@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_40"
-    android:background="@drawable/bg_line_bottom"
+    android:layout_height="@dimen/dp_50"
     android:gravity="center_vertical"
     >
 
@@ -12,14 +11,14 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
     <TextView
         android:id="@+id/tv_student_name"
         android:layout_width="@dimen/dp_120"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
 
     <TextView
@@ -27,7 +26,7 @@
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
 
     <TextView
@@ -36,27 +35,27 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
 
     <TextView
         android:id="@+id/tv_set"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="权限设置"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
 
     <TextView
         android:id="@+id/tv_student_cancel"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="取消关联"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         />
 
 </LinearLayout>

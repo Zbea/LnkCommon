@@ -18,7 +18,7 @@
             android:layout_marginStart="35dp"
             android:text="我的阅读"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             />
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:text="分类列表"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_25" />
 
     </RelativeLayout>
 

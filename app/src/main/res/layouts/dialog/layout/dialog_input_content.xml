@@ -20,38 +20,8 @@
         android:layout_marginTop="30dp"
         android:padding="5dp"/>
 
-
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="@dimen/dp_45"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="@dimen/sp_22"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="@string/cancel"
-            android:textColor="@color/black" />
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            />
-
-        <Button
-            android:id="@+id/btn_ok"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="@dimen/sp_22"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="@string/ok"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
+    <include
+        layout="@layout/common_dialog_ok"
+        />
 
 </LinearLayout>

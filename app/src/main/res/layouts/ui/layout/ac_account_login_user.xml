@@ -90,7 +90,7 @@
                 android:text="账号"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
 
             <EditText
                 android:id="@+id/ed_user"
@@ -104,7 +104,7 @@
                 android:lines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/color_text_hint"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -124,7 +124,7 @@
                 android:lines="1"
                 android:text="密码"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold" />
 
             <EditText
@@ -141,7 +141,7 @@
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textColorHint="@color/color_text_hint"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_25" />
 
         </RelativeLayout>
 
@@ -149,12 +149,12 @@
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/login_btn_height"
             android:layout_marginTop="120dp"
             android:background="@drawable/bg_btn_black_solid"
             android:text="立即登录"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_24" />
+            android:textSize="@dimen/sp_25" />
     </LinearLayout>
 
 
@@ -172,7 +172,7 @@
             android:layout_height="wrap_content"
             android:text="注册账号"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:textStyle="bold" />
 
         <TextView
@@ -182,7 +182,7 @@
             android:layout_alignParentRight="true"
             android:text="找回密码"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:textStyle="bold" />
 
     </RelativeLayout>

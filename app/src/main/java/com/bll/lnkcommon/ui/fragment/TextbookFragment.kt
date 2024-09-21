@@ -93,7 +93,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 38))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             if (tabId<2){

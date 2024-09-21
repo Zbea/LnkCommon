@@ -151,7 +151,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
             ModuleSelectDialog(this,0,DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    v_content.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    GlideUtils.setImageUrl(this,moduleBean.resContentId,v_content)
                     bgResList[posImage]=bgRes
                 }
         }
@@ -341,7 +341,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
      * 更换内容
      */
     private fun setContentImage(){
-        v_content.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,bgResList[posImage]),v_content)
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)){

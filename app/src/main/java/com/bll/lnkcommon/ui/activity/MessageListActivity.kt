@@ -39,7 +39,7 @@ class MessageListActivity:BaseActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        pageSize=10
+        pageSize=12
         studentId=DataBeanManager.students[0].accountId
         fetchData()
     }
@@ -77,7 +77,7 @@ class MessageListActivity:BaseActivity(),IContractView.IMessageView {
             val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(
                 DP2PX.dip2px(this@MessageListActivity,50f),
-                DP2PX.dip2px(this@MessageListActivity,20f),
+                DP2PX.dip2px(this@MessageListActivity,30f),
                 DP2PX.dip2px(this@MessageListActivity,50f),20)
             layoutParams.weight=1f
             rv_list.layoutParams= layoutParams

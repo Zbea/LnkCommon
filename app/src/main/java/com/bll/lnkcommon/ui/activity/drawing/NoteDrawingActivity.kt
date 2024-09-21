@@ -11,6 +11,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -45,7 +46,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-        v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,note?.contentResId),v_content)
 
         ll_page.setOnClickListener {
             InputContentDialog(this,noteContent?.title!!).builder().setOnDialogClickListener { string ->

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
@@ -78,6 +79,23 @@ class AppToolActivity:BaseActivity() {
                 item.isCheck=!item.isCheck
                 mAdapter?.notifyItemChanged(position)
             }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            val item=apps[position]
+            val packageName= item.packageName
+            if (packageName!=Constants.PACKAGE_GEOMETRY){
+                CommonDialog(this).setContent("卸载应用？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        AppUtils.uninstallAPK(this@AppToolActivity,apps[position].packageName)
+                        AppDaoManager.getInstance().delete(item)
+                        return
+                    }
+                })
+            }
+            true
         }
     }
 

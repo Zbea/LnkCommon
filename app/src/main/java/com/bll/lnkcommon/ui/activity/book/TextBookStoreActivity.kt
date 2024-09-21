@@ -107,7 +107,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         }
         provinceStr=provinceList[0].name
 
-        subjectList=DataBeanManager.popupCourses
+        subjectList=DataBeanManager.popupCourses(1)
         gradeList=DataBeanManager.popupGrades
 
         presenter.getBookType()

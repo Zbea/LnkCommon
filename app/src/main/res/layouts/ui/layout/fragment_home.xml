@@ -172,7 +172,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="随笔"
                 android:textColor="@color/black"/>
@@ -195,7 +195,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="日记本"
                 android:textColor="@color/black"/>
@@ -218,7 +218,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="月周计划"
                 android:textColor="@color/black"/>
@@ -241,7 +241,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="截图列表"
                 android:textColor="@color/black"/>
@@ -282,7 +282,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="消息"
                 android:textColor="@color/black"/>

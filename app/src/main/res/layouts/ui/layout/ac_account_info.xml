@@ -29,14 +29,14 @@
                 android:layout_height="wrap_content"
                 android:text="账号:"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
         </LinearLayout>
         <LinearLayout
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="姓名:"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25"/>
 
             <TextView
                 android:id="@+id/tv_name"
@@ -59,17 +59,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
             <TextView
                 android:id="@+id/btn_edit_name"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="45dp"
                 android:gravity="center"
                 android:text="修改姓名"
                 android:background="@drawable/bg_black_solid_10dp_corner"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp_22"/>
 
 
         </LinearLayout>
@@ -85,14 +85,14 @@
                 android:layout_height="wrap_content"
                 android:text="手机:"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
         </LinearLayout>
         <LinearLayout
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:text="学生:"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 />
 
             <TextView
@@ -116,18 +116,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 />
 
             <TextView
                 android:id="@+id/btn_add"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="@dimen/dp_45"
                 android:gravity="center"
                 android:text="关联学生"
                 android:background="@drawable/bg_black_solid_10dp_corner"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
@@ -140,12 +140,12 @@
     <Button
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/login_btn_height"
         android:layout_marginBottom="100dp"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:background="@drawable/bg_btn_black_solid"
         android:text="退出登录"
         android:textColor="@color/white"
-        android:textSize="24sp" />
+        android:textSize="@dimen/sp_25" />
 </LinearLayout>

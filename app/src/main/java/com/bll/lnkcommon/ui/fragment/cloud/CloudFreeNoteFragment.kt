@@ -34,7 +34,7 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=15
+        pageSize=14
         initRecyclerView()
     }
 
@@ -44,7 +44,7 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         mAdapter = CloudFreeNoteAdapter(R.layout.item_cloud_diary, null).apply {
@@ -53,13 +53,14 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudFreeNoteFragment.position=position
-                val item=items[position]
-                if (!FreeNoteDaoManager.getInstance().isExist(item.date)){
-                    download(item)
-                }
-                else{
-                    showToast("已存在")
-                }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudFreeNoteFragment.position=position
@@ -75,7 +76,17 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(20))
+        rv_list.addItemDecoration(SpaceItemDeco(30))
+    }
+
+    private fun downloadItem(){
+        val item=items[position]
+        if (!FreeNoteDaoManager.getInstance().isExist(item.date)){
+            download(item)
+        }
+        else{
+            showToast("已存在")
+        }
     }
 
     private fun deleteItem(){

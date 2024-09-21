@@ -57,6 +57,14 @@ object DataBeanManager {
             return list
         }
 
+    fun popupCourses(type:Int): MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (i in courses.indices){
+            list.add(PopupBean(courses[i].type, courses[i].desc, courses[i].type==type))
+        }
+        return list
+    }
+
     val popupStudents: MutableList<PopupBean>
         get() {
             val list= mutableListOf<PopupBean>()

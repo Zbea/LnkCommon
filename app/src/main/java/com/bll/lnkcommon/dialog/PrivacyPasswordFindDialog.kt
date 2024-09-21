@@ -26,8 +26,8 @@ class PrivacyPasswordFindDialog(private val context: Context,private val type:In
 
         val privacyPassword=MethodManager.getPrivacyPassword(type)
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
 
         val etPassword=dialog.findViewById<EditText>(R.id.et_password)
         val etPasswordAgain=dialog.findViewById<EditText>(R.id.et_password_again)

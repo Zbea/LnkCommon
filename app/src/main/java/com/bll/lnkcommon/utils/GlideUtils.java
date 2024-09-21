@@ -16,6 +16,11 @@ import java.util.concurrent.ExecutionException;
 public class GlideUtils {
 
 
+    public static final void setImageUrl(Context mContext,int resId, ImageView imageView){
+        Glide.with(mContext)
+                .load(resId)
+                .into(imageView);
+    }
 
     public static final void setImageUrl(Context mContext,String url, ImageView imageView){
         Glide.with(mContext)

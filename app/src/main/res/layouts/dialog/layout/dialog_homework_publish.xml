@@ -49,7 +49,7 @@
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             android:gravity="center"
             android:text="@string/send"
             android:background="@drawable/bg_gray_stroke_5dp_corner"

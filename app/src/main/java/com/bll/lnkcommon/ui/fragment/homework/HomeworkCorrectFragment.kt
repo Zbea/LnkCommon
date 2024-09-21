@@ -71,7 +71,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco(55))
+        rv_list?.addItemDecoration(SpaceItemDeco(40))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]

@@ -14,7 +14,6 @@
         android:id="@+id/v_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/icon_diary_details_bg_1"
         android:layout_marginStart="@dimen/drawing_tool_width"
         />
 
@@ -65,7 +64,7 @@
         android:text="摘要"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_25" />
 
     <include
         android:id="@+id/ll_geometry"

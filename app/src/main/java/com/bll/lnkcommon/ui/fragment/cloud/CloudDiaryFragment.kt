@@ -8,6 +8,7 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.CloudListBean
@@ -25,6 +26,7 @@ import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 class CloudDiaryFragment: BaseCloudFragment() {
     private var mAdapter: CloudDiaryAdapter?=null
@@ -36,7 +38,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=15
+        pageSize=14
         initRecyclerView()
     }
 
@@ -46,7 +48,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         mAdapter = CloudDiaryAdapter(R.layout.item_cloud_diary, null).apply {
@@ -55,9 +57,14 @@ class CloudDiaryFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
-                showLoading()
-                val item=items[position]
-                download(item)
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
@@ -67,18 +74,24 @@ class CloudDiaryFragment: BaseCloudFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                deleteItem(items[position])
+                                deleteItem()
                             }
                         })
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(20))
+        rv_list.addItemDecoration(SpaceItemDeco(30))
     }
 
-    private fun deleteItem(item:CloudListBean){
+    private fun downloadItem(){
+        showLoading()
+        val item=items[position]
+        download(item)
+    }
+
+    private fun deleteItem(){
         val ids= mutableListOf<Int>()
-        ids.add(item.id)
+        ids.add(items[position].id)
         mCloudPresenter.deleteCloud(ids)
     }
 

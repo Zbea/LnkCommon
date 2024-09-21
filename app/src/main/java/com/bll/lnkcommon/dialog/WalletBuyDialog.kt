@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
@@ -24,8 +25,8 @@ class WalletBuyDialog(val context: Context, val list: List<AccountQdBean>) {
         dialog?.show()
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
-        val btn_ok = dialog!!.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog!!.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog!!.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog!!.findViewById<TextView>(R.id.tv_cancel)
         val rb_wx = dialog!!.findViewById<RadioButton>(R.id.rb_wx)
 
         recyclerview.layoutManager = GridLayoutManager(context,4)//创建布局管理

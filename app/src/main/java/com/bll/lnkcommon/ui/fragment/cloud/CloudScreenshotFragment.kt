@@ -34,7 +34,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=15
+        pageSize=14
         initRecyclerView()
     }
 
@@ -44,7 +44,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         mAdapter = CloudScreenshotAdapter(R.layout.item_cloud_diary, null).apply {
@@ -52,7 +52,15 @@ class CloudScreenshotFragment: BaseCloudFragment() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
-                download(items[position])
+                this@CloudScreenshotFragment.position=position
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            download(items[position])
+                        }
+                    })
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
@@ -62,18 +70,18 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                deleteItem(items[position])
+                                deleteItem()
                             }
                         })
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(20))
+        rv_list.addItemDecoration(SpaceItemDeco(30))
     }
 
-    private fun deleteItem(item: ItemTypeBean){
+    private fun deleteItem(){
         val ids= mutableListOf<Int>()
-        ids.add(item.cloudId)
+        ids.add(items[position].cloudId)
         mCloudPresenter.deleteCloud(ids)
     }
 
@@ -98,7 +106,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
                                 showToast("下载成功")
-                                deleteItem(item)
+                                deleteItem()
                                 hideLoading()
                             },500)
                         }

@@ -8,6 +8,7 @@ import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarSingleDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -37,6 +38,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
         setPageTitle("月周计划")
+        GlideUtils.setImageUrl(this,R.mipmap.icon_freenote_bg_1,v_content)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
@@ -9,12 +8,14 @@ import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.PopupDateSelector
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
-import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkcommon.ui.adapter.DateAdapter
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.*
+import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.tv_month
+import kotlinx.android.synthetic.main.common_title.tv_year
 
 open class DateActivity: BaseActivity() {
 
@@ -35,6 +36,7 @@ open class DateActivity: BaseActivity() {
 
     override fun initView() {
         setPageTitle("日历")
+        showView(ll_date)
 
         initRecycler()
 

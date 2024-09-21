@@ -12,7 +12,7 @@ class CloudScreenshotAdapter(layoutResId: Int, data: List<ItemTypeBean>?) : Base
 
     override fun convert(helper: BaseViewHolder, item: ItemTypeBean) {
         helper.setText(R.id.tv_title,item.title)
-        helper.setText(R.id.tv_date, DateUtils.longToStringWeek1(item.date))
+        helper.setText(R.id.tv_date, DateUtils.longToStringDataNoHour(item.date))
         helper.addOnClickListener(R.id.iv_delete)
     }
 
