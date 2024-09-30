@@ -14,11 +14,11 @@
         android:gravity="top"
         android:hint="输入信息"
         android:padding="@dimen/dp_10"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_black_stroke_5dp_corner"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_35"
         />
 
     <include

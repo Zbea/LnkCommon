@@ -11,11 +11,11 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_35"
         android:textColor="@color/black"
         android:text="日记上传"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_24"/>
+        android:textSize="@dimen/sp_26"/>
 
 
     <EditText
@@ -34,7 +34,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_35"
         android:gravity="center_vertical"
         >
 

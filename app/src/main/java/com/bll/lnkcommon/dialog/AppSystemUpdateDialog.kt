@@ -25,6 +25,7 @@ class AppSystemUpdateDialog(private val context: Context, private val item:Syste
         }
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_update)
         btn_ok.setOnClickListener {
+            dialog.dismiss()
             AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
         }
         val tv_name = dialog.findViewById<TextView>(R.id.tv_title)

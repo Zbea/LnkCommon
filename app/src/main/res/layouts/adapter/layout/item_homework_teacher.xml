@@ -53,9 +53,11 @@
 
         <ImageView
             android:id="@+id/iv_delete"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_delete" />
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:src="@mipmap/icon_delete"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -84,7 +86,7 @@
             android:text="成绩排行"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             />
 
         <TextView
@@ -96,7 +98,7 @@
             android:text="作业答案"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:background="@drawable/click_btn_line_black_5dp"
             />
 
     </LinearLayout>

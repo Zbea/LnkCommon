@@ -17,7 +17,7 @@ class LongClickManageDialog(val context: Context, val name:String, val lists:Mut
 
     fun builder(): LongClickManageDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_long_click_manage)
+        dialog.setContentView(R.layout.dialog_item_select)
         dialog.show()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 

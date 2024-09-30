@@ -19,25 +19,30 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="20dp"
-            android:textSize="22sp"
+            android:textSize="26sp"
             android:text="好友列表"
+            android:textStyle="bold"
             android:textColor="@color/black"/>
+
 
         <ImageView
             android:id="@+id/iv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="@dimen/dp_30"
             android:src="@mipmap/icon_delete"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
         <ImageView
             android:id="@+id/iv_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@mipmap/icon_freenote_share_1"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

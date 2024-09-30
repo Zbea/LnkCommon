@@ -83,10 +83,12 @@
 
             <ImageView
                 android:id="@+id/iv_book_add"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_add"
+                android:padding="@dimen/dp_10"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
             <Switch
                 android:id="@+id/st_book"
@@ -130,10 +132,12 @@
 
             <ImageView
                 android:id="@+id/iv_video_add"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_add"
+                android:padding="@dimen/dp_10"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
             <Switch

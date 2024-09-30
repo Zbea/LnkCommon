@@ -29,13 +29,6 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         tvDay.text = if (item.day == 0) "" else item.day.toString()
         if (item.isNow)
             tvDay.typeface = defaultFromStyle(BOLD)
-        if (item.isNowMonth) {
-            tvDay.setTextColor(mContext.getColor(R.color.black))
-            tvLunar.setTextColor(mContext.getColor(R.color.gray))
-        } else {
-            tvDay.setTextColor(mContext.getColor(R.color.black_90))
-            tvLunar.setTextColor(mContext.getColor(R.color.black_90))
-        }
 
         val str = if (!item.solar.solar24Term.isNullOrEmpty()) {
             item.solar.solar24Term
@@ -55,10 +48,8 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         if (item.year!=0){
             val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
             if (File(path).exists()){
-                try {
-                    ivImage.setImageBitmap(BitmapFactory.decodeFile(path))
-                } catch (e: Exception) {
-                }
+                GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+                rlImage.visibility= View.VISIBLE
             }
             else{
                 rlImage.visibility= View.GONE

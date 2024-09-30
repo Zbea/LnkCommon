@@ -11,11 +11,11 @@
         android:id="@+id/et_width"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:inputType="number"
         android:textColor="@color/black"
         android:padding="5dp"/>
@@ -27,10 +27,10 @@
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textColor="@color/black"
         android:inputType="number"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_35"
         android:padding="5dp"/>
 
     <include

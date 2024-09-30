@@ -30,7 +30,7 @@
             android:textSize="@dimen/sp_22"
             android:gravity="center"
             android:inputType="phone"
-            android:background="@drawable/bg_line_bottom_black"
+            android:background="@drawable/bg_line_bottom"
             />
 
     </LinearLayout>

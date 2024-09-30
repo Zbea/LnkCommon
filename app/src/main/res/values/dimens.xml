@@ -11,7 +11,7 @@
     <dimen name="login_btn_height">60dp</dimen>
     <dimen name="navigation_type_width">160dp</dimen>
     <dimen name="navigation_type_height">45dp</dimen>
-
+    <dimen name="click_line_width">2dp</dimen>
     <dimen name="xtab_height">50dp</dimen>
     <dimen name="dialog_padding">40dp</dimen>
     <dimen name="drawing_bottom_height">38dp</dimen>
@@ -28,6 +28,7 @@
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_25">25dp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_45">45dp</dimen>

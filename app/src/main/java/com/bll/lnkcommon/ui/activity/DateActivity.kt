@@ -13,7 +13,7 @@ import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.*
-import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
 
@@ -26,17 +26,31 @@ open class DateActivity: BaseActivity() {
     private var mAdapter:DateAdapter?=null
     private var dates= mutableListOf<Date>()
     private var position=0
+    private var yearList= mutableListOf<Int>()
+    private var monthList= mutableListOf<Int>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
     }
 
     override fun initData() {
+        val nowYear=DateUtils.getYear()
+        for (i in 4 downTo 0){
+            yearList.add(nowYear-i)
+        }
+        for (i in 1..5){
+            yearList.add(nowYear+i)
+        }
+
+        for (i in 1..12)
+        {
+            monthList.add(i)
+        }
     }
 
     override fun initView() {
         setPageTitle("日历")
-        showView(ll_date)
+        showView(ll_year)
 
         initRecycler()
 
@@ -44,9 +58,8 @@ open class DateActivity: BaseActivity() {
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028)
             if (yearPop==null){
-                yearPop=PopupDateSelector(this,tv_year,list,0).builder()
+                yearPop=PopupDateSelector(this,tv_year,yearList,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
@@ -62,13 +75,8 @@ open class DateActivity: BaseActivity() {
         }
 
         tv_month.setOnClickListener {
-            val list= mutableListOf<Int>()
-            for (i in 1..12)
-            {
-                list.add(i)
-            }
             if (monthPop==null){
-                monthPop=PopupDateSelector(this,tv_month,list,1).builder()
+                monthPop=PopupDateSelector(this,tv_month,monthList,1).builder()
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()

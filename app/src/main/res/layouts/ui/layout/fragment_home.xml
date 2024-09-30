@@ -141,6 +141,8 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/dp_10"
             android:src="@mipmap/icon_main_change"
+            android:padding="@dimen/dp_5"
+            android:background="@drawable/click_btn_transparent_line_black"
             />
 
     </RelativeLayout>
@@ -162,6 +164,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             >
             <ImageView
                 android:layout_width="98dp"
@@ -185,6 +188,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             >
             <ImageView
                 android:layout_width="98dp"
@@ -208,6 +212,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             >
             <ImageView
                 android:layout_width="98dp"
@@ -231,6 +236,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             >
             <ImageView
                 android:layout_width="98dp"
@@ -254,6 +260,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@drawable/click_btn_transparent_line_black"
             >
             <RelativeLayout
                 android:layout_width="98dp"

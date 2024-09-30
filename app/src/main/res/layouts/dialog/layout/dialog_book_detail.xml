@@ -85,13 +85,13 @@
 
         <Button
             android:id="@+id/btn_ok"
-            android:layout_width="150dp"
+            android:layout_width="160dp"
             android:layout_height="@dimen/dp_45"
             android:layout_gravity="right"
-            android:background="@drawable/bg_black_solid_10dp_corner"
+            android:background="@drawable/click_btn_black_solid_5dp"
             android:text="立即购买"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
 
     </LinearLayout>
 
