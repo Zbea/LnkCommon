@@ -19,6 +19,7 @@ import com.bll.lnkcommon.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkcommon.ui.adapter.ScreenshotAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.*
@@ -112,8 +113,8 @@ class ScreenshotListActivity:BaseActivity() {
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,40f),
-            DP2PX.dip2px(this,28f),0)
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,40f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -122,7 +123,6 @@ class ScreenshotListActivity:BaseActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotListActivity, 22f), DP2PX.dip2px(this@ScreenshotListActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val index=totalNum-1-((pageIndex-1)*pageSize+position)
                 customStartActivity(
@@ -137,6 +137,7 @@ class ScreenshotListActivity:BaseActivity() {
                 true
             }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 60f)))
 
     }
 

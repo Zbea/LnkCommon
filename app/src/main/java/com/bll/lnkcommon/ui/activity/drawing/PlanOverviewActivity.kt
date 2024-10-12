@@ -11,6 +11,9 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 

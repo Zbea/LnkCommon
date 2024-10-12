@@ -63,12 +63,12 @@
             >
             <TextView
                 android:id="@+id/btn_download"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textColor="@color/black"
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:gravity="center"
                 android:layout_height="@dimen/dp_40"
-                android:background="@drawable/bg_gary_arch"
+                android:background="@drawable/click_btn_line_black_5dp"
                 android:text="下载" />
 
             <LinearLayout

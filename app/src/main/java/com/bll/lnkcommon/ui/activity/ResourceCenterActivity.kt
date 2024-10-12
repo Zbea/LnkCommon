@@ -50,7 +50,7 @@ class ResourceCenterActivity: BaseActivity(){
 
         tv_type.text=popSupplys[0].name
         tv_type.setOnClickListener {
-            PopupRadioList(this,popSupplys,tv_type,tv_type.width,0).builder().setOnSelectListener {
+            PopupRadioList(this,popSupplys,tv_type,tv_type.width,5).builder().setOnSelectListener {
                 tv_type.text = it.name
                 appFragment?.changeSupply(it.id)
                 bookFragment?.changeSupply(it.id)

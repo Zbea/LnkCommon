@@ -249,7 +249,8 @@ class NoteFragment:BaseFragment() {
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
                     ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
-                    mTabTypeAdapter?.addData(noteBook)
+                    notebooks.add(noteBook)
+                    mTabTypeAdapter?.setNewData(notebooks)
                 }
             }
     }

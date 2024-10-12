@@ -20,6 +20,7 @@ import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
@@ -68,34 +69,31 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),28f), DP2PX.dip2px(requireActivity(),60f),
-            DP2PX.dip2px(requireActivity(),28f),0)
+            DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(), 4)//创建布局管理
-        mAdapter = CalenderListAdapter(R.layout.item_calendar, null).apply {
+        mAdapter = CalenderListAdapter(R.layout.item_calendar,0, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(
-                SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(), 20f)
-                , DP2PX.dip2px(requireActivity(), 50f))
-            )
             setOnItemClickListener { adapter, view, position ->
-                this@CalenderDownloadFragment.position=position
                 val item=items[position]
-                showDetails(item)
+                val urls=item.previewUrl.split(",")
+                ImageDialog(requireActivity(),urls).builder()
+
             }
             setOnItemChildClickListener { adapter, view, position ->
+                this@CalenderDownloadFragment.position=position
                 val item=items[position]
-                if (view.id==R.id.tv_preview){
-                    val urls=item.previewUrl.split(",")
-                    ImageDialog(requireActivity(),urls).builder()
+                if (view.id==R.id.tv_buy){
+                    showDetails(item)
                 }
             }
         }
-
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(requireActivity(), 50f)))
     }
 
 

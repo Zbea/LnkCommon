@@ -12,6 +12,9 @@ import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.*
 import kotlinx.android.synthetic.main.ac_diary.*
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
@@ -179,6 +182,11 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        saveDiary()
+    }
+
+    override fun onPause() {
+        super.onPause()
         saveDiary()
     }
 

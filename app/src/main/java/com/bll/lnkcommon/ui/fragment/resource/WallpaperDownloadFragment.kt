@@ -17,6 +17,7 @@ import com.bll.lnkcommon.ui.adapter.WallpaperAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileMultitaskDownManager
 import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
@@ -59,16 +60,16 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),28f),
-            DP2PX.dip2px(requireActivity(),50f),
-            DP2PX.dip2px(requireActivity(),28f),0)
+            DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
         mAdapter = WallpaperAdapter(R.layout.item_wallpaper, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(requireActivity(),22f),35))
+        rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->

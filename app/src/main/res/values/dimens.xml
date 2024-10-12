@@ -46,6 +46,7 @@
     <dimen name="dp_188">188dp</dimen>
     <dimen name="dp_195">195dp</dimen>
     <dimen name="dp_230">230dp</dimen>
+    <dimen name="dp_260">260dp</dimen>
     <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_320">320dp</dimen>
     <dimen name="dp_400">400dp</dimen>

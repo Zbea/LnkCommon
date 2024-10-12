@@ -416,7 +416,10 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
     override fun onDestroy() {
         super.onDestroy()
         saveFreeNote()
-        FileDownloader.getImpl().pauseAll()
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveFreeNote()
+    }
 }

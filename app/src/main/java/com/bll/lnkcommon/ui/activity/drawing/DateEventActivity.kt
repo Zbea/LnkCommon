@@ -10,6 +10,9 @@ import com.bll.lnkcommon.dialog.CalendarSingleDialog
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*

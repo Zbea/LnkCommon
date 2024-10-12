@@ -14,6 +14,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_list.*
 import org.greenrobot.eventbus.EventBus
@@ -53,30 +54,28 @@ class CalenderMyActivity:BaseActivity(){
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,60f),
-            DP2PX.dip2px(this,28f),0)
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,60f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = CalenderListAdapter(R.layout.item_calendar, null).apply {
+        mAdapter = CalenderListAdapter(R.layout.item_bookstore, 1,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@CalenderMyActivity, 20f)
-                , DP2PX.dip2px(this@CalenderMyActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
+                val item=items[position]
+                val urls=item.previewUrl.split(",")
+                ImageDialog(this@CalenderMyActivity,urls).builder()
+            }
+            setOnItemLongClickListener { adapter, view, position ->
                 this@CalenderMyActivity.position=position
                 onLongClick()
-            }
-            setOnItemChildClickListener { adapter, view, position ->
-                val item=items[position]
-                if (view.id==R.id.tv_preview){
-                    val urls=item.previewUrl.split(",")
-                    ImageDialog(this@CalenderMyActivity,urls).builder()
-                }
+                true
             }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 60f)))
     }
 
     private fun onLongClick() {

@@ -20,6 +20,7 @@ import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.*
@@ -67,9 +68,10 @@ class BookcaseTypeListActivity : BaseActivity() {
                             bookTypeBean.date = System.currentTimeMillis()
                             bookTypeBean.title = it
                             ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-                            mTabTypeAdapter?.addData(bookTypes.size-1,bookTypeBean)
+                            mTabTypeAdapter?.addData(bookTypes.size - 1, bookTypeBean)
                         }
                     }
+
                     1 -> {
                         val types = ItemTypeDaoManager.getInstance().queryAll(2)
                         val lists = mutableListOf<ItemList>()
@@ -91,9 +93,9 @@ class BookcaseTypeListActivity : BaseActivity() {
                                 }
                             }
                             mTabTypeAdapter?.remove(index)
-                            if (typeStr==typeNameStr){
-                                bookTypes[0].isCheck=true
-                                typeStr=""
+                            if (typeStr == typeNameStr) {
+                                bookTypes[0].isCheck = true
+                                typeStr = ""
                                 mTabTypeAdapter?.notifyItemChanged(0)
                                 fetchData()
                             }
@@ -112,7 +114,7 @@ class BookcaseTypeListActivity : BaseActivity() {
         bookTypes.add(ItemTypeBean().apply {
             title = "全部"
         })
-        bookTypes[pos].isCheck=true
+        bookTypes[pos].isCheck = true
         mTabTypeAdapter?.setNewData(bookTypes)
         fetchData()
     }
@@ -129,8 +131,8 @@ class BookcaseTypeListActivity : BaseActivity() {
     private fun initRecycleView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this, 28f), DP2PX.dip2px(this, 20f),
-            DP2PX.dip2px(this, 28f), 0
+            DP2PX.dip2px(this, 30f), DP2PX.dip2px(this, 20f),
+            DP2PX.dip2px(this, 30f), 0
         )
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
@@ -140,16 +142,9 @@ class BookcaseTypeListActivity : BaseActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(
-                SpaceGridItemDeco1(
-                    4,
-                    DP2PX.dip2px(this@BookcaseTypeListActivity, 22f),
-                    DP2PX.dip2px(this@BookcaseTypeListActivity, 25f)
-                )
-            )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean = books[position]
-                MethodManager.gotoBookDetails(this@BookcaseTypeListActivity,1, bookBean)
+                MethodManager.gotoBookDetails(this@BookcaseTypeListActivity, 1, bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position
@@ -157,6 +152,7 @@ class BookcaseTypeListActivity : BaseActivity() {
                 true
             }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this, 25f)))
     }
 
     //删除书架书籍

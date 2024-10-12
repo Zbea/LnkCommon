@@ -41,7 +41,7 @@ class BookcaseFragment : BaseFragment() {
         initRecyclerView()
         findBook()
 
-        tv_type.setOnClickListener {
+        tv_book_type.setOnClickListener {
             if (isLoginState()) {
                 customStartActivity(Intent(activity, BookcaseTypeListActivity::class.java))
             } else {

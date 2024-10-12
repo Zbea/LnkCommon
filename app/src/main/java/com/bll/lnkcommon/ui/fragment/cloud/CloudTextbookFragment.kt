@@ -20,6 +20,7 @@ import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -72,16 +73,15 @@ class CloudTextbookFragment: BaseCloudFragment() {
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,28f),
+            DP2PX.dip2px(activity,30f),
             DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,28f),0)
+            DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
@@ -106,6 +106,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
                 true
             }
         }
+        rv_list.addItemDecoration(SpaceGridItemDeco(3,50))
     }
 
     private fun downloadItem(){
