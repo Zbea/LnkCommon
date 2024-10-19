@@ -17,7 +17,7 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 
 
-class CalendarDiaryDialog(private val context: Context) {
+class CalendarDiaryDialog(private val context: Context,private val uploadId:Int) {
 
     private var dialog: Dialog? = null
     private var diaryTimes= mutableListOf<Long>()
@@ -42,7 +42,7 @@ class CalendarDiaryDialog(private val context: Context) {
         calendarView = dialog!!.findViewById(R.id.dp_date)
 
         tv_year?.text="${calendarView?.curYear} 年  ${calendarView?.curMonth} 月"
-        diaryTimes=DiaryDaoManager.getInstance().queryLongList(calendarView!!.curYear, calendarView!!.curMonth)
+        diaryTimes=DiaryDaoManager.getInstance().queryLongList(calendarView!!.curYear, calendarView!!.curMonth,uploadId)
         if (!diaryTimes.contains(currentDay)){
             diaryTimes.add(currentDay)
         }
@@ -57,7 +57,7 @@ class CalendarDiaryDialog(private val context: Context) {
 
         calendarView?.setOnMonthChangeListener { year, month ->
             tv_year?.text="$year 年  $month 月"
-            diaryTimes=DiaryDaoManager.getInstance().queryLongList(year, month)
+            diaryTimes=DiaryDaoManager.getInstance().queryLongList(year, month,uploadId)
             if (month==DateUtils.getMonth()){
                 if (!diaryTimes.contains(currentDay)){
                     diaryTimes.add(currentDay)

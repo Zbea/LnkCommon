@@ -25,12 +25,14 @@ public class DiaryBean {
     public int month;
     public String bgRes;
     public int page;
-    public boolean isUpload=false;
+    public int uploadId;
+    public boolean isUpload;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths=new ArrayList<>();
-    @Generated(hash = 1051170136)
+
+    @Generated(hash = 1727781087)
     public DiaryBean(Long id, long userId, String title, long date, int year,
-            int month, String bgRes, int page, boolean isUpload,
+            int month, String bgRes, int page, int uploadId, boolean isUpload,
             List<String> paths) {
         this.id = id;
         this.userId = userId;
@@ -40,6 +42,7 @@ public class DiaryBean {
         this.month = month;
         this.bgRes = bgRes;
         this.page = page;
+        this.uploadId = uploadId;
         this.isUpload = isUpload;
         this.paths = paths;
     }
@@ -94,6 +97,12 @@ public class DiaryBean {
     public void setPage(int page) {
         this.page = page;
     }
+    public int getUploadId() {
+        return this.uploadId;
+    }
+    public void setUploadId(int uploadId) {
+        this.uploadId = uploadId;
+    }
     public boolean getIsUpload() {
         return this.isUpload;
     }
@@ -106,5 +115,6 @@ public class DiaryBean {
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
+
 
 }

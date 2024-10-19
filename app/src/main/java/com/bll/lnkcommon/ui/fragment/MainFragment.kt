@@ -45,7 +45,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     private var uploadType=0//上传类型
     private var isChange=false
     private var isShow=false//是否存在台历
-    private var privacyPassword:PrivacyPassword?=null
+    private var privacyPassword=MethodManager.getPrivacyPassword(0)
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
@@ -80,8 +80,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
 
-        privacyPassword=MethodManager.getPrivacyPassword(0)
-
         ll_message.setOnClickListener {
             if (isLoginState()){
                 disMissView(iv_message_tips)
@@ -101,13 +99,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
                 return@setOnClickListener
             }
-            if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
-                }
-            } else{
-                customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
-            }
+            startDiaryActivity(0)
         }
 
         ll_diary.setOnLongClickListener {
@@ -115,71 +107,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
                return@setOnLongClickListener true
             }
-            val pops= mutableListOf<PopupBean>()
-            if (privacyPassword==null){
-                pops.add(PopupBean(1,"设置密码"))
-            }
-            else{
-                if (privacyPassword?.isSet==true){
-                    pops.add(PopupBean(1,"取消密码"))
-                }
-                else{
-                    pops.add(PopupBean(1,"设置密码"))
-                }
-            }
-            pops.add(PopupBean(2,"上传日记"))
-            pops.add(PopupBean(3,"删除日记"))
-            DialogClick(requireActivity(),pops).builder().setOnSelectListener{
-                when(it.id){
-                    1->{
-                        if (privacyPassword==null){
-                            PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                                privacyPassword=it
-                                showToast("日记密码设置成功")
-                            }
-                        }
-                        else{
-                            val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                            CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                                override fun cancel() {
-                                }
-                                override fun ok() {
-                                    PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                        MethodManager.savePrivacyPassword(0,privacyPassword)
-                                    }
-                                }
-                            })
-                        }
-                    }
-                    2->{
-                        DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                                titleStr,startLong,endLong->
-                            diaryStartLong=startLong
-                            diaryEndLong=endLong
-                            diaryUploadTitleStr=titleStr
-                            if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
-                                mQiniuPresenter.getToken()
-                            }
-                            else{
-                                showToast("网络连接失败")
-                            }
-                        }
-                    }
-                    3->{
-                        DiaryManageDialog(requireActivity(),2).builder().setOnDialogClickListener{
-                                titleStr,startLong,endLong->
-                            val diarys= DiaryDaoManager.getInstance().queryList(startLong, endLong)
-                            for (item in diarys){
-                                val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
-                                FileUtils.deleteFile(File(path))
-                                DiaryDaoManager.getInstance().delete(item)
-                            }
-                            showToast("删除日记成功")
-                        }
-                    }
-                }
-            }
+            onLongDiary()
             return@setOnLongClickListener true
         }
 
@@ -381,6 +309,84 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 listFiles[Random().nextInt(listFiles.size)]
             }
             GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
+        }
+    }
+
+    /**
+     * 日记跳转
+     */
+    private fun startDiaryActivity(typeId:Int){
+        if (privacyPassword!=null&&privacyPassword?.isSet==true){
+            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+            }
+        }
+        else{
+            customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+        }
+    }
+
+    /**
+     * 日记长按管理
+     */
+    private fun onLongDiary(){
+        val pops= mutableListOf<PopupBean>()
+        if (privacyPassword==null){
+            pops.add(PopupBean(1,"设置密码"))
+        }
+        else{
+            if (privacyPassword?.isSet==true){
+                pops.add(PopupBean(1,"取消密码"))
+            }
+            else{
+                pops.add(PopupBean(1,"设置密码"))
+            }
+        }
+        pops.add(PopupBean(2,"结集保存"))
+        pops.add(PopupBean(3,"云库日记"))
+        DialogClick(requireActivity(),pops).builder().setOnSelectListener{
+            when(it.id){
+                1->{
+                    if (privacyPassword==null){
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword=it
+                            showToast("日记密码设置成功")
+                        }
+                    }
+                    else{
+                        val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                    MethodManager.savePrivacyPassword(0,privacyPassword)
+                                }
+                            }
+                        })
+                    }
+                }
+                2->{
+                    DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                            titleStr,startLong,endLong->
+                        diaryStartLong=startLong
+                        diaryEndLong=endLong
+                        diaryUploadTitleStr=titleStr
+                        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
+                            mQiniuPresenter.getToken()
+                        }
+                        else{
+                            showToast("网络连接失败")
+                        }
+                    }
+                }
+                3->{
+                    DiaryUploadListDialog(requireActivity()).builder().setOnDialogClickListener{ typeId->
+                        startDiaryActivity(typeId)
+                    }
+                }
+            }
         }
     }
 

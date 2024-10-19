@@ -89,6 +89,8 @@ object Constants {
         const val SN = "SN"
         const val KEY = "Key"
         const val VERSION_NO = "VersionNO"
+        const val SP_DIARY_BG_SET ="dirayBgRes"//日记
+
 }
 
 

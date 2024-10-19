@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -21,6 +22,7 @@ import java.io.File
 class DiaryActivity:BaseDrawingActivity() {
 
     private var nowLong=0L//当前时间
+    private var uploadId=0
     private var diaryBean:DiaryBean?=null
     private var images = mutableListOf<String>()//手写地址
     private var posImage=0
@@ -31,11 +33,22 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initData() {
+        uploadId=intent.flags
         nowLong=DateUtils.getStartOfDayInMillis()
 
-        diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
-        if (diaryBean==null){
-            initCurrentDiaryBean()
+        if (uploadId==0){
+            diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
+            if (diaryBean==null){
+                initCurrentDiaryBean()
+            }
+            changeContent()
+        }
+        else{
+            diaryBean=DiaryDaoManager.getInstance().queryBean(uploadId)
+            if (diaryBean!=null){
+                nowLong=diaryBean?.date!!
+                changeContent()
+            }
         }
     }
 
@@ -44,7 +57,7 @@ class DiaryActivity:BaseDrawingActivity() {
         elik?.addOnTopView(tv_digest)
 
         iv_up.setOnClickListener {
-            val lastDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,0)
+            val lastDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,0,uploadId)
             if (lastDiaryBean!=null){
                 saveDiary()
                 diaryBean=lastDiaryBean
@@ -54,7 +67,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_down.setOnClickListener {
-            val nextDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,1)
+            val nextDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,1,uploadId)
             if (nextDiaryBean!=null){
                 saveDiary()
                 diaryBean=nextDiaryBean
@@ -62,22 +75,23 @@ class DiaryActivity:BaseDrawingActivity() {
                 changeContent()
             }
             else{
-                if (nowLong<DateUtils.getStartOfDayInMillis()){
-                    nowLong=DateUtils.getStartOfDayInMillis()
-                    initCurrentDiaryBean()
-                    changeContent()
+                //本地日记：当最新的当天还没有保存时，可以切换到当天
+                if (uploadId==0){
+                    if (nowLong<DateUtils.getStartOfDayInMillis()){
+                        saveDiary()
+                        nowLong=DateUtils.getStartOfDayInMillis()
+                        initCurrentDiaryBean()
+                        changeContent()
+                    }
                 }
             }
         }
 
         tv_date.setOnClickListener {
-            CalendarDiaryDialog(this).builder().setOnDateListener{
+            CalendarDiaryDialog(this,uploadId).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
-                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
-                if (diaryBean==null){
-                    initCurrentDiaryBean()
-                }
+                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
                 changeContent()
             }
         }
@@ -88,7 +102,7 @@ class DiaryActivity:BaseDrawingActivity() {
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
                     v_content?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-                    SPUtil.putString("dirayBgRes",bgRes)
+                    SPUtil.putString(Constants.SP_DIARY_BG_SET,bgRes)
                 }
         }
 
@@ -105,7 +119,7 @@ class DiaryActivity:BaseDrawingActivity() {
      * 初始化
      */
     private fun initCurrentDiaryBean(){
-        bgRes= SPUtil.getString("dirayBgRes").ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
+        bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
         diaryBean?.userId=if (isLoginState()) getUser()?.accountId else 0
         diaryBean?.date=nowLong
@@ -115,12 +129,14 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
-        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle()
+        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
         CatalogDiaryDialog(this,diaryBeans).builder().setOnDialogClickListener{
-            saveDiary()
-            diaryBean=diaryBeans[it]
-            nowLong=diaryBean?.date!!
-            changeContent()
+            diaryBean = diaryBeans[it]
+            if (nowLong != diaryBean?.date) {
+                saveDiary()
+                nowLong = diaryBean?.date!!
+                changeContent()
+            }
         }
     }
 
@@ -143,6 +159,8 @@ class DiaryActivity:BaseDrawingActivity() {
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
+        tv_date.text=DateUtils.longToStringWeek(nowLong)
+        v_content?.setImageResource(ToolUtils.getImageResId(this, bgRes))
         setContentImage()
     }
 
@@ -150,9 +168,6 @@ class DiaryActivity:BaseDrawingActivity() {
      * 显示内容
      */
     private fun setContentImage() {
-        tv_date.text=DateUtils.longToStringWeek(nowLong)
-        v_content?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-
         val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {
@@ -178,11 +193,6 @@ class DiaryActivity:BaseDrawingActivity() {
             diaryBean?.page=posImage
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        saveDiary()
     }
 
     override fun onPause() {
