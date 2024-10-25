@@ -41,11 +41,10 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
         //订单支付成功
         if (order?.status == 2) {
             handlerThread.removeCallbacks(orderThread!!)
-            if (qrCodeDialog!=null)
-                qrCodeDialog?.dismiss()
+            qrCodeDialog?.dismiss()
             runOnUiThread {
-                tv_xdmoney.text = "" + order.amount
-                mUser?.balance = order.amount
+                mUser?.balance = mUser?.balance?.plus(order.amount)
+                tv_xdmoney.text = "" + mUser?.balance
                 SPUtil.putObj("user",mUser!!)
             }
         }
@@ -123,12 +122,15 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
         qrCodeDialog = Dialog(this)
         qrCodeDialog?.setContentView(R.layout.dialog_account_qrcode)
         qrCodeDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        qrCodeDialog?.setCanceledOnTouchOutside(false)
         val iv_qrcode = qrCodeDialog?.findViewById<ImageView>(R.id.iv_qrcode)
         qrCodeDialog?.show()
         val bitmap = CodeUtils.createQRCode(url, 300, null)
         iv_qrcode?.setImageBitmap(bitmap)
 
-        qrCodeDialog?.setOnDismissListener {
+        val iv_close = qrCodeDialog?.findViewById<ImageView>(R.id.iv_close)
+        iv_close?.setOnClickListener {
+            qrCodeDialog?.dismiss()
             handlerThread.removeCallbacks(orderThread!!)
         }
     }

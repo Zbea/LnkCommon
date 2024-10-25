@@ -15,20 +15,22 @@ plugins {
 allprojects {
     def androidJar=file("libs/eink/classes.jar")
     gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            Set<File> fileSet = options.bootstrapClasspath.getFiles()
-            List<File> newFileList = new ArrayList<>();
-            //相对位置，根据存放的位置修改路径
-            newFileList.add(androidJar)
-            newFileList.addAll(fileSet)
-            options.bootstrapClasspath = files(
-                    newFileList.toArray()
-            )
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                Set<File> fileSet = options.bootstrapClasspath.getFiles()
+                List<File> newFileList = new ArrayList<>();
+                //相对位置，根据存放的位置修改路径
+                newFileList.add(androidJar)
+                newFileList.addAll(fileSet)
+                options.bootstrapClasspath = files(
+                        newFileList.toArray()
+                )
+            }
         }
     }
 
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }

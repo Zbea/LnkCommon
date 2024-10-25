@@ -3,6 +3,7 @@ package com.bll.lnkcommon;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.text.TextUtils;
 
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
@@ -26,6 +27,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class MethodManager {
+
+    public static boolean isLogin(){
+        String tokenStr=SPUtil.INSTANCE.getString("token");
+        User mUser=SPUtil.INSTANCE.getObj("user",User.class);
+        return !TextUtils.isEmpty(tokenStr) && mUser!=null;
+    }
 
     /**
      * 退出登录(失效)

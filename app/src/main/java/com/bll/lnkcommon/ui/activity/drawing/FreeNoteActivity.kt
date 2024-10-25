@@ -2,7 +2,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MyApplication
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.*
@@ -15,7 +15,6 @@ import com.bll.lnkcommon.mvp.presenter.FreeNotePresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IFreeNoteView
 import com.bll.lnkcommon.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_free_note.*
 import kotlinx.android.synthetic.main.ac_free_note.v_content
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -117,13 +116,14 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         return R.layout.ac_free_note
     }
     override fun initData() {
+        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
         freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
         freeNoteBean?.title=DateUtils.longToStringNoYear(System.currentTimeMillis())
         if (freeNoteBean==null){
             createFreeNote()
         }
         posImage=freeNoteBean?.page!!
-        if (isLoginState()&&NetworkUtil(this).isNetworkConnected()){
+        if (MethodManager.isLogin()&&NetworkUtil(this).isNetworkConnected()){
             presenter.getFriends()
             fetchReceiveNotes(1,false)
             fetchShareNotes(1,false)
@@ -136,8 +136,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
             saveFreeNote()
             createFreeNote()
             posImage=0
-            initFreeNote()
-            setContentImage()
+            changeContent()
         }
 
         tv_name.setOnClickListener {
@@ -150,9 +149,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         iv_btn.setOnClickListener {
             ModuleSelectDialog(this,0,DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     v_content?.setBackgroundResource(moduleBean.resContentId)
-                    bgResList[posImage]=bgRes
+                    bgResList[posImage]=ToolUtils.getImageResStr(this, moduleBean.resContentId)
                 }
         }
 
@@ -172,15 +170,14 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
                         posImage=0
                     }
                     showView(tv_save)
-                    initFreeNote()
-                    setContentImage()
+                    changeContent()
                 }
             })
         }
 
 
         tv_receive_list.setOnClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 showToast("未登录")
                 return@setOnClickListener
             }
@@ -213,7 +210,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         }
 
         tv_share_list.setOnClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 showToast("未登录")
                 return@setOnClickListener
             }
@@ -232,7 +229,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         }
 
         tv_share.setOnClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 showToast("未登录")
                 return@setOnClickListener
             }
@@ -258,7 +255,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         }
 
         tv_add.setOnClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 showToast("未登录")
                 return@setOnClickListener
             }
@@ -268,10 +265,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
                 }
         }
 
-        initFreeNote()
-        setContentImage()
+        changeContent()
     }
-
 
     /**
      * 切换随笔
@@ -280,38 +275,38 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         saveFreeNote()
         freeNoteBean=item
         posImage=freeNoteBean?.page!!
-        initFreeNote()
         if (freeNoteBean?.isSave==true){
             disMissView(tv_save)
         }
         else{
             showView(tv_save)
         }
-        setContentImage()
+        changeContent()
     }
 
-    private fun initFreeNote(){
+    private fun changeContent(){
         bgResList= freeNoteBean?.bgRes as MutableList<String>
-        if (!freeNoteBean?.paths.isNullOrEmpty()) {
-            images= freeNoteBean?.paths as MutableList<String>
-        }
-        else{
-            images.clear()
+        //兼容以前版本
+        images = if (freeNoteBean?.paths.isNullOrEmpty()){
+            mutableListOf(getPath(0))
+        } else{
+            freeNoteBean?.paths as MutableList<String>
         }
         tv_name.text=freeNoteBean?.title
+        setContentImage()
     }
 
     /**
      * 创建新随笔
      */
     private fun createFreeNote(){
-        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
         freeNoteBean= FreeNoteBean()
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
-        freeNoteBean?.userId=if (isLoginState()) getUser()?.accountId else 0
+        freeNoteBean?.userId=if (MethodManager.isLogin()) getUser()?.accountId else 0
         freeNoteBean?.bgRes= arrayListOf(bgRes)
         freeNoteBean?.type=0
+        freeNoteBean?.paths= mutableListOf(getPath(posImage))
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
@@ -322,12 +317,18 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
     }
 
     override fun onPageDown() {
-        posImage+=1
-        if (posImage>=bgResList.size){
-            bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
-            bgResList.add(bgRes)
+        if (posImage<images.size-1){
+            posImage+=1
+            setContentImage()
         }
-        setContentImage()
+        else{
+            if (isDrawLastContent()){
+                images.add(getPath(images.size))
+                bgResList.add(bgRes)
+                posImage=images.size-1
+                setContentImage()
+            }
+        }
     }
 
     override fun onPageUp() {
@@ -342,24 +343,29 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
      */
     private fun setContentImage(){
         v_content?.setBackgroundResource(ToolUtils.getImageResId(this,bgResList[posImage]))
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
-        //判断路径是否已经创建
-        if (!images.contains(path)){
-            images.add(path)
-        }
+        val path=getPath(posImage)
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         elik?.setLoadFilePath(path, true)
     }
 
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val path = images.last()
+        return File(path).exists()
+    }
+
+    private fun getPath(index:Int):String{
+        return FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!)) + "/${index + 1}.png"
+    }
+
     private fun saveFreeNote(){
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
-        if (FileUtils.isExistContent(path)){
-            freeNoteBean?.paths = images
-            freeNoteBean?.bgRes = bgResList
-            freeNoteBean?.page=posImage
-            FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
-        }
+        freeNoteBean?.paths = images
+        freeNoteBean?.bgRes = bgResList
+        freeNoteBean?.page=posImage
+        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
     /**
@@ -411,11 +417,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         map["size"]=6
         map["page"]=page
         presenter.getShareNotes(map,isShow)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        saveFreeNote()
     }
 
     override fun onPause() {

@@ -43,8 +43,10 @@ class CalendarDiaryDialog(private val context: Context,private val uploadId:Int)
 
         tv_year?.text="${calendarView?.curYear} 年  ${calendarView?.curMonth} 月"
         diaryTimes=DiaryDaoManager.getInstance().queryLongList(calendarView!!.curYear, calendarView!!.curMonth,uploadId)
-        if (!diaryTimes.contains(currentDay)){
-            diaryTimes.add(currentDay)
+        if (uploadId==0){
+            if (!diaryTimes.contains(currentDay)){
+                diaryTimes.add(currentDay)
+            }
         }
 
         iv_left?.setOnClickListener {
@@ -59,8 +61,10 @@ class CalendarDiaryDialog(private val context: Context,private val uploadId:Int)
             tv_year?.text="$year 年  $month 月"
             diaryTimes=DiaryDaoManager.getInstance().queryLongList(year, month,uploadId)
             if (month==DateUtils.getMonth()){
-                if (!diaryTimes.contains(currentDay)){
-                    diaryTimes.add(currentDay)
+                if (uploadId==0){
+                    if (!diaryTimes.contains(currentDay)){
+                        diaryTimes.add(currentDay)
+                    }
                 }
             }
         }

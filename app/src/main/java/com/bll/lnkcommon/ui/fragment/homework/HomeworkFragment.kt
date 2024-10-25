@@ -87,7 +87,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         rv_list.adapter = mAdapterHomework
         mAdapterHomework?.bindToRecyclerView(rv_list)
         mAdapterHomework?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco( 60))
+        rv_list?.addItemDecoration(SpaceItemDeco( 50))
         mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
             val item=homeworks[position]
             val intent= Intent(requireActivity(), HomeworkDetailsActivity::class.java)

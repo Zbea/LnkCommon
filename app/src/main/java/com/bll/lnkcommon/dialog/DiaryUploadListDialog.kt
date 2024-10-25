@@ -28,7 +28,7 @@ class DiaryUploadListDialog(val context: Context) {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val diaryTypes=ItemTypeDaoManager.getInstance().queryAll(4)
+        val diaryTypes=ItemTypeDaoManager.getInstance().queryAllOrderDesc(4)
 
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)

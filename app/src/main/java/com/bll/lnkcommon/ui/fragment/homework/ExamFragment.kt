@@ -72,7 +72,7 @@ class ExamFragment : BaseFragment(),IExamView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco( 60))
+        rv_list?.addItemDecoration(SpaceItemDeco( 50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item=exams[position]
             val intent= Intent(requireActivity(), ExamDetailsActivity::class.java)

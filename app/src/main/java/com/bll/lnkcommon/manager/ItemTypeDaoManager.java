@@ -56,6 +56,11 @@ public class ItemTypeDaoManager {
         return dao.queryBuilder().where(whereUser,whereUser1).orderAsc(ItemTypeBeanDao.Properties.Date).build().list();
     }
 
+    public List<ItemTypeBean> queryAllOrderDesc(int type) {
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(type);
+        return dao.queryBuilder().where(whereUser,whereUser1).orderDesc(ItemTypeBeanDao.Properties.Date).build().list();
+    }
+
     public Boolean isExist(String title,int type){
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.Title.eq(title);
         WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(type);

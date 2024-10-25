@@ -14,16 +14,20 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
     @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action==Constants.ACTION_DAY_REFRESH){
+            Log.d("debug","每天刷新")
+            EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
+        }
+        //未登录不执行
+        if (!MethodManager.isLogin()){
+            return
+        }
         when(intent.action){
             "android.intent.action.PACKAGE_ADDED"->{
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
             }
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)
-            }
-            Constants.ACTION_DAY_REFRESH->{
-                Log.d("debug","每天刷新")
-                EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
             }
             Constants.DATA_UPLOAD_BROADCAST_EVENT->{
                 Log.d("debug","上传")

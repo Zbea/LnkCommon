@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -60,7 +61,7 @@ class AppFragment:BaseFragment() {
 
 
     private fun initData() {
-        if (isLoginState()){
+        if (MethodManager.isLogin()){
             apps=AppUtils.scanLocalInstallAppList(requireActivity())
         }
         mAdapter?.setNewData(apps)

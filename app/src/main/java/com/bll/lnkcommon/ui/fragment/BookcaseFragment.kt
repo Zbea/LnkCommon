@@ -42,7 +42,7 @@ class BookcaseFragment : BaseFragment() {
         findBook()
 
         tv_book_type.setOnClickListener {
-            if (isLoginState()) {
+            if (MethodManager.isLogin()) {
                 customStartActivity(Intent(activity, BookcaseTypeListActivity::class.java))
             } else {
                 customStartActivity(Intent(activity, AccountLoginActivity::class.java))
@@ -75,7 +75,7 @@ class BookcaseFragment : BaseFragment() {
      * 查找本地书籍
      */
     private fun findBook() {
-        if (isLoginState()) {
+        if (MethodManager.isLogin()) {
             books = BookDaoManager.getInstance().queryAllBook(true)
             if (books.size == 0) {
                 bookTopBean = null

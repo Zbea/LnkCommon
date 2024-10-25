@@ -55,7 +55,7 @@ class NoteFragment:BaseFragment() {
         privacyPassword=MethodManager.getPrivacyPassword(1)
 
         iv_manager?.setOnClickListener {
-            if (isLoginState()){
+            if (MethodManager.isLogin()){
                 setTopSelectView()
             }
             else{
@@ -180,7 +180,7 @@ class NoteFragment:BaseFragment() {
         view.setOnClickListener {
             ModuleSelectDialog(requireContext(),1,DataBeanManager.noteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    if (isLoginState()){
+                    if (MethodManager.isLogin()){
                         createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                     }
                     else{
@@ -206,7 +206,7 @@ class NoteFragment:BaseFragment() {
      */
     private fun initTabs() {
         notebooks.clear()
-        if (isLoginState()){
+        if (MethodManager.isLogin()){
             notebooks=ItemTypeDaoManager.getInstance().queryAll(1)
             notebooks.add(0,ItemTypeBean().apply {
                 title = getString(R.string.note_tab_diary)
@@ -294,7 +294,7 @@ class NoteFragment:BaseFragment() {
     }
 
     override fun fetchData() {
-        if (isLoginState())
+        if (MethodManager.isLogin())
         {
             notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
             val total = NoteDaoManager.getInstance().queryAll(typeStr)

@@ -232,15 +232,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    /**
-     * 是否登录
-     */
-    fun isLoginState():Boolean{
-        val mUser= SPUtil.getObj("user",User::class.java)
-        val token=SPUtil.getString("token")
-        return token.isNotEmpty() && mUser!=null
-    }
-
     fun getUser():User?{
         return SPUtil.getObj("user",User::class.java)
     }

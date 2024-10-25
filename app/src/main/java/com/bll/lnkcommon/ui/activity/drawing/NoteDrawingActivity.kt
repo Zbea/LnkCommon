@@ -15,6 +15,7 @@ import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
+import java.io.File
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
@@ -84,13 +85,17 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         val total=noteContents.size-1
         when(page){
             total->{
-                newNoteContent()
+                if (isDrawLastContent()) {
+                    newNoteContent()
+                    changeContent()
+                }
             }
             else->{
                 page += 1
+                changeContent()
             }
         }
-        changeContent()
+
     }
 
     override fun onPageUp() {
@@ -98,6 +103,14 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             page-=1
             changeContent()
         }
+    }
+
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = noteContents.last()
+        return File(contentBean.filePath).exists()
     }
 
     //翻页内容更新切换
@@ -110,9 +123,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //创建新的作业内容
     private fun newNoteContent() {
-
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(typeStr,note?.title,date)
+        val path=FileAddress().getPathNote(typeStr,note?.title)
         val pathName = DateUtils.longToString(date)
 
         noteContent = NoteContent()

@@ -77,7 +77,7 @@ class MainActivity : BaseActivity(),IQiniuView {
 
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
-        if (isLoginState()&&DataBeanManager.students.size>0){
+        if (MethodManager.isLogin()&&DataBeanManager.students.size>0){
             changeData()
         }
     }
@@ -127,7 +127,7 @@ class MainActivity : BaseActivity(),IQiniuView {
         startRemind()
 
         iv_user.setOnClickListener {
-            if (isLoginState()){
+            if (MethodManager.isLogin()){
                 customStartActivity(Intent(this,AccountInfoActivity::class.java))
             }
             else{
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity(),IQiniuView {
 
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 AlarmManager.INTERVAL_DAY, pendingIntent
             )
         }
@@ -180,7 +180,7 @@ class MainActivity : BaseActivity(),IQiniuView {
 
 
     private fun setLoginView(){
-        tv_login.text=if (isLoginState()) "登录" else "未登录"
+        tv_login.text=if (MethodManager.isLogin()) "登录" else "未登录"
     }
 
     private fun refreshData(boolean: Boolean){
@@ -276,7 +276,7 @@ class MainActivity : BaseActivity(),IQiniuView {
         when (msgFlag) {
             Constants.SETTING_DATA_UPLOAD_EVENT->{
                 eventType=Constants.SETTING_DATA_UPLOAD_EVENT
-                if(isLoginState()){
+                if(MethodManager.isLogin()){
                     qiniuPresenter.getToken()
                 }
             }

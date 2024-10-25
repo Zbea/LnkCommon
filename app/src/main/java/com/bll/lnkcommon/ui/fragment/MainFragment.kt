@@ -81,7 +81,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         setTitle(DataBeanManager.mainListTitle[0])
 
         ll_message.setOnClickListener {
-            if (isLoginState()){
+            if (MethodManager.isLogin()){
                 disMissView(iv_message_tips)
                 customStartActivity(Intent(requireActivity(),MessageListActivity::class.java))
             }
@@ -95,7 +95,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         }
 
         ll_diary.setOnClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
                 return@setOnClickListener
             }
@@ -103,7 +103,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         }
 
         ll_diary.setOnLongClickListener {
-            if (!isLoginState()){
+            if (!MethodManager.isLogin()){
                 customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
                return@setOnLongClickListener true
             }
@@ -120,7 +120,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         }
 
         ll_screenshot.setOnClickListener {
-            if (isLoginState()){
+            if (MethodManager.isLogin()){
                 customStartActivity(Intent(requireActivity(),ScreenshotListActivity::class.java))
             }
             else{
@@ -154,7 +154,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         }
 
         iv_change.setOnClickListener {
-            if (!isLoginState())
+            if (!MethodManager.isLogin())
                 return@setOnClickListener
             isChange=!isChange
             if (isChange){
@@ -188,7 +188,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     }
     override fun lazyLoad() {
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
-            if (isLoginState()){
+            if (MethodManager.isLogin()){
                 presenter.getStudents()
                 presenter.getMessageTotal()
             }
@@ -207,7 +207,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     }
 
     private fun setMessageView(){
-        if (isLoginState()&&DataBeanManager.students.size>0){
+        if (MethodManager.isLogin()&&DataBeanManager.students.size>0){
             showView(ll_message)
         }
         else{

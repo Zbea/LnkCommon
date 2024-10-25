@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarDiaryDialog
@@ -46,7 +47,6 @@ class DiaryActivity:BaseDrawingActivity() {
         else{
             diaryBean=DiaryDaoManager.getInstance().queryBean(uploadId)
             if (diaryBean!=null){
-                nowLong=diaryBean?.date!!
                 changeContent()
             }
         }
@@ -61,7 +61,6 @@ class DiaryActivity:BaseDrawingActivity() {
             if (lastDiaryBean!=null){
                 saveDiary()
                 diaryBean=lastDiaryBean
-                nowLong=lastDiaryBean.date
                 changeContent()
             }
         }
@@ -71,7 +70,6 @@ class DiaryActivity:BaseDrawingActivity() {
             if (nextDiaryBean!=null){
                 saveDiary()
                 diaryBean=nextDiaryBean
-                nowLong=nextDiaryBean.date
                 changeContent()
             }
             else{
@@ -109,6 +107,7 @@ class DiaryActivity:BaseDrawingActivity() {
         tv_digest.setOnClickListener {
             InputContentDialog(this,if (diaryBean?.title.isNullOrEmpty()) "输入摘要" else diaryBean?.title!!).builder().setOnDialogClickListener{
                 diaryBean?.title=it
+                saveDiary()
             }
         }
 
@@ -121,11 +120,12 @@ class DiaryActivity:BaseDrawingActivity() {
     private fun initCurrentDiaryBean(){
         bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
-        diaryBean?.userId=if (isLoginState()) getUser()?.accountId else 0
+        diaryBean?.userId=if (MethodManager.isLogin()) getUser()?.accountId else 0
         diaryBean?.date=nowLong
         diaryBean?.year=DateUtils.getYear()
         diaryBean?.month=DateUtils.getMonth()
         diaryBean?.bgRes=bgRes
+        diaryBean?.paths= mutableListOf(getPath(posImage))
     }
 
     override fun onCatalog() {
@@ -134,15 +134,22 @@ class DiaryActivity:BaseDrawingActivity() {
             diaryBean = diaryBeans[it]
             if (nowLong != diaryBean?.date) {
                 saveDiary()
-                nowLong = diaryBean?.date!!
                 changeContent()
             }
         }
     }
 
     override fun onPageDown() {
-        posImage += 1
-        setContentImage()
+        if (posImage ==images.size-1) {
+            if (isDrawLastContent()){
+                images.add(getPath(images.size))
+                posImage+=1
+                setContentImage()
+            }
+        } else {
+            posImage += 1
+            setContentImage()
+        }
     }
 
     override fun onPageUp() {
@@ -156,6 +163,13 @@ class DiaryActivity:BaseDrawingActivity() {
      * 切换日记
      */
     private fun changeContent(){
+        nowLong = diaryBean?.date!!
+        if (nowLong==DateUtils.getStartOfDayInMillis()&&uploadId==0){
+            showView(iv_btn)
+        }
+        else{
+            disMissView(iv_btn)
+        }
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
@@ -168,11 +182,8 @@ class DiaryActivity:BaseDrawingActivity() {
      * 显示内容
      */
     private fun setContentImage() {
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
-        //判断路径是否已经创建
-        if (!images.contains(path)) {
-            images.add(path)
-        }
+        val path = getPath(posImage)
+
         tv_page.text = "${posImage + 1}"
         tv_page_total.text="${images.size}"
 
@@ -183,7 +194,18 @@ class DiaryActivity:BaseDrawingActivity() {
         else{
             elik?.setLoadFilePath(path, true)
         }
+    }
 
+    /**
+     * 当前本地日记并且最后一个已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val path = images.last()
+        return File(path).exists()&&uploadId==0
+    }
+
+    private fun getPath(index:Int):String{
+        return FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${index + 1}.png"
     }
 
     private fun saveDiary() {
