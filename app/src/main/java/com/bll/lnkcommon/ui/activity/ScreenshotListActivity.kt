@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.*
@@ -46,6 +47,7 @@ class ScreenshotListActivity:BaseActivity() {
         pageSize = 12
         popupBeans.add(PopupBean(0, "管理分类", false))
         popupBeans.add(PopupBean(1, "创建分类", false))
+        popupBeans.add(PopupBean(2, "截图明细", false))
     }
 
     override fun initView() {
@@ -78,6 +80,9 @@ class ScreenshotListActivity:BaseActivity() {
                             ItemTypeDaoManager.getInstance().insertOrReplace(bean)
                             mTabTypeAdapter?.addData(screenTypes.size, bean)
                         }
+                    }
+                    2->{
+                        ScreenshotDetailsDialog(this).builder()
                     }
                 }
             }
@@ -125,11 +130,7 @@ class ScreenshotListActivity:BaseActivity() {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val index=totalNum-1-((pageIndex-1)*pageSize+position)
-                customStartActivity(
-                    Intent(this@ScreenshotListActivity, FileDrawingActivity::class.java)
-                    .putExtra("pageIndex",index)
-                    .putExtra("pagePath",tabPath)
-                )
+                MethodManager.gotoScreenFile(this@ScreenshotListActivity,index,tabPath)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@ScreenshotListActivity.position=position

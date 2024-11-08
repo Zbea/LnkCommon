@@ -8,7 +8,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
@@ -16,12 +16,10 @@ import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.mvp.model.CloudListBean
-import com.bll.lnkcommon.ui.activity.CloudStorageActivity
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_bookcase.*
 import java.io.File
 
@@ -114,15 +112,8 @@ class BookcaseFragment : BaseFragment() {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks = mutableListOf<Book>()
-        val books = BookDaoManager.getInstance().queryAllBook()
-        //遍历获取所有需要上传的书籍数目
-        for (item in books) {
-            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
-                maxBooks.add(item)
-            }
-        }
-        for (book in maxBooks) {
+        val books = BookDaoManager.getInstance().queryAllByHalfYear(1)
+        for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {
@@ -137,7 +128,7 @@ class BookcaseFragment : BaseFragment() {
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
                         })
-                        if (cloudList.size == maxBooks.size)
+                        if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
@@ -150,7 +141,7 @@ class BookcaseFragment : BaseFragment() {
                     listJson = Gson().toJson(book)
                     bookId = book.bookId
                 })
-                if (cloudList.size == maxBooks.size)
+                if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
             }
 
@@ -162,10 +153,7 @@ class BookcaseFragment : BaseFragment() {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookDaoManager.getInstance().queryByBookID(1, item.bookId)
-            //删除书籍
-            FileUtils.deleteFile(File(bookBean.bookPath))
-            FileUtils.deleteFile(File(bookBean.bookDrawPath))
-            BookDaoManager.getInstance().deleteBook(bookBean)
+            MethodManager.deleteBook(bookBean,1)
         }
         findBook()
     }

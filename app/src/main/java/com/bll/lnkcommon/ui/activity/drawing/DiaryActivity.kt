@@ -189,7 +189,7 @@ class DiaryActivity:BaseDrawingActivity() {
 
         elik?.setPWEnabled(!diaryBean?.isUpload!!)
         if (diaryBean?.isUpload!!){
-            GlideUtils.setImageUrl(this, path, v_content)
+            GlideUtils.setImageCacheUrl(this, path, v_content)
         }
         else{
             elik?.setLoadFilePath(path, true)
@@ -210,7 +210,7 @@ class DiaryActivity:BaseDrawingActivity() {
 
     private fun saveDiary() {
         val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong))
-        if (FileUtils.isExistContent(path)){
+        if (FileUtils.isExistContent(path)||!diaryBean?.title.isNullOrEmpty()){
             diaryBean?.paths = images
             diaryBean?.page=posImage
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)

@@ -9,19 +9,19 @@ import com.bll.lnkcommon.Constants.BOOK_EVENT
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
+import com.bll.lnkcommon.dialog.BookcaseDetailsDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -48,6 +48,7 @@ class BookcaseTypeListActivity : BaseActivity() {
         pageSize = 12
         popupBeans.add(PopupBean(0, getString(R.string.type_create_str), false))
         popupBeans.add(PopupBean(1, getString(R.string.type_delete_str), false))
+        popupBeans.add(PopupBean(2, "书籍明细", false))
     }
 
     override fun initView() {
@@ -71,7 +72,6 @@ class BookcaseTypeListActivity : BaseActivity() {
                             mTabTypeAdapter?.addData(bookTypes.size - 1, bookTypeBean)
                         }
                     }
-
                     1 -> {
                         val types = ItemTypeDaoManager.getInstance().queryAll(2)
                         val lists = mutableListOf<ItemList>()
@@ -100,6 +100,9 @@ class BookcaseTypeListActivity : BaseActivity() {
                                 fetchData()
                             }
                         }
+                    }
+                    2->{
+                        BookcaseDetailsDialog(this).builder()
                     }
                 }
             }
@@ -179,7 +182,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             .setOnDialogClickListener {
                 if (it == 0) {
                     mAdapter?.remove(pos)
-                    deleteBook(book)
+                    MethodManager.deleteBook(book,1)
                     fetchData()
                 } else {
                     if (typeStr == "") {

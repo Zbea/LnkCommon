@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.mvp.model.AppBean;
-import com.bll.lnkcommon.mvp.model.Book;
+import com.bll.lnkcommon.mvp.book.Book;
 import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
+import com.bll.lnkcommon.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkcommon.utils.ActivityManager;
 import com.bll.lnkcommon.utils.AppUtils;
+import com.bll.lnkcommon.utils.FileUtils;
 import com.bll.lnkcommon.utils.SPUtil;
 import com.bll.lnkcommon.utils.SToast;
 
@@ -23,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -93,27 +98,13 @@ public class MethodManager {
         EventBus.getDefault().post(Constants.BOOK_EVENT);
 
         List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
-        JSONArray result =new JSONArray();
-        for (AppBean item :toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
+        JSONArray result = getJsonArray(toolApps);
 
         String format = MethodManager.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
         if (type==1){
             if (format.contains("pdf")) {
                 key_type = 1;
-            } else {
-                key_type = 0;
             }
         }
         else {
@@ -132,6 +123,53 @@ public class MethodManager {
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
+        JSONArray result =new JSONArray();
+        for (AppBean item : toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+        return result;
+    }
+
+    /**
+     * @param book
+     * @param type 1书籍 0课本
+     */
+    public static void deleteBook(Book book,int type){
+        BookDaoManager.getInstance().deleteBook(book); //删除本地数据库
+        FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
+        FileUtils.deleteFile(new File(book.bookDrawPath));
+        if (type==1){
+            EventBus.getDefault().post(Constants.BOOK_EVENT) ;
+        }
+        else {
+            EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
+        }
+    }
+
+    /**
+     * 跳转截图列表
+     * @param context
+     * @param index
+     * @param tabPath
+     */
+    public static void gotoScreenFile(Context context,int index,String tabPath){
+        Intent intent=new Intent(context, FileDrawingActivity.class);
+        intent.putExtra("pageIndex",index);
+        intent.putExtra("pagePath",tabPath);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }
 

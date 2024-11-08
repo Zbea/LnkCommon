@@ -1,5 +1,6 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.book;
 
+import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;

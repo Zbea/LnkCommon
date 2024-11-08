@@ -1,7 +1,7 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.BookStore
-import com.bll.lnkcommon.mvp.model.BookStoreType
+import com.bll.lnkcommon.mvp.book.BookStore
+import com.bll.lnkcommon.mvp.book.BookStoreType
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 
@@ -56,26 +56,6 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
     fun getHomeworkBooks(map: HashMap<String,Any>) {
 
         val books = RetrofitManager.service.getHomeworkBooks(map)
-
-        doRequest(books, object : Callback<BookStore>(view) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBook(tBaseResult.data)
-            }
-
-        }, true)
-
-    }
-
-    /**
-     * 参考教材
-     */
-    fun getTeachingBooks(map: HashMap<String,Any>) {
-
-        val books = RetrofitManager.service.getTeachingBooks(map)
 
         doRequest(books, object : Callback<BookStore>(view) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {

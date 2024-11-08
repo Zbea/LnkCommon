@@ -8,8 +8,8 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
+import com.bll.lnkcommon.mvp.book.Book;
 import com.bll.lnkcommon.mvp.model.AppBean;
-import com.bll.lnkcommon.mvp.model.Book;
 import com.bll.lnkcommon.mvp.model.CalenderItemBean;
 import com.bll.lnkcommon.mvp.model.DiaryBean;
 import com.bll.lnkcommon.mvp.model.FreeNoteBean;
@@ -19,8 +19,8 @@ import com.bll.lnkcommon.mvp.model.NoteContent;
 import com.bll.lnkcommon.mvp.model.RecordBean;
 import com.bll.lnkcommon.mvp.model.WallpaperBean;
 
-import com.bll.lnkcommon.greendao.AppBeanDao;
 import com.bll.lnkcommon.greendao.BookDao;
+import com.bll.lnkcommon.greendao.AppBeanDao;
 import com.bll.lnkcommon.greendao.CalenderItemBeanDao;
 import com.bll.lnkcommon.greendao.DiaryBeanDao;
 import com.bll.lnkcommon.greendao.FreeNoteBeanDao;
@@ -39,8 +39,8 @@ import com.bll.lnkcommon.greendao.WallpaperBeanDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
-    private final DaoConfig appBeanDaoConfig;
     private final DaoConfig bookDaoConfig;
+    private final DaoConfig appBeanDaoConfig;
     private final DaoConfig calenderItemBeanDaoConfig;
     private final DaoConfig diaryBeanDaoConfig;
     private final DaoConfig freeNoteBeanDaoConfig;
@@ -50,8 +50,8 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig recordBeanDaoConfig;
     private final DaoConfig wallpaperBeanDaoConfig;
 
-    private final AppBeanDao appBeanDao;
     private final BookDao bookDao;
+    private final AppBeanDao appBeanDao;
     private final CalenderItemBeanDao calenderItemBeanDao;
     private final DiaryBeanDao diaryBeanDao;
     private final FreeNoteBeanDao freeNoteBeanDao;
@@ -65,11 +65,11 @@ public class DaoSession extends AbstractDaoSession {
             daoConfigMap) {
         super(db);
 
-        appBeanDaoConfig = daoConfigMap.get(AppBeanDao.class).clone();
-        appBeanDaoConfig.initIdentityScope(type);
-
         bookDaoConfig = daoConfigMap.get(BookDao.class).clone();
         bookDaoConfig.initIdentityScope(type);
+
+        appBeanDaoConfig = daoConfigMap.get(AppBeanDao.class).clone();
+        appBeanDaoConfig.initIdentityScope(type);
 
         calenderItemBeanDaoConfig = daoConfigMap.get(CalenderItemBeanDao.class).clone();
         calenderItemBeanDaoConfig.initIdentityScope(type);
@@ -95,8 +95,8 @@ public class DaoSession extends AbstractDaoSession {
         wallpaperBeanDaoConfig = daoConfigMap.get(WallpaperBeanDao.class).clone();
         wallpaperBeanDaoConfig.initIdentityScope(type);
 
-        appBeanDao = new AppBeanDao(appBeanDaoConfig, this);
         bookDao = new BookDao(bookDaoConfig, this);
+        appBeanDao = new AppBeanDao(appBeanDaoConfig, this);
         calenderItemBeanDao = new CalenderItemBeanDao(calenderItemBeanDaoConfig, this);
         diaryBeanDao = new DiaryBeanDao(diaryBeanDaoConfig, this);
         freeNoteBeanDao = new FreeNoteBeanDao(freeNoteBeanDaoConfig, this);
@@ -106,8 +106,8 @@ public class DaoSession extends AbstractDaoSession {
         recordBeanDao = new RecordBeanDao(recordBeanDaoConfig, this);
         wallpaperBeanDao = new WallpaperBeanDao(wallpaperBeanDaoConfig, this);
 
-        registerDao(AppBean.class, appBeanDao);
         registerDao(Book.class, bookDao);
+        registerDao(AppBean.class, appBeanDao);
         registerDao(CalenderItemBean.class, calenderItemBeanDao);
         registerDao(DiaryBean.class, diaryBeanDao);
         registerDao(FreeNoteBean.class, freeNoteBeanDao);
@@ -119,8 +119,8 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
-        appBeanDaoConfig.clearIdentityScope();
         bookDaoConfig.clearIdentityScope();
+        appBeanDaoConfig.clearIdentityScope();
         calenderItemBeanDaoConfig.clearIdentityScope();
         diaryBeanDaoConfig.clearIdentityScope();
         freeNoteBeanDaoConfig.clearIdentityScope();
@@ -131,12 +131,12 @@ public class DaoSession extends AbstractDaoSession {
         wallpaperBeanDaoConfig.clearIdentityScope();
     }
 
-    public AppBeanDao getAppBeanDao() {
-        return appBeanDao;
-    }
-
     public BookDao getBookDao() {
         return bookDao;
+    }
+
+    public AppBeanDao getAppBeanDao() {
+        return appBeanDao;
     }
 
     public CalenderItemBeanDao getCalenderItemBeanDao() {

@@ -308,7 +308,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
 //                listFiles[listFiles.size-1]
                 listFiles[Random().nextInt(listFiles.size)]
             }
-            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
+            GlideUtils.setImageRoundUrl(requireActivity(),file.path,iv_calender,15)
         }
     }
 

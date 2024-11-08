@@ -13,21 +13,17 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
@@ -172,14 +168,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in itemTabTypes){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
+                if (position<itemTabTypes.size){
+                    val item=itemTabTypes[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
 
-                onTabClickListener(view,position)
+                    onTabClickListener(view,position)
+                }
             }
         }
     }
@@ -320,17 +318,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showLog(resId:Int){
         Log.d("debug",getString(resId))
-    }
-
-    /**
-     * 删除书本
-     */
-    fun deleteBook(book: Book){
-        BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-        if (FileUtils.isExistContent(book.bookDrawPath))
-            FileUtils.deleteFile(File(book.bookDrawPath))
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
     }
 
     /**

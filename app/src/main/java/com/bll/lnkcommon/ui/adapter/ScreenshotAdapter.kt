@@ -2,7 +2,6 @@ package com.bll.lnkcommon.ui.adapter
 
 import android.widget.ImageView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.Book
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -14,7 +13,7 @@ class ScreenshotAdapter(layoutResId: Int, data: List<File>?) : BaseQuickAdapter<
         helper.apply {
             setText(R.id.tv_name,file.name.replace(".png",""))
             val image=getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageFileRound(mContext,file,image,12)
+            GlideUtils.setImageRoundUrl(mContext,file.path,image,12)
         }
     }
 

@@ -149,13 +149,13 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         //批改成功后加载提交后的图片
         if (correctBean?.status==2){
             setPWEnabled(true)
-            GlideUtils.setImageFile(this, File(savePaths[posImage]),v_content)
+            GlideUtils.setImageCacheUrl(this, File(savePaths[posImage]).path,v_content)
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
         }
         else{
             setPWEnabled(false)
-            GlideUtils.setImageUrl(this, images[posImage],v_content)
+            GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
         }
     }
 

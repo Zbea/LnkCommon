@@ -9,7 +9,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
@@ -20,7 +20,6 @@ import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask

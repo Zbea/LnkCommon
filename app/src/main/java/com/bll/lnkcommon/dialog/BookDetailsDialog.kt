@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.utils.GlideUtils
 
 
@@ -64,6 +64,8 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
     fun setChangeStatus() {
         book.buyStatus=1
+        btn_ok?.isClickable = true
+        btn_ok?.isEnabled = true
         btn_ok?.text = context.getString(R.string.click_download)
     }
 

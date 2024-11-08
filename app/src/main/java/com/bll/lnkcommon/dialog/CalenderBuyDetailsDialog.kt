@@ -57,6 +57,8 @@ class CalenderBuyDetailsDialog(private val context: Context, private val item: C
 
     fun setChangeStatus() {
         item.buyStatus=1
+        btn_ok?.isClickable = true
+        btn_ok?.isEnabled = true
         btn_ok?.text = context.getString(R.string.click_download)
     }
 

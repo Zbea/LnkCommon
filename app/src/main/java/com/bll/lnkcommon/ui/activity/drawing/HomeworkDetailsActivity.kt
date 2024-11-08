@@ -90,7 +90,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     private fun setContentImage(){
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
-        GlideUtils.setImageUrl(this, images[posImage],v_content)
+        GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
     }
 
 }

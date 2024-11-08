@@ -14,6 +14,9 @@ import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.BookDetailsDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.book.BookStore
+import com.bll.lnkcommon.mvp.book.BookStoreType
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
@@ -21,11 +24,9 @@ import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.*
@@ -263,10 +264,10 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 map["bookId"] = book.bookId
                 when(tabId){
                     0,1->{
-                        map["type"] = 1
+                        map["type"] = 2
                     }
                     2,3->{
-                        map["type"] = 2
+                        map["type"] = 1
                     }
                 }
                 presenter.buyBook(map)

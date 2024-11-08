@@ -8,7 +8,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.model.Book
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.CatalogChildBean
 import com.bll.lnkcommon.mvp.model.CatalogMsg
 import com.bll.lnkcommon.mvp.model.CatalogParentBean
@@ -117,7 +117,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
         val showFile = getIndexFile(index)
         if (showFile!=null){
             book?.pageUrl=showFile.path //设置当前页面路径
-            GlideUtils.setImageFile(this,showFile,view)
+            GlideUtils.setImageCacheUrl(this,showFile.path,view)
 
             val drawPath=book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath,true)

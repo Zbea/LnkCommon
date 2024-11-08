@@ -14,6 +14,7 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
@@ -132,11 +133,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
             .setOnDialogClickListener {
                 if (it == 0) {
-                    BookDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                    mAdapter?.remove(position)
-                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                    MethodManager.deleteBook(book,0)
                 } else {
                     val students=DataBeanManager.students
                     if (students.size==1){
@@ -174,15 +171,8 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks = mutableListOf<Book>()
-        val books = BookDaoManager.getInstance().queryAllTextbook()
-        //遍历获取所有需要上传的书籍数目
-        for (item in books) {
-            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
-                maxBooks.add(item)
-            }
-        }
-        for (book in maxBooks) {
+        val books = BookDaoManager.getInstance().queryAllByHalfYear(0)
+        for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {
@@ -197,7 +187,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
                         })
-                        if (cloudList.size == maxBooks.size)
+                        if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
@@ -210,7 +200,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                     listJson = Gson().toJson(book)
                     bookId = book.bookId
                 })
-                if (cloudList.size == maxBooks.size)
+                if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
             }
         }
@@ -221,12 +211,8 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookDaoManager.getInstance().queryByBookID(0, item.bookId)
-            //删除书籍
-            FileUtils.deleteFile(File(bookBean.bookPath))
-            FileUtils.deleteFile(File(bookBean.bookDrawPath))
-            BookDaoManager.getInstance().deleteBook(bookBean)
+            MethodManager.deleteBook(bookBean,0)
         }
-        fetchData()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

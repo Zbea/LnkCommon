@@ -1,10 +1,11 @@
 package com.bll.lnkcommon.manager;
 
 
+import com.bll.lnkcommon.Constants;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.BookDao;
 import com.bll.lnkcommon.greendao.DaoSession;
-import com.bll.lnkcommon.mvp.model.Book;
+import com.bll.lnkcommon.mvp.book.Book;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.utils.SPUtil;
 
@@ -83,6 +84,18 @@ public class BookDaoManager {
             whereCondition1= BookDao.Properties.BookId.eq(bookID);
         }
         return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
+    }
+
+    /**
+     * 获取半年以前的书籍
+     * category 0课本 1书籍
+     * @return
+     */
+    public List<Book> queryAllByHalfYear(int category){
+        long time=System.currentTimeMillis()- Constants.halfYear;
+        WhereCondition whereCondition= BookDao.Properties.Category.eq(category);
+        WhereCondition whereCondition1= BookDao.Properties.Time.le(time);
+        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
     //查询所有书籍

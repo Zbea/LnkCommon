@@ -1,4 +1,6 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.book;
+
+import com.bll.lnkcommon.mvp.model.ItemList;
 
 import java.util.List;
 import java.util.Map;
