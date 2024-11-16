@@ -63,7 +63,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
         }
 
         tv_correct_title.text=homeworkBean?.title
-        tv_total_score.text=homeworkBean?.score!!.toString()
+        tv_total_score.text=homeworkBean?.score
 
         initScoreView()
         setContentImage()

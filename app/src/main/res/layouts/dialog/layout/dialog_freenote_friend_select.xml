@@ -29,7 +29,7 @@
             android:id="@+id/iv_delete"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
             android:src="@mipmap/icon_delete"
             android:scaleType="center"
             android:background="@drawable/click_btn_transparent_line_black"
@@ -45,12 +45,12 @@
             />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bll.lnkcommon.widget.MaxRecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="100dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
         />
 
 </LinearLayout>

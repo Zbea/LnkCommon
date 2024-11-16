@@ -30,7 +30,6 @@ import java.io.File
 import kotlin.math.ceil
 
 class ScreenshotListActivity:BaseActivity() {
-    private var screenTypes= mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
     private var tabPos=0
@@ -78,7 +77,7 @@ class ScreenshotListActivity:BaseActivity() {
                             bean.path = path
                             bean.date = System.currentTimeMillis()
                             ItemTypeDaoManager.getInstance().insertOrReplace(bean)
-                            mTabTypeAdapter?.addData(screenTypes.size, bean)
+                            mTabTypeAdapter?.addData(bean)
                         }
                     }
                     2->{
@@ -93,19 +92,20 @@ class ScreenshotListActivity:BaseActivity() {
     }
 
     private fun initTab() {
-        screenTypes=ItemTypeDaoManager.getInstance().queryAll(3)
-        screenTypes.add(0,ItemTypeBean().apply {
+        pageIndex=1
+        itemTabTypes=ItemTypeDaoManager.getInstance().queryAll(3)
+        itemTabTypes.add(0,ItemTypeBean().apply {
             path=FileAddress().getPathScreen("未分类")
             title="未分类"
         })
-        if (tabPos>=screenTypes.size){
+        if (tabPos>=itemTabTypes.size){
             tabPos=0
         }
-        for (item in screenTypes){
+        for (item in itemTabTypes){
             item.isCheck=false
         }
-        screenTypes[tabPos].isCheck=true
-        mTabTypeAdapter?.setNewData(screenTypes)
+        itemTabTypes[tabPos].isCheck=true
+        mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
 
@@ -189,7 +189,7 @@ class ScreenshotListActivity:BaseActivity() {
     }
 
     override fun fetchData() {
-        tabPath=screenTypes[tabPos].path
+        tabPath=itemTabTypes[tabPos].path
         totalNum= FileUtils.getDescFiles(tabPath).size
         setPageNumber(totalNum)
         val files= FileUtils.getDescFiles(tabPath,pageIndex, pageSize)

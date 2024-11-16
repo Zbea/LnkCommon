@@ -1,45 +1,73 @@
 package com.bll.lnkcommon.base
 
 import PopupClick
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Build
-import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
-import android.view.*
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
+import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
+import android.view.PWInputPoint
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.dialog.*
+import com.bll.lnkcommon.dialog.AppToolDialog
+import com.bll.lnkcommon.dialog.GeometryScaleDialog
+import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.mvp.model.ExamScoreItem
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.User
-import com.bll.lnkcommon.net.ExceptionHandle
-import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
-import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkcommon.ui.adapter.TopicScoreAdapter
-import com.bll.lnkcommon.utils.*
+import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.ToolUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_drawing_geometry.*
-import kotlinx.android.synthetic.main.common_page_number.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_correct_close
+import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
+import kotlinx.android.synthetic.main.ac_drawing.ll_score
+import kotlinx.android.synthetic.main.ac_drawing.rv_list_multi
+import kotlinx.android.synthetic.main.ac_drawing.rv_list_score
+import kotlinx.android.synthetic.main.ac_drawing.tv_answer
+import kotlinx.android.synthetic.main.ac_drawing.v_content
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_angle
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_arc
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_axis
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_circle
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_line
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_oval
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_parabola
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_pen
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_rectangle
+import kotlinx.android.synthetic.main.common_drawing_geometry.iv_vertical
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_angle
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_arc
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_axis
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_circle
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_line
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_oval
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_parabola
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_pen
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_rectangle
+import kotlinx.android.synthetic.main.common_drawing_geometry.ll_vertical
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_axis
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_circle
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_gray_line
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_out
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_parallel
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_reduce
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_revocation
+import kotlinx.android.synthetic.main.common_drawing_geometry.tv_scale
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_erasure
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_page_down
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_page_up
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import java.util.regex.Pattern
 
 
@@ -260,7 +288,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 elik?.setShifted(isCurrent&&isParallel)
             }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 if (elik?.curDrawObjStatus == true){
                     reDrawGeometry(elik!!)
                 }
@@ -458,16 +486,16 @@ abstract class BaseDrawingActivity : BaseActivity() {
                 items.add(ExamScoreItem().apply {
                     sort=i
                     if (scoreMode==1){
-                        var totalLabel=0
+                        var totalLabel=0.0
                         for (item in scores[i]){
                             totalLabel+=item.label
                         }
                         label=totalLabel
-                        var totalItem=0
+                        var totalItem=0.0
                         for (item in scores[i]){
                             totalItem+= getScore(item.score)
                         }
-                        score=totalItem.toString()
+                        score=ToolUtils.getFormatNum(totalItem,"0.0")
                     }
                     else{
                         var totalRight=0
@@ -495,11 +523,16 @@ abstract class BaseDrawingActivity : BaseActivity() {
         return items
     }
 
-    private fun getScore(scoreStr: String?): Int {
-        return if (scoreStr == null || scoreStr.isEmpty() || !TextUtils.isDigitsOnly(scoreStr)) {
-            0
+    /**
+     * 获取分数
+     * @param scoreStr
+     * @return
+     */
+    private fun getScore(scoreStr: String?): Double {
+        return if (scoreStr.isNullOrEmpty()) {
+            0.0
         } else {
-            Integer.valueOf(scoreStr)
+            scoreStr.toDouble()
         }
     }
 

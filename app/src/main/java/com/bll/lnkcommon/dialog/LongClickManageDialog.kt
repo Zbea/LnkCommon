@@ -32,7 +32,7 @@ class LongClickManageDialog(val context: Context, val name:String, val lists:Mut
         rv_list?.layoutManager = GridLayoutManager(context,2)
         val mAdapter = MyAdapter(R.layout.item_long_click, lists)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDecoScore(25, 20))
+        rv_list?.addItemDecoration(SpaceGridItemDecoScore(20, 30))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             onClickListener?.onClick(position)

@@ -28,7 +28,7 @@ class BookcaseDetailsDialog(val context: Context) {
 
         val total=BookDaoManager.getInstance().queryAllBook().size
 
-        val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
+        val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
         tv_total.text="总计：${total}本"
 
         val items= mutableListOf<ItemDetailsBean>()

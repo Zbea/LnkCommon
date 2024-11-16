@@ -95,7 +95,6 @@ public class MethodManager {
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
         BookDaoManager.getInstance().insertOrReplaceBook(bookBean);
-        EventBus.getDefault().post(Constants.BOOK_EVENT);
 
         List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
         JSONArray result = getJsonArray(toolApps);
@@ -124,6 +123,8 @@ public class MethodManager {
         intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+        EventBus.getDefault().post(Constants.BOOK_EVENT);
     }
 
     private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {

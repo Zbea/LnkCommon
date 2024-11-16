@@ -7,6 +7,6 @@ public class Score {
     public String className;
     public int classId;
     public String name;
-    public int score;
+    public double score;
 
 }

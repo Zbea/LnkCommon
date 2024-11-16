@@ -24,7 +24,7 @@ public class TeacherHomeworkList {
         @SerializedName("msgType")
         public int status;
         public int studentTaskId;
-        public int score;
+        public String score;
         public int questionType;
         public int questionMode;
         public String question;

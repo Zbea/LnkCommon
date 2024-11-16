@@ -26,7 +26,7 @@ class FreeNoteFriendManageDialog(val context: Context, val friends:MutableList<F
         rv_list?.layoutManager = GridLayoutManager(context,3)
         val mAdapter = MyAdapter(R.layout.item_freenote_friend_select, friends)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, 0, 40))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, 0, 30))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val item=mAdapter.getItem(position)

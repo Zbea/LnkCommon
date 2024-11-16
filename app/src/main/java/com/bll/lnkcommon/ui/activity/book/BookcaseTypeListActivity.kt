@@ -30,13 +30,11 @@ import kotlinx.android.synthetic.main.common_title.*
  * 书架分类
  */
 class BookcaseTypeListActivity : BaseActivity() {
-
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()
     private var typeStr = ""//当前分类
     private var pos = 0 //当前书籍位置
     private val mBookDaoManager = BookDaoManager.getInstance()
-    private var bookTypes = mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
 
@@ -69,7 +67,7 @@ class BookcaseTypeListActivity : BaseActivity() {
                             bookTypeBean.date = System.currentTimeMillis()
                             bookTypeBean.title = it
                             ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-                            mTabTypeAdapter?.addData(bookTypes.size - 1, bookTypeBean)
+                            mTabTypeAdapter?.addData(bookTypeBean)
                         }
                     }
                     1 -> {
@@ -87,14 +85,14 @@ class BookcaseTypeListActivity : BaseActivity() {
                             }
                             ItemTypeDaoManager.getInstance().deleteBean(types[it])
                             var index = 0
-                            for (i in bookTypes.indices) {
-                                if (typeNameStr == bookTypes[i].title) {
+                            for (i in itemTabTypes.indices) {
+                                if (typeNameStr == itemTabTypes[i].title) {
                                     index = i
                                 }
                             }
                             mTabTypeAdapter?.remove(index)
                             if (typeStr == typeNameStr) {
-                                bookTypes[0].isCheck = true
+                                itemTabTypes[0].isCheck = true
                                 typeStr = ""
                                 mTabTypeAdapter?.notifyItemChanged(0)
                                 fetchData()
@@ -113,18 +111,19 @@ class BookcaseTypeListActivity : BaseActivity() {
     }
 
     private fun initTab() {
-        bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
-        bookTypes.add(ItemTypeBean().apply {
+        pageIndex=1
+        itemTabTypes = ItemTypeDaoManager.getInstance().queryAll(2)
+        itemTabTypes.add(ItemTypeBean().apply {
             title = "全部"
         })
-        bookTypes[pos].isCheck = true
-        mTabTypeAdapter?.setNewData(bookTypes)
+        itemTabTypes[pos].isCheck = true
+        mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
         pageIndex = 1
-        typeStr = bookTypes[position].title
+        typeStr = itemTabTypes[position].title
         if (position == 0)
             typeStr = ""
         fetchData()

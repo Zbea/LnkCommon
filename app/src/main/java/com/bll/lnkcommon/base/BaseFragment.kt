@@ -63,7 +63,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter:TabTypeAdapter?=null
-    val itemTabTypes= mutableListOf<ItemTypeBean>()
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onToken(token: String) {
         onUpload(token)
@@ -249,14 +249,15 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in data){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
-
-                onTabClickListener(view,position)
+                if (position<data.size){
+                    val item=data[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
+                    onTabClickListener(view,position)
+                }
             }
         }
     }

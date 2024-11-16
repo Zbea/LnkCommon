@@ -88,22 +88,17 @@ class NotebookManagerActivity : BaseActivity() {
                 }
                 override fun ok() {
                     val noteType=noteBooks[position]
-                    noteBooks.removeAt(position)
-                    //删除笔记本
-                    ItemTypeDaoManager.getInstance().deleteBean(noteType)
-
-                    val notebooks= NoteDaoManager.getInstance().queryAll(noteType.title)
-                    //删除该笔记分类中的所有笔记本及其内容
-                    for (note in notebooks){
-                        NoteDaoManager.getInstance().deleteBean(note)
-                        NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
-                        val path= FileAddress().getPathNote(note.typeStr,note.title)
-                        FileUtils.deleteFile(File(path))
+                    val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
+                    if (notes.isNotEmpty()){
+                        showToast("笔记本还有主题,无法删除")
                     }
-
-                    setNotify()
+                    else{
+                        noteBooks.removeAt(position)
+                        //删除笔记本
+                        ItemTypeDaoManager.getInstance().deleteBean(noteType)
+                        setNotify()
+                    }
                 }
-
             })
     }
 

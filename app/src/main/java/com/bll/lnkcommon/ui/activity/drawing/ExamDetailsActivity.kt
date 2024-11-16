@@ -51,7 +51,7 @@ class ExamDetailsActivity:BaseDrawingActivity() {
         }
 
         tv_correct_title.text=examBean?.examName
-        tv_total_score.text=examBean?.score!!.toString()
+        tv_total_score.text=examBean?.score
 
         setContentImage()
         initScoreView()

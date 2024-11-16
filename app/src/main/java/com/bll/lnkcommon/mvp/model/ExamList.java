@@ -15,7 +15,7 @@ public class ExamList {
         public String examUrl;
         public String studentUrl;
         public String teacherUrl;
-        public int score;
+        public String score;
         public long expTime;
         public String examName;
         public int classId;

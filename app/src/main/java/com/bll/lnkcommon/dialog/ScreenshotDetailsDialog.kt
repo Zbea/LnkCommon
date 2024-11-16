@@ -55,7 +55,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
         tv_title.text="截图明细"
 
-        val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
+        val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
         tv_total.text="总计：${total}条"
 
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)

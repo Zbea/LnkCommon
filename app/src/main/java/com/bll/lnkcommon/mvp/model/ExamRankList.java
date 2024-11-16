@@ -9,6 +9,6 @@ public class ExamRankList {
         public String className;
         public int classId;
         public String studentName;
-        public int score;
+        public double score;
     }
 }

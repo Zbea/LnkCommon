@@ -118,7 +118,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                         override fun onFinish() {
                             val itemTypeBean= ItemTypeBean().apply {
                                 type=4
-                                title=item.subTypeStr
+                                title=item.title
                                 date=System.currentTimeMillis()
                                 typeId=item.id
                             }

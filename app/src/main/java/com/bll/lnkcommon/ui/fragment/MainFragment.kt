@@ -431,7 +431,8 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
                 setCallBack{
                     cloudList.add(CloudListBean().apply {
                         type=4
-                        subTypeStr=diaryUploadTitleStr
+                        title=diaryUploadTitleStr
+                        subTypeStr="我的日记"
                         year=DateUtils.getYear()
                         date=time
                         listJson= Gson().toJson(diarys)
