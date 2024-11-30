@@ -82,11 +82,16 @@ class BookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
-        CatalogDialog(this,catalogs,1,startCount).builder().
-        setOnDialogClickListener { position ->
-            page = position-1
-            updateScreen()
-        }
+        CatalogDialog(this,catalogs, 1, startCount).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=position-1){
+                    page = position-1
+                    updateScreen()
+                }
+            }
+            override fun onEdit(position: Int, title: String) {
+            }
+        })
     }
 
 

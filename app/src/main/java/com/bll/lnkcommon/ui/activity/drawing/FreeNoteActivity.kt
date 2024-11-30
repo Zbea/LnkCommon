@@ -149,7 +149,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         iv_btn.setOnClickListener {
             ModuleSelectDialog(this,0,DataBeanManager.freenoteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
-                    v_content?.setBackgroundResource(moduleBean.resContentId)
+                    MethodManager.setImageResource(this,moduleBean.resContentId,v_content)
                     bgResList[posImage]=ToolUtils.getImageResStr(this, moduleBean.resContentId)
                 }
         }
@@ -342,7 +342,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
      * 更换内容
      */
     private fun setContentImage(){
-        v_content?.setBackgroundResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,bgResList[posImage]),v_content)
         val path=getPath(posImage)
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"

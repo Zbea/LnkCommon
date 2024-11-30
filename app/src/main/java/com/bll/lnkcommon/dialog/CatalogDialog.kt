@@ -45,6 +45,14 @@ class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0,val
                 if (listener!=null)
                     listener?.onClick(position)
             }
+            mAdapter.setOnItemChildClickListener { adapter, view, position ->
+                val item=list[position]
+                InputContentDialog(context, item.name).builder().setOnDialogClickListener{
+                    item.name=it
+                    mAdapter.notifyItemChanged(position)
+                    listener?.onEdit(position,it)
+                }
+            }
         }
         else{
             val mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>,startCount)
@@ -78,8 +86,9 @@ class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0,val
 
     private var listener: OnDialogClickListener? = null
 
-    fun interface OnDialogClickListener {
+    interface OnDialogClickListener {
         fun onClick(position: Int)
+        fun onEdit(position: Int,title:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
@@ -91,6 +100,8 @@ class CatalogDialog(val context: Context, val list: List<Any>,val type:Int=0,val
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
+            helper.setGone(R.id.iv_edit,item.isEdit)
+            helper.addOnClickListener(R.id.iv_edit)
         }
 
     }

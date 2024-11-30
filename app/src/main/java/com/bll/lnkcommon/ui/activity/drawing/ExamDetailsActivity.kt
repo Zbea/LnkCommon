@@ -32,7 +32,7 @@ class ExamDetailsActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setViewElikUnable(iv_score,ll_score)
-        setPWEnabled(false)
+        setDisableTouchInput(true)
         showView(iv_score)
         if (correctMode<3){
             showView(rv_list_score)
@@ -78,7 +78,7 @@ class ExamDetailsActivity:BaseDrawingActivity() {
     private fun setContentImage(){
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
-        GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
+        GlideUtils.setImageUrl(this, images[posImage],v_content)
     }
 
 }

@@ -47,6 +47,19 @@ class MyHomeworkPresenter(view: IContractView.IMyHomeworkView) : BasePresenter<I
         }, true)
     }
 
+    fun editHomeworkType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val grade = RetrofitManager.service.editHomeworkType(body)
+        doRequest(grade, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditSuccess()
+            }
+        }, true)
+    }
+
     fun sendHomework(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val grade = RetrofitManager.service.sendHomework(body)

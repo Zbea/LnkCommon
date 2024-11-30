@@ -4,12 +4,15 @@ import android.os.Handler
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.dayLong
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarSingleDialog
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
+import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.common_date_arrow.iv_down
 import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
@@ -30,6 +33,9 @@ class DateEventActivity:BaseDrawingActivity() {
 
     override fun initView() {
         setPageTitle("日程")
+        MethodManager.setImageResource(this, R.mipmap.icon_date_event_bg,v_content)
+
+
         setContentView()
         elik=v_content.pwInterFace
 

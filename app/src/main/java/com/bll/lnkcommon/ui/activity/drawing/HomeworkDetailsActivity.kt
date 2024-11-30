@@ -42,7 +42,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setViewElikUnable(iv_score,ll_score)
-        setPWEnabled(false)
+        setDisableTouchInput(true)
 
         if (homeworkBean?.status==3)
             showView(iv_score)
@@ -90,7 +90,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     private fun setContentImage(){
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
-        GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
+        GlideUtils.setImageUrl(this, images[posImage],v_content)
     }
 
 }

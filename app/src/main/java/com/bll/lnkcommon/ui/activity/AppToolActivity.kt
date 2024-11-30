@@ -84,7 +84,7 @@ class AppToolActivity:BaseActivity() {
             val item=apps[position]
             val packageName= item.packageName
             if (packageName!=Constants.PACKAGE_GEOMETRY){
-                CommonDialog(this).setContent("卸载应用？").builder().setDialogClickListener(object :
+                CommonDialog(this).setContent("确认卸载该应用？").builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
                     }

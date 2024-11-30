@@ -48,7 +48,7 @@ class AppFragment:BaseFragment() {
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             this.position=position
-            CommonDialog(requireActivity()).setContent("确认卸载应用？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+            CommonDialog(requireActivity()).setContent("确认卸载该应用？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {

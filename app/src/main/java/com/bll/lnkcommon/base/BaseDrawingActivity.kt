@@ -464,63 +464,15 @@ abstract class BaseDrawingActivity : BaseActivity() {
             elik?.addOnTopView(view)
     }
 
-    fun setPWEnabled(boolean: Boolean){
-        elik?.setPWEnabled(boolean)
+    fun setDisableTouchInput(boolean: Boolean){
+        elik?.disableTouchInput(boolean)
     }
 
     /**
      * 格式序列化  题目分数转行list集合
      */
     fun scoreJsonToList(json:String):List<ExamScoreItem>{
-        var items= mutableListOf<ExamScoreItem>()
-        if (correctMode<3){
-            items= Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-            for (item in items){
-                item.sort=items.indexOf(item)
-            }
-        }
-        else{
-            var totalChildSort=0
-            val scores= Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
-            for (i in scores.indices){
-                items.add(ExamScoreItem().apply {
-                    sort=i
-                    if (scoreMode==1){
-                        var totalLabel=0.0
-                        for (item in scores[i]){
-                            totalLabel+=item.label
-                        }
-                        label=totalLabel
-                        var totalItem=0.0
-                        for (item in scores[i]){
-                            totalItem+= getScore(item.score)
-                        }
-                        score=ToolUtils.getFormatNum(totalItem,"0.0")
-                    }
-                    else{
-                        var totalRight=0
-                        for (item in scores[i]){
-                            item.score=item.result.toString()
-                            if (item.result==1) {
-                                totalRight+= 1
-                            }
-                        }
-                        score=totalRight.toString()
-                    }
-                    for (item in scores[i]){
-                        if (correctMode==3){
-                            item.sort=scores[i].indexOf(item)
-                        }
-                        else{
-                            item.sort=totalChildSort+scores[i].indexOf(item)
-                        }
-                    }
-                    childScores=scores[i]
-                    totalChildSort+=scores[i].size
-                })
-            }
-        }
-        return items
+        return Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
     }
 
     /**

@@ -14,6 +14,7 @@ import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.*
 import kotlinx.android.synthetic.main.ac_diary.*
+import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.common_date_arrow.iv_down
 import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
@@ -99,7 +100,7 @@ class DiaryActivity:BaseDrawingActivity() {
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
-                    v_content?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content)
                     SPUtil.putString(Constants.SP_DIARY_BG_SET,bgRes)
                 }
         }
@@ -174,7 +175,7 @@ class DiaryActivity:BaseDrawingActivity() {
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
         tv_date.text=DateUtils.longToStringWeek(nowLong)
-        v_content?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content)
         setContentImage()
     }
 
@@ -183,17 +184,12 @@ class DiaryActivity:BaseDrawingActivity() {
      */
     private fun setContentImage() {
         val path = getPath(posImage)
+        elik?.setLoadFilePath(path, true)
 
         tv_page.text = "${posImage + 1}"
         tv_page_total.text="${images.size}"
 
-        elik?.setPWEnabled(!diaryBean?.isUpload!!)
-        if (diaryBean?.isUpload!!){
-            GlideUtils.setImageCacheUrl(this, path, v_content)
-        }
-        else{
-            elik?.setLoadFilePath(path, true)
-        }
+        setDisableTouchInput(diaryBean?.isUpload!!)
     }
 
     /**

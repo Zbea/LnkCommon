@@ -137,7 +137,7 @@ class NoteFragment:BaseFragment() {
             val note=notes[position]
             when(view.id){
                 R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定要删除主题？").builder()
+                    CommonDialog(requireActivity()).setContent("确定删除${note.title}？").builder()
                         .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
@@ -186,10 +186,10 @@ class NoteFragment:BaseFragment() {
                 R.id.iv_upload->{
                     val path=FileAddress().getPathNote(note.typeStr,note.title)
                     if (!FileUtils.isExistContent(path)){
-                        showToast("主题暂无内容，无法上传")
+                        showToast("${note.title}暂无内容，无需上传")
                         return@setOnItemChildClickListener
                     }
-                    CommonDialog(requireActivity()).setContent("确定上传该主题到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
                         override fun ok() {
@@ -307,8 +307,9 @@ class NoteFragment:BaseFragment() {
             setCallBack{
                 cloudList.add(CloudListBean().apply {
                     type=3
+                    title=note.title
                     subTypeStr=note.typeStr
-                    date=note.date
+                    date=System.currentTimeMillis()
                     listJson= Gson().toJson(note)
                     contentJson= Gson().toJson(noteContents)
                     downloadUrl=it

@@ -47,6 +47,9 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         showToast("设置作业本成功")
     }
 
+    override fun onEditSuccess() {
+    }
+
     override fun onDeleteSuccess() {
     }
 
@@ -123,7 +126,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             name = "删除"
             resId = R.mipmap.icon_setting_delete
         })
-        if (tabId == 3&&DataBeanManager.students.size>0) {
+        if (tabId >1&&DataBeanManager.students.size>0) {
             beans.add(ItemList().apply {
                 name = "设置作业"
                 resId = R.mipmap.icon_setting_set

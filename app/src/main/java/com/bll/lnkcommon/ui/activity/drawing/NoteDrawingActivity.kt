@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
@@ -13,7 +14,9 @@ import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
@@ -47,15 +50,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,note?.contentResId),v_content)
-
-        ll_page.setOnClickListener {
-            InputContentDialog(this,noteContent?.title!!).builder().setOnDialogClickListener { string ->
-                noteContent?.title = string
-                noteContents[page-1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-            }
-        }
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content)
 
         changeContent()
     }
@@ -68,16 +63,27 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             val itemBean= ItemList()
             itemBean.name=item.title
             itemBean.page=item.page
+            itemBean.isEdit=true
             if (titleStr != item.title)
             {
                 titleStr=item.title
                 list.add(itemBean)
             }
         }
-        CatalogDialog(this,list).builder().setOnDialogClickListener { position ->
-            page = noteContents[position].page
-            changeContent()
-        }
+
+        CatalogDialog(this,list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=noteContents[position].page){
+                    page = noteContents[position].page
+                    changeContent()
+                }
+            }
+            override fun onEdit(position: Int, title: String) {
+                val item=noteContents[position]
+                item.title=title
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
+            }
+        })
     }
 
 

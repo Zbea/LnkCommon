@@ -40,7 +40,7 @@
             android:text="选择科目"
             android:ellipsize="end"
             android:lines="1"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
         <TextView
@@ -57,19 +57,7 @@
             android:visibility="gone"
             android:ellipsize="end"
             android:lines="1"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
-            />
-
-        <TextView
-            android:id="@+id/tv_search"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/dp_50"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
-            android:drawableStart="@mipmap/icon_search"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dp_20"
-            android:visibility="gone"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
         <ImageView

@@ -2,6 +2,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import android.graphics.BitmapFactory
 import android.os.Handler
+import android.os.Looper
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -61,6 +62,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         correctBean?.changeUrl=url
         correctBean?.status=3
         disMissView(tv_save)
+        setDisableTouchInput(true)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
@@ -95,7 +97,10 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
         tv_save.setOnClickListener {
             showLoading()
-            commitPapers()
+            //延迟以保证手写及时保存
+            Handler().postDelayed({
+                commitPapers()
+            },500)
         }
 
     }
@@ -146,16 +151,15 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     private fun setContentImage(){
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
+        setDisableTouchInput(correctBean?.status!=2)
         //批改成功后加载提交后的图片
         if (correctBean?.status==2){
-            setPWEnabled(true)
-            GlideUtils.setImageCacheUrl(this, File(savePaths[posImage]).path,v_content)
+            GlideUtils.setImageUrl(this, File(savePaths[posImage]).path,v_content)
             val drawPath = getPathDrawStr(posImage+1)
             elik?.setLoadFilePath(drawPath, true)
         }
         else{
-            setPWEnabled(false)
-            GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
+            GlideUtils.setImageUrl(this, images[posImage],v_content)
         }
     }
 

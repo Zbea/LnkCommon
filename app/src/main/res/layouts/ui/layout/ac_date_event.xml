@@ -52,7 +52,6 @@
             android:layout_width="714dp"
             android:layout_height="840dp"
             android:scaleType="fitCenter"
-            android:src="@mipmap/icon_date_event_bg"
             />
     </RelativeLayout>
 

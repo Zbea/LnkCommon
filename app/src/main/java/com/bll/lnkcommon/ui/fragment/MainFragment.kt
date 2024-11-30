@@ -1,13 +1,11 @@
 package com.bll.lnkcommon.ui.fragment
 
-import DialogClick
 import android.content.Intent
 import android.graphics.BitmapFactory
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
-import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
 import com.bll.lnkcommon.Constants.STUDENT_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.base.BaseFragment
@@ -28,6 +26,7 @@ import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import com.google.gson.Gson
 import com.htfy.params.ServerParams
+import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -79,6 +78,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     }
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[0])
+        MethodManager.setImageResource(requireActivity(), R.mipmap.icon_date_event_bg,iv_bg)
 
         ll_message.setOnClickListener {
             if (MethodManager.isLogin()){
@@ -344,7 +344,7 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
         }
         pops.add(PopupBean(2,"结集保存"))
         pops.add(PopupBean(3,"云库日记"))
-        DialogClick(requireActivity(),pops).builder().setOnSelectListener{
+        PopupUpClick(requireActivity(),pops,ll_diary,160,(ll_diary.width-160)/2,-ll_diary.height).builder().setOnSelectListener{
             when(it.id){
                 1->{
                     if (privacyPassword==null){

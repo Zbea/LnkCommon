@@ -10,7 +10,10 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.HomeworkPublishDialog
+import com.bll.lnkcommon.dialog.InputContentDialog
+import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.mvp.model.HomeworkTypeList
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
@@ -18,6 +21,7 @@ import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
@@ -27,6 +31,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
     private var homeworkTypes= mutableListOf<HomeworkTypeList.HomeworkTypeBean>()
     private var mAdapter:HomeworkTypeAdapter?=null
     private var position=0
+    private var editNameStr=""
 
     override fun onList(homeworkTypeList: HomeworkTypeList) {
         setPageNumber(homeworkTypeList.total)
@@ -37,6 +42,12 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         pageIndex=1
         fetchData()
     }
+
+    override fun onEditSuccess() {
+        homeworkTypes[position].name=editNameStr
+        mAdapter?.notifyItemChanged(position)
+    }
+
     override fun onDeleteSuccess() {
         mAdapter?.remove(position)
     }
@@ -75,19 +86,42 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@MyHomeworkFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除作业本").builder().setDialogClickListener(
-                    object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val map=HashMap<String,Any>()
-                            map["ids"]= arrayOf(homeworkTypes[position].id)
-                            presenter.deleteHomeworkType(map)
-                        }
-                    })
+                onLongClick()
                 true
             }
         }
+    }
+
+    private fun onLongClick(){
+        val item=homeworkTypes[position]
+        val beans = mutableListOf<ItemList>()
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        beans.add(ItemList().apply {
+            name = "重命名"
+            resId = R.mipmap.icon_setting_edit
+        })
+        LongClickManageDialog(requireActivity(),item.name, beans).builder()
+            .setOnDialogClickListener { position->
+                when(position){
+                    0->{
+                        val map=HashMap<String,Any>()
+                        map["ids"]= arrayOf(item.id)
+                        presenter.deleteHomeworkType(map)
+                    }
+                    1->{
+                        InputContentDialog(requireActivity(),item.name).builder().setOnDialogClickListener{
+                            editNameStr=it
+                            val map=HashMap<String,Any>()
+                            map["id"]= item.id
+                            map["name"]= it
+                            presenter.editHomeworkType(map)
+                        }
+                    }
+                }
+            }
     }
 
     /**

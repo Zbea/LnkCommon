@@ -276,6 +276,11 @@ interface APIService{
     @POST("parent/homework/delete")
     fun deleteHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 重命名
+     */
+    @POST("parent/homework/updateName")
+    fun editHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 布置作业
      */
     @POST("student/job/sendJob")

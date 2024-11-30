@@ -104,6 +104,7 @@ public interface IContractView {
     interface IMyHomeworkView extends IBaseView{
         void onList(HomeworkTypeList homeworkTypeList);
         void onCreateSuccess();
+        void onEditSuccess();
         void onDeleteSuccess();
         void onSendSuccess();
     }

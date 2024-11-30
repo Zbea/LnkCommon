@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.Constants.weekTime
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarSingleDialog
@@ -41,6 +42,8 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
         setPageTitle("月周计划")
+
+        MethodManager.setImageResource(this,R.mipmap.icon_freenote_bg_1,v_content)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

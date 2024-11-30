@@ -2,8 +2,13 @@ package com.bll.lnkcommon;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -86,7 +91,7 @@ public class MethodManager {
     /**
      * 跳转阅读器
      * @param context
-     * @param bookBean
+     * @param bookBean key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      */
     public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
@@ -124,7 +129,10 @@ public class MethodManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
-        EventBus.getDefault().post(Constants.BOOK_EVENT);
+        Handler handler=new Handler(Looper.getMainLooper());
+        handler.postDelayed(() ->
+                        EventBus.getDefault().post(Constants.BOOK_EVENT)
+                ,3000);
     }
 
     private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
@@ -228,5 +236,17 @@ public class MethodManager {
         return url.substring(url.lastIndexOf("."));
     }
 
+    /**
+     * 加载不失真背景
+     * @param context
+     * @param resId
+     * @param imageView
+     */
+    public static void setImageResource(Context context, int resId, ImageView imageView){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false; // 防止自动缩放
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
+        imageView.setImageBitmap(bitmap);
+    }
 
 }
