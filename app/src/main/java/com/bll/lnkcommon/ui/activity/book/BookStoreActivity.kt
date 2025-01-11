@@ -21,6 +21,7 @@ import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileBigDownManager
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
@@ -173,7 +174,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 } else {
                     book.loadSate =2
                     showToast(R.string.downloaded)
-                    mAdapter?.notifyItemChanged(position)
                     bookDetailsDialog?.setDissBtn()
                 }
             }
@@ -191,10 +191,10 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.bodyUrl))
-        val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
+        val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                FileBigDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                     if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024)) + "/" +
@@ -203,7 +203,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         }
                     }
                 }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     book.apply {
@@ -217,8 +217,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     }
                     //下载解压完成后更新存储的book
                     BookDaoManager.getInstance().insertOrReplaceBook(book)
-                    //更新列表
-                    mAdapter?.notifyItemChanged(position)
                     bookDetailsDialog?.dismiss()
                     Handler().postDelayed({
                         hideLoading()
@@ -226,7 +224,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     },500)
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
                     hideLoading()
                     showToast(book.bookName+getString(R.string.download_fail))
                     bookDetailsDialog?.setChangeStatus()
@@ -247,7 +244,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun fetchData() {
-        hideKeyboard()
         books.clear()
         mAdapter?.notifyDataSetChanged()
 

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page">
 
-    <include layout="@layout/common_title"/>
+    <include
+        android:id="@+id/ll_title"
+        layout="@layout/common_title"/>
 
 
     <LinearLayout
+        android:id="@+id/ll_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_below="@+id/ll_title"
         android:orientation="horizontal"
         >
 
@@ -115,9 +119,27 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/ll_info"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_40"
         android:layout_marginEnd="@dimen/dp_40"
         android:layout_marginBottom="@dimen/dp_20"/>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_arrow_page_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_main_up"
+        android:layout_centerVertical="true"
+        />
+
+    <ImageView
+        android:id="@+id/iv_arrow_page_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_main_down"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        />
+
+</RelativeLayout>

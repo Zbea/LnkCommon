@@ -56,11 +56,7 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
         statusBarValue= MethodManager.getStatusBarValue()
         MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
-        val account=SPUtil.getString("account")
-        val password=SPUtil.getString("password")
-
-        ed_user.setText(account)
-        ed_psw.setText(password)
+        ed_user.setText(SPUtil.getString("account"))
 
         tv_register.setOnClickListener {
             activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(0))
@@ -71,13 +67,11 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
         }
 
         btn_login.setOnClickListener {
-
             val account = ed_user.text.toString()
             val psdStr=ed_psw.text.toString()
             val password = MD5Utils.digest(psdStr)
 
             SPUtil.putString("account",account)
-            SPUtil.putString("password",psdStr)
 
             val map=HashMap<String,Any>()
             map ["account"]=account

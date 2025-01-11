@@ -56,6 +56,14 @@ class ScoreActivity:BaseActivity(),IContractView.IScoreRankView{
     override fun initView() {
         setPageTitle("成绩统计")
 
+        iv_arrow_page_up.setOnClickListener {
+            rv_list.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+
+        iv_arrow_page_down.setOnClickListener {
+            rv_list.scrollBy(0, DP2PX.dip2px(this,100f))
+        }
+
         initRecyclerView()
 
     }

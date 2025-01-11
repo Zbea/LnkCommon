@@ -58,7 +58,7 @@ class WallpaperMyActivity:BaseActivity(){
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = WallpaperAdapter(R.layout.item_wallpaper_my, null).apply {
+        mAdapter = WallpaperAdapter(R.layout.item_wallpaper_my, 2,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

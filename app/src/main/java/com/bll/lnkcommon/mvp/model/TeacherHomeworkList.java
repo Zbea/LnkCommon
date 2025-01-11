@@ -15,8 +15,10 @@ public class TeacherHomeworkList {
         public String subject;
         public int type;
         public String homeworkName;
-        public long submitTime;
-        public long time;
+        public long submitTime;//学生提交时间
+        public long time;//学生需要提交时间
+        public String createTime;//布置时间
+        public String correctTime;//老师批改时间
         public String submitContent;
         public String homeworkContent;
         public String correctContent;

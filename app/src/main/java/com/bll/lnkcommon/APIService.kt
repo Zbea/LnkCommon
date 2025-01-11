@@ -239,7 +239,7 @@ interface APIService{
     @POST("homework/inform/delete")
     fun deleteHomeworks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 成绩
+     * 获取绑定学生当次测试所有学生成绩列表
      */
     @GET("task/group/oneByStudentTaskId")
     fun getScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<Score>>>
@@ -255,7 +255,7 @@ interface APIService{
     @POST("parent/homework/deleteExam")
     fun deleteExams(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 成绩
+     * 获取当前学生这次考试所有学生考试列表
      */
     @GET("parent/homework/allJob")
     fun getExamScore(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamRankList>>

@@ -120,18 +120,17 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
     //长按显示课本管理
     private fun onLongClick(book: Book) {
-        //题卷本可以设置为作业
         val beans = mutableListOf<ItemList>()
         beans.add(ItemList().apply {
             name = "删除"
             resId = R.mipmap.icon_setting_delete
         })
-        if (tabId >1&&DataBeanManager.students.size>0) {
-            beans.add(ItemList().apply {
-                name = "设置作业"
-                resId = R.mipmap.icon_setting_set
-            })
-        }
+//        if (tabId >1&&DataBeanManager.students.size>0) {
+//            beans.add(ItemList().apply {
+//                name = "设置作业"
+//                resId = R.mipmap.icon_setting_set
+//            })
+//        }
 
         LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
             .setOnDialogClickListener {

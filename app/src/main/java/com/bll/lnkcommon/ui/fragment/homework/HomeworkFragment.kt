@@ -77,7 +77,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),30f),
+            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),20f),
             DP2PX.dip2px(requireActivity(),50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
@@ -87,7 +87,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         rv_list.adapter = mAdapterHomework
         mAdapterHomework?.bindToRecyclerView(rv_list)
         mAdapterHomework?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco( 50))
+        rv_list?.addItemDecoration(SpaceItemDeco( 40))
         mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
             val item=homeworks[position]
             val intent= Intent(requireActivity(), HomeworkDetailsActivity::class.java)
@@ -112,11 +112,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
                             }
                         })
                 }
-                R.id.tv_answer->{
-                    val images=item.answerUrl.split(",").toList()
-                    ImageDialog(requireActivity(),images).builder()
-                }
-                R.id.tv_rank->{
+                R.id.iv_rank->{
                     customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(index).putExtra("id",item.studentTaskId))
                 }
             }

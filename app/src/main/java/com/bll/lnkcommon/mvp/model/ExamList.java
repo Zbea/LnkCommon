@@ -16,7 +16,9 @@ public class ExamList {
         public String studentUrl;
         public String teacherUrl;
         public String score;
-        public long expTime;
+        public long expTime;//考试时间
+        public String startTime;//布置时间
+        public String createTime;//下发时间
         public String examName;
         public int classId;
         public String className;

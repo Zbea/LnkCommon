@@ -73,7 +73,6 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
 
     override fun initView() {
 
-
         tv_buy.setOnClickListener {
             if (xdList.size>0){
                 getXdView()

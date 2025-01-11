@@ -22,6 +22,7 @@ import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileBigDownManager
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
@@ -251,13 +252,11 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             if (book.buyStatus == 1) {
                 val localBook = BookDaoManager.getInstance().queryTextBookByBookID(getHostType(),book.bookId)
                 if (localBook == null) {
-                    showLoading()
                     downLoadStart(book.bodyUrl, book)
                 } else {
                     book.loadSate = 2
                     showToast("已下载")
                     bookDetailsDialog?.setDissBtn()
-                    mAdapter?.notifyDataSetChanged()
                 }
             } else {
                 val map = HashMap<String, Any>()
@@ -286,10 +285,10 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         } else{
             FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.bodyUrl))
         }
-        val download = FileDownManager.with(this).create(url).setPath(path)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+        val download = FileBigDownManager.with(this).create(url).setPath(path)
+            .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                     if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024),) + "/" +
@@ -299,7 +298,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     }
                 }
 
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
@@ -359,8 +358,6 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private fun refreshView(book: Book){
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
-        //更新列表
-        mAdapter?.notifyDataSetChanged()
         bookDetailsDialog?.dismiss()
         Handler().postDelayed({
             hideLoading()
