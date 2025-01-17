@@ -34,20 +34,6 @@ class HomeworkCorrectPresenter(view: IContractView.IHomeworkCorrectView):BasePre
         }, true)
     }
 
-
-    fun getToken(){
-        val token = RetrofitManager.service.getQiniuToken()
-        doRequest(token, object : Callback<String>(view) {
-            override fun failed(tBaseResult: BaseResult<String>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<String>) {
-                if (tBaseResult.data!=null)
-                    view.onToken(tBaseResult.data)
-            }
-        }, true)
-    }
-
     fun commitPaperStudent(map:HashMap<String,Any>){
         val body= RequestUtils.getBody(map)
         val commit = RetrofitManager.service.commitPaperStudent(body)

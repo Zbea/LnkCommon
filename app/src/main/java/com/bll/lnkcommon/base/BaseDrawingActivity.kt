@@ -295,6 +295,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik?.saveBitmap(true) {}
+                onElikSava()
             }
         })
     }
@@ -546,6 +547,11 @@ abstract class BaseDrawingActivity : BaseActivity() {
 
     }
 
+    /**
+     * 抬笔
+     */
+    open fun onElikSava(){
+    }
 
     /**
      * 设置擦除

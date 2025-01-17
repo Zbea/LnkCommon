@@ -121,7 +121,7 @@ class DiaryActivity:BaseDrawingActivity() {
     private fun initCurrentDiaryBean(){
         bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
-        diaryBean?.userId=if (MethodManager.isLogin()) getUser()?.accountId else 0
+        diaryBean?.userId=if (MethodManager.isLogin()) MethodManager.getUser()?.accountId else 0
         diaryBean?.date=nowLong
         diaryBean?.year=DateUtils.getYear()
         diaryBean?.month=DateUtils.getMonth()

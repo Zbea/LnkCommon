@@ -229,10 +229,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun getUser():User?{
-        return SPUtil.getObj("user",User::class.java)
-    }
-
     /**
      * 设置翻页
      */

@@ -303,7 +303,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         freeNoteBean= FreeNoteBean()
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
-        freeNoteBean?.userId=if (MethodManager.isLogin()) getUser()?.accountId else 0
+        freeNoteBean?.userId=if (MethodManager.isLogin()) MethodManager.getUser()?.accountId else 0
         freeNoteBean?.bgRes= arrayListOf(bgRes)
         freeNoteBean?.type=0
         freeNoteBean?.paths= mutableListOf(getPath(posImage))
@@ -385,7 +385,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     val freeNoteBean= FreeNoteBean()
-                    freeNoteBean.userId=getUser()?.accountId!!
+                    freeNoteBean.userId=MethodManager.getUser()?.accountId!!
                     freeNoteBean.title=item.title
                     freeNoteBean.date=item.date
                     freeNoteBean.isSave=true

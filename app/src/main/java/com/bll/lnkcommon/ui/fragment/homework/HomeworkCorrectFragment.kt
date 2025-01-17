@@ -34,9 +34,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         homeworks=list.list
         mAdapter?.setNewData(homeworks)
     }
-
-    override fun onUpdateSuccess() {
-    }
     override fun onDeleteSuccess() {
         showToast("删除成功")
         fetchData()

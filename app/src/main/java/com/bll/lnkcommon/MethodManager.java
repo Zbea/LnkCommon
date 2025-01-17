@@ -38,10 +38,13 @@ import java.util.Objects;
 
 public class MethodManager {
 
+    public static User getUser(){
+        return SPUtil.INSTANCE.getObj("user", User.class);
+    }
+
     public static boolean isLogin(){
         String tokenStr=SPUtil.INSTANCE.getString("token");
-        User mUser=SPUtil.INSTANCE.getObj("user",User.class);
-        return !TextUtils.isEmpty(tokenStr) && mUser!=null;
+        return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
     }
 
     /**
@@ -95,7 +98,6 @@ public class MethodManager {
      */
     public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
-        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -122,7 +124,7 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-        intent.putExtra("userId",user!=null?user.accountId:0);
+        intent.putExtra("userId",getUser()!=null?getUser().accountId:0);
         intent.putExtra("type", type);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);

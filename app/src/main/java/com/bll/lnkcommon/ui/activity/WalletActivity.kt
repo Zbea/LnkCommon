@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.WalletBuyDialog
@@ -68,7 +69,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
-        mUser=getUser()
+        mUser= MethodManager.getUser()
     }
 
     override fun initView() {

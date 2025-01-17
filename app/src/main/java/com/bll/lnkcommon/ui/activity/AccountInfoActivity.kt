@@ -58,7 +58,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     override fun initData() {
-        mUser=getUser()
+        mUser=MethodManager.getUser()
         presenter.getStudents()
     }
 

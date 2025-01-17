@@ -190,19 +190,4 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_save"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:textColor="@color/black"
-        android:layout_alignParentEnd="true"
-        android:textSize="24sp"
-        android:layout_marginTop="58dp"
-        android:text="保存"
-        android:visibility="gone"
-        android:background="@drawable/click_btn_line_black_5dp"
-        />
-
 </RelativeLayout>

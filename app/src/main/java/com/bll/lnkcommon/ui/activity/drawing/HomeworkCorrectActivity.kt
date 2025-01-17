@@ -1,50 +1,66 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
-import android.graphics.BitmapFactory
 import android.os.Handler
-import android.os.Looper
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
-import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
+import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
-import com.bll.lnkcommon.utils.*
-import com.google.gson.Gson
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_title.*
+import com.bll.lnkcommon.mvp.view.IContractView.IQiniuView
+import com.bll.lnkcommon.utils.BitmapUtils
+import com.bll.lnkcommon.utils.FileImageUploadManager
+import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_drawing.v_content
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
+class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniuView{
 
     private val presenter=HomeworkCorrectPresenter(this)
+    private var mQiniuPresenter= QiniuPresenter(this)
     private var correctBean:CorrectBean?=null
     private var images= mutableListOf<String>()
-    private val savePaths= mutableListOf<String>()
     private var posImage=0
-    private val commitItems = mutableListOf<ItemList>()
     private var url=""
 
-    override fun onList(list: HomeworkCorrectList?) {
-    }
     override fun onToken(token: String) {
         showLoading()
-        val commitPaths = mutableListOf<String>()
-        for (item in commitItems) {
-            commitPaths.add(item.url)
+        //获取合图的图片，没有手写的页面那原图
+        val paths= mutableListOf<String>()
+        for (i in images.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                paths.add(mergePath)
+            }
         }
-        FileImageUploadManager(token, commitPaths).apply {
+        FileImageUploadManager(token, paths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    url=ToolUtils.getImagesStr(urls)
+                    //校验正确图片，没有手写图片拿原图
+                    val uploadPaths= mutableListOf<String>()
+                    var index=0
+                    for (i in images.indices){
+                        val mergePath=getPathMergeStr(i+1)
+                        if (File(mergePath).exists()){
+                            uploadPaths.add(urls[index])
+                            index+=1
+                        }
+                        else{
+                            uploadPaths.add(images[i])
+                        }
+                    }
+                    url=ToolUtils.getImagesStr(uploadPaths)
                     val map= HashMap<String, Any>()
                     map["id"]=correctBean?.id!!
                     map["changeUrl"]=url
@@ -61,48 +77,36 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         showToast("批改成功")
         correctBean?.changeUrl=url
         correctBean?.status=3
-        disMissView(tv_save)
+        disMissView(iv_catalog)
         setDisableTouchInput(true)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
-    override fun onDeleteSuccess() {
-    }
-
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
     }
     override fun initData() {
         correctBean= intent.getBundleExtra("bundle")?.getSerializable("correctBean") as CorrectBean?
+        val path=if (correctBean?.status==2) correctBean?.submitUrl else correctBean?.changeUrl
+        images=path!!.split(",") as MutableList<String>
+
     }
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
-        elik?.addOnTopView(tv_save)
+        iv_catalog.setImageResource(R.mipmap.icon_draw_commit)
 
         if (correctBean?.status==2)
-        {
-            showView(tv_save)
-            images= correctBean?.submitUrl!!.split(",") as MutableList<String>
-            for (i in images.indices){
-                savePaths.add(getPath()+"/${i+1}.png")
-            }
-            loadPapers()
-        }
-        else{
-            images= correctBean?.changeUrl!!.split(",") as MutableList<String>
-            setContentImage()
-        }
+            showView(iv_catalog)
 
-        tv_save.setOnClickListener {
-            showLoading()
-            //延迟以保证手写及时保存
+        iv_catalog.setOnClickListener {
             Handler().postDelayed({
-                commitPapers()
+                mQiniuPresenter.getToken()
             },500)
         }
 
+        setContentImage()
     }
 
     override fun onPageDown() {
@@ -120,47 +124,21 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     }
 
     /**
-     * 下载学生作业
-     */
-    private fun loadPapers(){
-        if (!FileUtils.isExistContent(getPath())) {
-            showLoading()
-            FileMultitaskDownManager.with(this).create(images).setPath(savePaths).startMultiTaskDownLoad(
-                object : FileMultitaskDownManager.MultiTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
-                    }
-                    override fun completed(task: BaseDownloadTask?) {
-                        hideLoading()
-                        setContentImage()
-                    }
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        hideLoading()
-                    }
-                })
-        }
-        else{
-            setContentImage()
-        }
-    }
-
-    /**
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         setDisableTouchInput(correctBean?.status!=2)
-        //批改成功后加载提交后的图片
-        if (correctBean?.status==2){
-            GlideUtils.setImageUrl(this, File(savePaths[posImage]).path,v_content)
-            val drawPath = getPathDrawStr(posImage+1)
-            elik?.setLoadFilePath(drawPath, true)
-        }
-        else{
-            GlideUtils.setImageUrl(this, images[posImage],v_content)
-        }
+        GlideUtils.setImageUrl(this, images[posImage],v_content)
+        val drawPath = getPathDrawStr(posImage+1)
+        elik?.setLoadFilePath(drawPath, true)
+    }
+
+    override fun onElikSava() {
+        Thread {
+            BitmapUtils.saveScreenShot(this, v_content, getPathMergeStr(posImage+1))
+        }.start()
     }
 
     /**
@@ -173,37 +151,22 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
     /**
      * 得到当前手绘图片
      */
-    private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw${index}.png"//手绘地址
+    private fun getPathStr(index: Int):String{
+        return getPath()+"/${index}.png"//手绘地址
     }
 
     /**
-     * 提交学生考卷
+     * 得到当前手绘图片
      */
-    private fun commitPapers(){
-        commitItems.clear()
-        //手写,图片合图
-        for (i in images.indices){
-            val index=i+1
-            val path=savePaths[i]
-            val drawPath = getPathDrawStr(index)
-            Thread {
-                BitmapUtils.mergeBitmap(path, drawPath)
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = path
-                })
-                if (commitItems.size==images.size){
-                    commitItems.sort()
-                    presenter.getToken()
-                }
-            }.start()
-        }
+    private fun getPathDrawStr(index: Int):String{
+        return getPath()+"/draw/${index}.png"//手绘地址
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
+    /**
+     * 得到当前合图地址
+     */
+    private fun getPathMergeStr(index: Int):String{
+        return getPath()+"/merge/${index}.png"//手绘地址
     }
 
 }

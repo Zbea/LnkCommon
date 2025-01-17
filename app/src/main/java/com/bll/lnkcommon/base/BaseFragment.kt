@@ -269,10 +269,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
 
     }
 
-    fun getUser():User?{
-        return SPUtil.getObj("user",User::class.java)
-    }
-
     /**
      * 设置翻页
      */

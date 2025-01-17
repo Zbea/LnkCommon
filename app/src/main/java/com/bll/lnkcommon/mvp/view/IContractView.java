@@ -119,10 +119,9 @@ public interface IContractView {
         void onMessageTotal(int total);
     }
     interface IHomeworkCorrectView extends IBaseView{
-        void onList(HomeworkCorrectList list);
-        void onToken(String token);
-        void onUpdateSuccess();
-        void onDeleteSuccess();
+        default void onList(HomeworkCorrectList list){};
+        default void onUpdateSuccess(){};
+        default void onDeleteSuccess(){};
     }
 
     interface IFreeNoteView extends IBaseView{
