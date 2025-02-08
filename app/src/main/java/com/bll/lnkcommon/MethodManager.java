@@ -16,6 +16,7 @@ import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.book.Book;
+import com.bll.lnkcommon.mvp.model.AreaBean;
 import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
@@ -26,6 +27,8 @@ import com.bll.lnkcommon.utils.AppUtils;
 import com.bll.lnkcommon.utils.FileUtils;
 import com.bll.lnkcommon.utils.SPUtil;
 import com.bll.lnkcommon.utils.SToast;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -249,6 +253,17 @@ public class MethodManager {
         options.inScaled = false; // 防止自动缩放
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    /**
+     * 获取省
+     * @param context
+     * @return
+     * @throws IOException
+     */
+    public static List<AreaBean> getProvinces(Context context) throws IOException {
+        String areaJson = FileUtils.readFileContent(context.getResources().getAssets().open("city.json"));
+        return new Gson().fromJson(areaJson, new TypeToken<List<AreaBean>>(){}.getType());
     }
 
 }

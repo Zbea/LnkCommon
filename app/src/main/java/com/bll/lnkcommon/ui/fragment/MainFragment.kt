@@ -2,41 +2,79 @@ package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
 import android.graphics.BitmapFactory
-import com.bll.lnkcommon.*
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
 import com.bll.lnkcommon.Constants.DATE_DRAWING_EVENT
 import com.bll.lnkcommon.Constants.STUDENT_EVENT
 import com.bll.lnkcommon.Constants.USER_EVENT
+import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.MyApplication
+import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.*
-import com.bll.lnkcommon.manager.*
-import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.dialog.DiaryManageDialog
+import com.bll.lnkcommon.dialog.DiaryUploadListDialog
+import com.bll.lnkcommon.dialog.PopupUpClick
+import com.bll.lnkcommon.dialog.PrivacyPasswordCreateDialog
+import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
+import com.bll.lnkcommon.manager.CalenderDaoManager
+import com.bll.lnkcommon.manager.DiaryDaoManager
+import com.bll.lnkcommon.manager.FreeNoteDaoManager
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
+import com.bll.lnkcommon.mvp.model.CloudListBean
+import com.bll.lnkcommon.mvp.model.FreeNoteBean
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
+import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
-import com.bll.lnkcommon.mvp.presenter.SystemUpdateManagerPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
-import com.bll.lnkcommon.mvp.view.IContractView.ISystemView
-import com.bll.lnkcommon.ui.activity.*
+import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.ui.activity.DateActivity
+import com.bll.lnkcommon.ui.activity.MessageListActivity
+import com.bll.lnkcommon.ui.activity.ScreenshotListActivity
 import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkcommon.ui.activity.drawing.PlanOverviewActivity
-import com.bll.lnkcommon.utils.*
+import com.bll.lnkcommon.utils.CalenderUtils
+import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.FileUploadManager
+import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
 import com.bll.lnkcommon.utils.date.Solar
 import com.google.gson.Gson
-import com.htfy.params.ServerParams
-import kotlinx.android.synthetic.main.ac_plan_overview.v_content
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.iv_bg
+import kotlinx.android.synthetic.main.fragment_home.iv_calender
+import kotlinx.android.synthetic.main.fragment_home.iv_change
+import kotlinx.android.synthetic.main.fragment_home.iv_date
+import kotlinx.android.synthetic.main.fragment_home.iv_message_tips
+import kotlinx.android.synthetic.main.fragment_home.ll_date
+import kotlinx.android.synthetic.main.fragment_home.ll_diary
+import kotlinx.android.synthetic.main.fragment_home.ll_freenote
+import kotlinx.android.synthetic.main.fragment_home.ll_message
+import kotlinx.android.synthetic.main.fragment_home.ll_plan
+import kotlinx.android.synthetic.main.fragment_home.ll_screenshot
+import kotlinx.android.synthetic.main.fragment_home.tv_date_day
+import kotlinx.android.synthetic.main.fragment_home.tv_date_festival
+import kotlinx.android.synthetic.main.fragment_home.tv_date_luna
+import kotlinx.android.synthetic.main.fragment_home.tv_date_month
+import kotlinx.android.synthetic.main.fragment_home.tv_date_week
+import kotlinx.android.synthetic.main.fragment_home.v_down
+import kotlinx.android.synthetic.main.fragment_home.v_up
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Random
 
-class MainFragment:BaseFragment(),IRelationView,ISystemView {
+class MainFragment:BaseFragment(),IRelationView{
 
-    private val mSystemUpdateManagerPresenter=SystemUpdateManagerPresenter(this)
     private val presenter=RelationPresenter(this)
     private var nowDayPos=1
     private var nowDay=0L
@@ -48,10 +86,6 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
-
-    override fun onUpdateInfo(item: SystemUpdateInfo) {
-        AppSystemUpdateDialog(requireActivity(),item).builder()
-    }
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
@@ -187,18 +221,12 @@ class MainFragment:BaseFragment(),IRelationView,ISystemView {
 
     }
     override fun lazyLoad() {
+        onCheckUpdate()
         if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             if (MethodManager.isLogin()){
                 presenter.getStudents()
                 presenter.getMessageTotal()
             }
-            mCommonPresenter.getAppUpdate()
-
-            val systemUpdateMap = HashMap<String, String>()
-            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
-            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
-            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
-            mSystemUpdateManagerPresenter.checkSystemUpdate(systemUpdateMap)
         }
         nowDay=DateUtils.getStartOfDayInMillis()
         setDateView()

@@ -79,6 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="20sp" />

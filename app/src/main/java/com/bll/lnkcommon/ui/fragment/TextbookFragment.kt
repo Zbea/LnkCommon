@@ -230,5 +230,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         mAdapter?.setNewData(books)
     }
 
-
+    override fun onRefreshData() {
+        onCheckUpdate()
+    }
 }

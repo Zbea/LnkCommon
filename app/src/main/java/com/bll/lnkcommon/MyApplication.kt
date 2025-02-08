@@ -5,6 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.bll.lnkcommon.greendao.DaoMaster
 import com.bll.lnkcommon.greendao.DaoSession
 import com.bll.lnkcommon.greendao.GreenDaoUpgradeHelper
@@ -25,13 +27,14 @@ class MyApplication : Application(){
         var mContext: Context by Delegates.notNull()
             private set
         var mDaoSession: DaoSession?=null
-
+        var requestQueue: RequestQueue? = null
     }
 
     override fun onCreate() {
         super.onCreate()
         mContext = applicationContext
 
+        requestQueue = Volley.newRequestQueue(applicationContext)
         SPUtil.init(this)
         SToast.initToast(this)
         FileDownloader.setup(this)

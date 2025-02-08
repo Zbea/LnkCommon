@@ -71,10 +71,6 @@ class MainActivity : BaseActivity(),IQiniuView {
     }
 
     override fun initData() {
-        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
-        val type= object : TypeToken<List<AreaBean>>() {}.type
-        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
-
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
         if (MethodManager.isLogin()&&DataBeanManager.students.size>0){

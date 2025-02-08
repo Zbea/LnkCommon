@@ -4,7 +4,6 @@ import com.bll.lnkcommon.mvp.book.BookStore
 import com.bll.lnkcommon.mvp.book.BookStoreType
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.net.BaseResult
-import com.bll.lnkcommon.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -13,21 +12,10 @@ import retrofit2.http.*
 interface APIService{
 
     /**
-     * 检查系统更新
-     */
-    @POST("Device/CheckUpdate")
-    fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
-
-    /**
      * 获取下载token
      */
     @POST("file/token")
     fun getQiniuToken(): Observable<BaseResult<String>>
-    /**
-     * 获取更新
-     */
-    @GET("app/info/one?type=3")
-    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
 
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>

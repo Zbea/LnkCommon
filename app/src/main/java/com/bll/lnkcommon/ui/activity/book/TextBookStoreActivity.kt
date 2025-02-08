@@ -12,6 +12,7 @@ import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.BookDetailsDialog
+import com.bll.lnkcommon.dialog.PopupCityList
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.mvp.book.Book
@@ -52,9 +53,9 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: Book? = null
 
+    private var cityPopWindow: PopupCityList?=null
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
-    private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var tabList = mutableListOf<String>()
     private var subTypeList = mutableListOf<PopupBean>()
@@ -105,10 +106,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         semesterList=DataBeanManager.popupSemesters
         semester= semesterList[0].id
 
-        for (i in DataBeanManager.provinces.indices){
-            provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,i==0))
-        }
-        provinceStr=provinceList[0].name
+        provinceStr= MethodManager.getProvinces(this)[0].children[0].value
 
         subjectList=DataBeanManager.popupCourses(1)
         gradeList=DataBeanManager.popupGrades
@@ -148,12 +146,17 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         }
 
         tv_province.setOnClickListener {
-            PopupRadioList(this, provinceList, tv_province,tv_province.width, 5).builder()
-             .setOnSelectListener { item ->
-                provinceStr = item.name
-                tv_province.text = item.name
-                pageIndex = 1
-                fetchData()
+            if (cityPopWindow==null){
+                cityPopWindow=PopupCityList(this,tv_province,tv_province.width).builder()
+                cityPopWindow?.setOnSelectListener { item ->
+                    provinceStr = item.name
+                    tv_province.text = item.name
+                    pageIndex = 1
+                    fetchData()
+                }
+            }
+            else{
+                cityPopWindow?.show()
             }
         }
 

@@ -23,19 +23,4 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
             }
         }, false)
     }
-
-    //获取更新信息
-    fun getAppUpdate() {
-        val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view,false) {
-            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
-                if (tBaseResult.data!=null)
-                    view.onAppUpdate(tBaseResult.data)
-            }
-        }, false)
-    }
-
 }

@@ -29,10 +29,6 @@ import java.util.List;
 
 public interface IContractView {
 
-    interface ISystemView extends IBaseView{
-        void onUpdateInfo(SystemUpdateInfo item);
-    }
-
     //登录
     interface ILoginView extends IBaseView {
         void getLogin(User user);
@@ -70,7 +66,6 @@ public interface IContractView {
     //主页
     interface ICommonView extends IBaseView {
         void onCommon(CommonData commonData);
-        void onAppUpdate(AppUpdateBean item);
     }
 
     interface IBookStoreView extends IBaseView {

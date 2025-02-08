@@ -129,37 +129,6 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.paths= mutableListOf(getPath(posImage))
     }
 
-    override fun onCatalog() {
-        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
-        CatalogDiaryDialog(this,diaryBeans).builder().setOnDialogClickListener{
-            diaryBean = diaryBeans[it]
-            if (nowLong != diaryBean?.date) {
-                saveDiary()
-                changeContent()
-            }
-        }
-    }
-
-    override fun onPageDown() {
-        if (posImage ==images.size-1) {
-            if (isDrawLastContent()){
-                images.add(getPath(images.size))
-                posImage+=1
-                setContentImage()
-            }
-        } else {
-            posImage += 1
-            setContentImage()
-        }
-    }
-
-    override fun onPageUp() {
-        if (posImage > 0) {
-            posImage -= 1
-            setContentImage()
-        }
-    }
-
     /**
      * 切换日记
      */
@@ -177,6 +146,38 @@ class DiaryActivity:BaseDrawingActivity() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content)
         setContentImage()
+    }
+
+    override fun onCatalog() {
+        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
+        CatalogDiaryDialog(this,diaryBeans).builder().setOnDialogClickListener{
+            diaryBean = diaryBeans[it]
+            if (nowLong != diaryBean?.date) {
+                saveDiary()
+                changeContent()
+            }
+        }
+    }
+
+    override fun onPageDown() {
+        if (posImage<images.size-1){
+            posImage += 1
+            setContentImage()
+        }
+        else{
+            if (isDrawLastContent()){
+                images.add(getPath(images.size))
+            }
+            posImage=images.size-1
+            setContentImage()
+        }
+    }
+
+    override fun onPageUp() {
+        if (posImage > 0) {
+            posImage -= 1
+            setContentImage()
+        }
     }
 
     /**

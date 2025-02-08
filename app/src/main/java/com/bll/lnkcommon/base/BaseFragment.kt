@@ -10,8 +10,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
+import com.bll.lnkcommon.dialog.AppSystemUpdateDialog
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.NoteDaoManager
@@ -27,6 +31,8 @@ import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
 import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.widget.FlowLayoutManager
+import com.google.gson.Gson
+import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_list_tab.*
@@ -35,6 +41,7 @@ import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 import kotlin.math.ceil
 
 
@@ -85,14 +92,6 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
     }
-
-    override fun onAppUpdate(item: AppUpdateBean) {
-        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
-            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
-            downLoadStart(item)
-        }
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -307,8 +306,60 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         startActivity(intent)
     }
 
-    //下载应用
-    private fun downLoadStart(bean: AppUpdateBean){
+    fun onCheckUpdate() {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+            checkAppUpdate()
+            checkSystemUpdate()
+        }
+    }
+    /**
+     * 检查系统更新
+     */
+    private fun checkSystemUpdate(){
+        val url= Constants.RELEASE_BASE_URL+"Device/CheckUpdate"
+
+        val  jsonBody = JSONObject()
+        jsonBody.put(Constants.SN, DeviceUtil.getOtaSerialNumber())
+        jsonBody.put(Constants.KEY, ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber()))
+        jsonBody.put(Constants.VERSION_NO, DeviceUtil.getOtaProductVersion())
+
+        val  jsonObjectRequest= JsonObjectRequest(Request.Method.POST,url,jsonBody, {
+            val code= it.optInt("Code")
+            val jsonObject=it.optJSONObject("Data")
+            if (code==200&&jsonObject!=null){
+                val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
+                requireActivity().runOnUiThread {
+                    AppSystemUpdateDialog(requireActivity(),item).builder()
+                }
+            }
+        },null)
+        MyApplication.requestQueue?.add(jsonObjectRequest)
+    }
+    /**
+     * 检查应用更新
+     */
+    private fun checkAppUpdate(){
+        val url=Constants.URL_BASE+"app/info/one?type=3"
+
+        val  jsonObjectRequest= StringRequest(Request.Method.GET,url, {
+            val jsonObject= JSONObject(it)
+            val code= jsonObject.optInt("code")
+            val dataString=jsonObject.optString("data")
+            val item= Gson().fromJson(dataString,AppUpdateBean::class.java)
+            if (code==0){
+                if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
+                    requireActivity().runOnUiThread {
+                        downLoadAPP(item)
+                    }
+                }
+            }
+        },null)
+        MyApplication.requestQueue?.add(jsonObjectRequest)
+    }
+    /**
+     * 下载应用
+     */
+    private fun downLoadAPP(bean: AppUpdateBean){
         val targetFileStr= FileAddress().getPathApk("lnkcommon")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
@@ -332,6 +383,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             }
         })
     }
+
 
     override fun addSubscription(d: Disposable) {
     }
