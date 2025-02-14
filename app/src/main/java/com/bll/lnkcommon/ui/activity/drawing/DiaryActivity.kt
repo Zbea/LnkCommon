@@ -91,6 +91,9 @@ class DiaryActivity:BaseDrawingActivity() {
                 saveDiary()
                 nowLong=it
                 diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
+                if (nowLong==DateUtils.getStartOfDayInMillis()&&diaryBean == null) {
+                    initCurrentDiaryBean()
+                }
                 changeContent()
             }
         }
@@ -151,9 +154,9 @@ class DiaryActivity:BaseDrawingActivity() {
     override fun onCatalog() {
         val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
         CatalogDiaryDialog(this,diaryBeans).builder().setOnDialogClickListener{
-            diaryBean = diaryBeans[it]
-            if (nowLong != diaryBean?.date) {
+            if (nowLong != diaryBeans[it]?.date) {
                 saveDiary()
+                diaryBean = diaryBeans[it]
                 changeContent()
             }
         }

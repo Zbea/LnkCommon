@@ -31,14 +31,10 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
         setIntent()
     }
     override fun onFindPsd() {
-        showToast("设置密码成功")
-        setIntent()
-    }
-
-    override fun onEditPsd() {
         showToast("修改密码成功")
         setIntent()
     }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_account_register
@@ -49,17 +45,12 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
     }
 
     override fun initView() {
-
         when (flags) {
-            2 -> {
-                setPageTitle("修改密码")
-                disMissView(ll_name,ll_user)
-                btn_register.text="提交"
-            }
             1 -> {
-                setPageTitle("找回密码")
+                setPageTitle("修改密码")
                 disMissView(ll_name)
                 ed_user.setText(SPUtil.getString("account"))
+                tv_password.text = "修改密码"
                 btn_register.text="提交"
             }
             else -> {
@@ -137,9 +128,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterView {
                         return@setOnClickListener
                     }
                     presenter.findPsd(role.toString(),account,MD5Utils.digest(psd),phone, code)
-                }
-                else -> {
-                    presenter.editPsd(MD5Utils.digest(psd),code)
                 }
             }
 

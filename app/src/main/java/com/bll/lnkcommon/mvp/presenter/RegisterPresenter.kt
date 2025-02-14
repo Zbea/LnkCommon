@@ -49,32 +49,8 @@ class RegisterPresenter(view: IContractView.IRegisterView) : BasePresenter<ICont
             }
 
         }, true)
-
     }
 
-
-    fun editPsd(psd: String,code: String) {
-
-
-        val body = RequestUtils.getBody(
-
-            Pair.create("password", psd),
-            Pair.create("smsCode", code),
-        )
-
-        val findpsd = RetrofitManager.service.editPassword(body)
-
-        doRequest(findpsd, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onEditPsd()
-            }
-
-        }, true)
-
-    }
 
     fun sms(phone:String) {
 

@@ -40,7 +40,6 @@ public interface IContractView {
         void onSms();
         void onRegister();
         void onFindPsd();
-        void onEditPsd();
     }
 
     interface IAccountInfoView extends IBaseView {
