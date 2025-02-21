@@ -14,12 +14,15 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.manager.TextbookGreenDaoManager
 import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
 import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
+import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
@@ -33,27 +36,14 @@ import java.io.File
 class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
     private val presenter = MyHomeworkPresenter(this)
-    private var mAdapter: BookAdapter? = null
-    private var books = mutableListOf<Book>()
-    private var textBook = ""//用来区分课本类型
+    private var mAdapter: TextbookAdapter? = null
+    private var textbooks = mutableListOf<TextbookBean>()
     private var tabId = 0
     private var position = 0
     private var textTypes= mutableListOf<ItemTypeBean>()
 
-    override fun onList(homeworkTypeList: HomeworkTypeList?) {
-    }
-
     override fun onCreateSuccess() {
         showToast("设置作业本成功")
-    }
-
-    override fun onEditSuccess() {
-    }
-
-    override fun onDeleteSuccess() {
-    }
-
-    override fun onSendSuccess() {
     }
 
     override fun getLayoutId(): Int {
@@ -61,7 +51,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     override fun initView() {
-        pageSize = 12
+        pageSize = 9
         setTitle(DataBeanManager.mainListTitle[4])
 
         initTab()
@@ -74,13 +64,11 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
     private fun initTab() {
         textTypes=DataBeanManager.textBookTypes
-        textBook=textTypes[0].title
         mTabTypeAdapter?.setNewData(textTypes)
     }
 
     override fun onTabClickListener(view: View, position: Int) {
         tabId = position
-        textBook = textTypes[position].title
         pageIndex = 1
         fetchData()
     }
@@ -93,33 +81,28 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_textbook, null)
+        mAdapter = TextbookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val book = books[position]
-            if (tabId<2){
-                MethodManager.gotoBookDetails(requireActivity(),2,book)
-            }
-            else{
-                val intent = Intent(activity, BookDetailsActivity::class.java)
-                intent.putExtra("book_id", book.bookId)
-                intent.putExtra("book_type", book.typeId)
-                customStartActivity(intent)
-            }
+            val book = textbooks[position]
+            val intent = Intent(activity, BookDetailsActivity::class.java)
+            intent.putExtra("book_id", book.bookId)
+            intent.putExtra("book_type", book.category)
+            customStartActivity(intent)
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this.position = position
-                onLongClick(books[position])
+                onLongClick(textbooks[position])
                 true
             }
     }
 
     //长按显示课本管理
-    private fun onLongClick(book: Book) {
+    private fun onLongClick(book: TextbookBean) {
         val beans = mutableListOf<ItemList>()
         beans.add(ItemList().apply {
             name = "删除"
@@ -135,7 +118,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
             .setOnDialogClickListener {
                 if (it == 0) {
-                    MethodManager.deleteBook(book,0)
+                    MethodManager.deleteTextbook(book)
                 } else {
                     val students=DataBeanManager.students
                     if (students.size==1){
@@ -145,7 +128,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                         map["childId"] = students[0].accountId
                         map["bookId"] = book.bookId
                         map["imageUrl"] = book.imageUrl
-                        map["subject"] = book.subjectName
+                        map["subject"] = book.subject
                         presenter.createHomeworkType(map)
                     }
                     else{
@@ -160,7 +143,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                             map["childId"] = students[pos].accountId
                             map["bookId"] = book.bookId
                             map["imageUrl"] = book.imageUrl
-                            map["subject"] = book.subjectName
+                            map["subject"] = book.subject
                             presenter.createHomeworkType(map)
                         }
                     }
@@ -173,7 +156,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val books = BookDaoManager.getInstance().queryAllByHalfYear(0)
+        val books = TextbookGreenDaoManager.getInstance().queryTextBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
@@ -182,12 +165,13 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
                             type = 2
-                            zipUrl = book.bodyUrl
+                            zipUrl = book.downloadUrl
                             downloadUrl = it
-                            subTypeStr = book.subtypeStr
+                            subTypeStr = DataBeanManager.textBookTypes[book.category].title
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
+                            bookTypeId=book.category
                         })
                         if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
@@ -196,11 +180,12 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             } else {
                 cloudList.add(CloudListBean().apply {
                     type = 2
-                    zipUrl = book.bodyUrl
-                    subTypeStr = book.subtypeStr
+                    zipUrl = book.downloadUrl
+                    subTypeStr = DataBeanManager.textBookTypes[book.category].title
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
                     bookId = book.bookId
+                    bookTypeId=book.category
                 })
                 if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
@@ -212,8 +197,8 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
-            val bookBean = BookDaoManager.getInstance().queryByBookID(0, item.bookId)
-            MethodManager.deleteBook(bookBean,0)
+            val bookBean = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(item.bookTypeId, item.bookId)
+            MethodManager.deleteTextbook(bookBean)
         }
     }
 
@@ -224,10 +209,10 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     }
 
     override fun fetchData() {
-        books = BookDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, 9)
-        val total = BookDaoManager.getInstance().queryAllTextBook(textBook)
+        textbooks = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId, pageIndex, 9)
+        val total = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId)
         setPageNumber(total.size)
-        mAdapter?.setNewData(books)
+        mAdapter?.setNewData(textbooks)
     }
 
     override fun onRefreshData() {

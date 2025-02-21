@@ -2,6 +2,7 @@ package com.bll.lnkcommon.mvp.presenter
 
 import com.bll.lnkcommon.mvp.book.BookStore
 import com.bll.lnkcommon.mvp.book.BookStoreType
+import com.bll.lnkcommon.mvp.book.TextbookStore
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 
@@ -36,14 +37,14 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val books = RetrofitManager.service.getTextBooks(map)
 
-        doRequest(books, object : Callback<BookStore>(view) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+        doRequest(books, object : Callback<TextbookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<TextbookStore>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<BookStore>) {
+            override fun success(tBaseResult: BaseResult<TextbookStore>) {
                 if (tBaseResult.data!=null)
-                    view.onBook(tBaseResult.data)
+                    view.onTextbook(tBaseResult.data)
             }
 
         }, true)
@@ -57,13 +58,13 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
 
         val books = RetrofitManager.service.getHomeworkBooks(map)
 
-        doRequest(books, object : Callback<BookStore>(view) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+        doRequest(books, object : Callback<TextbookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<TextbookStore>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBook(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<TextbookStore>) {
+                view.onTextbook(tBaseResult.data)
             }
 
         }, true)

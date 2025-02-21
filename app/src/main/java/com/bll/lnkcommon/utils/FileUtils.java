@@ -18,6 +18,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileUtils {
     /**
@@ -161,7 +163,31 @@ public class FileUtils {
                 files.add(tempList[i]);
             }
         }
+        files.sort( new FileNumberComparator());
+
         return files;
+    }
+
+    //按数字排序
+    static class FileNumberComparator implements Comparator<File> {
+        private  final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)");
+
+        @Override
+        public int compare(File f1, File f2) {
+            String name1 = f1.getName();
+            String name2 = f2.getName();
+            Matcher matcher1 = NUMBER_PATTERN.matcher(name1);
+            Matcher matcher2 = NUMBER_PATTERN.matcher(name2);
+
+            if (matcher1.find() && matcher2.find()) {
+                int num1 = Integer.parseInt(matcher1.group(1));
+                int num2 = Integer.parseInt(matcher2.group(1));
+                return Integer.compare(num1, num2);
+            } else {
+                // 如果文件名中没有数字，可以按文件名直接比较或者抛出异常，视情况而定
+                return name1.compareTo(name2);
+            }
+        }
     }
 
     /**

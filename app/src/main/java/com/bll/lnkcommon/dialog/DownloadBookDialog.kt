@@ -6,13 +6,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.utils.GlideUtils
 
 
-class BookDetailsDialog(private val context: Context, private val book: Book) {
+class DownloadBookDialog(private val context: Context, private val book: Book) {
 
     private var btn_ok:Button?=null
     private var dialog: Dialog?=null
@@ -31,19 +30,14 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
             val tv_version = findViewById<TextView>(R.id.tv_version)
             val tv_info = findViewById<TextView>(R.id.tv_info)
             val tv_book_name = findViewById<TextView>(R.id.tv_book_name)
+            tv_course.visibility=View.GONE
 
-            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,10)
+            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,5)
 
-            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
+            tv_book_name?.text = book.bookName
             tv_price?.text =context.getString(R.string.price)+"： "  + if (book.price==0) context.getString(R.string.free) else book.price
-            tv_version?.text = context.getString(R.string.publish)+"： " + if (book.semester!=0)DataBeanManager.versions[book.version.toInt()-1].desc else book.version
+            tv_version?.text = context.getString(R.string.publish)+"： " + book.version
             tv_info?.text = context.getString(R.string.introduction)+"： " + book.bookDesc
-
-            if (book.subjectName==0){
-                tv_course.visibility=View.GONE
-            }else{
-                tv_course?.text = context.getString(R.string.subject)+"： " + DataBeanManager.courses[book.subjectName-1].desc
-            }
 
             if (book.buyStatus == 1) {
                 btn_ok?.text = context.getString(R.string.click_download)

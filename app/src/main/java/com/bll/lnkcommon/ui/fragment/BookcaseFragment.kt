@@ -112,7 +112,7 @@ class BookcaseFragment : BaseFragment() {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val books = BookDaoManager.getInstance().queryAllByHalfYear(1)
+        val books = BookDaoManager.getInstance().queryBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
@@ -121,7 +121,7 @@ class BookcaseFragment : BaseFragment() {
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
                             type = 1
-                            zipUrl = book.bodyUrl
+                            zipUrl = book.downloadUrl
                             downloadUrl = it
                             subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                             date = System.currentTimeMillis()
@@ -135,7 +135,7 @@ class BookcaseFragment : BaseFragment() {
             } else {
                 cloudList.add(CloudListBean().apply {
                     type = 1
-                    zipUrl = book.bodyUrl
+                    zipUrl = book.downloadUrl
                     subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
@@ -152,8 +152,8 @@ class BookcaseFragment : BaseFragment() {
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
-            val bookBean = BookDaoManager.getInstance().queryByBookID(1, item.bookId)
-            MethodManager.deleteBook(bookBean,1)
+            val bookBean = BookDaoManager.getInstance().queryByBookID(item.bookId)
+            MethodManager.deleteBook(bookBean)
         }
         findBook()
     }

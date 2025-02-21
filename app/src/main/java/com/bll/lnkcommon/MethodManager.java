@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
+import com.bll.lnkcommon.manager.TextbookGreenDaoManager;
+import com.bll.lnkcommon.mvp.book.TextbookBean;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.book.Book;
 import com.bll.lnkcommon.mvp.model.AreaBean;
@@ -158,20 +160,19 @@ public class MethodManager {
         return result;
     }
 
-    /**
-     * @param book
-     * @param type 1书籍 0课本
-     */
-    public static void deleteBook(Book book,int type){
+
+    public static void deleteBook(Book book){
         BookDaoManager.getInstance().deleteBook(book); //删除本地数据库
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         FileUtils.deleteFile(new File(book.bookDrawPath));
-        if (type==1){
-            EventBus.getDefault().post(Constants.BOOK_EVENT) ;
-        }
-        else {
-            EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
-        }
+        EventBus.getDefault().post(Constants.BOOK_EVENT) ;
+    }
+
+    public static void deleteTextbook(TextbookBean book){
+        TextbookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
+        FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
+        FileUtils.deleteFile(new File(book.bookDrawPath));
+        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
     }
 
     /**

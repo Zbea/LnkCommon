@@ -11,7 +11,6 @@ object DataBeanManager {
     var courses= mutableListOf<ItemList>()
     var versions= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
-    var provinces= mutableListOf<AreaBean>()
 
     val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
@@ -22,11 +21,6 @@ object DataBeanManager {
 
     val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.classGroup_exam_str),mContext.getString(R.string.school_exam_str)
         ,mContext.getString(R.string.my_homework),mContext.getString(R.string.my_homework_correct))
-
-    val textbookType = arrayOf(
-        mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
-        mContext.getString(R.string.textbook_tab_homework),mContext.getString(R.string.textbook_tab_homework_other)
-    )
 
     var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
 
@@ -147,36 +141,23 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<ItemTypeBean>()
             list.add(ItemTypeBean().apply {
-                id=1
                 title = "我的课本"
                 isCheck=true
             })
             list.add(ItemTypeBean().apply {
-                id=2
                 title = "参考课本"
                 isCheck=false
             })
             list.add(ItemTypeBean().apply {
-                id=3
-                title = "我的教辅本"
+                title = "我的教辅"
                 isCheck=false
             })
             list.add(ItemTypeBean().apply {
-                id=4
-                title = "参考教辅本"
+                title = "参考教辅"
                 isCheck=false
             })
             return list
         }
-
-    fun getTextBookTypeId(str:String):Int{
-        var id=0
-        for (item in textBookTypes){
-            if (item.title==str)
-                id=item.id.toInt()
-        }
-        return id
-    }
 
     //日记内容选择
     val diaryModules: MutableList<ModuleBean>
@@ -330,5 +311,16 @@ object DataBeanManager {
         }
         return courseStr
     }
+
+    fun getBookVersionStr(version: Int): String {
+        var cls=""
+        for (item in versions) {
+            if (item.type == version){
+                cls=item.desc
+            }
+        }
+        return cls
+    }
+
 
 }

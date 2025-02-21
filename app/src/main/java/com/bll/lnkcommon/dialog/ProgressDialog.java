@@ -26,17 +26,11 @@ public class ProgressDialog {
     public void createDialog() {
         mDialog = new Dialog(context);
         mDialog.setContentView(R.layout.dialog_progress);
-        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.setCanceledOnTouchOutside(true);
         Window window = mDialog.getWindow();
         //要加上设置背景，否则dialog宽高设置无作用
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
-
-
-    public void setOutside(boolean b){
-        mDialog.setCanceledOnTouchOutside(b);
-    }
-
 
     public void show() {
         Activity activity= (Activity) context;

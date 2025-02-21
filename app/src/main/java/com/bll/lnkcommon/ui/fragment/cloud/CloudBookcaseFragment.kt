@@ -107,7 +107,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
 
     private fun downloadItem(){
         val book=books[position]
-        val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
+        val localBook = BookDaoManager.getInstance().queryByBookID(book.bookId)
         if (localBook == null) {
             showLoading()
             //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
@@ -141,7 +141,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             countDownTasks?.await()
             requireActivity().runOnUiThread {
                 hideLoading()
-                val localBook = BookDaoManager.getInstance().queryByBookID(1,book.bookPlusId)
+                val localBook = BookDaoManager.getInstance().queryByBookID(book.bookId)
                 if (localBook!=null){
                     deleteItem()
                     showToast(book.bookName+"下载成功")
@@ -197,7 +197,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: Book) {
-        FileDownManager.with(activity).create(book.bodyUrl).setPath(book.bookPath)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(book.bookPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }

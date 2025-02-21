@@ -181,7 +181,7 @@ class BookcaseTypeListActivity : BaseActivity() {
             .setOnDialogClickListener {
                 if (it == 0) {
                     mAdapter?.remove(pos)
-                    MethodManager.deleteBook(book,1)
+                    MethodManager.deleteBook(book)
                     fetchData()
                 } else {
                     if (typeStr == "") {

@@ -327,7 +327,7 @@ class MainFragment:BaseFragment(),IRelationView{
      * 设置台历图片
      */
     private fun setCalenderBg(){
-        val listFiles= FileUtils.getAscFiles(calenderPath)
+        val listFiles= FileUtils.getFiles(calenderPath)
         if (listFiles.size>0){
             val file=if (listFiles.size>nowDayPos-1){
                 listFiles[nowDayPos-1]

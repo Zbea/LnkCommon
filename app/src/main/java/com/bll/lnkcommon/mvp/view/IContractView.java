@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.view;
 
+import com.bll.lnkcommon.mvp.book.TextbookStore;
 import com.bll.lnkcommon.mvp.model.AccountOrder;
 import com.bll.lnkcommon.mvp.model.AccountQdBean;
 import com.bll.lnkcommon.mvp.model.AppList;
@@ -68,9 +69,10 @@ public interface IContractView {
     }
 
     interface IBookStoreView extends IBaseView {
-        void onBook(BookStore bookStore);
-        void onType(BookStoreType bookStoreType);
-        void buyBookSuccess();
+        default void onBook(BookStore bookStore){};
+        default void onTextbook(TextbookStore bookStore){};
+        default void onType(BookStoreType bookStoreType){};
+        default void buyBookSuccess(){};
     }
 
     //应用
@@ -96,11 +98,11 @@ public interface IContractView {
     }
 
     interface IMyHomeworkView extends IBaseView{
-        void onList(HomeworkTypeList homeworkTypeList);
-        void onCreateSuccess();
-        void onEditSuccess();
-        void onDeleteSuccess();
-        void onSendSuccess();
+        default void onList(HomeworkTypeList homeworkTypeList){};
+        default void onCreateSuccess(){};
+        default void onEditSuccess(){};
+        default void onDelete(){};
+        default void onSendSuccess(){};
     }
 
     interface IScoreRankView extends IBaseView{

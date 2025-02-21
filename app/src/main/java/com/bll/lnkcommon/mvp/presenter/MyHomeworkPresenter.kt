@@ -42,7 +42,7 @@ class MyHomeworkPresenter(view: IContractView.IMyHomeworkView) : BasePresenter<I
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDeleteSuccess()
+                view.onDelete()
             }
         }, true)
     }

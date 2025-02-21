@@ -20,7 +20,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?,private val startCount:Int
             0 -> {
                 val item= item as CatalogParentBean
                 helper.setText(R.id.tv_name, item.title)
-                helper.setText(R.id.tv_page, "${item.pageNumber-(startCount-1)}")
+                helper.setText(R.id.tv_page, "${item.pageNumber-startCount}")
                 helper.itemView.setOnClickListener { v ->
                     val pos = helper.adapterPosition
                     if (item.hasSubItem()){
@@ -40,7 +40,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?,private val startCount:Int
                 val childItem = item as CatalogChildBean
                 helper.setText(R.id.tv_name, childItem.title)
                 helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
-                helper.setText(R.id.tv_page,"${childItem.pageNumber-(startCount-1)}")
+                helper.setText(R.id.tv_page,"${childItem.pageNumber-startCount}")
                 helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
                     if (listener!=null)
                         listener?.onChildClick(item.pageNumber)

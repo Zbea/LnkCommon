@@ -9,7 +9,7 @@ import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CalendarDiaryDialog
 import com.bll.lnkcommon.dialog.CatalogDiaryDialog
 import com.bll.lnkcommon.dialog.InputContentDialog
-import com.bll.lnkcommon.dialog.ModuleSelectDialog
+import com.bll.lnkcommon.dialog.ModuleItemDialog
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.utils.*
@@ -88,19 +88,21 @@ class DiaryActivity:BaseDrawingActivity() {
 
         tv_date.setOnClickListener {
             CalendarDiaryDialog(this,uploadId).builder().setOnDateListener{
-                saveDiary()
-                nowLong=it
-                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
-                if (nowLong==DateUtils.getStartOfDayInMillis()&&diaryBean == null) {
-                    initCurrentDiaryBean()
+                if (nowLong!=it){
+                    saveDiary()
+                    nowLong=it
+                    diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
+                    if (nowLong==DateUtils.getStartOfDayInMillis()&&diaryBean == null) {
+                        initCurrentDiaryBean()
+                    }
+                    changeContent()
                 }
-                changeContent()
             }
         }
 
         iv_btn.setOnClickListener {
-            ModuleSelectDialog(this, 0,DataBeanManager.diaryModules).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+            ModuleItemDialog(this, 0,DataBeanManager.diaryModules).builder()
+                .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
                     MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content)
@@ -114,14 +116,13 @@ class DiaryActivity:BaseDrawingActivity() {
                 saveDiary()
             }
         }
-
-        changeContent()
     }
 
     /**
      * 初始化
      */
     private fun initCurrentDiaryBean(){
+        posImage=0
         bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
         diaryBean?.userId=if (MethodManager.isLogin()) MethodManager.getUser()?.accountId else 0
@@ -148,6 +149,7 @@ class DiaryActivity:BaseDrawingActivity() {
         posImage=diaryBean?.page!!
         tv_date.text=DateUtils.longToStringWeek(nowLong)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this, bgRes),v_content)
+
         setContentImage()
     }
 

@@ -1,18 +1,16 @@
 package com.bll.lnkcommon
 
+import com.bll.lnkcommon.Constants.APK_PATH
 import com.bll.lnkcommon.Constants.BOOK_PATH
 import com.bll.lnkcommon.Constants.FREE_NOTE_PATH
 import com.bll.lnkcommon.Constants.HOMEWORK_PATH
 import com.bll.lnkcommon.Constants.IMAGE_PATH
 import com.bll.lnkcommon.Constants.NOTE_PATH
 import com.bll.lnkcommon.Constants.SCREEN_PATH
-import com.bll.lnkcommon.Constants.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
-import com.bll.lnkcommon.Constants.TEXTBOOK_PICTURE_FILES
 import com.bll.lnkcommon.Constants.ZIP_PATH
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.SPUtil
-import java.io.File
 
 class FileAddress {
 
@@ -46,27 +44,26 @@ class FileAddress {
      * 书籍目录地址
      */
     fun getPathTextBookCatalog(path:String):String{
-        return path + File.separator + TEXTBOOK_CATALOG_TXT
+        return "$path/catalog.txt"
     }
     /**
      * 书籍图片地址
      */
     fun getPathTextBookPicture(path:String):String{
-        return path + File.separator + TEXTBOOK_PICTURE_FILES
+        return "$path/contents"
     }
     /**
      * zip保存地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip
      */
     fun getPathZip(fileName:String):String{
-        return ZIP_PATH+File.separator + fileName + ".zip"
+        return "$ZIP_PATH/$fileName.zip"
     }
-
     /**
      * apk下载地址
      */
     fun getPathApk(fileName: String):String{
-        return Constants.APK_PATH+ File.separator + fileName + ".apk"
+        return "$APK_PATH/$fileName.apk"
     }
 
     /**

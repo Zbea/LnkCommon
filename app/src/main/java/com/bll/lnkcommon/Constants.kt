@@ -31,8 +31,8 @@ object Constants {
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
-        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
-//        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
+//        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -45,10 +45,7 @@ object Constants {
         //断点记录文件保存的文件夹
         val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
-
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
-        val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
-        val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
         //解压的目录
         val BOOK_PATH =Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath

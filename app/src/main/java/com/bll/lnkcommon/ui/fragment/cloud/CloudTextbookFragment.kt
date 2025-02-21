@@ -11,10 +11,13 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.manager.TextbookGreenDaoManager
 import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
+import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
@@ -31,8 +34,8 @@ import java.util.concurrent.CountDownLatch
 
 class CloudTextbookFragment: BaseCloudFragment() {
     private var countDownTasks: CountDownLatch?=null //异步完成后操作
-    private var mAdapter: BookAdapter?=null
-    private var books= mutableListOf<Book>()
+    private var mAdapter: TextbookAdapter?=null
+    private var textbooks= mutableListOf<TextbookBean>()
     private var position=0
     private var textBook=""
 
@@ -51,14 +54,8 @@ class CloudTextbookFragment: BaseCloudFragment() {
     }
 
     private fun initTab(){
-        val texts= DataBeanManager.textbookType.toMutableList()
-        textBook=texts[0]
-        for (i in types.indices) {
-            itemTabTypes.add(ItemTypeBean().apply {
-                title=types[i]
-                isCheck=i==0
-            })
-        }
+        itemTabTypes=DataBeanManager.textBookTypes
+        textBook=itemTabTypes[0].title
         mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
@@ -78,7 +75,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
+        mAdapter = TextbookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
@@ -99,7 +96,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun cancel() {
                         }
                         override fun ok() {
-                            deleteItem(books[position])
+                            deleteItem(textbooks[position])
                         }
                     })
                 true
@@ -109,19 +106,19 @@ class CloudTextbookFragment: BaseCloudFragment() {
     }
 
     private fun downloadItem(){
-        val book=books[position]
-        val localBook = BookDaoManager.getInstance().queryByBookID(0,book.bookId)
+        val book=textbooks[position]
+        val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(book.category,book.bookId)
         if (localBook == null) {
             showLoading()
             //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
             if (!book.drawUrl.isNullOrEmpty()){
                 countDownTasks= CountDownLatch(2)
-                selectBookOrZip(book)
+                downloadBook(book)
                 downloadBookDrawing(book)
             }
             else{
                 countDownTasks=CountDownLatch(1)
-                selectBookOrZip(book)
+                downloadBook(book)
             }
             downloadSuccess(book)
         } else {
@@ -129,7 +126,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
         }
     }
 
-    private fun deleteItem(book: Book){
+    private fun deleteItem(book: TextbookBean){
         val ids= mutableListOf<Int>()
         ids.add(book.cloudId)
         mCloudPresenter.deleteCloud(ids)
@@ -138,13 +135,13 @@ class CloudTextbookFragment: BaseCloudFragment() {
     /**
      * 下载完成
      */
-    private fun downloadSuccess(book: Book){
+    private fun downloadSuccess(book: TextbookBean){
         //等待两个请求完成后刷新列表
         Thread{
             countDownTasks?.await()
             requireActivity().runOnUiThread {
                 hideLoading()
-                val localBook = BookDaoManager.getInstance().queryTextBookByBookID(0,book.bookId)
+                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(book.category,book.bookId)
                 if (localBook!=null){
                     showToast(book.bookName+"下载成功")
                     deleteItem(book)
@@ -164,20 +161,47 @@ class CloudTextbookFragment: BaseCloudFragment() {
         }.start()
     }
 
-    private fun selectBookOrZip(book: Book){
-        if (position<2){
-            downloadBook(book)
-        }
-        else{
-            downloadBookZip(book)
-        }
+    /**
+     * 下载书籍
+     */
+    private fun downloadBook(book: TextbookBean) {
+        val fileName = book.bookId.toString()//文件名
+        val zipPath = FileAddress().getPathZip(fileName)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                        override fun onFinish() {
+                            book.id=null
+                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                            //删除教材的zip文件
+                            FileUtils.deleteFile(File(zipPath))
+                            countDownTasks?.countDown()
+                        }
+                        override fun onProgress(percentDone: Int) {
+                        }
+                        override fun onError(msg: String?) {
+                            countDownTasks?.countDown()
+                        }
+                        override fun onStart() {
+                        }
+                    })
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    countDownTasks?.countDown()
+                }
+            })
     }
 
     /**
      * 下载书籍手写内容
      */
-    private fun downloadBookDrawing(book: Book){
-        val fileName = book.bookId.toString()//文件名
+    private fun downloadBookDrawing(book: TextbookBean){
+        val fileName = book.bookId.toString()+"draw"//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
@@ -190,10 +214,12 @@ class CloudTextbookFragment: BaseCloudFragment() {
                         override fun onFinish() {
                             //删除教材的zip文件
                             FileUtils.deleteFile(File(zipPath))
+                            countDownTasks?.countDown()
                         }
                         override fun onProgress(percentDone: Int) {
                         }
                         override fun onError(msg: String?) {
+                            countDownTasks?.countDown()
                         }
                         override fun onStart() {
                         }
@@ -206,61 +232,6 @@ class CloudTextbookFragment: BaseCloudFragment() {
             })
     }
 
-    /**
-     * 下载书籍
-     */
-    private fun downloadBookZip(book: Book) {
-        val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
-                        override fun onFinish() {
-                            book.id=null
-                            BookDaoManager.getInstance().insertOrReplaceBook(book)
-                            //删除教材的zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                    countDownTasks?.countDown()
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    countDownTasks?.countDown()
-                }
-            })
-    }
-
-    /**
-     * 下载书籍
-     */
-    private fun downloadBook(book: Book) {
-        FileDownManager.with(activity).create(book.bodyUrl).setPath(book.bookPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    book.id=null
-                    BookDaoManager.getInstance().insertOrReplaceBook(book)
-                    countDownTasks?.countDown()
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    countDownTasks?.countDown()
-                }
-            })
-    }
 
     override fun fetchData() {
         val map = HashMap<String, Any>()
@@ -273,17 +244,17 @@ class CloudTextbookFragment: BaseCloudFragment() {
 
     override fun onCloudList(cloudList: CloudList) {
         setPageNumber(cloudList.total)
-        books.clear()
+        textbooks.clear()
         for (item in cloudList.list){
             if (item.listJson.isNotEmpty()){
-                val bookBean= Gson().fromJson(item.listJson, Book::class.java)
+                val bookBean= Gson().fromJson(item.listJson, TextbookBean::class.java)
                 bookBean.id=null
                 bookBean.cloudId=item.id
                 bookBean.drawUrl=item.downloadUrl
-                books.add(bookBean)
+                textbooks.add(bookBean)
             }
         }
-        mAdapter?.setNewData(books)
+        mAdapter?.setNewData(textbooks)
     }
 
     override fun onCloudDelete() {

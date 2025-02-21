@@ -27,7 +27,6 @@ import com.bll.lnkcommon.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class NoteFragment:BaseFragment() {
@@ -202,7 +201,7 @@ class NoteFragment:BaseFragment() {
 
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            ModuleSelectDialog(requireContext(),1,DataBeanManager.noteModules).builder()
+            ModuleItemDialog(requireContext(),1,DataBeanManager.noteModules).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     if (MethodManager.isLogin()){
                         createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))

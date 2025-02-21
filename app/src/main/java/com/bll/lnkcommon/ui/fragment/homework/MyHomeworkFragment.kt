@@ -48,7 +48,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         mAdapter?.notifyItemChanged(position)
     }
 
-    override fun onDeleteSuccess() {
+    override fun onDelete() {
         mAdapter?.remove(position)
     }
 

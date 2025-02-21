@@ -2,6 +2,7 @@ package com.bll.lnkcommon
 
 import com.bll.lnkcommon.mvp.book.BookStore
 import com.bll.lnkcommon.mvp.book.BookStoreType
+import com.bll.lnkcommon.mvp.book.TextbookStore
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.net.BaseResult
 import io.reactivex.Observable
@@ -171,17 +172,12 @@ interface APIService{
      * 教材列表
      */
     @GET("textbook/list")
-    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 教材参考列表
      */
     @GET("book/list")
-    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
-    /**
-     * 教材参考列表
-     */
-    @GET("book/lib/list")
-    fun getTeachingBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 书城列表
      */

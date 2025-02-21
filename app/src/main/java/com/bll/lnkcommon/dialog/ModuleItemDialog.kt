@@ -5,7 +5,6 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ModuleBean
 import com.bll.lnkcommon.utils.DP2PX
@@ -13,11 +12,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class ModuleSelectDialog(private val context: Context, private val type: Int,private val lists:List<ModuleBean>) {
+class ModuleItemDialog(private val context: Context, private val type: Int, private val lists:List<ModuleBean>) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): ModuleSelectDialog? {
+    fun builder(): ModuleItemDialog {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_module_select)
         val width=if (type==0) DP2PX.dip2px(context,450f) else DP2PX.dip2px(context,611f)

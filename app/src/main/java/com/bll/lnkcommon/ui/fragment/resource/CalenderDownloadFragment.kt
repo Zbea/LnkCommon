@@ -9,7 +9,7 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.CalenderBuyDetailsDialog
+import com.bll.lnkcommon.dialog.DownloadCalenderDialog
 import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
@@ -21,7 +21,6 @@ import com.bll.lnkcommon.utils.*
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list.*
@@ -34,7 +33,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     private var presenter= CalenderPresenter(this)
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter: CalenderListAdapter?=null
-    private var detailsDialog: CalenderBuyDetailsDialog?=null
+    private var detailsDialog: DownloadCalenderDialog?=null
     private var position=0
     private var supply=1
 
@@ -98,7 +97,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
 
 
     private fun showDetails(item: CalenderItemBean) {
-        detailsDialog = CalenderBuyDetailsDialog(requireActivity(), item)
+        detailsDialog = DownloadCalenderDialog(requireActivity(), item)
         detailsDialog?.builder()
         detailsDialog?.setOnClickListener {
             if (item.buyStatus==1){

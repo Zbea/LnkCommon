@@ -57,51 +57,23 @@ public class BookDaoManager {
     }
 
 
-    /**
-     *  查找课本、作业、教学
-     * @param type 0课本 6作业 7教学
-     * @param bookID
-     * @return
-     */
-    public Book queryTextBookByBookID(int type,int bookID) {
-        WhereCondition whereCondition= BookDao.Properties.TypeId.eq(type);
-        WhereCondition whereCondition1= BookDao.Properties.BookId.eq(bookID);
-        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
+    public Book queryByBookID(int bookID) {
+        WhereCondition  whereCondition1= BookDao.Properties.BookId.eq(bookID);
+        return bookDao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
     /**
-     * 查找书籍
-     * @param bookID
-     * @return
+     * 获取半年以前的书籍n
      */
-    public Book queryByBookID(int type,int bookID) {
-        WhereCondition whereCondition= BookDao.Properties.Category.eq(type);
-        WhereCondition whereCondition1;
-        if (type==1){
-            whereCondition1= BookDao.Properties.BookPlusId.eq(bookID);
-        }
-        else {
-            whereCondition1= BookDao.Properties.BookId.eq(bookID);
-        }
-        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
-    }
-
-    /**
-     * 获取半年以前的书籍
-     * category 0课本 1书籍
-     * @return
-     */
-    public List<Book> queryAllByHalfYear(int category){
+    public List<Book> queryBookByHalfYear(){
         long time=System.currentTimeMillis()- Constants.halfYear;
-        WhereCondition whereCondition= BookDao.Properties.Category.eq(category);
         WhereCondition whereCondition1= BookDao.Properties.Time.le(time);
-        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        return bookDao.queryBuilder().where(whereUser,whereCondition1).build().list();
     }
 
     //查询所有书籍
     public List<Book> queryAllBook() {
-        WhereCondition whereCondition=BookDao.Properties.Category.eq(1);
-        return bookDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookDao.Properties.Time).build().list();
+        return bookDao.queryBuilder().where(whereUser).orderDesc(BookDao.Properties.Time).build().list();
     }
 
     /**
@@ -110,52 +82,25 @@ public class BookDaoManager {
      * @return
      */
     public List<Book> queryAllBook(boolean isLook) {
-        WhereCondition whereCondition=BookDao.Properties.Category.eq(1);
         WhereCondition whereCondition1=BookDao.Properties.IsLook.eq(isLook);
-        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderDesc(BookDao.Properties.Time).limit(13).build().list();
+        return bookDao.queryBuilder().where(whereUser,whereCondition1).orderDesc(BookDao.Properties.Time).limit(13).build().list();
     }
 
     //根据类别 细分子类
     public List<Book> queryAllBook(String type) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(1);
         WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(type);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        return bookDao.queryBuilder().where(whereUser,whereCondition2)
                 .orderDesc(BookDao.Properties.Time).build().list();
     }
 
     //根据类别 细分子类 分页处理
     public List<Book> queryAllBook(String type, int page, int pageSize) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(1);
         WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(type);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
+        return bookDao.queryBuilder().where(whereUser,whereCondition2)
                 .orderDesc(BookDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
     }
-
-    //查询所有课本
-    public List<Book> queryAllTextbook() {
-        WhereCondition whereCondition=BookDao.Properties.Category.eq(0);
-        return bookDao.queryBuilder().where(whereUser,whereCondition).orderDesc(BookDao.Properties.Time).build().list();
-    }
-
-    //查找课本 细分子类
-    public List<Book> queryAllTextBook(String textType) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(textType);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time).build().list();
-    }
-
-    public List<Book> queryAllTextBook(String textType, int page, int pageSize) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(textType);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
-                .orderDesc(BookDao.Properties.Time)
-                .offset((page-1)*pageSize).limit(pageSize)
-                .build().list();
-    }
-
 
     //删除书籍数据d对象
     public void deleteBook(Book book){

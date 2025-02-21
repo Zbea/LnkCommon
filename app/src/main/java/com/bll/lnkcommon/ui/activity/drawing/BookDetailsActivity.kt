@@ -8,7 +8,9 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.manager.TextbookGreenDaoManager
 import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.CatalogChildBean
 import com.bll.lnkcommon.mvp.model.CatalogMsg
 import com.bll.lnkcommon.mvp.model.CatalogParentBean
@@ -23,15 +25,14 @@ import java.io.File
 
 
 class BookDetailsActivity:BaseDrawingActivity() {
-    private var book: Book?=null
+    private var book: TextbookBean?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()
     private var parentItems= mutableListOf<CatalogParentBean>()
     private var childItems= mutableListOf<CatalogChildBean>()
 
-    private var count = 1
     private var page = 0 //当前页码
-    private var startCount=1
+    private var startCount=0
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -40,7 +41,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     override fun initData() {
         val id=intent.getIntExtra("book_id",0)
         val type=intent.getIntExtra("book_type",0)
-        book = BookDaoManager.getInstance().queryTextBookByBookID(type,id)
+        book = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(type,id)
         page=book?.pageIndex!!
 
         val catalogFilePath =FileAddress().getPathTextBookCatalog(book?.bookPath!!)
@@ -68,16 +69,14 @@ class BookDetailsActivity:BaseDrawingActivity() {
                     parentItems.add(catalogParent)
                     catalogs.add(catalogParent)
                 }
+                pageCount=catalogMsg?.totalCount!!
+                startCount=catalogMsg?.startCount!!-1
             }
         }
     }
 
     override fun initView() {
         disMissView(iv_btn)
-        if (catalogMsg!=null){
-            count=catalogMsg?.totalCount!!
-            startCount=catalogMsg?.startCount!!
-        }
         updateScreen()
     }
 
@@ -96,7 +95,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
 
     override fun onPageDown() {
-        if(page<count){
+        if(page<pageCount){
             page+=1
             updateScreen()
         }
@@ -111,8 +110,8 @@ class BookDetailsActivity:BaseDrawingActivity() {
 
     //单屏翻页
     private fun updateScreen(){
-        tv_page.text = if (page+1-(startCount-1)>0) "${page + 1-(startCount-1)}" else ""
-        tv_page_total.text="${count-startCount}"
+        tv_page.text = if (page>=startCount) "${page-startCount+1}" else ""
+        tv_page_total.text=if (page>=startCount)"${pageCount-startCount}" else ""
         loadPicture(page,elik!!,v_content)
     }
 
@@ -132,7 +131,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
         val path=FileAddress().getPathTextBookPicture(book?.bookPath!!)
-        val listFiles = FileUtils.getAscFiles(path)
+        val listFiles = FileUtils.getFiles(path)
         return if (listFiles!=null) listFiles[index] else null
     }
 
@@ -140,10 +139,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
         super.onDestroy()
         book?.time=System.currentTimeMillis()
         book?.pageIndex=page
-        BookDaoManager.getInstance().insertOrReplaceBook(book)
-            EventBus.getDefault().post(TEXT_BOOK_EVENT)
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+        EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
-
-
-
 }

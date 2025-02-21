@@ -18,7 +18,7 @@ class CatalogDiaryDialog(val context: Context, val list: List<DiaryBean>) {
     fun builder(): CatalogDiaryDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_catalog)
-        val window = dialog?.window!!
+        val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
