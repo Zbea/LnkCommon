@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.model;
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
@@ -18,7 +19,7 @@ public class WallpaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @SerializedName("fontDrawId")
     public int contentId;//内容id
     @SerializedName("drawName")

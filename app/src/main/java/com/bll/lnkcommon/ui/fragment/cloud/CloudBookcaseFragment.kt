@@ -9,14 +9,13 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
@@ -164,8 +163,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: Book){
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

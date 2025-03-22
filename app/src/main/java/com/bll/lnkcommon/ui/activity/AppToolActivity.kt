@@ -14,6 +14,8 @@ import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.BitmapUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_app_tool.*
+import kotlinx.android.synthetic.main.common_title.tv_ok
+import kotlinx.android.synthetic.main.common_title.tv_setting
 
 class AppToolActivity:BaseActivity() {
 
@@ -31,10 +33,13 @@ class AppToolActivity:BaseActivity() {
 
     override fun initView() {
         setPageTitle("我的工具")
+        showView(tv_ok)
+        tv_ok.text="添加"
+
         initRecyclerView()
         initMenuRecyclerView()
 
-        tv_add.setOnClickListener {
+        tv_ok.setOnClickListener {
             for (item in apps){
                 if (item.isCheck){
                     if (!AppDaoManager.getInstance().isExist(item.packageName,2)){

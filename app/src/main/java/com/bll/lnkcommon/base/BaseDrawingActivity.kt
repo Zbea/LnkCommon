@@ -292,10 +292,10 @@ abstract class BaseDrawingActivity : BaseActivity() {
                 if (elik?.curDrawObjStatus == true){
                     reDrawGeometry(elik!!)
                 }
+                onElikSava()
+                elik?.saveBitmap(true) {}
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
-                onElikSava()
             }
         })
     }

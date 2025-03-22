@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_25"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="月周计划"
+                android:text="规划"
                 android:textColor="@color/black"/>
 
         </LinearLayout>

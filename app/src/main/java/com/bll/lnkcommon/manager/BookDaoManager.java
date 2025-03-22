@@ -2,17 +2,15 @@ package com.bll.lnkcommon.manager;
 
 
 import com.bll.lnkcommon.Constants;
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.BookDao;
 import com.bll.lnkcommon.greendao.DaoSession;
-import com.bll.lnkcommon.mvp.book.Book;
-import com.bll.lnkcommon.mvp.model.User;
-import com.bll.lnkcommon.utils.SPUtil;
+import com.bll.lnkcommon.mvp.model.book.Book;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
-import java.util.Objects;
 
 
 public class BookDaoManager {
@@ -45,7 +43,7 @@ public class BookDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= BookDao.Properties.UserId.eq(userId);
         return mDbController;
     }

@@ -1,12 +1,11 @@
 package com.bll.lnkcommon.mvp.view;
 
-import com.bll.lnkcommon.mvp.book.TextbookStore;
+import com.bll.lnkcommon.mvp.model.book.TextbookStore;
 import com.bll.lnkcommon.mvp.model.AccountOrder;
 import com.bll.lnkcommon.mvp.model.AccountQdBean;
 import com.bll.lnkcommon.mvp.model.AppList;
-import com.bll.lnkcommon.mvp.model.AppUpdateBean;
-import com.bll.lnkcommon.mvp.book.BookStore;
-import com.bll.lnkcommon.mvp.book.BookStoreType;
+import com.bll.lnkcommon.mvp.model.book.BookStore;
+import com.bll.lnkcommon.mvp.model.book.BookStoreType;
 import com.bll.lnkcommon.mvp.model.CalenderList;
 import com.bll.lnkcommon.mvp.model.CloudList;
 import com.bll.lnkcommon.mvp.model.CommonData;
@@ -20,7 +19,6 @@ import com.bll.lnkcommon.mvp.model.SchoolBean;
 import com.bll.lnkcommon.mvp.model.Score;
 import com.bll.lnkcommon.mvp.model.ShareNoteList;
 import com.bll.lnkcommon.mvp.model.StudentBean;
-import com.bll.lnkcommon.mvp.model.SystemUpdateInfo;
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.mvp.model.WallpaperList;

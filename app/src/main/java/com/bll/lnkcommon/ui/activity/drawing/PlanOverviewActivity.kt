@@ -41,7 +41,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
     override fun initView() {
         disMissView(iv_catalog,iv_btn)
-        setPageTitle("月周计划")
+        setPageTitle("规划")
 
         MethodManager.setImageResource(this,R.mipmap.icon_freenote_bg_1,v_content)
 
@@ -130,8 +130,8 @@ class PlanOverviewActivity: BaseDrawingActivity() {
             FileAddress().getPathPlan(DateUtils.longToString(weekStartDate))
         }
         images.clear()
-        if (File(path).exists()){
-            for (file in FileUtils.getAscFiles(path)){
+        if (FileUtils.isExist(path)){
+            for (file in FileUtils.getFiles(path)){
                 images.add(file.path)
             }
         }

@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.model;
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.greendao.StringConverter;
 
 import org.greenrobot.greendao.annotation.Convert;
@@ -18,7 +19,7 @@ public class FreeNoteBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     @Unique
     public long date;

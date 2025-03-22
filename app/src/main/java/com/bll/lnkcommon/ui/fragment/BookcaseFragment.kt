@@ -8,7 +8,7 @@ import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
@@ -21,7 +21,6 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import java.io.File
 
 class BookcaseFragment : BaseFragment() {
 

@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.book;
+package com.bll.lnkcommon.mvp.model.book;
 
 import java.util.List;
 

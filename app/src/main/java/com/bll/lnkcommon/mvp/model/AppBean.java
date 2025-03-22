@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.mvp.model;
 
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -16,7 +17,7 @@ public class AppBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;;
+    public long userId= MethodManager.getAccountId();
     public String appName;
     public String packageName;
     public byte[] imageByte;

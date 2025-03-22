@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.mvp.model;
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -17,7 +18,7 @@ public class NoteContent implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String typeStr;//分类
     public String notebookTitle;
     public long date;//创建时间

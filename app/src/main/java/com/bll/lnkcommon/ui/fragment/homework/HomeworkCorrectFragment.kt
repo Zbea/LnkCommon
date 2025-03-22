@@ -51,7 +51,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchData()
     }
 
@@ -72,8 +72,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             val item=homeworks[position]
-            if (item.endTime==0L)
-                return@setOnItemClickListener
             if (item.status!=1){
                 val intent= Intent(requireActivity(), HomeworkCorrectActivity::class.java)
                 val bundle= Bundle()

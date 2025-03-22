@@ -48,7 +48,7 @@ public class FileMultitaskDownManager {
     }
 
     //单任务下载
-    public void startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
+    public FileDownloadQueueSet startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
 
         auth = "Authorization";
         token = SPUtil.INSTANCE.getString("token");
@@ -102,6 +102,8 @@ public class FileMultitaskDownManager {
         queueSet.downloadTogether(tasks);//并行下载
         queueSet.setForceReDownload(true);
         queueSet.start();
+
+        return queueSet;
     }
 
     public interface MultiTaskCallBack {

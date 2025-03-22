@@ -15,9 +15,9 @@ import com.bll.lnkcommon.dialog.DownloadTextbookDialog
 import com.bll.lnkcommon.dialog.PopupCityList
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager
-import com.bll.lnkcommon.mvp.book.BookStoreType
-import com.bll.lnkcommon.mvp.book.TextbookBean
-import com.bll.lnkcommon.mvp.book.TextbookStore
+import com.bll.lnkcommon.mvp.model.book.BookStoreType
+import com.bll.lnkcommon.mvp.model.book.TextbookBean
+import com.bll.lnkcommon.mvp.model.book.TextbookStore
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
@@ -25,6 +25,7 @@ import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileBigDownManager
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.ToolUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
@@ -237,7 +238,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
      */
     private fun downLoadStart(book: TextbookBean): BaseDownloadTask? {
         showLoading()
-        val fileName =  book.bookId.toString()//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
         val download = FileBigDownManager.with(this).create(book.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
@@ -259,8 +260,14 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         category = tabId
                         time = System.currentTimeMillis()//下载时间用于排序
                     }
-                    book.bookPath = FileAddress().getPathTextBook(fileName)
-                    book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
+                    if (tabId<2){
+                        book.bookPath = FileAddress().getPathTextBook(fileName)
+                        book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
+                    }
+                    else{
+                        book.bookPath = FileAddress().getPathHomeworkBook(fileName)
+                        book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(fileName)
+                    }
                     ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
                         override fun onFinish() {
                             TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)

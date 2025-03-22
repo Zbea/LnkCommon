@@ -119,7 +119,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (rv_tab!=null){
             initTabView()
         }
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()&&DataBeanManager.courses.size==0){
+        if (NetworkUtil.isNetworkConnected()&&DataBeanManager.courses.size==0){
             mCommonPresenter.getCommon()
         }
         initCommonTitle()
@@ -307,7 +307,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     }
 
     fun onCheckUpdate() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             checkAppUpdate()
             checkSystemUpdate()
         }
@@ -324,6 +324,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         jsonBody.put(Constants.VERSION_NO, DeviceUtil.getOtaProductVersion())
 
         val  jsonObjectRequest= JsonObjectRequest(Request.Method.POST,url,jsonBody, {
+            showLog(it.toString())
             val code= it.optInt("Code")
             val jsonObject=it.optJSONObject("Data")
             if (code==200&&jsonObject!=null){

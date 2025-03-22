@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.manager;
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.DaoSession;
 import com.bll.lnkcommon.greendao.ItemTypeBeanDao;
@@ -42,7 +43,7 @@ public class ItemTypeDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= ItemTypeBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }

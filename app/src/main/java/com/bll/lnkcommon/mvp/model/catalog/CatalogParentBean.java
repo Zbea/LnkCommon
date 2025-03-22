@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.model.catalog;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;

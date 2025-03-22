@@ -7,15 +7,34 @@
     android:orientation="vertical">
 
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:text="目录"
-        android:gravity="center_vertical"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:gravity="center_vertical"
+            android:text="目录"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:gravity="center_vertical"
+            android:text="合并页码"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+    </LinearLayout>
 
 
 

@@ -2,6 +2,7 @@ package com.bll.lnkcommon.manager;
 
 import android.util.Log;
 
+import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.DaoSession;
@@ -44,11 +45,7 @@ public class RecordDaoManager {
                 }
             }
         }
-        User mUser=SPUtil.INSTANCE.getObj("user", User.class);
-        long userId =0;
-        if (mUser!=null) {
-            userId=mUser.accountId;
-        }
+        long userId = MethodManager.getAccountId();
         whereUser= RecordBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }

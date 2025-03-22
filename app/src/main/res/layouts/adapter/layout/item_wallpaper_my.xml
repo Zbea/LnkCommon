@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:gravity="center"
+        android:lines="1"
         android:ellipsize="end"
-        android:maxLines="1"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22" />
 

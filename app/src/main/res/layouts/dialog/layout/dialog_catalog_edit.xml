@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:padding="@dimen/dp_40"
+    >
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:textColorHint="@color/color_text_hint"
+        android:background="@drawable/bg_black_stroke_5dp_corner"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:hint="请输入目录标题"
+        android:lines="1"
+        android:ellipsize="end"
+        android:padding="5dp"
+        />
+
+    <RadioGroup
+        android:id="@+id/rg_group"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_single"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:gravity="center"
+            android:text="单页选择"
+            android:textSize="@dimen/sp_22"
+            android:textStyle="bold"
+            android:checked="true"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:background="@drawable/bg_rb_line_selector"/>
+
+        <RadioButton
+            android:id="@+id/rb_batch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="30dp"
+            android:button="@null"
+            android:text="批量选择"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@drawable/color_black_gray_selector"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_rb_line_selector"/>
+    </RadioGroup>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:orientation="vertical"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_batch"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            >
+
+            <EditText
+                android:id="@+id/et_page_start"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:hint="1"
+                android:gravity="center"
+                android:inputType="number"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:lines="1"
+                android:background="@color/color_transparent"
+                />
+
+            <TextView
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="—"
+                />
+            <EditText
+                android:id="@+id/et_page_end"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:hint="1"
+                android:inputType="number"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:lines="1"
+                android:background="@color/color_transparent"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include
+        layout="@layout/common_dialog_ok"
+        />
+
+</LinearLayout>

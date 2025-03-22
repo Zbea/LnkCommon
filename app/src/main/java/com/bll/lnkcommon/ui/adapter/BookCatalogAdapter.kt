@@ -2,8 +2,8 @@ package com.bll.lnkcommon.ui.adapter
 
 import android.widget.LinearLayout
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.CatalogChildBean
-import com.bll.lnkcommon.mvp.model.CatalogParentBean
+import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
+import com.bll.lnkcommon.mvp.model.catalog.CatalogParentBean
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity

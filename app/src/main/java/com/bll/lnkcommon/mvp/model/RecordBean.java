@@ -1,5 +1,7 @@
 package com.bll.lnkcommon.mvp.model;
 
+import com.bll.lnkcommon.MethodManager;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
@@ -17,7 +19,7 @@ public class RecordBean implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     public long date;
     public String path;

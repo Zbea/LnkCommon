@@ -5,6 +5,8 @@ import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFileDrawingActivity
+import com.bll.lnkcommon.dialog.CatalogDialog
+import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_drawing_file.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -25,9 +27,28 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn,iv_catalog)
+        disMissView(iv_btn)
 
         onChangeContent()
+    }
+
+    override fun onCatalog() {
+        val files = FileUtils.getAscFiles(path)
+        val list= mutableListOf<ItemList>()
+        for (file in files){
+            val itemList= ItemList()
+            itemList.name=file.name.replace(".png","")
+            itemList.page=files.indexOf(file)
+            list.add(itemList)
+        }
+        CatalogDialog(this,list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (pageIndex!=pageNumber){
+                    pageIndex = pageNumber
+                    onChangeContent()
+                }
+            }
+        })
     }
 
     override fun onPageUp() {

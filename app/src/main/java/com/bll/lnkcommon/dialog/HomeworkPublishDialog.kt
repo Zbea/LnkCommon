@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.KeyboardUtils
@@ -23,6 +24,8 @@ class HomeworkPublishDialog(val context: Context) {
         val tv_date = dialog.findViewById<TextView>(R.id.tv_date)
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
 
+        date=System.currentTimeMillis()+ Constants.dayLong
+        tv_date.text=DateUtils.longToStringWeek(date)
         tv_date.setOnClickListener {
             CalendarSingleDialog(context).builder().setOnDateListener {  dateTim ->
                 tv_date.text=DateUtils.longToStringWeek(dateTim)
@@ -36,12 +39,13 @@ class HomeworkPublishDialog(val context: Context) {
                 SToast.showText(R.string.toast_input_content)
                 return@setOnClickListener
             }
-            if (date>0&&date<=System.currentTimeMillis()){
-                SToast.showText(R.string.toast_commit_time_error)
-                return@setOnClickListener
+            if (date>System.currentTimeMillis()){
+                listener?.onSend(contentStr,date)
+                dialog.dismiss()
             }
-            listener?.onSend(contentStr,date)
-            dialog.dismiss()
+            else{
+                SToast.showText(R.string.toast_commit_time_error)
+            }
         }
 
         dialog.setOnDismissListener {

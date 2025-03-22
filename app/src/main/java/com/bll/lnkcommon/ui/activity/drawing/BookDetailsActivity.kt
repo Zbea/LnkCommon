@@ -6,14 +6,12 @@ import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.CatalogDialog
-import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.dialog.CatalogBookDialog
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager
-import com.bll.lnkcommon.mvp.book.Book
-import com.bll.lnkcommon.mvp.book.TextbookBean
-import com.bll.lnkcommon.mvp.model.CatalogChildBean
-import com.bll.lnkcommon.mvp.model.CatalogMsg
-import com.bll.lnkcommon.mvp.model.CatalogParentBean
+import com.bll.lnkcommon.mvp.model.book.TextbookBean
+import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
+import com.bll.lnkcommon.mvp.model.catalog.CatalogMsg
+import com.bll.lnkcommon.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -70,8 +68,11 @@ class BookDetailsActivity:BaseDrawingActivity() {
                     catalogs.add(catalogParent)
                 }
                 pageCount=catalogMsg?.totalCount!!
-                startCount=catalogMsg?.startCount!!-1
+                startCount=if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
             }
+        }
+        else{
+            pageCount=FileUtils.getFiles(FileAddress().getPathTextBookPicture(book?.bookPath!!)).size
         }
     }
 
@@ -81,16 +82,12 @@ class BookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
-        CatalogDialog(this,catalogs, 1, startCount).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=position-1){
-                    page = position-1
-                    updateScreen()
-                }
+        CatalogBookDialog(this,catalogs, startCount).builder().setOnDialogClickListener { pageNumber ->
+            if (page != pageNumber - 1) {
+                page = pageNumber - 1
+                updateScreen()
             }
-            override fun onEdit(position: Int, title: String) {
-            }
-        })
+        }
     }
 
 

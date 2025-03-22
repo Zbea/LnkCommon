@@ -1,8 +1,8 @@
 package com.bll.lnkcommon
 
-import com.bll.lnkcommon.mvp.book.BookStore
-import com.bll.lnkcommon.mvp.book.BookStoreType
-import com.bll.lnkcommon.mvp.book.TextbookStore
+import com.bll.lnkcommon.mvp.model.book.BookStore
+import com.bll.lnkcommon.mvp.model.book.BookStoreType
+import com.bll.lnkcommon.mvp.model.book.TextbookStore
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.net.BaseResult
 import io.reactivex.Observable

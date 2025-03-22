@@ -66,7 +66,7 @@ class MyHomeworkFragment:BaseFragment(),IMyHomeworkView {
         initRecyclerView()
     }
     override fun lazyLoad() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchData()
     }
 

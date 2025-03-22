@@ -7,21 +7,21 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.DownloadBookDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.book.Book
-import com.bll.lnkcommon.mvp.book.BookStore
-import com.bll.lnkcommon.mvp.book.BookStoreType
+import com.bll.lnkcommon.mvp.model.book.Book
+import com.bll.lnkcommon.mvp.model.book.BookStore
+import com.bll.lnkcommon.mvp.model.book.BookStoreType
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileBigDownManager
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.utils.ToolUtils
@@ -87,7 +87,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         popSupplys=DataBeanManager.popupSupplys
         supply=popSupplys[0].id
 
-        if (NetworkUtil(this).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             presenter.getBookType()
     }
 
@@ -196,7 +196,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.downloadUrl))
+        val targetFileStr = FileAddress().getPathBook(fileName+ FileUtils.getUrlFormat(book.downloadUrl))
         val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {

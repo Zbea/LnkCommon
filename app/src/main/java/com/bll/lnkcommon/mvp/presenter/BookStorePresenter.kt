@@ -1,8 +1,8 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.book.BookStore
-import com.bll.lnkcommon.mvp.book.BookStoreType
-import com.bll.lnkcommon.mvp.book.TextbookStore
+import com.bll.lnkcommon.mvp.model.book.BookStore
+import com.bll.lnkcommon.mvp.model.book.BookStoreType
+import com.bll.lnkcommon.mvp.model.book.TextbookStore
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 

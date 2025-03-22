@@ -11,6 +11,7 @@ import com.bll.lnkcommon.greendao.DaoMaster
 import com.bll.lnkcommon.greendao.DaoSession
 import com.bll.lnkcommon.greendao.GreenDaoUpgradeHelper
 import com.bll.lnkcommon.utils.ActivityManager
+import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.utils.SToast
 import com.bll.lnkcommon.utils.SPUtil
 import com.liulishuo.filedownloader.FileDownloader
@@ -38,6 +39,7 @@ class MyApplication : Application(){
         SPUtil.init(this)
         SToast.initToast(this)
         FileDownloader.setup(this)
+        NetworkUtil.init(this)
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks)
         setDatabase()
     }

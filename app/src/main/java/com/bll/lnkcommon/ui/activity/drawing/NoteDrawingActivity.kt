@@ -12,6 +12,7 @@ import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ToolUtils
 import com.google.gson.Gson
@@ -70,18 +71,19 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 list.add(itemBean)
             }
         }
-
-        CatalogDialog(this,list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=noteContents[position].page){
-                    page = noteContents[position].page
+        CatalogDialog(this,list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (page!=pageNumber){
+                    page = pageNumber
                     changeContent()
                 }
             }
-            override fun onEdit(position: Int, title: String) {
-                val item=noteContents[position]
-                item.title=title
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
+            override fun onEdit(title: String, pages: List<Int>) {
+                for (page in pages){
+                    val item=noteContents[page]
+                    item.title=title
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
+                }
             }
         })
     }
@@ -116,7 +118,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
      */
     private fun isDrawLastContent():Boolean{
         val contentBean = noteContents.last()
-        return File(contentBean.filePath).exists()
+        return FileUtils.isExist(contentBean.filePath)
     }
 
     //翻页内容更新切换
@@ -141,7 +143,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.title="未命名${noteContents.size+1}"
         noteContent?.filePath = "$path/$pathName.png"
         noteContent?.pathName=pathName
+        noteContent?.page=noteContents.size
         page = noteContents.size
+
 
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
         val id= NoteContentDaoManager.getInstance().insertId

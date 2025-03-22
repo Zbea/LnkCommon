@@ -22,8 +22,6 @@ import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
-import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.mvp.book.Book
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.net.ExceptionHandle
@@ -41,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
 import kotlin.math.ceil
 
 

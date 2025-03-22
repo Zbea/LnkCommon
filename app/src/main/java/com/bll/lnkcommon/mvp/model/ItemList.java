@@ -18,6 +18,7 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
     public String url;
     public int resId;
     public boolean isEdit;//目录可以修改
+    public boolean isAdd;
 
     public ItemList() {
     }

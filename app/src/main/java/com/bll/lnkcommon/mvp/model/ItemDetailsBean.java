@@ -1,6 +1,6 @@
 package com.bll.lnkcommon.mvp.model;
 
-import com.bll.lnkcommon.mvp.book.Book;
+import com.bll.lnkcommon.mvp.model.book.Book;
 
 import java.io.File;
 import java.util.List;

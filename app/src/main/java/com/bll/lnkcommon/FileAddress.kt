@@ -20,6 +20,18 @@ class FileAddress {
     }
 
     /**
+     * 书籍目录地址
+     */
+    fun getPathTextBookCatalog(path:String):String{
+        return "$path/catalog.txt"
+    }
+    /**
+     * 书籍图片地址
+     */
+    fun getPathTextBookPicture(path:String):String{
+        return "$path/contents"
+    }
+    /**
      * 书籍地址
      * /storage/emulated/0/Books
      */
@@ -34,23 +46,17 @@ class FileAddress {
         return "$BOOK_PATH/${getUserId()}/${fileName}draw"
     }
 
+    fun getPathHomeworkBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getUserId()}/homeworkBook/$fileName"
+    }
+    fun getPathHomeworkBookDraw(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getUserId()}/homeworkBook/${fileName}draw"
+    }
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getUserId()}/$fileName"
+        return "$TEXTBOOK_PATH/${getUserId()}/textbook/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getUserId()}/${fileName}/draw"
-    }
-    /**
-     * 书籍目录地址
-     */
-    fun getPathTextBookCatalog(path:String):String{
-        return "$path/catalog.txt"
-    }
-    /**
-     * 书籍图片地址
-     */
-    fun getPathTextBookPicture(path:String):String{
-        return "$path/contents"
+        return "$TEXTBOOK_PATH/${getUserId()}/textbook/${fileName}draw"
     }
     /**
      * zip保存地址

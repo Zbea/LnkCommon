@@ -26,22 +26,6 @@ public class BitmapUtils {
 
     private static String TAG="debug";
 
-    /**
-     * 合图后返回合图路径
-     * @param oldPath
-     * @param drawPath
-     * @return
-     */
-    public static String mergeBitmap(String oldPath,String drawPath){
-        Bitmap oldBitmap = BitmapFactory.decodeFile(oldPath);
-        Bitmap drawBitmap = BitmapFactory.decodeFile(drawPath);
-        if (drawBitmap != null) {
-            Bitmap mergeBitmap = mergeBitmap(oldBitmap, drawBitmap);
-            saveBmpGallery(MyApplication.Companion.getMContext(), mergeBitmap, oldPath);
-        }
-        return oldPath;
-    }
-
 
     /**
      * 把两个位图覆盖合成为一个位图，以底层位图的长宽为基准
@@ -166,7 +150,7 @@ public class BitmapUtils {
      * @param bmp
      * @param path 保存路径
      */
-    public static void saveBmpGallery(Context context,Bitmap bmp, String path)  {
+    public static void saveBmpGallery(Bitmap bmp, String path)  {
         File file=new File(path);
         if (!file.exists()){
             file.getParentFile().mkdirs();
@@ -191,12 +175,6 @@ public class BitmapUtils {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
     }
 
 
@@ -228,13 +206,14 @@ public class BitmapUtils {
 
     /**
      * 截图
-     * @param context
      * @param view
      * @param path
      */
-    public static void saveScreenShot(Activity context, View view, String path) {
-        Bitmap bitmap = loadBitmapFromViewByCanvas(view);
-        saveBmpGallery(context,bitmap, path);
+    public static void saveScreenShot( View view, String path) {
+        new Thread(() -> {
+            Bitmap bitmap = loadBitmapFromViewByCanvas(view);
+            saveBmpGallery(bitmap, path);
+        }).start();
     }
 
     private static Bitmap loadBitmapFromViewByCanvas(View view) {

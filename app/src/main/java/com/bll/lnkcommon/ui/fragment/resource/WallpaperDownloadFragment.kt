@@ -52,7 +52,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             fetchData()
         }
     }
@@ -143,6 +143,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         map["size"] = pageSize
         map["supply"]=supply
         map["type"]=1
+        map["imgType"]=1
         presenter.getList(map)
     }
 

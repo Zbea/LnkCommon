@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.utils.GlideUtils
 
 

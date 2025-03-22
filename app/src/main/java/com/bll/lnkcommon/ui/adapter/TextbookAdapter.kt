@@ -2,7 +2,7 @@ package com.bll.lnkcommon.ui.adapter
 
 import android.widget.ImageView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.book.TextbookBean
+import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

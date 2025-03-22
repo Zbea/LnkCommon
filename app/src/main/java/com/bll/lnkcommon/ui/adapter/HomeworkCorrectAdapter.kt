@@ -14,8 +14,8 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
             setText(R.id.tv_status,"${DataBeanManager.courses[item.subject-1].desc}    ${when (item.status){ 1-> "通知" 2-> "提交" else ->"批改"}}")
             setText(R.id.tv_type,item.homeworkName)
             setText(R.id.tv_content,item.content+"  "+if (item.endTime==0L)"" else DateUtils.longToStringWeek(item.endTime)+"提交")
-            setText(R.id.tv_commitTime,if (item.status==1)"" else "学生提交时间："+DateUtils.longToStringWeek2(item.submitTime))
-            setText(R.id.tv_startTime, "布置时间："+DateUtils.longToStringWeek2(item.time))
+            setText(R.id.tv_commitTime,if (item.status==1)"" else "学生提交时间："+DateUtils.longToStringWeek(item.submitTime))
+            setText(R.id.tv_startTime, "布置时间："+DateUtils.longToStringWeek(item.time))
             setGone(R.id.iv_rank,false)
 
             addOnClickListener(R.id.iv_delete)

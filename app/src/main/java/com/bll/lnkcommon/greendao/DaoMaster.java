@@ -21,8 +21,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        BookDao.createTable(db, ifNotExists);
-        TextbookBeanDao.createTable(db, ifNotExists);
         AppBeanDao.createTable(db, ifNotExists);
         CalenderItemBeanDao.createTable(db, ifNotExists);
         DiaryBeanDao.createTable(db, ifNotExists);
@@ -32,12 +30,12 @@ public class DaoMaster extends AbstractDaoMaster {
         NoteContentDao.createTable(db, ifNotExists);
         RecordBeanDao.createTable(db, ifNotExists);
         WallpaperBeanDao.createTable(db, ifNotExists);
+        BookDao.createTable(db, ifNotExists);
+        TextbookBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        BookDao.dropTable(db, ifExists);
-        TextbookBeanDao.dropTable(db, ifExists);
         AppBeanDao.dropTable(db, ifExists);
         CalenderItemBeanDao.dropTable(db, ifExists);
         DiaryBeanDao.dropTable(db, ifExists);
@@ -47,6 +45,8 @@ public class DaoMaster extends AbstractDaoMaster {
         NoteContentDao.dropTable(db, ifExists);
         RecordBeanDao.dropTable(db, ifExists);
         WallpaperBeanDao.dropTable(db, ifExists);
+        BookDao.dropTable(db, ifExists);
+        TextbookBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -65,8 +65,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(BookDao.class);
-        registerDaoClass(TextbookBeanDao.class);
         registerDaoClass(AppBeanDao.class);
         registerDaoClass(CalenderItemBeanDao.class);
         registerDaoClass(DiaryBeanDao.class);
@@ -76,6 +74,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(NoteContentDao.class);
         registerDaoClass(RecordBeanDao.class);
         registerDaoClass(WallpaperBeanDao.class);
+        registerDaoClass(BookDao.class);
+        registerDaoClass(TextbookBeanDao.class);
     }
 
     public DaoSession newSession() {

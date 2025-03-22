@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.book.TextbookBean
+import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.utils.GlideUtils
 
 class DownloadTextbookDialog(private val context: Context, private val book: TextbookBean) {

@@ -3,8 +3,10 @@ package com.bll.lnkcommon.ui.activity.drawing
 import android.os.Handler
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
@@ -101,9 +103,14 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniu
             showView(iv_catalog)
 
         iv_catalog.setOnClickListener {
-            Handler().postDelayed({
-                mQiniuPresenter.getToken()
-            },500)
+            CommonDialog(this).setContent("确定批改以及发送？").builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    mQiniuPresenter.getToken()
+                }
+            })
         }
 
         setContentImage()
@@ -130,14 +137,14 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniu
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         setDisableTouchInput(correctBean?.status!=2)
-        GlideUtils.setImageUrl(this, images[posImage],v_content)
+        GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
         val drawPath = getPathDrawStr(posImage+1)
         elik?.setLoadFilePath(drawPath, true)
     }
 
     override fun onElikSava() {
         Thread {
-            BitmapUtils.saveScreenShot(this, v_content, getPathMergeStr(posImage+1))
+            BitmapUtils.saveScreenShot(v_content, getPathMergeStr(posImage+1))
         }.start()
     }
 
@@ -146,13 +153,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniu
      */
     private fun getPath():String{
         return FileAddress().getPathCorrect(correctBean?.id!!)
-    }
-
-    /**
-     * 得到当前手绘图片
-     */
-    private fun getPathStr(index: Int):String{
-        return getPath()+"/${index}.png"//手绘地址
     }
 
     /**

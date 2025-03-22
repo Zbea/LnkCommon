@@ -112,7 +112,7 @@ public class FileUtils {
     public static void inputStream2File(InputStream is, File file) throws IOException {
         OutputStream os = null;
         try {
-            os = new FileOutputStream(file);
+            os = Files.newOutputStream(file.toPath());
             int len = 0;
             byte[] buffer = new byte[8192];
 
@@ -169,7 +169,7 @@ public class FileUtils {
     }
 
     //按数字排序
-    static class FileNumberComparator implements Comparator<File> {
+    public static class FileNumberComparator implements Comparator<File> {
         private  final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)");
 
         @Override
@@ -441,6 +441,26 @@ public class FileUtils {
      */
     public static String getFileName(String fileNameStr){
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
+    }
+
+    /**
+     * url   -> name1
+     * @param url
+     * @return
+     */
+    public static String getUrlName(String url){
+        File file=new File(url);
+        String fileNameStr=file.getName();
+        return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
+    }
+
+    /**
+     * 获取url的格式后缀
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url){
+        return url.substring(url.lastIndexOf("."));
     }
 
     public static boolean isExist(String path){

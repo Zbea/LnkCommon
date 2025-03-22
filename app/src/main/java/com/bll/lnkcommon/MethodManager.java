@@ -15,9 +15,9 @@ import androidx.annotation.NonNull;
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager;
-import com.bll.lnkcommon.mvp.book.TextbookBean;
+import com.bll.lnkcommon.mvp.model.book.TextbookBean;
 import com.bll.lnkcommon.mvp.model.AppBean;
-import com.bll.lnkcommon.mvp.book.Book;
+import com.bll.lnkcommon.mvp.model.book.Book;
 import com.bll.lnkcommon.mvp.model.AreaBean;
 import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
@@ -51,6 +51,16 @@ public class MethodManager {
     public static boolean isLogin(){
         String tokenStr=SPUtil.INSTANCE.getString("token");
         return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
+    }
+
+    public static long getAccountId(){
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+        if (user==null){
+            return 0L;
+        }
+        else {
+            return user.accountId;
+        }
     }
 
     /**
@@ -112,7 +122,7 @@ public class MethodManager {
         List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
         JSONArray result = getJsonArray(toolApps);
 
-        String format = MethodManager.getUrlFormat(bookBean.bookPath);
+        String format = FileUtils.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
         if (type==1){
             if (format.contains("pdf")) {
@@ -232,15 +242,6 @@ public class MethodManager {
      */
     public static void setStatusBarValue(int value){
         Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
-    }
-
-    /**
-     * 获取url的格式后缀
-     * @param url
-     * @return
-     */
-    public static String getUrlFormat(String url){
-        return url.substring(url.lastIndexOf("."));
     }
 
     /**

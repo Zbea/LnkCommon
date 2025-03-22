@@ -2,12 +2,15 @@ package com.bll.lnkcommon
 
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
+import com.bll.lnkcommon.mvp.model.catalog.CatalogParentBean
+import com.chad.library.adapter.base.entity.MultiItemEntity
 import java.util.*
 
 object DataBeanManager {
 
-    var grades= mutableListOf<Grade>()
-    var typeGrades= mutableListOf<Grade>()
+    var grades= mutableListOf<ItemList>()
+    var typeGrades= mutableListOf<ItemList>()
     var courses= mutableListOf<ItemList>()
     var versions= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
@@ -320,6 +323,29 @@ object DataBeanManager {
             }
         }
         return cls
+    }
+
+    fun operatingGuideInfo():List<MultiItemEntity>{
+        val list= mutableListOf<MultiItemEntity>()
+        val types= mutableListOf("一、主页面","二、管理中心","三、实用工具")
+        val mainStrs= mutableListOf("注册","按键/接口","状态栏按钮","首页","书架","笔记","应用","随笔","日记","规划","截图","消息")
+        val managerStrs= mutableListOf("管理中心")
+        val toolStrs= mutableListOf("我的工具","我的日历","截屏","几何绘图")
+        val childTypes= mutableListOf(mainStrs,managerStrs,toolStrs)
+        for (type in types){
+            val index=types.indexOf(type)
+            val catalogParentBean = CatalogParentBean()
+            catalogParentBean.title=type
+            for (childType in childTypes[index]){
+                val catalogChildBean = CatalogChildBean()
+                catalogChildBean.title = childType
+                catalogChildBean.parentPosition=index
+                catalogChildBean.pageNumber = childTypes[index].indexOf(childType)+1
+                catalogParentBean.addSubItem(catalogChildBean)
+            }
+            list.add(catalogParentBean)
+        }
+        return list
     }
 
 

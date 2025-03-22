@@ -70,7 +70,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchData()
     }
 

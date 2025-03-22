@@ -222,7 +222,7 @@ class MainFragment:BaseFragment(),IRelationView{
     }
     override fun lazyLoad() {
         onCheckUpdate()
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             if (MethodManager.isLogin()){
                 presenter.getStudents()
                 presenter.getMessageTotal()
@@ -401,7 +401,7 @@ class MainFragment:BaseFragment(),IRelationView{
                         diaryStartLong=startLong
                         diaryEndLong=endLong
                         diaryUploadTitleStr=titleStr
-                        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
+                        if (NetworkUtil.isNetworkConnected()){
                             mQiniuPresenter.getToken()
                         }
                         else{

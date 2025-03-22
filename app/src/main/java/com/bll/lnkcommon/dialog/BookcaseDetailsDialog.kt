@@ -9,7 +9,7 @@ import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
-import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.mvp.model.ItemDetailsBean
 import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.bll.lnkcommon.widget.MaxRecyclerView

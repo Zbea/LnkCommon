@@ -30,7 +30,7 @@ class RelationPresenter(view: IContractView.IRelationView) : BasePresenter<ICont
             override fun success(tBaseResult: BaseResult<Int>) {
                     view.onMessageTotal(tBaseResult.data!!)
             }
-        })
+        },false)
     }
 
 

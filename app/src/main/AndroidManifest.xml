@@ -121,7 +121,6 @@
             />
         <activity android:name=".ui.activity.OperatingGuideActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ResourceCenterActivity"
             android:launchMode="singleTask"

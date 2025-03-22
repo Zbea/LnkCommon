@@ -1,7 +1,6 @@
-package com.bll.lnkcommon.mvp.book;
+package com.bll.lnkcommon.mvp.model.book;
 
-import com.bll.lnkcommon.mvp.model.User;
-import com.bll.lnkcommon.utils.SPUtil;
+import com.bll.lnkcommon.MethodManager;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -9,8 +8,6 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-
-import java.util.Objects;
 
 /**
  * 书籍
@@ -21,7 +18,7 @@ public class Book {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @Unique
     public int bookId;
     public int type;//1古籍2自然科学3社会科学4思维科学5运动才艺

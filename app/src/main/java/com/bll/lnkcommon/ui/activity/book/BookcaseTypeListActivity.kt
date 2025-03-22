@@ -15,7 +15,7 @@ import com.bll.lnkcommon.dialog.ItemSelectorDialog
 import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
-import com.bll.lnkcommon.mvp.book.Book
+import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean

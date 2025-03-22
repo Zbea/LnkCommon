@@ -55,7 +55,7 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             fetchData()
     }
 
