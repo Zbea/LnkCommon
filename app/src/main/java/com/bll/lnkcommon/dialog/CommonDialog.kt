@@ -82,7 +82,7 @@ class CommonDialog(private val context: Context) {
     var onDialogClickListener: OnDialogClickListener? = null
 
     interface OnDialogClickListener {
-        fun cancel()
+        fun cancel(){}
         fun ok()
     }
 

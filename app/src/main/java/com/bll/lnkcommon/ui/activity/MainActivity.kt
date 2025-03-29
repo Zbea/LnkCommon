@@ -38,9 +38,8 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
-class MainActivity : BaseActivity(),IQiniuView {
+class MainActivity : BaseActivity(){
 
-    private var qiniuPresenter=QiniuPresenter(this)
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var mData=mutableListOf<ItemList>()
@@ -54,17 +53,6 @@ class MainActivity : BaseActivity(),IQiniuView {
     private var textbookFragment:TextbookFragment?=null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
-    private var eventType = ""
-
-    override fun onToken(token: String) {
-        when(eventType){
-            Constants.SETTING_DATA_UPLOAD_EVENT->{
-                bookcaseFragment?.upload(token)
-                textbookFragment?.upload(token)
-                mainFragment?.uploadScreenShot(token)
-            }
-        }
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_main
@@ -208,37 +196,6 @@ class MainActivity : BaseActivity(),IQiniuView {
         })
     }
 
-    /**
-     * 清除本地所有数据
-     */
-    private fun clearSqlData(){
-        SPUtil.removeObj("privacyPasswordDiary")
-        SPUtil.removeObj("privacyPasswordNote")
-
-        MyApplication.mDaoSession?.clear()
-        AppDaoManager.getInstance().clear()
-        BookDaoManager.getInstance().clear()
-        CalenderDaoManager.getInstance().clear()
-        DiaryDaoManager.getInstance().clear()
-        FreeNoteDaoManager.getInstance().clear()
-        ItemTypeDaoManager.getInstance().clear()
-        NoteContentDaoManager.getInstance().clear()
-        NoteDaoManager.getInstance().clear()
-        RecordDaoManager.getInstance().clear()
-        WallpaperDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.SCREEN_PATH))
-        FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
-
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_TYPE_REFRESH_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-        EventBus.getDefault().post(Constants.RECORD_EVENT)
-        EventBus.getDefault().post(Constants.AUTO_REFRESH_EVENT)//更新首页
-    }
-
     //页码跳转
     private fun switchFragment(from: Fragment?, to: Fragment?) {
         if (from != to) {
@@ -270,12 +227,6 @@ class MainActivity : BaseActivity(),IQiniuView {
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
-            Constants.SETTING_DATA_UPLOAD_EVENT->{
-                eventType=Constants.SETTING_DATA_UPLOAD_EVENT
-                if(MethodManager.isLogin()){
-                    qiniuPresenter.getToken()
-                }
-            }
             Constants.USER_EVENT -> {
                 setLoginView()
             }

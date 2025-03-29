@@ -138,7 +138,7 @@ public interface IContractView {
      */
     interface ICloudUploadView extends IBaseView{
         void onSuccess(List<Integer> cloudIds);
-        void onDeleteSuccess();
+        default void onDeleteSuccess(){};
     }
 
     interface ICloudView extends IBaseView {

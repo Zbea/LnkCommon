@@ -61,7 +61,6 @@ object Constants {
         const val STUDENT_EVENT="StudentEvent"
         const val HOMEWORK_CORRECT_EVENT="CorrectEvent"
         const val USER_EVENT="UserEvent"
-        const val RECORD_EVENT="RecordEvent"
         const val APP_INSTALL_EVENT="AppInstallEvent"
         const val APP_INSTALL_INSERT_EVENT="AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT="AppUnInstallEvent"

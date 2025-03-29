@@ -35,10 +35,13 @@ public class WallpaperBean {
     public long date;//下载时间
     @Transient
     public int buyStatus;
-    @Generated(hash = 1303383727)
+    @Transient
+    public boolean isCheck;
+
+    @Generated(hash = 1467539870)
     public WallpaperBean(Long id, long userId, int contentId, String title, String info, int price,
             String imageUrl, String bodyUrl, int supply, String author, String path, long date,
-            int buyStatus) {
+            int buyStatus, boolean isCheck) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -52,6 +55,7 @@ public class WallpaperBean {
         this.path = path;
         this.date = date;
         this.buyStatus = buyStatus;
+        this.isCheck = isCheck;
     }
     @Generated(hash = 915358704)
     public WallpaperBean() {
@@ -133,5 +137,11 @@ public class WallpaperBean {
     }
     public void setBuyStatus(int buyStatus) {
         this.buyStatus = buyStatus;
+    }
+    public boolean getIsCheck() {
+        return this.isCheck;
+    }
+    public void setIsCheck(boolean isCheck) {
+        this.isCheck = isCheck;
     }
 }

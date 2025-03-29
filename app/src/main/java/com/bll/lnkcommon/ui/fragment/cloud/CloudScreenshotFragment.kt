@@ -4,6 +4,7 @@ import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
@@ -22,6 +23,7 @@ import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class CloudScreenshotFragment: BaseCloudFragment() {
@@ -99,16 +101,14 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                     ZipUtils.unzip1(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
                             if(!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&item.path!=FileAddress().getPathScreen("未分类")){
-                                item.id=null//设置数据库id为null用于重新加入
+                                item.id=null
                                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
                             }
-                            //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                showToast("下载成功")
-                                deleteItem()
-                                hideLoading()
-                            },500)
+                            showToast("下载成功")
+                            EventBus.getDefault().post(Constants.SCREENSHOT_MANAGER_EVENT)
+                            deleteItem()
+                            hideLoading()
                         }
                         override fun onProgress(percentDone: Int) {
                         }
@@ -152,5 +152,6 @@ class CloudScreenshotFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(items)
     }
 }

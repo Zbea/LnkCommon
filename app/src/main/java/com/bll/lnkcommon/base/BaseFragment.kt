@@ -75,11 +75,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     override fun onToken(token: String) {
         onUpload(token)
     }
-
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
-    }
-    override fun onDeleteSuccess() {
     }
 
     override fun onCommon(commonData: CommonData) {

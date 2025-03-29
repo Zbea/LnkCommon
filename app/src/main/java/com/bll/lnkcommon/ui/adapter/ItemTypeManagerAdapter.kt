@@ -9,7 +9,8 @@ class ItemTypeManagerAdapter(layoutResId: Int, data: List<ItemTypeBean>?) : Base
 
     override fun convert(helper: BaseViewHolder, item: ItemTypeBean) {
         helper.setText(R.id.tv_name,item.title)
-        helper.addOnClickListener(R.id.iv_edit,R.id.iv_delete,R.id.iv_top)
+        helper.setGone(R.id.iv_upload,item.type==3)
+        helper.addOnClickListener(R.id.iv_edit,R.id.iv_delete,R.id.iv_top,R.id.iv_upload)
     }
 
 }

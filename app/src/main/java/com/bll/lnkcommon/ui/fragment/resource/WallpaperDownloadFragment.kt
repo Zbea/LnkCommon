@@ -67,7 +67,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
-        mAdapter = WallpaperAdapter(R.layout.item_wallpaper,1, items)
+        mAdapter = WallpaperAdapter(R.layout.item_wallpaper, items)
         rv_list.adapter = mAdapter
         rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
         mAdapter?.bindToRecyclerView(rv_list)

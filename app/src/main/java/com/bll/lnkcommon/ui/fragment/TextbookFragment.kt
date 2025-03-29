@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
@@ -17,11 +17,12 @@ import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
-import com.bll.lnkcommon.ui.activity.drawing.BookDetailsActivity
+import com.bll.lnkcommon.ui.activity.drawing.TextBookDetailsActivity
 import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
@@ -70,7 +71,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),50f),
+            DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f),
             DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
@@ -79,10 +80,10 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(3, 40))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = textbooks[position]
-            val intent = Intent(activity, BookDetailsActivity::class.java)
+            val intent = Intent(activity, TextBookDetailsActivity::class.java)
             intent.putExtra("book_id", book.bookId)
             intent.putExtra("book_type", book.category)
             customStartActivity(intent)
@@ -145,16 +146,39 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             }
     }
 
+    override fun fetchData() {
+        textbooks = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId, pageIndex, 9)
+        val total = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId)
+        setPageNumber(total.size)
+        mAdapter?.setNewData(textbooks)
+    }
+
+    override fun onRefreshData() {
+        onCheckUpdate()
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            Constants.AUTO_REFRESH_EVENT->{
+                if (MethodManager.isLogin())
+                    mQiniuPresenter.getToken()
+            }
+            Constants.TEXT_BOOK_EVENT->{
+                fetchData()
+            }
+        }
+    }
+
     /**
      * 每天上传书籍
      */
-    fun upload(tokenStr: String) {
+    override fun onUpload(token: String){
         cloudList.clear()
         val books = TextbookGreenDaoManager.getInstance().queryTextBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
-                FileUploadManager(tokenStr).apply {
+                FileUploadManager(token).apply {
                     startUpload(book.bookDrawPath, book.bookId.toString())
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
@@ -194,22 +218,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             val bookBean = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(item.bookTypeId, item.bookId)
             MethodManager.deleteTextbook(bookBean)
         }
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == TEXT_BOOK_EVENT) {
-            fetchData()
-        }
-    }
-
-    override fun fetchData() {
-        textbooks = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId, pageIndex, 9)
-        val total = TextbookGreenDaoManager.getInstance().queryAllTextBook(tabId)
-        setPageNumber(total.size)
-        mAdapter?.setNewData(textbooks)
-    }
-
-    override fun onRefreshData() {
-        onCheckUpdate()
+        fetchData()
     }
 }

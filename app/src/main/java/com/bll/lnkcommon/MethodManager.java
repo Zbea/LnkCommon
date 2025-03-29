@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager;
+import com.bll.lnkcommon.mvp.model.ItemTypeBean;
 import com.bll.lnkcommon.mvp.model.book.TextbookBean;
 import com.bll.lnkcommon.mvp.model.AppBean;
 import com.bll.lnkcommon.mvp.model.book.Book;
@@ -73,7 +74,6 @@ public class MethodManager {
         SPUtil.INSTANCE.removeObj("user");
         EventBus.getDefault().post(Constants.USER_EVENT);
         DataBeanManager.INSTANCE.getStudents().clear();
-        DataBeanManager.INSTANCE.getStudents().clear();
         EventBus.getDefault().post(Constants.STUDENT_EVENT);
         ActivityManager.getInstance().finishOthers(MainActivity.class);
         context.startActivity(new Intent(context, AccountLoginActivity.class));
@@ -81,7 +81,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
-        intent.putExtra("userId", 0);
+        intent.putExtra("userId", 0L);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }
@@ -102,7 +102,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
-        intent.putExtra("userId", 0);
+        intent.putExtra("userId", 0L);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }
@@ -266,6 +266,22 @@ public class MethodManager {
     public static List<AreaBean> getProvinces(Context context) throws IOException {
         String areaJson = FileUtils.readFileContent(context.getResources().getAssets().open("city.json"));
         return new Gson().fromJson(areaJson, new TypeToken<List<AreaBean>>(){}.getType());
+    }
+
+    /**
+     * 初始化不选中 指定位置选中
+     * @param list
+     * @param position
+     * @return
+     */
+    public static List<ItemTypeBean> setItemTypeBeanCheck(List<ItemTypeBean> list, int position){
+        if (list.size()>position){
+            for (ItemTypeBean item:list) {
+                item.isCheck=false;
+            }
+            list.get(position).isCheck=true;
+        }
+        return list;
     }
 
 }

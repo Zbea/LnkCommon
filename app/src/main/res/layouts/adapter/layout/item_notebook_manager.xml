@@ -28,6 +28,16 @@
         android:background="@drawable/click_btn_transparent_line_black"/>
 
     <ImageView
+        android:id="@+id/iv_upload"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@mipmap/icon_upload"
+        android:scaleType="center"
+        android:visibility="gone"
+        android:background="@drawable/click_btn_transparent_line_black"/>
+
+    <ImageView
         android:id="@+id/iv_top"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"

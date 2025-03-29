@@ -28,7 +28,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
     private var position=0
-    private var type=0//0学生1好友
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -79,7 +78,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_add.setOnClickListener {
-            type=0
             add()
         }
 
@@ -106,7 +104,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
             this.position=position
             when(view.id){
                 R.id.tv_student_cancel->{
-                    type=0
                     cancel()
                 }
                 R.id.tv_set->{

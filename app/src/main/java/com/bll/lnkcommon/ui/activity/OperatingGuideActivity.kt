@@ -5,9 +5,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.PopupOperatingGuideCatalog
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.utils.FileUtils.FileNumberComparator
 import com.bll.lnkcommon.utils.GlideUtils
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_operating_guide.iv_content
 import kotlinx.android.synthetic.main.common_title.tv_ok
 import java.util.Collections

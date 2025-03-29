@@ -40,4 +40,18 @@ abstract class BaseCloudFragment : BaseFragment(), IContractView.ICloudView , IB
 
     }
 
+    /**
+     * 删除后刷新页面
+     */
+    fun onRefreshList(list:List<Any>){
+        if (list.isEmpty()){
+            if (pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+            else{
+                setPageNumber(0)
+            }
+        }
+    }
 }

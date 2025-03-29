@@ -75,7 +75,7 @@ public class ItemTypeDaoManager {
      */
     public Boolean isExistDiaryType(int typeId){
         WhereCondition whereUser1= ItemTypeBeanDao.Properties.TypeId.eq(typeId);
-        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(6);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(4);
         return !dao.queryBuilder().where(whereUser, whereUser1, whereUser2).build().list().isEmpty();
     }
 

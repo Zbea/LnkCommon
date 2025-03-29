@@ -35,7 +35,7 @@ class NoteFragment:BaseFragment() {
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
     private var position = 0 //当前笔记标记
-    private var positionType = 0//当前笔记本标记
+    private var tabPos = 0//当前笔记本标记
     private var typeStr=""
     private var privacyPassword:PrivacyPassword?=null
 
@@ -84,14 +84,11 @@ class NoteFragment:BaseFragment() {
             itemTabTypes.add(0,ItemTypeBean().apply {
                 title = getString(R.string.note_tab_diary)
             })
-            if (positionType>=itemTabTypes.size){
-                positionType=0
+            if (tabPos>=itemTabTypes.size){
+                tabPos=0
             }
-            for (item in itemTabTypes){
-                item.isCheck=false
-            }
-            itemTabTypes[positionType].isCheck=true
-            typeStr = itemTabTypes[positionType].title
+            itemTabTypes=MethodManager.setItemTypeBeanCheck(itemTabTypes,tabPos)
+            typeStr = itemTabTypes[tabPos].title
             fetchData()
         }
         else{
@@ -103,7 +100,7 @@ class NoteFragment:BaseFragment() {
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        positionType=position
+        tabPos=position
         typeStr=itemTabTypes[position].title
         pageIndex=1
         fetchData()
@@ -122,7 +119,7 @@ class NoteFragment:BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            if (positionType==0&&privacyPassword!=null&&!note.isCancelPassword){
+            if (tabPos==0&&privacyPassword!=null&&!note.isCancelPassword){
                 PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
                     gotoNote(note)
                 }
@@ -202,7 +199,7 @@ class NoteFragment:BaseFragment() {
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
             ModuleItemDialog(requireContext(),1,DataBeanManager.noteModules).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+                .setOnDialogClickListener { moduleBean ->
                     if (MethodManager.isLogin()){
                         createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                     }
@@ -267,13 +264,23 @@ class NoteFragment:BaseFragment() {
         FileUtils.deleteFile(File(path))
 
         mAdapter?.remove(position)
+
+        if (notes.size==0){
+            if (pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+            else{
+                setPageNumber(0)
+            }
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             USER_EVENT->{
                 privacyPassword=MethodManager.getPrivacyPassword(1)
-                positionType=0
+                tabPos=0
                 initTabs()
             }
             NOTE_TYPE_REFRESH_EVENT->{

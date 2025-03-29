@@ -19,7 +19,6 @@ class CloudStorageActivity:BaseActivity() {
     private var textbookFragment: CloudTextbookFragment? = null
     private var noteFragment: CloudNoteFragment? = null
     private var diaryFragment: CloudDiaryFragment? = null
-    private var freeNoteFragment: CloudFreeNoteFragment? = null
     private var screenshotFragment: CloudScreenshotFragment? = null
 
     override fun layoutId(): Int {
@@ -36,7 +35,6 @@ class CloudStorageActivity:BaseActivity() {
         textbookFragment= CloudTextbookFragment()
         noteFragment= CloudNoteFragment()
         diaryFragment = CloudDiaryFragment()
-        freeNoteFragment= CloudFreeNoteFragment()
         screenshotFragment = CloudScreenshotFragment()
 
         switchFragment(lastFragment, bookcaseFragment)

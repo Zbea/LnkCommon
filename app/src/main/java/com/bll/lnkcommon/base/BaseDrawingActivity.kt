@@ -329,7 +329,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
                                 }
                             }
                         }
-                },300)
+                },200)
             }
         }
     }

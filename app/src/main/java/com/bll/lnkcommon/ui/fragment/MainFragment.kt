@@ -79,7 +79,6 @@ class MainFragment:BaseFragment(),IRelationView{
     private var nowDayPos=1
     private var nowDay=0L
     private var calenderPath=""
-    private var uploadType=0//上传类型
     private var isChange=false
     private var isShow=false//是否存在台历
     private var privacyPassword=MethodManager.getPrivacyPassword(0)
@@ -467,116 +466,20 @@ class MainFragment:BaseFragment(),IRelationView{
                         downloadUrl=it
                     })
                     mCloudUploadPresenter.upload(cloudList)
-                    uploadType=1
                 }
-            }
-        }
-    }
-
-
-    /**
-     * 每年上传随笔
-     */
-    fun uploadFreeNote(token:String){
-        cloudList.clear()
-        val beans=FreeNoteDaoManager.getInstance().queryList()
-        val nullItems= mutableListOf<FreeNoteBean>()
-        for (item in beans){
-            val fileName=DateUtils.longToString(item.date)
-            val path=FileAddress().getPathFreeNote(fileName)
-            if (FileUtils.isExistContent(path)){
-                FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=5
-                            subTypeStr="随笔"
-                            year=DateUtils.getYear()
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(item)
-                            downloadUrl=it
-                        })
-                        //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== beans.size-nullItems.size){
-                            mCloudUploadPresenter.upload(cloudList)
-                            uploadType=2
-                        }
-                    }
-                }
-            }
-            else{
-                //没有内容不上传
-                nullItems.add(item)
-            }
-        }
-    }
-
-    /**
-     * 每年上传截图
-     */
-    fun uploadScreenShot(token:String){
-        cloudList.clear()
-        val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
-        val nullItems= mutableListOf<ItemTypeBean>()
-        val currentTime=System.currentTimeMillis()
-        val itemTypeBean=ItemTypeBean()
-        itemTypeBean.title="未分类"+DateUtils.longToStringDataNoYear(currentTime)
-        itemTypeBean.date=currentTime
-        itemTypeBean.path=FileAddress().getPathScreen("未分类")
-        screenTypes.add(0,itemTypeBean)
-        for (item in screenTypes){
-            val fileName=DateUtils.longToString(item.date)
-            val path=item.path
-            if (FileUtils.isExistContent(path)){
-                FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=6
-                            subTypeStr="截图"
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(item)
-                            downloadUrl=it
-                        })
-                        //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== screenTypes.size-nullItems.size){
-                            mCloudUploadPresenter.upload(cloudList)
-                            uploadType=3
-                        }
-                    }
-                }
-            }
-            else{
-                //没有内容不上传
-                nullItems.add(item)
             }
         }
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
-        when(uploadType){
-            1->{
-                val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
-                for (item in diarys){
-                    val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
-                    FileUtils.deleteFile(File(path))
-                    DiaryDaoManager.getInstance().delete(item)
-                }
-                showToast("日记上传成功")
-            }
-            2->{
-                val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))
-                FileUtils.deleteFile(File(path).parentFile)
-                FreeNoteDaoManager.getInstance().clear()
-            }
-            3->{
-                val path=FileAddress().getPathScreen("未分类")
-                FileUtils.deleteFile(File(path).parentFile)
-                ItemTypeDaoManager.getInstance().clear(3)
-            }
+        val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
+        for (item in diarys){
+            val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
+            FileUtils.deleteFile(File(path))
+            DiaryDaoManager.getInstance().delete(item)
         }
+        showToast("日记上传成功")
     }
-
 
 }

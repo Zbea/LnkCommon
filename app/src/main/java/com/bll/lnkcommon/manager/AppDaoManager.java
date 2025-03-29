@@ -71,15 +71,6 @@ public class AppDaoManager {
     }
 
     /**
-     * 获取首页菜单
-     * @return
-     */
-    public List<AppBean> queryMenu() {
-        WhereCondition whereCondition1= AppBeanDao.Properties.Type.eq(1);
-        return dao.queryBuilder().where(whereUser,whereCondition1).orderAsc(AppBeanDao.Properties.Sort).build().list();
-    }
-
-    /**
      * 获取工具应用
      * @return
      */
@@ -111,21 +102,6 @@ public class AppDaoManager {
         WhereCondition where2= AppBeanDao.Properties.Type.eq(type);
         AppBean appBean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
         return appBean!=null;
-    }
-
-    public AppBean queryByType(String packageName,int type){
-        WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.Type.eq(type);
-        return dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-    }
-
-    public void deleteBySort(int sort){
-        WhereCondition where1=AppBeanDao.Properties.Type.eq(1);
-        WhereCondition where2= AppBeanDao.Properties.Sort.eq(sort);
-        AppBean bean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-        if (bean!=null){
-            delete(bean);
-        }
     }
 
     public void delete(String packageName) {

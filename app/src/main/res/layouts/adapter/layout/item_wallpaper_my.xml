@@ -7,21 +7,21 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="195dp"
-        android:layout_height="260dp"
+        android:layout_width="@dimen/dp_195"
+        android:layout_height="@dimen/dp_260"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
         />
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
+    <CheckBox
+        android:id="@+id/cb_check"
+        android:layout_width="@dimen/dp_195"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="center"
+        android:textSize="22sp"
         android:lines="1"
         android:ellipsize="end"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_22" />
+        android:button="@drawable/bg_check_selector"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/black"/>
 
 
 </LinearLayout>

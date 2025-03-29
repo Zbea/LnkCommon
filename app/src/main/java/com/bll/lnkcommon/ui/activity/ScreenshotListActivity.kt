@@ -68,7 +68,7 @@ class ScreenshotListActivity:BaseActivity() {
                             }
                             val path = FileAddress().getPathScreen(it)
                             if (!File(path).exists()) {
-                                File(path).parentFile?.mkdir()
+                                File(path).parentFile?.mkdirs()
                                 File(path).mkdirs()
                             }
                             val bean = ItemTypeBean()
@@ -101,10 +101,7 @@ class ScreenshotListActivity:BaseActivity() {
         if (tabPos>=itemTabTypes.size){
             tabPos=0
         }
-        for (item in itemTabTypes){
-            item.isCheck=false
-        }
-        itemTabTypes[tabPos].isCheck=true
+        itemTabTypes=MethodManager.setItemTypeBeanCheck(itemTabTypes,tabPos)
         mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }

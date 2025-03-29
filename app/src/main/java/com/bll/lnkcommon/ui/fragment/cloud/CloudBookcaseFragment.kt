@@ -250,5 +250,6 @@ class CloudBookcaseFragment:BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(books)
     }
 }

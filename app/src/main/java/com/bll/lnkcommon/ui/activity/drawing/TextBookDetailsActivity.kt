@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseDrawingActivity() {
+class TextBookDetailsActivity:BaseDrawingActivity() {
     private var book: TextbookBean?=null
     private var catalogMsg: CatalogMsg?=null
     private var catalogs= mutableListOf<MultiItemEntity>()

@@ -21,6 +21,7 @@ import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_bookcase.*
+import org.greenrobot.eventbus.EventBus
 
 class BookcaseFragment : BaseFragment() {
 
@@ -106,16 +107,29 @@ class BookcaseFragment : BaseFragment() {
         GlideUtils.setImageRoundUrl(activity, url, image, 5)
     }
 
-    /**
-     * 每天上传书籍
-     */
-    fun upload(tokenStr: String) {
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            Constants.AUTO_REFRESH_EVENT->{
+                if (MethodManager.isLogin())
+                    mQiniuPresenter.getToken()
+            }
+            Constants.BOOK_EVENT,Constants.USER_EVENT->{
+                findBook()
+            }
+        }
+    }
+
+    override fun onRefreshData() {
+        findBook()
+    }
+
+    override fun onUpload(token: String) {
         cloudList.clear()
         val books = BookDaoManager.getInstance().queryBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
-                FileUploadManager(tokenStr).apply {
+                FileUploadManager(token).apply {
                     startUpload(book.bookDrawPath, book.bookId.toString())
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
@@ -154,18 +168,6 @@ class BookcaseFragment : BaseFragment() {
             val bookBean = BookDaoManager.getInstance().queryByBookID(item.bookId)
             MethodManager.deleteBook(bookBean)
         }
-        findBook()
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == Constants.BOOK_EVENT||msgFlag == Constants.USER_EVENT) {
-            findBook()
-        }
-    }
-
-    override fun onRefreshData() {
-        super.onRefreshData()
-        lazyLoad()
-        findBook()
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
     }
 }

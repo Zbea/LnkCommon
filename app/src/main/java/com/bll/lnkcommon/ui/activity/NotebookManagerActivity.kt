@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
-import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -15,12 +14,9 @@ import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_page_number.ll_page_number
 import org.greenrobot.eventbus.EventBus
-import java.io.File
-import java.util.*
 
 class NotebookManagerActivity : BaseActivity() {
 
@@ -90,7 +86,7 @@ class NotebookManagerActivity : BaseActivity() {
                     val noteType=noteBooks[position]
                     val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
                     if (notes.isNotEmpty()){
-                        showToast("笔记本还有主题,无法删除")
+                        showToast("笔记本存在内容,无法删除")
                     }
                     else{
                         noteBooks.removeAt(position)
