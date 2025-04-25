@@ -2,9 +2,10 @@ package com.bll.lnkcommon.ui.activity.drawing
 
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.mvp.model.ExamScoreItem
+import com.bll.lnkcommon.mvp.model.ScoreItem
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.ScoreItemUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
@@ -34,7 +35,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
         scoreMode=homeworkBean?.questionMode!!
         correctMode=homeworkBean?.questionType!!
         if (homeworkBean?.question?.isNotEmpty() == true)
-            currentScores= scoreJsonToList(homeworkBean?.question!!) as MutableList<ExamScoreItem>
+            currentScores= ScoreItemUtils.jsonListToModuleList(correctMode,ScoreItemUtils.questionToList(homeworkBean?.question!!) )
         if (homeworkBean?.answerUrl?.isNotEmpty()==true)
             answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
     }
@@ -46,14 +47,6 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
 
         if (homeworkBean?.status==3)
             showView(iv_score)
-        if (correctMode<3){
-            showView(rv_list_score)
-            disMissView(rv_list_multi)
-        }
-        else{
-            showView(rv_list_multi)
-            disMissView(rv_list_score)
-        }
 
         if (answerImages.size>0){
             showView(tv_answer)

@@ -153,10 +153,6 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
         mAdapter?.setNewData(textbooks)
     }
 
-    override fun onRefreshData() {
-        onCheckUpdate()
-    }
-
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             Constants.AUTO_REFRESH_EVENT->{

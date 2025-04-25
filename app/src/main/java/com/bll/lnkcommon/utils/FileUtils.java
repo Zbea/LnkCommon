@@ -331,6 +331,15 @@ public class FileUtils {
 
     /**
      * 删除文件夹
+     * @param path
+     */
+    public static void delete(String path){
+        File file=new File(path);
+        deleteFile(file);
+    }
+
+    /**
+     * 删除文件夹
      * @param file
      */
     public static void deleteFile(File file){

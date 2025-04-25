@@ -116,9 +116,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (rv_tab!=null){
             initTabView()
         }
-        if (NetworkUtil.isNetworkConnected()&&DataBeanManager.courses.size==0){
-            mCommonPresenter.getCommon()
-        }
+
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -305,6 +303,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
 
     fun onCheckUpdate() {
         if (NetworkUtil.isNetworkConnected()) {
+            mCommonPresenter.getCommon()
             checkAppUpdate()
             checkSystemUpdate()
         }

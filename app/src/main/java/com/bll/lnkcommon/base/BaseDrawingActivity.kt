@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
-import android.text.TextUtils
 import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.PWInputPoint
@@ -16,22 +15,21 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.GeometryScaleDialog
 import com.bll.lnkcommon.dialog.ImageDialog
-import com.bll.lnkcommon.mvp.model.ExamScoreItem
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkcommon.mvp.model.ScoreItem
+import com.bll.lnkcommon.ui.adapter.TopicMultistageScoreAdapter
 import com.bll.lnkcommon.ui.adapter.TopicScoreAdapter
+import com.bll.lnkcommon.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.ToolUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.bll.lnkcommon.widget.SpaceItemDeco
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_drawing.iv_correct_close
 import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.iv_score_down
+import kotlinx.android.synthetic.main.ac_drawing.iv_score_up
 import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
 import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.ac_drawing.rv_list_multi
 import kotlinx.android.synthetic.main.ac_drawing.rv_list_score
 import kotlinx.android.synthetic.main.ac_drawing.tv_answer
 import kotlinx.android.synthetic.main.ac_drawing.v_content
@@ -87,7 +85,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
     var scoreMode=0
     var correctMode=0
     var answerImages= mutableListOf<String>()
-    var currentScores= mutableListOf<ExamScoreItem>()
+    var currentScores= mutableListOf<ScoreItem>()
 
     override fun initCreate() {
         onInStanceElik()
@@ -470,13 +468,6 @@ abstract class BaseDrawingActivity : BaseActivity() {
     }
 
     /**
-     * 格式序列化  题目分数转行list集合
-     */
-    fun scoreJsonToList(json:String):List<ExamScoreItem>{
-        return Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-    }
-
-    /**
      * 获取分数
      * @param scoreStr
      * @return
@@ -508,22 +499,38 @@ abstract class BaseDrawingActivity : BaseActivity() {
                 ImageDialog(this, answerImages).builder()
         }
 
-        if (correctMode>0){
-            if (correctMode<3){
-                rv_list_score?.layoutManager = GridLayoutManager(this,2)
-                TopicScoreAdapter(R.layout.item_topic_child_score,scoreMode,correctMode,currentScores).apply {
-                    rv_list_score?.adapter = this
+        iv_score_up.setOnClickListener {
+            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,200f))
+        }
+
+        iv_score_down.setOnClickListener {
+            rv_list_score.scrollBy(0, DP2PX.dip2px(this,200f))
+        }
+
+        when(correctMode){
+            1,2->{
+                rv_list_score.layoutManager = GridLayoutManager(this,3)
+                TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
                     bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(this@BaseDrawingActivity,15f)))
                 }
-                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this,15f)))
             }
-            else{
-                rv_list_multi?.layoutManager = LinearLayoutManager(this)
-                TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,currentScores).apply {
-                    rv_list_multi?.adapter = this
-                    bindToRecyclerView(rv_list_multi)
+            3,4,5->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
                 }
-                rv_list_multi.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this,15f)))
+            }
+            6,7->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
+                }
             }
         }
     }
