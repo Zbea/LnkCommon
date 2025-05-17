@@ -43,7 +43,7 @@ class NoteFragment:BaseFragment() {
         return R.layout.fragment_list_tab
     }
     override fun initView() {
-        setTitle(DataBeanManager.mainListTitle[2])
+        setTitle(DataBeanManager.mainListTitle[3])
         showView(iv_manager)
         pageSize=14
 
@@ -198,7 +198,7 @@ class NoteFragment:BaseFragment() {
 
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            ModuleItemDialog(requireContext(),1,DataBeanManager.noteModules).builder()
+            ModuleItemDialog(requireContext(),"笔记模板",DataBeanManager.noteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     if (MethodManager.isLogin()){
                         createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))

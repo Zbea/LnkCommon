@@ -12,13 +12,19 @@ import com.bll.lnkcommon.dialog.InputContentDialog
 import com.bll.lnkcommon.dialog.ModuleItemDialog
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.DiaryBean
-import com.bll.lnkcommon.utils.*
-import kotlinx.android.synthetic.main.ac_diary.*
+import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.SPUtil
+import com.bll.lnkcommon.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_drawing.ll_diary
+import kotlinx.android.synthetic.main.ac_drawing.tv_digest
 import kotlinx.android.synthetic.main.ac_plan_overview.v_content
 import kotlinx.android.synthetic.main.common_date_arrow.iv_down
 import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
@@ -31,7 +37,7 @@ class DiaryActivity:BaseDrawingActivity() {
     private var bgRes=""
 
     override fun layoutId(): Int {
-        return R.layout.ac_diary
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -54,8 +60,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik?.addOnTopView(ll_date)
-        elik?.addOnTopView(tv_digest)
+        showView(ll_diary)
+        elik?.addOnTopView(ll_diary)
 
         iv_up.setOnClickListener {
             val lastDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,0,uploadId)
@@ -101,7 +107,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-            ModuleItemDialog(this, 0,DataBeanManager.diaryModules).builder()
+            ModuleItemDialog(this,"日记模板", DataBeanManager.diaryModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes

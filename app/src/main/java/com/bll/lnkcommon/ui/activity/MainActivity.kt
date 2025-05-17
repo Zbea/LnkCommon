@@ -51,6 +51,7 @@ class MainActivity : BaseActivity(){
     private var appFragment: AppFragment? = null
     private var teachFragment: HomeworkManagerFragment?=null
     private var textbookFragment:TextbookFragment?=null
+    private var documentFragment:DocumentFragment?=null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
 
@@ -83,6 +84,7 @@ class MainActivity : BaseActivity(){
 
         mainFragment = MainFragment()
         bookcaseFragment = BookcaseFragment()
+        documentFragment=DocumentFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()
         textbookFragment= TextbookFragment()
@@ -100,10 +102,11 @@ class MainActivity : BaseActivity(){
             when (position) {
                 0 -> switchFragment(lastFragment, mainFragment)
                 1 -> switchFragment(lastFragment, bookcaseFragment)
-                2 -> switchFragment(lastFragment, noteFragment)
-                3 -> switchFragment(lastFragment, appFragment)
-                4 -> switchFragment(lastFragment, textbookFragment)
-                5 -> switchFragment(lastFragment, teachFragment)
+                2 -> switchFragment(lastFragment, documentFragment)
+                3 -> switchFragment(lastFragment, noteFragment)
+                4 -> switchFragment(lastFragment, appFragment)
+                5 -> switchFragment(lastFragment, textbookFragment)
+                6 -> switchFragment(lastFragment, teachFragment)
             }
             lastPosition=position
         }
@@ -169,11 +172,11 @@ class MainActivity : BaseActivity(){
 
     private fun refreshData(boolean: Boolean){
         if (boolean){
-            if (mData.size==4)
+            if (mData.size==5)
                 changeData()
         }
         else{
-            if (mData.size>4)
+            if (mData.size>5)
             {
                 mData.removeLast()
                 mData.removeLast()
@@ -187,12 +190,12 @@ class MainActivity : BaseActivity(){
         mData.add(ItemList().apply {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
-            name = DataBeanManager.mainListTitle[4]
+            name = DataBeanManager.mainListTitle[5]
         })
         mData.add(ItemList().apply {
             icon = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework)
             icon_check = MyApplication.mContext.getDrawable(R.mipmap.icon_tab_homework_check)
-            name = DataBeanManager.mainListTitle[5]
+            name = DataBeanManager.mainListTitle[6]
         })
     }
 
@@ -236,12 +239,12 @@ class MainActivity : BaseActivity(){
                 }
                 else{
                     refreshData(false)
-                    if (lastPosition==4){
+                    if (lastPosition==5){
                         switchFragment(textbookFragment, mainFragment)
                         lastPosition=0
                         mHomeAdapter?.updateItem(0, true)//更新新的位置
                     }
-                    if (lastPosition==5){
+                    if (lastPosition==6){
                         switchFragment(teachFragment, mainFragment)
                         lastPosition=0
                         mHomeAdapter?.updateItem(0, true)//更新新的位置

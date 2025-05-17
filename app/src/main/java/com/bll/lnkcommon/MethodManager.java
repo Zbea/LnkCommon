@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.bll.lnkcommon.dialog.ImageDialog;
 import com.bll.lnkcommon.manager.AppDaoManager;
 import com.bll.lnkcommon.manager.BookDaoManager;
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager;
@@ -40,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -107,6 +110,30 @@ public class MethodManager {
         context.sendBroadcast(intent);
     }
 
+    public static void gotoDocument(Context context,File file){
+        if (FileUtils.getUrlFormat(file.getPath()).equals(".png") || FileUtils.getUrlFormat(file.getPath()).equals(".jpg")|| FileUtils.getUrlFormat(file.getPath()).equals(".jpeg")){
+            List<String> images=new ArrayList<>();
+            images.add(file.getPath());
+            new ImageDialog(context,images).builder();
+        }
+        else {
+                String fileName=FileUtils.getUrlName(file.getPath());
+                String drawPath=file.getParent()+"/"+fileName+"draw/";
+                Intent intent=new Intent();
+                intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");
+                intent.setPackage(Constants.PACKAGE_READER);
+                intent.putExtra("path", file.getPath());
+                intent.putExtra("bookName", fileName);
+                intent.putExtra("tool", getJsonArray().toString());
+                intent.putExtra("userId", getAccountId());
+                intent.putExtra("type", 1);
+                intent.putExtra("drawPath", drawPath);
+                intent.putExtra("key_book_type", 1);
+                intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+        }
+    }
+
     /**
      * 跳转阅读器
      * @param context
@@ -118,9 +145,6 @@ public class MethodManager {
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
         BookDaoManager.getInstance().insertOrReplaceBook(bookBean);
-
-        List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
-        JSONArray result = getJsonArray(toolApps);
 
         String format = FileUtils.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
@@ -139,7 +163,7 @@ public class MethodManager {
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
-        intent.putExtra("tool",result.toString());
+        intent.putExtra("tool",getJsonArray().toString());
         intent.putExtra("userId",getUser()!=null?getUser().accountId:0);
         intent.putExtra("type", type);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
@@ -153,7 +177,8 @@ public class MethodManager {
                 ,3000);
     }
 
-    private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
+    private static @NonNull JSONArray getJsonArray() {
+        List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
         JSONArray result =new JSONArray();
         for (AppBean item : toolApps) {
             if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
@@ -283,5 +308,27 @@ public class MethodManager {
         }
         return list;
     }
+
+    public static ItemTypeBean getDefaultItemTypeDocument(){
+        String title="默认";
+        ItemTypeBean itemTypeBean=new ItemTypeBean();
+        itemTypeBean.type=6;
+        itemTypeBean.path=new FileAddress().getPathDocument(title);
+        itemTypeBean.title=title;
+        return itemTypeBean;
+    }
+
+    public static void createFileScan(Context context,String path){
+        if (!FileUtils.isExist(path)){
+            File file=new File(path+"/1");
+            file.mkdirs();
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()},null, null);
+            new Handler().postDelayed(() -> {
+                FileUtils.deleteFile(file);
+                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()},null, null);
+            },10*1000);
+        }
+    }
+
 
 }

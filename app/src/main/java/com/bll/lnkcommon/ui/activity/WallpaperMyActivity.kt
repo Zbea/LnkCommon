@@ -43,8 +43,10 @@ class WallpaperMyActivity:BaseActivity(){
         tv_setting.setOnClickListener {
             if (position>=0){
                 val item=items[position]
-                if(File(item.path).exists())
+                if(File(item.path).exists()){
                     android.os.SystemProperties.set("xsys.eink.standby",item.path)
+                    showToast("设置成功")
+                }
             }
         }
 

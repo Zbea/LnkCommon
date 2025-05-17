@@ -21,13 +21,6 @@
         android:textSize="@dimen/sp_22"
         />
 
-    <TextView
-        android:id="@+id/tv_student_grade"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_22"
-        />
 
     <TextView
         android:id="@+id/tv_student_school"

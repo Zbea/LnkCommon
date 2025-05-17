@@ -47,7 +47,7 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
 
     override fun initView() {
         pageSize = 9
-        setTitle(DataBeanManager.mainListTitle[4])
+        setTitle(DataBeanManager.mainListTitle[5])
 
         initTab()
         initRecyclerView()

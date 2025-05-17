@@ -10,5 +10,5 @@ public class ItemDetailsBean {
     public String typeStr;
     public int num;
     public List<Book> books;
-    public List<File> screens;
+    public List<File> files;
 }

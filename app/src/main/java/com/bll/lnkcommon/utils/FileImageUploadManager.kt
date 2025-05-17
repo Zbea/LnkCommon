@@ -57,7 +57,7 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
                 Log.d("debug",Gson().toJson(response))
                 if (info?.isOK == true) {
                     val keyStr=response.optString("key")
-                    val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
+                    val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
                     items.add(ItemList().apply {
                         id=key.toInt()
                         url=downloadUrl

@@ -198,16 +198,9 @@ object ScoreItemUtils {
      * 更新初始数据
      */
     fun updateInitListData(initList: MutableList<ScoreItem>, currentList: MutableList<ScoreItem>, correctModule: Int): MutableList<ScoreItem> {
-        when (correctModule) {
-            1, 2,3,4 -> {
-                return currentList
-            }
-            5,6,7->{
-                val items= setRecursionList(currentList)
-                setRecursionListAssignScore(initList,items)
-                setInitListScore(initList)
-            }
-        }
+        val items= setRecursionList(currentList)
+        setRecursionListAssignScore(initList,items)
+        setInitListScore(initList)
         return initList
     }
 

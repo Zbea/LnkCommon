@@ -19,7 +19,7 @@ public class ItemTypeBean {
     public Long id;
     public long userId= MethodManager.getAccountId();
     public String title;
-    public int type;//1笔记分类2书籍分类3截图分类4日记下载分类标题
+    public int type;//1笔记分类2书籍分类3截图分类4日记下载分类标题6文档标题
     public long date;
     public String path;
     public int typeId;

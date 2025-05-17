@@ -399,6 +399,45 @@ public class FileUtils {
         }
         files.sort(Comparator.reverseOrder());
     }
+    /**
+     * 移动文件夹
+     * @param oldPath
+     * @param newPath
+     * @return
+     */
+    public static boolean moveDirectory(String oldPath,String newPath){
+        try {
+            File oldFile = new File(oldPath);
+            if (!oldFile.exists()) {
+                Log.d("debug", "copyFile:  oldFile not exist.");
+                return false;
+            }
+            File newFile = new File(newPath);
+            if(!newFile.exists()){
+                newFile.mkdirs();
+            }
+
+            // 遍历源目录中的所有文件和文件夹
+            File[] files = newFile.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    File destFile= new File(newPath, file.getName());
+                    if (file.isDirectory()) {
+                        // 如果是目录，递归调用moveFolder
+                        moveDirectory(file.getPath(), destFile.getPath());
+                    } else {
+                        // 如果是文件，使用文件通道进行高效复制和删除
+                        moveFile(file.getPath(), destFile.getPath());
+                    }
+                }
+            }
+            deleteFile(oldFile);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * 复制文件到指定文件夹
@@ -406,7 +445,7 @@ public class FileUtils {
      * @param newPathName
      * @return
      */
-    public static boolean copyFile(String oldPathName, String newPathName) {
+    public static boolean moveFile(String oldPathName, String newPathName) {
         try {
             File oldFile = new File(oldPathName);
             if (!oldFile.exists()) {
@@ -421,21 +460,6 @@ public class FileUtils {
             }
             Files.copy(Paths.get(oldPathName) ,Paths.get(newPathName) , StandardCopyOption.REPLACE_EXISTING);
             oldFile.delete();
-//            File newFile = new File(newPathName);
-//            if (!newFile.exists()){
-//                newFile.getParentFile().mkdirs();
-//                newFile.createNewFile();
-//            }
-//            FileInputStream fileInputStream = new FileInputStream(oldPathName);
-//            FileOutputStream fileOutputStream = new FileOutputStream(newPathName);
-//            byte[] buffer = new byte[1024];
-//            int byteRead;
-//            while (-1 != (byteRead = fileInputStream.read(buffer))) {
-//                fileOutputStream.write(buffer, 0, byteRead);
-//            }
-//            fileInputStream.close();
-//            fileOutputStream.flush();
-//            fileOutputStream.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

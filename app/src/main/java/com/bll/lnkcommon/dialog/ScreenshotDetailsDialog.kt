@@ -2,18 +2,15 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.ItemDetailsBean
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.bll.lnkcommon.widget.MaxRecyclerView
@@ -46,7 +43,7 @@ class ScreenshotDetailsDialog(val context: Context) {
                 items.add(ItemDetailsBean().apply {
                     typeStr=item.title
                     num=files.size
-                    this.screens=files
+                    this.files=files
                 })
                 total+=files.size
             }
@@ -83,7 +80,7 @@ class ScreenshotDetailsDialog(val context: Context) {
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.screens)
+            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.files)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(helper.adapterPosition,position)

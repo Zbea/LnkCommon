@@ -34,6 +34,7 @@ object Constants {
 //        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
         const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
+        const val UPDATE_URL="http://cdn.qinglanmb.com/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -50,6 +51,7 @@ object Constants {
         //解压的目录
         val BOOK_PATH =Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
+        val DOCUMENT_PATH =Environment.getExternalStoragePublicDirectory("Documents").absolutePath
 
         //eventbus通知标志
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent" //每天刷新

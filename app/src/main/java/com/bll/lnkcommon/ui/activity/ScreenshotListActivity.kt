@@ -174,13 +174,13 @@ class ScreenshotListActivity:BaseActivity() {
                             lists.add(ItemList(types.indexOf(ite),ite.title))
                         }
                         ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{ pos->
-                            FileUtils.copyFile(file.path,types[pos].path+"/"+file.name)
+                            FileUtils.moveFile(file.path,types[pos].path+"/"+file.name)
                             mAdapter?.remove(position)
                         }
                     }
                     else{
                         val path=FileAddress().getPathScreen("未分类")
-                        FileUtils.copyFile(file.path,path+"/"+file.name)
+                        FileUtils.moveFile(file.path,path+"/"+file.name)
                         mAdapter?.remove(position)
                     }
                 }

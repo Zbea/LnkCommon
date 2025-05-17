@@ -15,7 +15,6 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
-import com.bll.lnkcommon.dialog.AppSystemUpdateDialog
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.NoteDaoManager
@@ -326,7 +325,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             if (code==200&&jsonObject!=null){
                 val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
                 requireActivity().runOnUiThread {
-                    AppSystemUpdateDialog(requireActivity(),item).builder()
+                    AppUpdateDialog(requireActivity(),2,item).builder()
                 }
             }
         },null)
@@ -357,6 +356,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
      * 下载应用
      */
     private fun downLoadAPP(bean: AppUpdateBean){
+        updateDialog=AppUpdateDialog(requireActivity(),1,bean).builder()
         val targetFileStr= FileAddress().getPathApk("lnkcommon")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {

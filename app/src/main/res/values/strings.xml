@@ -87,6 +87,15 @@
     <string name="note_type_tzb">田字本</string>
     <string name="note_type_wxp">五线谱</string>
 
+    <string name="diary_type_hgb_11">横格本-11mm</string>
+    <string name="diary_type_hgb_9">横格本-9mm</string>
+    <string name="diary_type_hgb_7">横格本-7mm</string>
+    <string name="diary_type_fgb_10">方格本-10mm</string>
+    <string name="diary_type_fgb_8.5">方格本-8.5mm</string>
+    <string name="diary_type_fgb_7">方格本-7mm</string>
+    <string name="note_type_yyb_3_5">英语本-3.5mm</string>
+    <string name="note_type_yyb_3">英语本-3mm</string>
+
     <string name="textbook_tab_text">我的课本</string>
     <string name="textbook_tab_course">参考课本</string>
     <string name="textbook_tab_homework">我的教辅</string>
