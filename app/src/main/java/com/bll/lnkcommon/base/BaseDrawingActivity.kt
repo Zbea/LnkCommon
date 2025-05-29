@@ -9,29 +9,13 @@ import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.PWInputPoint
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.GeometryScaleDialog
-import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.ScoreItem
-import com.bll.lnkcommon.ui.adapter.TopicMultistageScoreAdapter
-import com.bll.lnkcommon.ui.adapter.TopicScoreAdapter
-import com.bll.lnkcommon.ui.adapter.TopicTwoScoreAdapter
-import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_drawing.iv_correct_close
 import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
-import kotlinx.android.synthetic.main.ac_drawing.iv_score_down
-import kotlinx.android.synthetic.main.ac_drawing.iv_score_up
 import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
-import kotlinx.android.synthetic.main.ac_drawing.ll_score
-import kotlinx.android.synthetic.main.ac_drawing.rv_list_score
-import kotlinx.android.synthetic.main.ac_drawing.tv_answer
 import kotlinx.android.synthetic.main.ac_drawing.v_content
 import kotlinx.android.synthetic.main.common_drawing_geometry.iv_angle
 import kotlinx.android.synthetic.main.common_drawing_geometry.iv_arc
@@ -82,13 +66,13 @@ abstract class BaseDrawingActivity : BaseActivity() {
     private var isScale=false//是否选中刻度
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
-    var scoreMode=0
-    var correctMode=0
-    var answerImages= mutableListOf<String>()
-    var currentScores= mutableListOf<ScoreItem>()
+
 
     override fun initCreate() {
         onInStanceElik()
+
+        if (iv_score!=null)
+            setViewElikUnable(iv_score)
 
         initClick()
         initGeometryView()
@@ -479,62 +463,6 @@ abstract class BaseDrawingActivity : BaseActivity() {
             scoreStr.toDouble()
         }
     }
-
-    /**
-     * 设置成绩分数
-     */
-    fun initScoreView(){
-        iv_correct_close?.setOnClickListener {
-            disMissView(ll_score)
-            showView(iv_score)
-        }
-
-        iv_score?.setOnClickListener {
-            disMissView(iv_score)
-            showView(ll_score)
-        }
-
-        tv_answer?.setOnClickListener {
-            if (answerImages.size>0)
-                ImageDialog(this, answerImages).builder()
-        }
-
-        iv_score_up.setOnClickListener {
-            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,200f))
-        }
-
-        iv_score_down.setOnClickListener {
-            rv_list_score.scrollBy(0, DP2PX.dip2px(this,200f))
-        }
-
-        when(correctMode){
-            1,2->{
-                rv_list_score.layoutManager = GridLayoutManager(this,3)
-                TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(this@BaseDrawingActivity,15f)))
-                }
-            }
-            3,4,5->{
-                rv_list_score.layoutManager = LinearLayoutManager(this)
-                TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
-                }
-            }
-            6,7->{
-                rv_list_score.layoutManager = LinearLayoutManager(this)
-                TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseDrawingActivity,15f)))
-                }
-            }
-        }
-    }
-
     /**
      * 下一页
      */

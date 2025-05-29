@@ -14,7 +14,9 @@ public class TeacherHomeworkList {
         public int id;
         public String subject;
         public int type;
-        public String homeworkName;
+        @SerializedName("homeworkName")
+        public String typeName;
+        public int subType;
         public long submitTime;//学生提交时间
         public long time;//学生需要提交时间
         public String createTime;//布置时间

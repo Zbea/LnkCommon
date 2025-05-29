@@ -8,4 +8,5 @@ public class CommonData {
     public List<ItemList> typeGrade;
     public List<ItemList> subType;//应用分类
     public List<ItemList> version;
+    public List<ItemList> wallpaper;
 }

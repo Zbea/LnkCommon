@@ -1,19 +1,26 @@
 package com.bll.lnkcommon.ui.activity.drawing
 
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
+import com.bll.lnkcommon.dialog.ResultStandardDetailsDialog
+import com.bll.lnkcommon.dialog.ScoreDetailsDialog
+import com.bll.lnkcommon.mvp.model.ResultStandardItem
 import com.bll.lnkcommon.mvp.model.ScoreItem
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.utils.ScoreItemUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
+import java.util.stream.Collectors
 
 class HomeworkDetailsActivity:BaseDrawingActivity() {
 
     private var homeworkBean:TeacherHomeworkList.TeacherHomeworkBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
+
+    var items= mutableListOf<ResultStandardItem>()
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -32,33 +39,48 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
                 images= homeworkBean?.correctContent?.split(",") as MutableList<String>
             }
         }
-        scoreMode=homeworkBean?.questionMode!!
-        correctMode=homeworkBean?.questionType!!
-        if (homeworkBean?.question?.isNotEmpty() == true)
-            currentScores= ScoreItemUtils.jsonListToModuleList(correctMode,ScoreItemUtils.questionToList(homeworkBean?.question!!) )
-        if (homeworkBean?.answerUrl?.isNotEmpty()==true)
-            answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
+
+        if (homeworkBean?.type==1){
+           items=when(homeworkBean?.subType){
+                3->{
+                    DataBeanManager.getResultStandardItem3s()
+                }
+                6->{
+                    DataBeanManager.getResultStandardItem6s()
+                }
+                8->{
+                    DataBeanManager.getResultStandardItem8s()
+                }
+                else->{
+                    if (homeworkBean?.typeName=="作文作业本"){
+                        DataBeanManager.getResultStandardItem2s()
+                    }
+                    else{
+                        DataBeanManager.getResultStandardItems()
+                    }
+                }
+            }
+        }
+
     }
 
     override fun initView() {
         disMissView(iv_btn,iv_tool,iv_catalog)
-        setViewElikUnable(iv_score,ll_score)
         setDisableTouchInput(true)
 
         if (homeworkBean?.status==3)
             showView(iv_score)
 
-        if (answerImages.size>0){
-            showView(tv_answer)
-        }
-        else{
-            disMissView(tv_answer)
+        iv_score.setOnClickListener {
+            if (homeworkBean?.type==1&&homeworkBean?.subType!=1){
+                ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),homeworkBean?.question!!,items).builder()
+            }
+            else{
+                val answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
+                ScoreDetailsDialog(this,homeworkBean!!.title,homeworkBean!!.score.toDouble(),homeworkBean?.questionType!!,homeworkBean?.questionMode!!,answerImages,homeworkBean!!.question).builder()
+            }
         }
 
-        tv_correct_title.text=homeworkBean?.title
-        tv_total_score.text=homeworkBean?.score
-
-        initScoreView()
         setContentImage()
     }
 

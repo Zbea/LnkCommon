@@ -23,7 +23,6 @@ class ResourceCenterActivity: BaseActivity(){
     private var calenderFragment: CalenderDownloadFragment? = null
 
     private var popSupplys= mutableListOf<PopupBean>()
-    private var supply=0
 
     override fun layoutId(): Int {
         return  R.layout.ac_resource
@@ -31,12 +30,11 @@ class ResourceCenterActivity: BaseActivity(){
 
     override fun initData() {
         popSupplys=DataBeanManager.popupSupplys
-        supply=popSupplys[0].id
     }
 
     override fun initView() {
         setPageTitle("资源中心")
-        showView(tv_type)
+        showView(tv_supply)
 
         appFragment=AppDownloadFragment().newInstance(1)
         bookFragment=AppDownloadFragment().newInstance(3)
@@ -48,10 +46,11 @@ class ResourceCenterActivity: BaseActivity(){
         switchFragment(lastFragment, appFragment)
         initTab()
 
-        tv_type.text=popSupplys[0].name
-        tv_type.setOnClickListener {
-            PopupRadioList(this,popSupplys,tv_type,tv_type.width,5).builder().setOnSelectListener {
-                tv_type.text = it.name
+        if (popSupplys.size>0)
+            tv_supply.text=popSupplys[0].name
+        tv_supply.setOnClickListener {
+            PopupRadioList(this,popSupplys,tv_supply,tv_supply.width,5).builder().setOnSelectListener {
+                tv_supply.text = it.name
                 appFragment?.changeSupply(it.id)
                 bookFragment?.changeSupply(it.id)
                 readFragment?.changeSupply(it.id)

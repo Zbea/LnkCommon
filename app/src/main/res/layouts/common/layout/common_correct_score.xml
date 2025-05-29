@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_20"
+    android:background="@drawable/bg_black_stroke_0dp_corner"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            />
+
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:src="@mipmap/icon_close"
+            android:layout_marginStart="@dimen/dp_20"
+            android:scaleType="center"
+            android:background="@drawable/click_btn_transparent_line_black"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_20"
+        >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_black_stroke_0dp_corner"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_5"
+            android:paddingEnd="@dimen/dp_5"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="总分"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/black"
+                android:layout_marginStart="5dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22"
+                android:textStyle="bold"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_answer"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:text="标准答案"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:background="@drawable/bg_black_stroke_0dp_corner"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/bg_black_stroke_0dp_corner"
+        >
+
+        <ImageView
+            android:id="@+id/iv_score_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_main_up"
+            android:layout_centerVertical="true"
+            />
+
+        <ImageView
+            android:id="@+id/iv_score_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_main_down"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_60"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>
