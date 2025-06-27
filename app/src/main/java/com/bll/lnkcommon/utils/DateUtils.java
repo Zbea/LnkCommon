@@ -50,6 +50,11 @@ public class DateUtils {
         return day;
     }
 
+    public static String secondToString(int second){
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+        return sdf.format(new Date(second));
+    }
+
     /**
      * 时间戳转换为字符串类型
      *

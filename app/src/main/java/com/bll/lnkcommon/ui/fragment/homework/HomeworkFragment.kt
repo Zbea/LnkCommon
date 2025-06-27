@@ -7,17 +7,16 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.ImageDialog
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList.TeacherHomeworkBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
 import com.bll.lnkcommon.ui.activity.drawing.HomeworkDetailsActivity
+import com.bll.lnkcommon.ui.activity.HomeworkRecordActivity
 import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
@@ -90,7 +89,7 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
         rv_list?.addItemDecoration(SpaceItemDeco( 40))
         mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
             val item=homeworks[position]
-            val intent= Intent(requireActivity(), HomeworkDetailsActivity::class.java)
+            val intent= Intent(requireActivity(), if (item.subType==3) HomeworkRecordActivity::class.java else HomeworkDetailsActivity::class.java)
             val bundle= Bundle()
             bundle.putSerializable("homeworkBean", item)
             intent.putExtra("bundle", bundle)
