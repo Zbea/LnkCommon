@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.Date
 import com.bll.lnkcommon.utils.DateUtils
@@ -45,18 +46,16 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         }
         tvLunar.text=str
 
-        if (item.year!=0){
+        if (item.time>0){
             val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
             if (File(path).exists()){
-                GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+//                GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+                MethodManager.setImageFile(path,ivImage)
                 rlImage.visibility= View.VISIBLE
             }
             else{
                 rlImage.visibility= View.GONE
             }
-        }
-        else{
-            rlImage.visibility= View.GONE
         }
     }
 

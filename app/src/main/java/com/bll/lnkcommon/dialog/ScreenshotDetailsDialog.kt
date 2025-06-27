@@ -38,7 +38,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         })
 
         for (item in screenTypes){
-            val files= FileUtils.getDescFiles(item.path)
+            val files= FileUtils.getDescTimeFiles(item.path)
             if (files.isNotEmpty()){
                 items.add(ItemDetailsBean().apply {
                     typeStr=item.title
@@ -64,7 +64,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         mAdapter.setOnChildClickListener{ parentPos,pos->
             dialog.dismiss()
             val path=screenTypes[parentPos].path
-            val files=FileUtils.getDescFiles(path)
+            val files=FileUtils.getDescTimeFiles(path)
             MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
         }
 

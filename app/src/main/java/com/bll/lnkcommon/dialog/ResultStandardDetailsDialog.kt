@@ -3,18 +3,26 @@ package com.bll.lnkcommon.dialog
 import android.app.Dialog
 import android.content.Context
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RatingBar
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkcommon.DataBeanManager.getResultStandardStr
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ResultStandardItem
 import com.bll.lnkcommon.ui.adapter.HomeworkResultStandardAdapter
+import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ResultStandardDetailsDialog(val context: Context, private val title:String, private val score:Double,private val question:String,private val items:MutableList<ResultStandardItem>) {
+class ResultStandardDetailsDialog(val context: Context, private val title:String, private val score:Double,private val questionType:Int,private val question:String,private val items:MutableList<ResultStandardItem>) {
 
     fun builder(): ResultStandardDetailsDialog {
         val dialog = Dialog(context)
@@ -30,44 +38,55 @@ class ResultStandardDetailsDialog(val context: Context, private val title:String
         tvTitle.text=title
 
         val tvScore=dialog.findViewById<TextView>(R.id.tv_score)
-        tvScore.text=getResultStandardStr(score)
+
+        val ratingBar=dialog.findViewById<RatingBar>(R.id.ratingBar)
+        ratingBar.rating=score.toFloat()
 
         if (question.isNotEmpty()){
             if (question.length<20){
                 val types= Gson().fromJson(question, object : TypeToken<MutableList<Int>>() {}.type) as MutableList<Int>
-                if (types.size>0){
-                    for (ite in items){
-                        val i=items.indexOf(ite)
-                        val type=types[i]
-                        ite.list[type-1].isCheck=true
+                for (i in types.indices){
+                    val type=types[i]
+                    if (i<items.size){
+                        val item = items[i]
+                        for (childItem in item.list) {
+                            if (childItem.sort == type) {
+                                childItem.isCheck = true
+                            }
+                        }
                     }
                 }
             }
         }
 
         val recyclerview = dialog.findViewById<RecyclerView>(R.id.rv_list)
-        recyclerview.layoutManager = LinearLayoutManager(context)//创建布局管理
-        HomeworkResultStandardAdapter(R.layout.item_homework_result_standard, items).apply {
-            recyclerview.adapter = this
-            bindToRecyclerView(recyclerview)
-            recyclerview.addItemDecoration(SpaceItemDeco(30))
+        if (questionType!=10){
+            val layoutParam1= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParam1.setMargins(
+                DP2PX.dip2px(context,if (questionType==2)10f else 40f), DP2PX.dip2px(context,30f),
+                DP2PX.dip2px(context,if (questionType==2)10f else 40f), DP2PX.dip2px(context,30f))
+            recyclerview.layoutParams=layoutParam1
+
+            val layoutManager=if (questionType==2) GridLayoutManager(context,items.size) else LinearLayoutManager(context)
+            val layoutResId=if (questionType==2) R.layout.item_homework_result_standard_high else R.layout.item_homework_result_standard
+            recyclerview.layoutManager = layoutManager//创建布局管理
+            HomeworkResultStandardAdapter(layoutResId, questionType,items).apply {
+                recyclerview.adapter = this
+                bindToRecyclerView(recyclerview)
+                if (correctModule!=2){
+                    recyclerview.addItemDecoration(SpaceItemDeco(50))
+                }
+            }
+
+            tvScore.text= getResultStandardStr(score,questionType)
+        }
+        else{
+            recyclerview.visibility= View.GONE
+            ratingBar.visibility= View.VISIBLE
+            tvScore.text=score.toString()
         }
 
         return this
     }
 
-    /**
-     * 返回标准评分
-     * @param score
-     * @return
-     */
-    private fun getResultStandardStr(score: Double): String {
-        return if (score == 1.0) {
-            "A"
-        } else if (score == 2.0) {
-            "B"
-        } else {
-            "C"
-        }
-    }
 }

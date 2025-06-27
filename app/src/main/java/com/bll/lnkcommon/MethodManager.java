@@ -1,5 +1,6 @@
 package com.bll.lnkcommon;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -111,7 +112,15 @@ public class MethodManager {
     }
 
     public static void gotoDocument(Context context,File file){
-        if (FileUtils.getUrlFormat(file.getPath()).equals(".png") || FileUtils.getUrlFormat(file.getPath()).equals(".jpg")|| FileUtils.getUrlFormat(file.getPath()).equals(".jpeg")){
+        String format=FileUtils.getUrlFormat(file.getPath());
+        if (format.equals(".ppt") || format.equals(".pptx")){
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.putExtra("path", file.getPath());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+        else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
             List<String> images=new ArrayList<>();
             images.add(file.getPath());
             new ImageDialog(context,images).builder();
@@ -280,6 +289,19 @@ public class MethodManager {
         options.inScaled = false; // 防止自动缩放
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    /**
+     * 加载本地图片
+     * @param path
+     * @param imageView
+     */
+    public static void setImageFile(String path, ImageView imageView){
+        File file=new File(path);
+        if (file.exists()){
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     /**

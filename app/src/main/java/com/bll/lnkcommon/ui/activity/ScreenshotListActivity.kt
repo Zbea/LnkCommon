@@ -189,9 +189,9 @@ class ScreenshotListActivity:BaseActivity() {
 
     override fun fetchData() {
         tabPath=itemTabTypes[tabPos].path
-        totalNum= FileUtils.getDescFiles(tabPath).size
+        totalNum= FileUtils.getDescTimeFiles(tabPath).size
         setPageNumber(totalNum)
-        val files= FileUtils.getDescFiles(tabPath,pageIndex, pageSize)
+        val files= FileUtils.getDescTimeFiles(tabPath,pageIndex, pageSize)
         mAdapter?.setNewData(files)
     }
 

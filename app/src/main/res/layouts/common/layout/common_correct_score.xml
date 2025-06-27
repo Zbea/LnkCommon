@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="800dp"
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_20"
     android:background="@drawable/bg_black_stroke_0dp_corner"
@@ -125,8 +125,8 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/dp_25"
             android:layout_marginBottom="@dimen/dp_25"
-            android:layout_marginStart="@dimen/dp_60"
-            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
             />
 
     </RelativeLayout>

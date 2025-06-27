@@ -11,11 +11,13 @@ import com.bll.lnkcommon.Constants.SCREEN_PATH
 import com.bll.lnkcommon.Constants.TEXTBOOK_PATH
 import com.bll.lnkcommon.Constants.ZIP_PATH
 import com.bll.lnkcommon.MethodManager.getAccountId
-import com.bll.lnkcommon.mvp.model.User
-import com.bll.lnkcommon.utils.SPUtil
 
 class FileAddress {
-    
+
+    fun getLauncherPath():String{
+        return  getPathApk("lnkCommon")
+    }
+
     /**
      * 书籍目录地址
      */

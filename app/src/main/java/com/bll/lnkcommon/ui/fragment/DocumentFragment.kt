@@ -43,7 +43,7 @@ class DocumentFragment : BaseFragment() {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[2])
         showView(iv_manager)
-        pageSize = 9
+        pageSize = 25
 
         popupBeans.add(PopupBean(0, getString(R.string.type_create_str), false))
         popupBeans.add(PopupBean(1, getString(R.string.type_delete_str), false))
@@ -130,18 +130,18 @@ class DocumentFragment : BaseFragment() {
     private fun initRecycleView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(), 20f), DP2PX.dip2px(requireActivity(), 30f),
+            DP2PX.dip2px(requireActivity(), 20f), DP2PX.dip2px(requireActivity(), 20f),
             DP2PX.dip2px(requireActivity(), 20f), 0
         )
         layoutParams.weight = 1f
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(requireActivity(), 3)//创建布局管理
-        mAdapter = DocumentAdapter(R.layout.item_textbook, null).apply {
+        rv_list.layoutManager = GridLayoutManager(requireActivity(), 5)//创建布局管理
+        mAdapter = DocumentAdapter(R.layout.item_document, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(3, 40))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(3, 20))
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val file = mAdapter?.data?.get(position)
@@ -215,7 +215,6 @@ class DocumentFragment : BaseFragment() {
 
     override fun fetchData() {
         val path = itemTabTypes[tabPos].path
-
         val totalNum = FileUtils.getFiles(path).size
         setPageNumber(totalNum)
         val files = FileUtils.getDescFiles(path, pageIndex, pageSize)

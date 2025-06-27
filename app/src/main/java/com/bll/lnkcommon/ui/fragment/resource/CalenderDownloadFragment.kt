@@ -129,8 +129,8 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning) {
                         requireActivity().runOnUiThread {
-                            val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024),) + "/" +
-                                    getFormatNum(totalBytes.toDouble() / (1024 * 1024),)
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024),"0.0M")
                             detailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -180,12 +180,6 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
             override fun onStart() {
             }
         })
-    }
-
-
-    fun getFormatNum(pi: Double): String? {
-        val df = DecimalFormat("0.0M")
-        return df.format(pi)
     }
 
     /**

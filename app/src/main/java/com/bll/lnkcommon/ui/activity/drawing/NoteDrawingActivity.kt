@@ -71,6 +71,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 list.add(itemBean)
             }
         }
+        list.reverse()
         CatalogDialog(this,list,true).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(pageNumber: Int) {
                 if (page!=pageNumber){

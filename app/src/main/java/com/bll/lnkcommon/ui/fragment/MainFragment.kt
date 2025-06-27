@@ -276,9 +276,7 @@ class MainFragment:BaseFragment(),IRelationView{
 
         val path= FileAddress().getPathDate(DateUtils.longToStringCalender(nowDay))+"/draw.png"
         if (File(path).exists()){
-//            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
-            val myBitmap= BitmapFactory.decodeFile(path)
-            iv_date.setImageBitmap(myBitmap)
+            MethodManager.setImageFile(path,iv_date)
         }
         else{
             iv_date.setImageResource(0)

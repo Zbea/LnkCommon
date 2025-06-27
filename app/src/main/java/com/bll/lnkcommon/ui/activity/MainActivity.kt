@@ -60,6 +60,11 @@ class MainActivity : BaseActivity(){
     }
 
     override fun initData() {
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            FileUtils.deleteFile(File(targetFileStr))
+        }
+
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
         if (MethodManager.isLogin()&&DataBeanManager.students.size>0){

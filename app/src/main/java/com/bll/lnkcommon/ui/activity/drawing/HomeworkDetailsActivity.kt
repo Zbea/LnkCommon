@@ -6,12 +6,15 @@ import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.ResultStandardDetailsDialog
 import com.bll.lnkcommon.dialog.ScoreDetailsDialog
 import com.bll.lnkcommon.mvp.model.ResultStandardItem
-import com.bll.lnkcommon.mvp.model.ScoreItem
 import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.utils.ScoreItemUtils
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.v_content
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.util.stream.Collectors
 
 class HomeworkDetailsActivity:BaseDrawingActivity() {
@@ -19,8 +22,6 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     private var homeworkBean:TeacherHomeworkList.TeacherHomeworkBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
-
-    var items= mutableListOf<ResultStandardItem>()
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -39,29 +40,6 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
                 images= homeworkBean?.correctContent?.split(",") as MutableList<String>
             }
         }
-
-        if (homeworkBean?.type==1){
-           items=when(homeworkBean?.subType){
-                3->{
-                    DataBeanManager.getResultStandardItem3s()
-                }
-                6->{
-                    DataBeanManager.getResultStandardItem6s()
-                }
-                8->{
-                    DataBeanManager.getResultStandardItem8s()
-                }
-                else->{
-                    if (homeworkBean?.typeName=="作文作业本"){
-                        DataBeanManager.getResultStandardItem2s()
-                    }
-                    else{
-                        DataBeanManager.getResultStandardItems()
-                    }
-                }
-            }
-        }
-
     }
 
     override fun initView() {
@@ -73,7 +51,8 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
 
         iv_score.setOnClickListener {
             if (homeworkBean?.type==1&&homeworkBean?.subType!=1){
-                ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),homeworkBean?.question!!,items).builder()
+                val items=DataBeanManager.getResultStandardItems(homeworkBean!!.subType,homeworkBean!!.typeName,homeworkBean!!.questionType).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),if (homeworkBean?.subType==10)10 else homeworkBean?.questionType!!,homeworkBean?.question!!,items).builder()
             }
             else{
                 val answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>

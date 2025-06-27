@@ -67,9 +67,9 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var cloudList= mutableListOf<CloudListBean>()
-    private var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter:TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
+    var appUpdateDialog:AppUpdateDialog?=null
 
     override fun onToken(token: String) {
         onUpload(token)
@@ -356,29 +356,39 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
      * 下载应用
      */
     private fun downLoadAPP(bean: AppUpdateBean){
-        updateDialog=AppUpdateDialog(requireActivity(),1,bean).builder()
-        val targetFileStr= FileAddress().getPathApk("lnkcommon")
-        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog?.setUpdateBtn(s)
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            AppUtils.installApp(requireActivity(), targetFileStr)
+        }
+        else{
+            if (appUpdateDialog==null||appUpdateDialog?.isShow()==false) {
+                appUpdateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
+                FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+                    FileDownManager.SingleTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                        if (task != null && task.isRunning) {
+                            requireActivity().runOnUiThread {
+                                val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
+                                        ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                                appUpdateDialog?.setUpdateBtn(s)
+                            }
+                        }
                     }
-                }
+
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+
+                    override fun completed(task: BaseDownloadTask?) {
+                        appUpdateDialog?.dismiss()
+                        AppUtils.installApp(requireActivity(), targetFileStr)
+                    }
+
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        appUpdateDialog?.dismiss()
+                    }
+                })
             }
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun completed(task: BaseDownloadTask?) {
-                updateDialog?.dismiss()
-                AppUtils.installApp(requireActivity(), targetFileStr)
-            }
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog?.dismiss()
-            }
-        })
+        }
     }
 
 

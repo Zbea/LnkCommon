@@ -3,6 +3,7 @@ package com.bll.lnkcommon.ui.activity.drawing
 import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFileDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogDialog
@@ -24,7 +25,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     override fun initData() {
         pageIndex = intent.getIntExtra("pageIndex", 0)
         path= intent.getStringExtra("pagePath").toString()
-        pageCount=FileUtils.getAscFiles(path).size
+        pageCount=FileUtils.getAscTimeFiles(path).size
     }
 
     override fun initView() {
@@ -34,7 +35,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     }
 
     override fun onCatalog() {
-        val files = FileUtils.getAscFiles(path)
+        val files = FileUtils.getAscTimeFiles(path)
         val list= mutableListOf<ItemList>()
         for (file in files){
             val itemList= ItemList()
@@ -83,14 +84,11 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
 
     //加载图片
     private fun loadPicture(index: Int, elik: EinkPWInterface, view: ImageView) {
-        val files = FileUtils.getAscFiles(path)
+        val files = FileUtils.getAscTimeFiles(path)
         if (index<files.size){
             val showFile=files[index]
-            if (showFile != null) {
-                val myBitmap= BitmapFactory.decodeFile(showFile.absolutePath)
-                view.setImageBitmap(myBitmap)
-                elik.setLoadFilePath(getDrawingPath(showFile), true)
-            }
+            MethodManager.setImageFile(showFile.absolutePath,view)
+            elik.setLoadFilePath(getDrawingPath(showFile), true)
         }
     }
 

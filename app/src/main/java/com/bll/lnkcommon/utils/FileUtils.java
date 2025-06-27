@@ -56,43 +56,6 @@ public class FileUtils {
     }
 
     /**
-     * 将str转换为inputStream
-     *
-     * @param str
-     * @return
-     */
-    public static InputStream str2InputStream(String str) {
-        ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
-        return is;
-    }
-
-    /**
-     * 将inputStream转换为str
-     *
-     * @param is
-     * @return
-     * @throws IOException
-     */
-    public static String inputStream2Str(InputStream is) throws IOException {
-        StringBuffer sb;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(is));
-
-            sb = new StringBuffer();
-
-            String data;
-            while ((data = br.readLine()) != null) {
-                sb.append(data);
-            }
-        } finally {
-            br.close();
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * 将file转换为inputStream
      *
      * @param file
@@ -103,47 +66,6 @@ public class FileUtils {
         return new FileInputStream(file);
     }
 
-    /**
-     * 将inputStream转化为file
-     *
-     * @param is
-     * @param file 要输出的文件目录
-     */
-    public static void inputStream2File(InputStream is, File file) throws IOException {
-        OutputStream os = null;
-        try {
-            os = Files.newOutputStream(file.toPath());
-            int len = 0;
-            byte[] buffer = new byte[8192];
-
-            while ((len = is.read(buffer)) != -1) {
-                os.write(buffer, 0, len);
-            }
-        } finally {
-            os.close();
-            is.close();
-        }
-    }
-
-    /**
-     *
-     * 获取目录下文件名  不包含文件目录下的子文件目录
-     * @Author：
-     * @Description：获取某个目录下所有直接下级文件，不包括目录下的子目录的下的文件，所以不用递归获取
-     * @Date：
-     */
-    public static List<String> getFilesName(String path) {
-        List<String> files = new ArrayList<String>();
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-
-        for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isFile()) {
-                files.add(tempList[i].getName());
-            }
-        }
-        return files;
-    }
 
     /**
      * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
@@ -213,6 +135,28 @@ public class FileUtils {
     }
 
     /**
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
+     * @param path
+     * @return
+     */
+    public static List<File> getAscTimeFiles(String path){
+        List<File> files = new ArrayList<>();
+        if(path.isEmpty()){
+            return files;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return files;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
+        sortTimeAscFiles(files);
+        return files;
+    }
+
+    /**
      * 获取目录下文件对象  不包含文件目录下的子文件目录 （降序）
      * @param path
      * @return
@@ -231,6 +175,37 @@ public class FileUtils {
             }
         }
         sortDescFiles(files);
+        if (files.size()<pageSize){
+            return files;
+        }
+        else {
+            List<File> pageFiles = new ArrayList<>();
+            for (int i = (pageIndex-1)*pageSize; i < files.size() ; i++) {
+                pageFiles.add(files.get(i));
+            }
+            return pageFiles;
+        }
+    }
+
+    /**
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 （降序）
+     * @param path
+     * @return
+     */
+    public static List<File> getDescTimeFiles(String path,int pageIndex,int pageSize){
+        List<File> files = new ArrayList<>();
+        if(path.isEmpty()){
+            return files;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return files;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
+        sortTimeDescFiles(files);
         if (files.size()<pageSize){
             return files;
         }
@@ -266,49 +241,24 @@ public class FileUtils {
     }
 
     /**
-     * 获取目录下文件夹
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 (降序)
      * @param path
      * @return
      */
-    public static List<File> getDirectorys(String path){
+    public static List<File> getDescTimeFiles(String path){
         List<File> files = new ArrayList<>();
-        if(path==null||path.isEmpty()){
+        if(path.isEmpty()){
             return files;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
         if (tempList==null) return files;
         for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isDirectory()) {
+            if (tempList[i].isFile()) {
                 files.add(tempList[i]);
             }
         }
-        return files;
-    }
-
-
-    /**
-     * 获取目录下指定后缀文件对象  不包含文件目录下的子文件目录（降序）
-     * @param path
-     * @param suffix
-     * @return
-     */
-    public static List<File> getAscFiles(String path, String suffix){
-        List<File> files = new ArrayList<>();
-        if("".equals(path)){
-            return files;
-        }
-        File file = new File(path);
-        File[] tempList = file.listFiles();
-        if (tempList==null) return files;
-        for (int i = 0; i < tempList.length; i++) {
-            File childFile=tempList[i];
-            if (childFile.isFile()&&childFile.getName().endsWith(suffix)) {
-                files.add(tempList[i]);
-            }
-        }
-        //文件排序
-        sortAscFiles(files);
+        sortTimeDescFiles(files);
         return files;
     }
 
@@ -371,17 +321,6 @@ public class FileUtils {
      * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
      * @param files
      */
-    public static void sortFiles(List<File> files) {
-        if (files==null){
-            return;
-        }
-        files.sort(Comparator.comparing(File::getName));
-    }
-
-    /**
-     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
-     * @param files
-     */
     public static void sortAscFiles(List<File> files) {
         if (files==null){
             return;
@@ -399,6 +338,29 @@ public class FileUtils {
         }
         files.sort(Comparator.reverseOrder());
     }
+
+    /**
+     * 文件夹排序 按照自然升序
+     * @param files
+     */
+    public static void sortTimeAscFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort(Comparator.comparingLong(File::lastModified));
+    }
+
+    /**
+     * 文件夹排序 自认降序
+     * @param files
+     */
+    public static void sortTimeDescFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort((f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
+    }
+
     /**
      * 移动文件夹
      * @param oldPath

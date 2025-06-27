@@ -12,7 +12,7 @@ public class Date implements Serializable {
     public int month;
     public int day;
     public int week;//2星期一 8星期日
-    public long time;
+    public long time=0l;
     public boolean isNow;//是否是当天
     public boolean isNowMonth;//是否是当月
 

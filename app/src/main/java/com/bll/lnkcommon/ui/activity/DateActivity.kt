@@ -63,9 +63,7 @@ open class DateActivity: BaseActivity() {
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    Thread{
-                        getDates()
-                    }.start()
+                    getDates()
                 }
                 yearPop?.show()
             }
@@ -80,9 +78,7 @@ open class DateActivity: BaseActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    Thread {
-                        getDates()
-                    }.start()
+                    getDates()
                 }
                 monthPop?.show()
             }
@@ -91,9 +87,7 @@ open class DateActivity: BaseActivity() {
             }
         }
 
-        Thread {
-            getDates()
-        }.start()
+        getDates()
     }
 
     private fun initRecycler(){
@@ -160,7 +154,7 @@ open class DateActivity: BaseActivity() {
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
         for (i in 1 .. max)
         {
-            dates.add(getDateBean(yearNow,monthNow,i,true))
+            dates.add(getDateBean(yearNow,monthNow,i))
         }
 
         if (dates.size>35){
@@ -179,12 +173,21 @@ open class DateActivity: BaseActivity() {
             }
         }
 
-        runOnUiThread {
-            mAdapter?.setNewData(dates)
-        }
+        mAdapter?.setNewData(dates)
+
+        Thread {
+            runOnUiThread {
+                for (date in dates) {
+                    if (date.time != 0L) {
+                        date.lunar = LunarSolarConverter.SolarToLunar(date.solar)
+                    }
+                }
+                mAdapter?.notifyDataSetChanged()
+            }
+        }.start()
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
+    private fun getDateBean(year:Int,month:Int,day:Int): Date {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month
@@ -196,10 +199,8 @@ open class DateActivity: BaseActivity() {
         date.day=day
         date.time=DateUtils.dateToStamp("$year-$month-$day")
         date.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
-        date.isNowMonth=isMonth
         date.solar= solar
         date.week=DateUtils.getWeek(date.time)
-        date.lunar=LunarSolarConverter.SolarToLunar(solar)
 
         return date
     }

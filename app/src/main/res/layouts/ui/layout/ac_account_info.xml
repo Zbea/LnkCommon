@@ -130,6 +130,39 @@
                 android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_line_bottom"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="密码："
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_25" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="******"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_25"/>
+
+            <TextView
+                android:id="@+id/btn_edit_password"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="修改密码"
+                android:background="@drawable/click_btn_black_solid_5dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_22"/>
+
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
             android:layout_width="match_parent"

@@ -9,19 +9,19 @@
     <EditText
         android:id="@+id/et_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:hint="@string/layout_content"
+        android:layout_height="100dp"
+        android:gravity="top"
+        android:hint="布置作业"
         android:padding="@dimen/dp_10"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_20"
         android:textColor="@color/black"
         android:textColorHint="@color/color_text_hint"
-        android:background="@drawable/bg_line_bottom"/>
+        android:background="@drawable/bg_black_stroke_5dp_corner"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal"
         >
         <TextView
