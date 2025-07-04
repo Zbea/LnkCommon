@@ -57,6 +57,7 @@ object Constants {
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent" //每天刷新
         const val DATE_DRAWING_EVENT = "DateDrawingEvent" //日历手写事件
         const val BOOK_EVENT = "BookEvent"
+        const val BOOK_TYPE_EVENT = "BookTypeEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"
         const val NOTE_TYPE_REFRESH_EVENT = "NoteTypeRefreshEvent"
         const val NOTE_EVENT = "NoteEvent"

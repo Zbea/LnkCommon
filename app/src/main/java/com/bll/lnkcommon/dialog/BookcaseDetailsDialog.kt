@@ -29,18 +29,9 @@ class BookcaseDetailsDialog(val context: Context) {
         val total=BookDaoManager.getInstance().queryAllBook().size
 
         val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
-        tv_total.text="总计：${total}本"
+        tv_total.text="总计：${total}"
 
         val items= mutableListOf<ItemDetailsBean>()
-        val item =ItemDetailsBean()
-        item.typeStr="全部"
-        val books= BookDaoManager.getInstance().queryAllBook("")
-        if (books.isNotEmpty()){
-            item.num=books.size
-            item.books=books
-            items.add(item)
-        }
-
         val itemTypes= ItemTypeDaoManager.getInstance().queryAll(2)
         for (itemTypeBean in itemTypes){
             val bookcaseDetailsBean =ItemDetailsBean()
@@ -55,7 +46,7 @@ class BookcaseDetailsDialog(val context: Context) {
 
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = BookcaseDetailsAdapter(R.layout.item_bookcase_list, items)
+        val mAdapter = BookcaseDetailsAdapter(R.layout.item_details_list, items)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
@@ -72,11 +63,11 @@ class BookcaseDetailsDialog(val context: Context) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
             helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"(${item.num}本)")
+            helper.setText(R.id.tv_book_num,"( ${item.num} )")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.books)
+            val mAdapter = ChildAdapter(R.layout.item_details_list_name,item.books)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(item.books[position])

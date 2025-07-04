@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
@@ -12,6 +13,7 @@ import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.DownloadBookDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.mvp.model.book.BookStore
 import com.bll.lnkcommon.mvp.model.book.BookStoreType
@@ -30,6 +32,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书城
@@ -214,18 +217,32 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 override fun completed(task: BaseDownloadTask?) {
                     book.apply {
                         loadSate = 2
-                        subtypeStr = ""
+                        subtypeStr = when (tabStr) {
+                            "思维科学", "自然科学" -> {
+                                "科学技术"
+                            }
+                            "运动健康","艺术才能" -> {
+                                "运动才艺"
+                            }
+                            else -> {
+                                subTypeStr
+                            }
+                        }
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
+                    //修改书库分类状态
+                    ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
                     //下载解压完成后更新存储的book
                     BookDaoManager.getInstance().insertOrReplaceBook(book)
+                    //更新列表
+                    mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.dismiss()
-                    Handler().postDelayed({
-                        hideLoading()
-                        showToast(book.bookName+getString(R.string.download_success))
-                    },500)
+                    EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
+                    EventBus.getDefault().post(Constants.BOOK_EVENT)
+                    showToast(book.bookName+getString(R.string.download_success))
+                    hideLoading()
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()

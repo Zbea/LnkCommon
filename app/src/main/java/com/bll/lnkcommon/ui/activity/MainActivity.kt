@@ -25,6 +25,7 @@ import com.bll.lnkcommon.manager.RecordDaoManager
 import com.bll.lnkcommon.manager.WallpaperDaoManager
 import com.bll.lnkcommon.mvp.model.AreaBean
 import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IQiniuView
 import com.bll.lnkcommon.ui.adapter.MainListAdapter
@@ -60,9 +61,26 @@ class MainActivity : BaseActivity(){
     }
 
     override fun initData() {
+        val screenshotPath=FileAddress().getPathScreen("未分类")
+        if (!FileUtils.isExist(screenshotPath)){
+            File(screenshotPath).mkdirs()
+        }
+
         val targetFileStr = FileAddress().getLauncherPath()
         if (FileUtils.isExist(targetFileStr)){
             FileUtils.deleteFile(File(targetFileStr))
+        }
+
+        //创建书架分类
+        if (ItemTypeDaoManager.getInstance().queryAll(2).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=2
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
         }
 
         mData= DataBeanManager.getMainData()

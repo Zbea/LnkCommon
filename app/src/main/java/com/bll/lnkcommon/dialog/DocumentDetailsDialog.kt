@@ -5,9 +5,9 @@ import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.ItemDetailsBean
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.FlowLayoutManager
@@ -29,14 +29,14 @@ class DocumentDetailsDialog(val context: Context) {
         var total=0
         val items= mutableListOf<ItemDetailsBean>()
 
-        val screenTypes= ItemTypeDaoManager.getInstance().queryAll(6)
-        screenTypes.add(0, MethodManager.getDefaultItemTypeDocument())
+        val path = FileAddress().getPathDocument("默认")
+        val documentTypeNames=FileUtils.getDirectorys(File(path).parent)
 
-        for (item in screenTypes){
-            val files= FileUtils.getDescFiles(item.path)
+        for (name in documentTypeNames){
+            val files= FileUtils.getDescFiles(FileAddress().getPathDocument(name))
             if (files.isNotEmpty()){
                 items.add(ItemDetailsBean().apply {
-                    typeStr=item.title
+                    typeStr=name
                     num=files.size
                     this.files=files
                 })
@@ -45,14 +45,14 @@ class DocumentDetailsDialog(val context: Context) {
         }
 
         val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.setText("文档详情")
+        tv_title.setText("文档明细")
 
         val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
         tv_total.text="总计：${total}"
 
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = ScreenshotDetailsAdapter(R.layout.item_bookcase_list, items)
+        val mAdapter = ScreenshotDetailsAdapter(R.layout.item_details_list, items)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
@@ -69,11 +69,11 @@ class DocumentDetailsDialog(val context: Context) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
             helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"(${item.num})")
+            helper.setText(R.id.tv_book_num,"( ${item.num}) ")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
             recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.files)
+            val mAdapter = ChildAdapter(R.layout.item_details_list_name,item.files)
             recyclerView?.adapter = mAdapter
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(helper.adapterPosition,position)

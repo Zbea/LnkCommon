@@ -66,6 +66,18 @@ public class FileUtils {
         return new FileInputStream(file);
     }
 
+    public static List<String> getDirectorys(String path){
+        List<String> names = new ArrayList<>();
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return names;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isDirectory()) {
+                names.add(tempList[i].getName());
+            }
+        }
+        return names;
+    }
 
     /**
      * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）

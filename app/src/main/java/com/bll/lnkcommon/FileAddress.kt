@@ -159,7 +159,7 @@ class FileAddress {
      * 文档
      */
     fun getPathDocument(typeStr: String):String{
-        return "$DOCUMENT_PATH/${getAccountId()}/$typeStr"
+        return "$DOCUMENT_PATH/$typeStr"
     }
 
 }

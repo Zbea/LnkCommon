@@ -79,6 +79,20 @@ public class ItemTypeDaoManager {
         return !dao.queryBuilder().where(whereUser, whereUser1, whereUser2).build().list().isEmpty();
     }
 
+    public void saveBookBean(String title,boolean isNew) {
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.Type.eq(2);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Title.eq(title);
+        ItemTypeBean bean=dao.queryBuilder().where(whereUser,whereUser1,whereUser2).orderAsc(ItemTypeBeanDao.Properties.Date).build().unique();
+        bean.setIsNew(isNew);
+        insertOrReplace(bean);
+    }
+
+    public Boolean isExistBookType(){
+        WhereCondition whereUser1= ItemTypeBeanDao.Properties.IsNew.eq(true);
+        WhereCondition whereUser2= ItemTypeBeanDao.Properties.Type.eq(2);
+        return !dao.queryBuilder().where(whereUser, whereUser1, whereUser2).build().list().isEmpty();
+    }
+
     public void deleteBean(ItemTypeBean bean){
         dao.delete(bean);
     }

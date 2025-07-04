@@ -1,26 +1,34 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.manager.BookDaoManager
+import com.bll.lnkcommon.manager.ItemTypeDaoManager
+import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.book.Book
 import com.bll.lnkcommon.ui.activity.AccountLoginActivity
-import com.bll.lnkcommon.ui.activity.book.BookcaseTypeListActivity
+import com.bll.lnkcommon.ui.activity.book.BookcaseTypeActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.GlideUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_bookcase.*
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_down
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_up
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_tips
+import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
+import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_book_type
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
 import org.greenrobot.eventbus.EventBus
 
 class BookcaseFragment : BaseFragment() {
@@ -36,12 +44,9 @@ class BookcaseFragment : BaseFragment() {
     override fun initView() {
         setTitle(DataBeanManager.mainListTitle[1])
 
-        initRecyclerView()
-        findBook()
-
         tv_book_type.setOnClickListener {
             if (MethodManager.isLogin()) {
-                customStartActivity(Intent(activity, BookcaseTypeListActivity::class.java))
+                customStartActivity(Intent(activity, BookcaseTypeActivity::class.java))
             } else {
                 customStartActivity(Intent(activity, AccountLoginActivity::class.java))
             }
@@ -51,6 +56,9 @@ class BookcaseFragment : BaseFragment() {
             if (bookTopBean != null)
                 MethodManager.gotoBookDetails(requireActivity(),1, bookTopBean)
         }
+
+        initRecyclerView()
+        findBook()
     }
 
     override fun lazyLoad() {
@@ -74,6 +82,8 @@ class BookcaseFragment : BaseFragment() {
      */
     private fun findBook() {
         if (MethodManager.isLogin()) {
+            iv_tips?.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+
             books = BookDaoManager.getInstance().queryAllBook(true)
             if (books.size == 0) {
                 bookTopBean = null

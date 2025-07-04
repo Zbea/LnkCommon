@@ -103,7 +103,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.book.BookcaseTypeListActivity"
+        <activity android:name=".ui.activity.book.BookcaseTypeActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookStoreActivity"

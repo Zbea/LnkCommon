@@ -15,6 +15,13 @@ object DataBeanManager {
     var versions= mutableListOf<ItemList>()
     var students= mutableListOf<StudentBean>()
 
+    val bookType = arrayOf(
+        "诗经楚辞", "唐诗宋词", "古代经典",
+        "四大名著", "中国科技", "小说散文",
+        "外国原著", "历史地理", "政治经济",
+        "军事战略", "科学技术", "运动才艺"
+    )
+
     val mainListTitle = arrayOf(mContext.getString(R.string.tab_home),mContext.getString(R.string.tab_bookcase),"文档",mContext.getString(R.string.tab_note),mContext.getString(R.string.tab_app),
         mContext.getString(R.string.tab_teaching),mContext.getString(R.string.tab_homework))
 

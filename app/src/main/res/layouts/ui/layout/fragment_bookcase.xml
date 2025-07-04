@@ -23,15 +23,24 @@
 
         <TextView
             android:id="@+id/tv_book_type"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dp_40"
-            android:gravity="center"
-            android:text="分类列表"
+            android:text="分类展示"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_25"
+            android:padding="4dp"
             android:background="@drawable/click_btn_transparent_line_black"
+            />
+
+        <ImageView
+            android:id="@+id/iv_tips"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="23dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_circle_black"
             />
 
     </RelativeLayout>

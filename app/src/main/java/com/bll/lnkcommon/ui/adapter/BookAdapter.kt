@@ -15,10 +15,10 @@ class BookAdapter(layoutResId: Int, data: List<Book>?) : BaseQuickAdapter<Book, 
             val image=getView<ImageView>(R.id.iv_image)
             if(item.pageUrl.isNullOrEmpty())
             {
-                GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,10)
+                GlideUtils.setImageRoundUrl(mContext,item.imageUrl,image,8)
             }
             else{
-                GlideUtils.setImageRoundUrl(mContext,item.pageUrl,image,10)
+                GlideUtils.setImageRoundUrl(mContext,item.pageUrl,image,8)
             }
         }
     }

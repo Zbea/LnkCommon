@@ -23,6 +23,7 @@ public class ItemTypeBean {
     public long date;
     public String path;
     public int typeId;
+    public boolean isNew;//是否有新的标识
     @Transient
     public boolean isCheck;
     @Transient
@@ -30,9 +31,9 @@ public class ItemTypeBean {
     @Transient
     public String downloadUrl;
 
-    @Generated(hash = 710016298)
+    @Generated(hash = 1648725696)
     public ItemTypeBean(Long id, long userId, String title, int type, long date, String path,
-            int typeId) {
+            int typeId, boolean isNew) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -40,6 +41,7 @@ public class ItemTypeBean {
         this.date = date;
         this.path = path;
         this.typeId = typeId;
+        this.isNew = isNew;
     }
     @Generated(hash = 2077540725)
     public ItemTypeBean() {
@@ -85,6 +87,12 @@ public class ItemTypeBean {
     }
     public void setTypeId(int typeId) {
         this.typeId = typeId;
+    }
+    public boolean getIsNew() {
+        return this.isNew;
+    }
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
     }
 
 }
