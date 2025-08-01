@@ -20,7 +20,9 @@ import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.PrivacyPassword
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.mvp.presenter.SmsPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
 import com.bll.lnkcommon.utils.*
@@ -29,8 +31,8 @@ import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
 
-class NoteFragment:BaseFragment() {
-
+class NoteFragment:BaseFragment(),ISmsView {
+    private var smsPresenter= SmsPresenter(this)
     private var popupBeans = mutableListOf<PopupBean>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
@@ -38,6 +40,17 @@ class NoteFragment:BaseFragment() {
     private var tabPos = 0//当前笔记本标记
     private var typeStr=""
     private var privacyPassword:PrivacyPassword?=null
+    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
+
+    override fun onSms() {
+        showToast("短信发送成功")
+    }
+    override fun onCheckSuccess() {
+        showToast("密本密码设置成功")
+        MethodManager.savePrivacyPassword(1,privacyPassword)
+        privacyPasswordDialog?.getPrivacyPassword()
+        mAdapter?.notifyItemChanged(position)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_tab
@@ -62,7 +75,7 @@ class NoteFragment:BaseFragment() {
                 }
             }
             else{
-                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
             }
         }
 
@@ -120,9 +133,19 @@ class NoteFragment:BaseFragment() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
             if (tabPos==0&&privacyPassword!=null&&!note.isCancelPassword){
-                PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                    gotoNote(note)
-                }
+                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity(),1).builder()
+                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                    override fun onClick() {
+                        gotoNote(note)
+                    }
+                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                        this@NoteFragment.privacyPassword=privacyPassword
+                        smsPresenter.checkPhone(code)
+                    }
+                    override fun onPhone(phone: String) {
+                        smsPresenter.sms(phone)
+                    }
+                })
             }
             else{
                 gotoNote(note)
@@ -158,11 +181,15 @@ class NoteFragment:BaseFragment() {
                 }
                 R.id.iv_password->{
                     if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                            privacyPassword=it
-                            mAdapter?.notifyDataSetChanged()
-                            showToast("密本密码设置成功")
-                        }
+                        PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
+                            override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                this@NoteFragment.privacyPassword=privacyPassword
+                                smsPresenter.checkPhone(code)
+                            }
+                            override fun onPhone(phone: String) {
+                                smsPresenter.sms(phone)
+                            }
+                        })
                     }
                     else{
                         val titleStr=if (note.isCancelPassword) "确定设置密码？" else "确定取消密码？"
@@ -170,11 +197,21 @@ class NoteFragment:BaseFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                                    note.isCancelPassword=!note.isCancelPassword
-                                    NoteDaoManager.getInstance().insertOrReplace(note)
-                                    mAdapter?.notifyItemChanged(position)
-                                }
+                                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity(),1).builder()
+                                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                                    override fun onClick() {
+                                        note.isCancelPassword=!note.isCancelPassword
+                                        NoteDaoManager.getInstance().insertOrReplace(note)
+                                        mAdapter?.notifyItemChanged(position)
+                                    }
+                                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                        this@NoteFragment.privacyPassword=privacyPassword
+                                        smsPresenter.checkPhone(code)
+                                    }
+                                    override fun onPhone(phone: String) {
+                                        smsPresenter.sms(phone)
+                                    }
+                                })
                             }
                         })
                     }

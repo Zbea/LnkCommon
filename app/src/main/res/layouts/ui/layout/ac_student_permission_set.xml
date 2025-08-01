@@ -46,10 +46,11 @@
                 android:text="（关闭后将不允许该学生使用青豆购买）"
                 />
 
-            <Switch
+            <ImageView
                 android:id="@+id/st_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@mipmap/icon_switch_false"
                 />
 
         </LinearLayout>
@@ -90,10 +91,11 @@
                 android:padding="@dimen/dp_10"
                 android:background="@drawable/click_btn_transparent_line_black"
                 />
-            <Switch
+            <ImageView
                 android:id="@+id/st_book"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@mipmap/icon_switch_false"
                 />
 
         </LinearLayout>
@@ -140,10 +142,11 @@
                 android:background="@drawable/click_btn_transparent_line_black"
                 />
 
-            <Switch
+            <ImageView
                 android:id="@+id/st_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@mipmap/icon_switch_false"
                 />
 
         </LinearLayout>

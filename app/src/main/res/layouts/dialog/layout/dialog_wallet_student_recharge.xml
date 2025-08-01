@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_24"
             android:text="充值金额："
             />
 
@@ -27,7 +27,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_24"
             android:gravity="center"
             android:inputType="phone"
             android:background="@drawable/bg_line_bottom"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_24"
         android:gravity="center_vertical"
         android:text="转账学生"
         />

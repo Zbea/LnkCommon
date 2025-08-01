@@ -12,10 +12,12 @@ import com.qiniu.android.storage.UploadManager
 import java.io.File
 
 class FileUploadManager(private val uploadToken:String) {
+    private var isDelete=false
 
     fun startUpload(targetStr: String, fileName: String){
         autoZip(targetStr,fileName)
     }
+
     fun startUpload(targetPaths: List<String>, fileName: String){
         autoZip(targetPaths,fileName)
     }
@@ -28,6 +30,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onFinish() {
                 val path = FileAddress().getPathZip(fileName)
+                isDelete=true
                 upload(path)
             }
             override fun onError(msg: String?) {
@@ -44,6 +47,7 @@ class FileUploadManager(private val uploadToken:String) {
             }
             override fun onFinish() {
                 val path = FileAddress().getPathZip(fileName)
+                isDelete=true
                 upload(path)
             }
             override fun onError(msg: String?) {
@@ -52,9 +56,8 @@ class FileUploadManager(private val uploadToken:String) {
         })
     }
 
-    private fun upload(path: String) {
-        val dirPath = Constants.RECORDER_PATH
-        val recorder = FileRecorder(dirPath)
+    fun upload(path: String) {
+        val recorder = FileRecorder(FileAddress().getPathRecorder())
         //默认使用 key 的 url_safe_base64 编码字符串作为断点记录文件的文件名
         //避免记录文件冲突（特别是 key 指定为 null 时），也可自定义文件名(下方为默认实现)：
         val keyGen = object : KeyGenerator {
@@ -79,7 +82,8 @@ class FileUploadManager(private val uploadToken:String) {
         uploadManager.put(path, null, uploadToken,
             { key, info, response ->
                 if (info?.isOK == true) {
-                    FileUtils.deleteFile(File(path))
+                    if (isDelete)
+                        FileUtils.deleteFile(File(path))
                     val keyStr=response.optString("key")
                     val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
                     Log.d("debug",downloadUrl)

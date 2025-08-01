@@ -25,7 +25,7 @@ import com.bll.lnkcommon.mvp.model.book.Book;
 import com.bll.lnkcommon.mvp.model.AreaBean;
 import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity;
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
 import com.bll.lnkcommon.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkcommon.utils.ActivityManager;
@@ -114,11 +114,10 @@ public class MethodManager {
     public static void gotoDocument(Context context,File file){
         String format=FileUtils.getUrlFormat(file.getPath());
         if (format.equals(".ppt") || format.equals(".pptx")){
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
-            intent.putExtra("path", file.getPath());
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)) {
+                String url=SPUtil.INSTANCE.getString(file.getName());
+                gotoPptDetails(context,file.getPath(),url);
+            }
         }
         else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
             List<String> images=new ArrayList<>();
@@ -140,6 +139,17 @@ public class MethodManager {
                 intent.putExtra("key_book_type", 1);
                 intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+        }
+    }
+
+    public static void gotoPptDetails(Context context,String localPath,String url){
+        if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.putExtra("path", localPath);
+            intent.putExtra("url", url);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 

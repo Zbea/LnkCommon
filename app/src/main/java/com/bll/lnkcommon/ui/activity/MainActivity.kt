@@ -13,29 +13,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.*
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.manager.AppDaoManager
-import com.bll.lnkcommon.manager.BookDaoManager
-import com.bll.lnkcommon.manager.CalenderDaoManager
-import com.bll.lnkcommon.manager.DiaryDaoManager
-import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
-import com.bll.lnkcommon.manager.NoteContentDaoManager
-import com.bll.lnkcommon.manager.NoteDaoManager
-import com.bll.lnkcommon.manager.RecordDaoManager
-import com.bll.lnkcommon.manager.WallpaperDaoManager
-import com.bll.lnkcommon.mvp.model.AreaBean
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IQiniuView
+import com.bll.lnkcommon.ui.activity.account.AccountInfoActivity
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.adapter.MainListAdapter
 import com.bll.lnkcommon.ui.fragment.*
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.SPUtil
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_main.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
@@ -138,10 +125,10 @@ class MainActivity : BaseActivity(){
 
         iv_user.setOnClickListener {
             if (MethodManager.isLogin()){
-                customStartActivity(Intent(this,AccountInfoActivity::class.java))
+                customStartActivity(Intent(this, AccountInfoActivity::class.java))
             }
             else{
-                customStartActivity(Intent(this,AccountLoginActivity::class.java))
+                customStartActivity(Intent(this, AccountLoginActivity::class.java))
             }
         }
 

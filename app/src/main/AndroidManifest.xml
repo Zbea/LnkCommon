@@ -85,7 +85,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.AccountLoginActivity"
+        <activity android:name=".ui.activity.account.AccountLoginActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
@@ -126,10 +126,10 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.AccountInfoActivity"
+        <activity android:name=".ui.activity.account.AccountInfoActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.AccountRegisterActivity"
+        <activity android:name=".ui.activity.account.AccountRegisterActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.DateActivity"
@@ -179,7 +179,7 @@
         <activity android:name=".ui.activity.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.PermissionSettingActivity"
+        <activity android:name=".ui.activity.account.PermissionSettingActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.FileDrawingActivity"

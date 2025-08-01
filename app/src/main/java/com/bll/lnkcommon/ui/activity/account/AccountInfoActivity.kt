@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,20 +14,41 @@ import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.mvp.presenter.SmsPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
 import com.bll.lnkcommon.utils.SPUtil
+import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_info.*
 import kotlinx.android.synthetic.main.ac_account_info.rv_list
-import kotlinx.android.synthetic.main.common_title.*
-import kotlinx.android.synthetic.main.fragment_app.*
 import org.greenrobot.eventbus.EventBus
 
-class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
-
+class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsView {
+    private val smsPresenter= SmsPresenter(this)
     private val presenter=AccountInfoPresenter(this)
     private var nickname=""
     private var students= mutableListOf<StudentBean>()
     private var mAdapter: AccountStudentAdapter?=null
     private var position=0
+    private var phone=""
+    private var type=0
+
+    override fun onSms() {
+        showToast("短信发送成功")
+        if (type==0){
+            InputContentDialog(this,"请输入验证码",1).builder().setOnDialogClickListener{
+                smsPresenter.checkPhone(it)
+            }
+        }
+    }
+    override fun onCheckSuccess() {
+        editPhone()
+    }
+
+    override fun onEditPhone() {
+        showToast("修改手机号码成功")
+        mUser?.telNumber=phone
+        tv_phone.text=getPhoneStr(phone)
+    }
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -70,7 +91,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
-            tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
+            tv_phone.text =getPhoneStr(telNumber)
         }
 
         btn_edit_name.setOnClickListener {
@@ -79,6 +100,11 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
         btn_add.setOnClickListener {
             add()
+        }
+
+        btn_edit_phone.setOnClickListener {
+            type=0
+            smsPresenter.sms(mUser?.telNumber!!)
         }
 
         btn_edit_password.setOnClickListener {
@@ -119,6 +145,23 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 }
             }
         }
+    }
+
+    private fun getPhoneStr(phone:String):String{
+        return if (ToolUtils.isPhoneNum(phone)) phone.substring(0, 3) + "****" + phone.substring(7, 11) else ""
+    }
+
+    private fun editPhone(){
+        EditPhoneDialog(this).builder().setOnDialogClickListener(object : EditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                this@AccountInfoActivity.phone=phone
+                presenter.editPhone(code, phone)
+            }
+            override fun onPhone(phone: String) {
+                type=1
+                smsPresenter.sms(phone)
+            }
+        })
     }
 
     /**

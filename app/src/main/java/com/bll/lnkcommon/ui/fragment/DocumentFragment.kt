@@ -22,7 +22,9 @@ import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.ui.adapter.DocumentAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
@@ -36,6 +38,18 @@ class DocumentFragment : BaseFragment() {
     private var longBeans = mutableListOf<ItemList>()
     private var position=0
     private var documentTypeNames= mutableListOf<String>()
+
+    override fun onUpload(token: String) {
+        val file= mAdapter?.data?.get(position)
+        FileUploadManager(token).apply {
+            upload(file?.path!!)
+            setCallBack{
+                hideLoading()
+                SPUtil.putString(file.name,it)
+                MethodManager.gotoDocument(requireActivity(), file)
+            }
+        }
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_tab
@@ -107,7 +121,6 @@ class DocumentFragment : BaseFragment() {
         initTab()
     }
 
-
     private fun initTab() {
         val path = FileAddress().getPathDocument("默认")
         if (!FileUtils.isExist(path)){
@@ -155,8 +168,22 @@ class DocumentFragment : BaseFragment() {
             rv_list?.addItemDecoration(SpaceGridItemDeco(3, 20))
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                val file = mAdapter?.data?.get(position)
-                MethodManager.gotoDocument(requireActivity(), file!!)
+                this@DocumentFragment.position=position
+                val file = data[position]
+                val format=FileUtils.getUrlFormat(file.path)
+                if (format.equals(".ppt") || format.equals(".pptx")) {
+                    val url= SPUtil.getString(file.name)
+                    if (url.isNotEmpty()){
+                        MethodManager.gotoDocument(requireActivity(), file)
+                    }
+                    else{
+                        showLoading()
+                        mQiniuPresenter.getToken()
+                    }
+                }
+                else{
+                    MethodManager.gotoDocument(requireActivity(), file)
+                }
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@DocumentFragment.position=position

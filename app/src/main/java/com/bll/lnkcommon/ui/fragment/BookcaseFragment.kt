@@ -13,7 +13,7 @@ import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.book.Book
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.book.BookcaseTypeActivity
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX

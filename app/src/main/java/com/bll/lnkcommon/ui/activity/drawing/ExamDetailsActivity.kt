@@ -31,7 +31,12 @@ class ExamDetailsActivity:BaseDrawingActivity() {
         showView(iv_score)
 
         iv_score.setOnClickListener {
-            val answerImages= examBean?.answerUrl!!.split(",") as MutableList<String>
+            val answerImages=if (examBean?.answerUrl.isNullOrEmpty()){
+                mutableListOf()
+            }
+            else{
+                examBean?.answerUrl?.split(",") as MutableList<String>
+            }
             ScoreDetailsDialog(this,examBean!!.examName,examBean!!.score.toDouble(),examBean?.questionType!!,examBean?.questionMode!!,answerImages,examBean!!.question).builder()
         }
 

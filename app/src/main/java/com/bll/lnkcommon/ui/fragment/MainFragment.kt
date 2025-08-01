@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.AUTO_REFRESH_EVENT
 import com.bll.lnkcommon.Constants.CALENDER_SET_EVENT
@@ -11,7 +10,6 @@ import com.bll.lnkcommon.Constants.USER_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -22,16 +20,15 @@ import com.bll.lnkcommon.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.manager.DiaryDaoManager
-import com.bll.lnkcommon.manager.FreeNoteDaoManager
-import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudListBean
-import com.bll.lnkcommon.mvp.model.FreeNoteBean
-import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
+import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
+import com.bll.lnkcommon.mvp.presenter.SmsPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
-import com.bll.lnkcommon.ui.activity.AccountLoginActivity
+import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.MessageListActivity
 import com.bll.lnkcommon.ui.activity.ScreenshotListActivity
@@ -73,8 +70,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Random
 
-class MainFragment:BaseFragment(),IRelationView{
-
+class MainFragment:BaseFragment(),IRelationView,ISmsView{
+    private var smsPresenter= SmsPresenter(this)
     private val presenter=RelationPresenter(this)
     private var nowDayPos=1
     private var nowDay=0L
@@ -85,6 +82,17 @@ class MainFragment:BaseFragment(),IRelationView{
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
+
+    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
+
+    override fun onSms() {
+        showToast("短信发送成功")
+    }
+    override fun onCheckSuccess() {
+        showToast("日记密码设置成功")
+        MethodManager.savePrivacyPassword(0,privacyPassword)
+        privacyPasswordDialog?.getPrivacyPassword()
+    }
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
@@ -119,7 +127,7 @@ class MainFragment:BaseFragment(),IRelationView{
                 customStartActivity(Intent(requireActivity(),MessageListActivity::class.java))
             }
             else{
-                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
             }
         }
 
@@ -129,7 +137,7 @@ class MainFragment:BaseFragment(),IRelationView{
 
         ll_diary.setOnClickListener {
             if (!MethodManager.isLogin()){
-                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
                 return@setOnClickListener
             }
             startDiaryActivity(0)
@@ -137,7 +145,7 @@ class MainFragment:BaseFragment(),IRelationView{
 
         ll_diary.setOnLongClickListener {
             if (!MethodManager.isLogin()){
-                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
                return@setOnLongClickListener true
             }
             onLongDiary()
@@ -157,7 +165,7 @@ class MainFragment:BaseFragment(),IRelationView{
                 customStartActivity(Intent(requireActivity(),ScreenshotListActivity::class.java))
             }
             else{
-                customStartActivity(Intent(requireActivity(),AccountLoginActivity::class.java))
+                customStartActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
             }
         }
 
@@ -342,9 +350,19 @@ class MainFragment:BaseFragment(),IRelationView{
      */
     private fun startDiaryActivity(typeId:Int){
         if (privacyPassword!=null&&privacyPassword?.isSet==true){
-            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
-            }
+            privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
+            privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                override fun onClick() {
+                    customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+                }
+                override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                    this@MainFragment.privacyPassword=privacyPassword
+                    smsPresenter.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter.sms(phone)
+                }
+            })
         }
         else{
             customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
@@ -373,21 +391,34 @@ class MainFragment:BaseFragment(),IRelationView{
             when(it.id){
                 1->{
                     if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                            privacyPassword=it
-                            showToast("日记密码设置成功")
-                        }
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
+                            override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                this@MainFragment.privacyPassword=privacyPassword
+                                smsPresenter.checkPhone(code)
+                            }
+                            override fun onPhone(phone: String) {
+                                smsPresenter.sms(phone)
+                            }
+                        })
                     }
                     else{
                         val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
                         CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
                             override fun ok() {
-                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                    MethodManager.savePrivacyPassword(0,privacyPassword)
-                                }
+                                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
+                                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                                    override fun onClick() {
+                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                        MethodManager.savePrivacyPassword(0,privacyPassword)
+                                    }
+                                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                        this@MainFragment.privacyPassword=privacyPassword
+                                        smsPresenter.checkPhone(code)
+                                    }
+                                    override fun onPhone(phone: String) {
+                                        smsPresenter.sms(phone)
+                                    }
+                                })
                             }
                         })
                     }

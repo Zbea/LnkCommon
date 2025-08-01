@@ -2,14 +2,16 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.utils.KeyboardUtils
 
-class InputContentDialog(val context: Context,val string: String) {
+class InputContentDialog(val context: Context,val string: String,val type: Int) {
 
+    constructor(context: Context ,string: String) :this(context,string,0)
 
     fun builder(): InputContentDialog {
         val dialog = Dialog(context)
@@ -20,6 +22,9 @@ class InputContentDialog(val context: Context,val string: String) {
         val name = dialog.findViewById<EditText>(R.id.ed_name)
         name.hint=string
         dialog.show()
+
+        if (type==1)
+            name.inputType= InputType.TYPE_CLASS_NUMBER
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()

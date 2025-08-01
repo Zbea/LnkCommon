@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
+import com.bll.lnkcommon.widget.SpaceGridItemDeco2
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -28,7 +30,7 @@ class ItemSelectorDialog(val context: Context, val titleStr: String,val items:Mu
         rv_list?.layoutManager = GridLayoutManager(context,2)
         val mAdapter = MyAdapter(R.layout.item_select_name, items)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(2, 0, 30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco2(20, DP2PX.dip2px(context,15f)))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             listener?.onClick(position)
@@ -55,7 +57,6 @@ class ItemSelectorDialog(val context: Context, val titleStr: String,val items:Mu
     class MyAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name,item.name)
-            helper.setChecked(R.id.cb_check,item.isCheck)
         }
     }
 

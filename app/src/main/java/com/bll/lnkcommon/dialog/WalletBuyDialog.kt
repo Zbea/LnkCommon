@@ -44,9 +44,9 @@ class WalletBuyDialog(val context: Context, val list: List<AccountQdBean>) {
 
         btn_ok.setOnClickListener {
             dismiss()
-            var payType=if (rb_wx.isChecked)  0  else  1
+            val payType=if (rb_wx.isChecked)  2  else  1
             if (listener!=null)
-                listener?.onClick(id.toString())
+                listener?.onClick(payType,id.toString())
         }
 
         if (list.isNotEmpty()) {
@@ -68,7 +68,7 @@ class WalletBuyDialog(val context: Context, val list: List<AccountQdBean>) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(id:String)
+        fun onClick(payType:Int,id:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

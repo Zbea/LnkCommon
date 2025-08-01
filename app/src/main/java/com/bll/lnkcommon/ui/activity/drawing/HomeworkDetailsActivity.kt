@@ -55,7 +55,12 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
                 ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),if (homeworkBean?.subType==10)10 else homeworkBean?.questionType!!,homeworkBean?.question!!,items).builder()
             }
             else{
-                val answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
+                val answerImages=if (homeworkBean?.answerUrl.isNullOrEmpty()){
+                    mutableListOf()
+                }
+                else{
+                    homeworkBean!!.answerUrl?.split(",") as MutableList<String>
+                }
                 ScoreDetailsDialog(this,homeworkBean!!.title,homeworkBean!!.score.toDouble(),homeworkBean?.questionType!!,homeworkBean?.questionMode!!,answerImages,homeworkBean!!.question).builder()
             }
         }

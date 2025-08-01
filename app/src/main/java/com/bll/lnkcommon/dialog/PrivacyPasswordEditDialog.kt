@@ -2,16 +2,12 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.PrivacyPassword
-import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.KeyboardUtils
 import com.bll.lnkcommon.utils.MD5Utils
-import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.SToast
 
 
@@ -19,7 +15,7 @@ class PrivacyPasswordEditDialog(private val context: Context,private val type:In
 
     fun builder(): PrivacyPasswordEditDialog {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_check_password_edit)
+        dialog.setContentView(R.layout.dialog_privacy_password_edit)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
@@ -52,7 +48,7 @@ class PrivacyPasswordEditDialog(private val context: Context,private val type:In
                 SToast.showText(R.string.password_different)
                 return@setOnClickListener
             }
-            privacyPassword?.password= MD5Utils.digest(privacyPassword?.password)
+            privacyPassword?.password= MD5Utils.digest(passwordStr)
             MethodManager.savePrivacyPassword(type, privacyPassword)
             dialog.dismiss()
             listener?.onClick()

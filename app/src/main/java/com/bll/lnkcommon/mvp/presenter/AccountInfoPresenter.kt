@@ -9,6 +9,22 @@ import com.bll.lnkcommon.net.*
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
+    fun editPhone(code: String,phone: String) {
+        val body = RequestUtils.getBody(
+            Pair.create("telNumber", phone),
+            Pair.create("code", code)
+        )
+        val editName = RetrofitManager.service.editPhone(body)
+        doRequest(editName, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditPhone()
+            }
+        }, true)
+    }
+
     fun editName(name: String) {
         val body = RequestUtils.getBody(
             Pair.create("nickName", name)

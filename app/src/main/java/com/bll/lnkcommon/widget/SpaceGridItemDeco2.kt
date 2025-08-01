@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class SpaceGridItemDecoScore(private val width: Int, private val height: Int) : RecyclerView.ItemDecoration() {
+class SpaceGridItemDeco2(private val width: Int, private val height: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         //不是第一个的格子都设一个左边和底部的间距

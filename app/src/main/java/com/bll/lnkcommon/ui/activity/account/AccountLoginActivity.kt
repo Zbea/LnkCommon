@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.mvp.model.User

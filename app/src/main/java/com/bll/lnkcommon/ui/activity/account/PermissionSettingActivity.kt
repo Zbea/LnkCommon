@@ -1,8 +1,7 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.account
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
@@ -13,9 +12,7 @@ import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.PermissionSettingPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IPermissionSettingView
 import com.bll.lnkcommon.ui.adapter.PermissionTimeAdapter
-import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_student_permission_set.*
-import org.greenrobot.eventbus.EventBus
 
 class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
 
@@ -34,9 +31,9 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
     override fun onStudent(studentBean: StudentBean) {
         mStudentBean=studentBean
 
-        st_money.isChecked=mStudentBean?.isAllowMoney!!
-        st_book.isChecked=mStudentBean?.isAllowBook!!
-        st_video.isChecked=mStudentBean?.isAllowVideo!!
+        st_money.setImageResource(if (mStudentBean?.isAllowMoney!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
+        st_book.setImageResource(if (mStudentBean?.isAllowBook!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
+        st_video.setImageResource(if (mStudentBean?.isAllowVideo!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
         setBookStateView()
         setVideoStateView()
 
@@ -55,16 +52,16 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
         when (type) {
             1 -> {
                 mStudentBean?.isAllowMoney=!mStudentBean?.isAllowMoney!!
-                st_money.isChecked=mStudentBean?.isAllowMoney!!
+                st_money.setImageResource(if (mStudentBean?.isAllowMoney!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
             }
             2 -> {
                 mStudentBean?.isAllowBook=!mStudentBean?.isAllowBook!!
-                st_book.isChecked=mStudentBean?.isAllowBook!!
+                st_book.setImageResource(if (mStudentBean?.isAllowBook!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
                 setBookStateView()
             }
             3 -> {
                 mStudentBean?.isAllowVideo=!mStudentBean?.isAllowVideo!!
-                st_video.isChecked=mStudentBean?.isAllowVideo!!
+                st_video.setImageResource(if (mStudentBean?.isAllowVideo!!) R.mipmap.icon_switch_true else R.mipmap.icon_switch_false)
                 setVideoStateView()
             }
         }

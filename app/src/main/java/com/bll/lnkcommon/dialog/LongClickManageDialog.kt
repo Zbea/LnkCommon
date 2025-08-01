@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.ItemList
-import com.bll.lnkcommon.widget.SpaceGridItemDecoScore
+import com.bll.lnkcommon.widget.SpaceGridItemDeco2
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -32,7 +32,7 @@ class LongClickManageDialog(val context: Context, val name:String, val lists:Mut
         rv_list?.layoutManager = GridLayoutManager(context,2)
         val mAdapter = MyAdapter(R.layout.item_long_click, lists)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDecoScore(20, 30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco2(20, 30))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             onClickListener?.onClick(position)

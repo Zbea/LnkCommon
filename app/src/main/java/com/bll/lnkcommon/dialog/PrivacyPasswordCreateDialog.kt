@@ -1,116 +1,69 @@
 package com.bll.lnkcommon.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.widget.Button
+import android.os.CountDownTimer
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.PrivacyPassword
-import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.utils.KeyboardUtils
 import com.bll.lnkcommon.utils.MD5Utils
-import com.bll.lnkcommon.utils.SPUtil
-import com.bll.lnkcommon.utils.SToast
+import com.bll.lnkcommon.utils.ToolUtils
 
 
 /**
  * 0日记 1密本
  */
 class PrivacyPasswordCreateDialog(private val context: Context,private val type:Int=0) {
-
-    private val popWindowBeans= mutableListOf<PopupBean>()
-
     fun builder(): PrivacyPasswordCreateDialog {
         val dialog= Dialog(context)
-        dialog.setContentView(R.layout.dialog_check_password_create)
+        dialog.setContentView(R.layout.dialog_privacy_password_create)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
-
-        popWindowBeans.add(
-            PopupBean(
-                0,
-                 context.getString(R.string.password_question_name),
-                false
-            )
-        )
-        popWindowBeans.add(
-            PopupBean(
-                1,
-                context.getString(R.string.password_question_father_name),
-                false
-            )
-        )
-        popWindowBeans.add(
-            PopupBean(
-                2,
-                context.getString(R.string.password_question_birthday),
-                false
-            )
-        )
-        popWindowBeans.add(
-            PopupBean(
-                3,
-                context.getString(R.string.password_question_movie),
-                false
-            )
-        )
 
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
 
         val etPassword=dialog.findViewById<EditText>(R.id.et_password)
-        val etPasswordAgain=dialog.findViewById<EditText>(R.id.et_password_again)
-        val etPasswordQuestion=dialog.findViewById<EditText>(R.id.et_question_password)
-        val tvQuestion=dialog.findViewById<TextView>(R.id.tv_question_password)
-        tvQuestion.setOnClickListener {
-            PopupRadioList(context, popWindowBeans, tvQuestion, 5).builder()
-            .setOnSelectListener { item ->
-                tvQuestion.text = item.name
+        val ed_phone = dialog.findViewById<TextView>(R.id.et_phone)
+        ed_phone.text = if (MethodManager.getUser().telNumber.isNullOrEmpty()) "" else MethodManager.getUser().telNumber
+        val ed_code = dialog.findViewById<EditText>(R.id.et_code)
+        val btn_code = dialog.findViewById<TextView>(R.id.btn_code)
+        btn_code.setOnClickListener {
+            val phone=ed_phone.text.toString()
+            if (ToolUtils.isPhoneNum(phone)){
+                listener?.onPhone(phone)
+                btn_code.isEnabled = false
+                btn_code.isClickable = false
+                object : CountDownTimer(60 * 1000, 1000) {
+                    override fun onFinish() {
+                        btn_code.isEnabled = true
+                        btn_code.isClickable = true
+                        btn_code.text = "获取验证码"
+                    }
+                    @SuppressLint("SetTextI18n")
+                    override fun onTick(millisUntilFinished: Long) {
+                        btn_code.text = "${millisUntilFinished / 1000}s"
+                    }
+                }.start()
             }
         }
 
         btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
-            val passwordAgainStr=etPasswordAgain?.text.toString()
-            val answerStr=etPasswordQuestion?.text.toString()
-            val questionStr=tvQuestion?.text.toString()
-            if (questionStr==context.getString(R.string.password_question_select_str)){
-                return@setOnClickListener
+            val code=ed_code?.text.toString()
+            if (passwordStr.isNotEmpty()&&code.isNotEmpty()){
+                val checkPassword= PrivacyPassword()
+                checkPassword.password= MD5Utils.digest(passwordStr)
+                checkPassword.isSet=true
+                dialog.dismiss()
+                listener?.onSave(checkPassword,code)
             }
-            if (answerStr.isEmpty()){
-                SToast.showText(R.string.password_question_str)
-                return@setOnClickListener
-            }
-
-            if (passwordStr.isEmpty()){
-                SToast.showText(R.string.password_input)
-                return@setOnClickListener
-            }
-            if (passwordAgainStr.isEmpty()){
-                SToast.showText(R.string.password_again_error)
-                return@setOnClickListener
-            }
-
-            if (passwordStr!=passwordAgainStr){
-                SToast.showText(R.string.password_different)
-                return@setOnClickListener
-            }
-            val privacyPassword= PrivacyPassword()
-            privacyPassword.question=tvQuestion.text.toString()
-            privacyPassword.answer=answerStr
-            privacyPassword.isSet=true
-            privacyPassword.password= MD5Utils.digest(passwordStr)
-
-            MethodManager.savePrivacyPassword(type, privacyPassword)
-
-            dialog.dismiss()
-            listener?.onClick(privacyPassword)
-
         }
 
         dialog.setOnDismissListener {
@@ -123,8 +76,9 @@ class PrivacyPasswordCreateDialog(private val context: Context,private val type:
 
     private var listener: OnDialogClickListener? = null
 
-    fun interface OnDialogClickListener {
-        fun onClick(privacyPassword: PrivacyPassword)
+    interface OnDialogClickListener {
+        fun onSave(privacyPassword: PrivacyPassword,code:String)
+        fun onPhone(phone:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

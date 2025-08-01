@@ -34,14 +34,20 @@ public interface IContractView {
         void getAccount(User user);
     }
 
+    //短信回调
+    interface ISmsView extends IBaseView {
+        default void onSms(){}
+        default void onCheckSuccess(){}
+    }
+
     //注册 找回密码
     interface IRegisterView extends IBaseView {
-        void onSms();
         void onRegister();
         void onFindPsd();
     }
 
     interface IAccountInfoView extends IBaseView {
+        void onEditPhone();
         void onEditNameSuccess();
         void onBind();
         void onUnbind();
