@@ -1,5 +1,6 @@
 package com.bll.lnkcommon
 
+import android.graphics.Bitmap
 import com.bll.lnkcommon.MyApplication.Companion.mContext
 import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
@@ -8,6 +9,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 import java.util.*
 
 object DataBeanManager {
+
+    var copyBitmap: Bitmap?=null//剪切、复制保存bitmap
 
     var grades= mutableListOf<ItemList>()
     var typeGrades= mutableListOf<ItemList>()

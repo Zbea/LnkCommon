@@ -102,7 +102,7 @@
     <string name="textbook_tab_homework_other">参考教辅</string>
 
     <string name="password_input">输入密码</string>
-    <string name="password_old">原先密码</string>
+    <string name="password_old">原密码</string>
     <string name="password_new">新设密码</string>
     <string name="password_again">再输密码</string>
     <string name="password_find">找回密码</string>

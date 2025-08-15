@@ -42,20 +42,20 @@ class FileAddress {
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/${fileName}draw"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}note/draw"
     }
 
     fun getPathHomeworkBook(fileName: String):String{
         return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/$fileName"
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/${fileName}draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/${fileName}note/draw"
     }
     fun getPathTextBook(fileName: String):String{
         return "$TEXTBOOK_PATH/${getAccountId()}/textbook/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}note/draw"
     }
     /**
      * zip保存地址

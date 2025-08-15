@@ -30,15 +30,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
     private var mAdapter: AccountStudentAdapter?=null
     private var position=0
     private var phone=""
-    private var type=0
 
     override fun onSms() {
         showToast("短信发送成功")
-        if (type==0){
-            InputContentDialog(this,"请输入验证码",1).builder().setOnDialogClickListener{
-                smsPresenter.checkPhone(it)
-            }
-        }
     }
     override fun onCheckSuccess() {
         editPhone()
@@ -103,8 +97,15 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
         }
 
         btn_edit_phone.setOnClickListener {
-            type=0
-            smsPresenter.sms(mUser?.telNumber!!)
+            EditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : EditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    this@AccountInfoActivity.phone=phone
+                    smsPresenter.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter.sms(phone)
+                }
+            })
         }
 
         btn_edit_password.setOnClickListener {
@@ -158,7 +159,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
                 presenter.editPhone(code, phone)
             }
             override fun onPhone(phone: String) {
-                type=1
                 smsPresenter.sms(phone)
             }
         })

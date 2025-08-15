@@ -9,14 +9,21 @@ import android.view.EinkPWInterface
 import android.view.PWDrawObjectHandler
 import android.view.PWInputPoint
 import android.view.View
+import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.GeometryScaleDialog
 import com.bll.lnkcommon.mvp.model.PopupBean
 import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.ll_drawing_edit
 import kotlinx.android.synthetic.main.ac_drawing.ll_geometry
 import kotlinx.android.synthetic.main.ac_drawing.v_content
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_copy
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_crop
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_enclosing
+import kotlinx.android.synthetic.main.common_drawing_edit.ll_stick
+import kotlinx.android.synthetic.main.common_drawing_edit.tv_edit_out
 import kotlinx.android.synthetic.main.common_drawing_geometry.iv_angle
 import kotlinx.android.synthetic.main.common_drawing_geometry.iv_arc
 import kotlinx.android.synthetic.main.common_drawing_geometry.iv_axis
@@ -46,6 +53,7 @@ import kotlinx.android.synthetic.main.common_drawing_geometry.tv_reduce
 import kotlinx.android.synthetic.main.common_drawing_geometry.tv_revocation
 import kotlinx.android.synthetic.main.common_drawing_geometry.tv_scale
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_erasure
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_page_down
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_page_up
@@ -74,8 +82,34 @@ abstract class BaseDrawingActivity : BaseActivity() {
         if (iv_score!=null)
             setViewElikUnable(iv_score)
 
+        if (ll_drawing_edit!=null)
+            setViewElikUnable(ll_drawing_edit)
+
         initClick()
         initGeometryView()
+        initDrawingEdit()
+
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                if (elik?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                    if (isStick&&DataBeanManager.copyBitmap!=null){
+                        elik?.onLassoPaste(DataBeanManager.copyBitmap)
+                        DataBeanManager.copyBitmap=null
+                        isStick=false
+                    }
+                }
+                elik?.setShifted(isCurrent&&isParallel)
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
+                if (elik?.curDrawObjStatus == true){
+                    reDrawGeometry(elik!!)
+                }
+                onElikSava()
+                elik?.saveBitmap(true) {}
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+            }
+        })
     }
 
     open fun onInStanceElik(){
@@ -112,6 +146,45 @@ abstract class BaseDrawingActivity : BaseActivity() {
             onCatalog()
         }
 
+        iv_edit?.setOnClickListener {
+            showView(ll_drawing_edit)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LASSO)
+        }
+    }
+
+    private var isStick=false
+
+    private fun initDrawingEdit(){
+        ll_enclosing?.setOnClickListener {
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_LASSO)
+            isStick=false
+        }
+        ll_copy?.setOnClickListener {
+            isStick=false
+            DataBeanManager.copyBitmap=elik?.onLassoCopy()
+            if (DataBeanManager.copyBitmap!=null)
+                showToast("复制成功")
+        }
+        ll_crop?.setOnClickListener {
+            isStick=false
+            DataBeanManager.copyBitmap=elik?.onLassoCut()
+            if (DataBeanManager.copyBitmap!=null)
+                showToast("剪切成功")
+        }
+        ll_stick?.setOnClickListener {
+            if (DataBeanManager.copyBitmap!=null){
+                elik?.onLassoReset()
+                isStick=true
+            }
+            else{
+                showToast("暂无内容，无法粘贴")
+            }
+        }
+        tv_edit_out?.setOnClickListener {
+            isStick=false
+            disMissView(ll_drawing_edit)
+            setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
+        }
     }
 
     /**
@@ -265,21 +338,6 @@ abstract class BaseDrawingActivity : BaseActivity() {
                 tv_scale?.callOnClick()
             }
         }
-
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
-                elik?.setShifted(isCurrent&&isParallel)
-            }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
-                if (elik?.curDrawObjStatus == true){
-                    reDrawGeometry(elik!!)
-                }
-                onElikSava()
-                elik?.saveBitmap(true) {}
-            }
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-            }
-        })
     }
 
     /**
@@ -526,6 +584,10 @@ abstract class BaseDrawingActivity : BaseActivity() {
     open fun setDrawingTitle(title:String){
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        elik?.onLassoReset()
+    }
 
 }
 
