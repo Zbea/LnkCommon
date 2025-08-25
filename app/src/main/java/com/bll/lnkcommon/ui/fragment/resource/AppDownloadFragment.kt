@@ -31,12 +31,8 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
     private var presenter= AppCenterPresenter(this)
     private var mAdapter: AppCenterListAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
-    private var currentDownLoadTask: BaseDownloadTask?=null
     private var position=0
     private var supply=1
-
-    override fun onType(commonData: CommonData) {
-    }
 
     override fun onAppList(appBean: AppList) {
         setPageNumber(appBean.total)
@@ -48,11 +44,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
         apps[position].buyStatus=1
         mAdapter?.notifyItemChanged(position)
 
-        if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-            currentDownLoadTask = downLoadStart(apps[position])
-        } else {
-            showToast("正在下载安装")
-        }
+        downLoadStart(apps[position])
     }
 
 
@@ -109,11 +101,33 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
                 }
                 else{
                     val idName=app.applicationId.toString()
-                    if (!isInstalled(idName)) {
-                        if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-                            currentDownLoadTask = downLoadStart(app)
-                        } else {
-                            showToast("正在下载安装")
+                    if (index==2){
+                        val apkPath=FileAddress().getPathApk(idName)
+                        if (AppDaoManager.getInstance().queryBeanByPackageName(app.packageName)==null){
+                            if (File(apkPath).exists()) {
+                                installApk(apkPath)
+                            }
+                            else{
+                                downLoadStart(app)
+                            }
+                        }
+                        else{
+                            if (AppUtils.isAvailable(requireActivity(),app.packageName)){
+                                showToast("已安装")
+                            }
+                            else{
+                                if (File(apkPath).exists()) {
+                                    installApk(apkPath)
+                                }
+                                else{
+                                    downLoadStart(app)
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        if (!isInstalled(idName)) {
+                            downLoadStart(app)
                         }
                     }
                 }
@@ -135,11 +149,9 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
             override fun completed(task: BaseDownloadTask?) {
                 hideLoading()
                 installApk(targetFileStr)
-                currentDownLoadTask = null//完成了废弃线程
             }
             override fun error(task: BaseDownloadTask?, e: Throwable?) {
                 hideLoading()
-                currentDownLoadTask = null//完成了废弃线程
                 showToast("下载失败")
             }
         })
@@ -190,13 +202,15 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
         if (msgFlag== Constants.APP_INSTALL_EVENT){
             if (index==2){
                 val bean=apps[position]
-                val item=AppBean()
-                item.appName=bean.nickname
-                item.packageName=bean.packageName
-                item.imageByte= AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
-                item.subType=1
-                AppDaoManager.getInstance().insertOrReplace(item)
-                EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
+                if (AppDaoManager.getInstance().queryBeanByPackageName(bean.packageName)==null){
+                    val item= AppBean()
+                    item.appName=bean.nickname
+                    item.packageName=bean.packageName
+                    item.imageByte= AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
+                    item.time=System.currentTimeMillis()
+                    AppDaoManager.getInstance().insertOrReplace(item)
+                    EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
+                }
             }
         }
     }

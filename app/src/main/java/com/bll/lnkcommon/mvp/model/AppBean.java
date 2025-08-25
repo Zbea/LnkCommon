@@ -21,23 +21,21 @@ public class AppBean {
     public String appName;
     public String packageName;
     public byte[] imageByte;
-    public int type;//1首页菜单2工具
-    public int subType;//分类
-    public int sort;
+    public long time;
+    public boolean isTool;
     @Transient
     public boolean isCheck;
 
-    @Generated(hash = 743368013)
+    @Generated(hash = 2108146592)
     public AppBean(Long id, long userId, String appName, String packageName,
-            byte[] imageByte, int type, int subType, int sort) {
+            byte[] imageByte, long time, boolean isTool) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
         this.packageName = packageName;
         this.imageByte = imageByte;
-        this.type = type;
-        this.subType = subType;
-        this.sort = sort;
+        this.time = time;
+        this.isTool = isTool;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -72,24 +70,16 @@ public class AppBean {
     public void setImageByte(byte[] imageByte) {
         this.imageByte = imageByte;
     }
-    public int getType() {
-        return this.type;
+    public long getTime() {
+        return this.time;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setTime(long time) {
+        this.time = time;
     }
-    public int getSort() {
-        return this.sort;
+    public boolean getIsTool() {
+        return this.isTool;
     }
-    public void setSort(int sort) {
-        this.sort = sort;
+    public void setIsTool(boolean isTool) {
+        this.isTool = isTool;
     }
-    public int getSubType() {
-        return this.subType;
-    }
-    public void setSubType(int subType) {
-        this.subType = subType;
-    }
-
-   
 }

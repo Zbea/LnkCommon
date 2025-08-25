@@ -57,7 +57,7 @@ public class BookDao extends AbstractDao<Book, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"BOOK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"BOOK_ID\" INTEGER NOT NULL UNIQUE ," + // 2: bookId
+                "\"BOOK_ID\" INTEGER NOT NULL ," + // 2: bookId
                 "\"TYPE\" INTEGER NOT NULL ," + // 3: type
                 "\"SUBTYPE_STR\" TEXT," + // 4: subtypeStr
                 "\"IMAGE_URL\" TEXT," + // 5: imageUrl

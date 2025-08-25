@@ -586,7 +586,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        elik?.onLassoReset()
+//        elik?.onLassoReset()
     }
 
 }

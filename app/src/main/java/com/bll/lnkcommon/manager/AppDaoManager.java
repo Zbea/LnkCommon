@@ -50,58 +50,17 @@ public class AppDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    /**
-     * 查找工具应用
-     * @param packageName
-     * @return
-     */
-    public AppBean queryAllByPackageName(String packageName) {
+    public AppBean queryBeanByPackageName(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.Type.eq(2);
-        return dao.queryBuilder().where(whereUser,whereCondition,where2).build().unique();
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
+    }
+    public List<AppBean> queryAll() {
+        return dao.queryBuilder().where(whereUser).build().list();
     }
 
-    /**
-     * 获取工具应用
-     * @return
-     */
-    public List<AppBean> queryTool() {
-        WhereCondition whereCondition1= AppBeanDao.Properties.Type.eq(2);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
-    /**
-     * 获取工具应用
-     * @return
-     */
-    public List<AppBean> queryAPPTool() {
-        WhereCondition whereCondition1= AppBeanDao.Properties.SubType.eq(1);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
-    }
-
-    /**
-     * 应用是否存储
-     * @param packageName
-     * @return
-     */
-    public boolean isExist(String packageName){
-        WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.SubType.eq(1);
-        AppBean appBean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-        return appBean!=null;
-    }
-
-    /**
-     * 应用是否设置为菜单、工具
-     * @param packageName
-     * @param type
-     * @return
-     */
-    public boolean isExist(String packageName,int type){
-        WhereCondition where1= AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.Type.eq(type);
-        AppBean appBean=dao.queryBuilder().where(whereUser,where1,where2).build().unique();
-        return appBean!=null;
+    public List<AppBean> queryToolAll() {
+        WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
 
     public void delete(String packageName) {

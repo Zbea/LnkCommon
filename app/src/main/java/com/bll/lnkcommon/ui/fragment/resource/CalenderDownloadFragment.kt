@@ -48,6 +48,9 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     }
 
     override fun buySuccess() {
+        items[position].buyStatus=1
+        mAdapter?.notifyItemChanged(position)
+        detailsDialog?.setChangeStatus()
     }
 
     override fun getLayoutId(): Int {

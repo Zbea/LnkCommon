@@ -19,7 +19,6 @@ public class Book {
     @Unique
     public Long id;
     public long userId= MethodManager.getAccountId();
-    @Unique
     public int bookId;
     public int type;//1古籍2自然科学3社会科学4思维科学5运动才艺
     public String subtypeStr;//书架所有分类

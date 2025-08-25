@@ -29,9 +29,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         public final static Property AppName = new Property(2, String.class, "appName", false, "APP_NAME");
         public final static Property PackageName = new Property(3, String.class, "packageName", false, "PACKAGE_NAME");
         public final static Property ImageByte = new Property(4, byte[].class, "imageByte", false, "IMAGE_BYTE");
-        public final static Property Type = new Property(5, int.class, "type", false, "TYPE");
-        public final static Property SubType = new Property(6, int.class, "subType", false, "SUB_TYPE");
-        public final static Property Sort = new Property(7, int.class, "sort", false, "SORT");
+        public final static Property Time = new Property(5, long.class, "time", false, "TIME");
+        public final static Property IsTool = new Property(6, boolean.class, "isTool", false, "IS_TOOL");
     }
 
 
@@ -52,9 +51,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
                 "\"APP_NAME\" TEXT," + // 2: appName
                 "\"PACKAGE_NAME\" TEXT," + // 3: packageName
                 "\"IMAGE_BYTE\" BLOB," + // 4: imageByte
-                "\"TYPE\" INTEGER NOT NULL ," + // 5: type
-                "\"SUB_TYPE\" INTEGER NOT NULL ," + // 6: subType
-                "\"SORT\" INTEGER NOT NULL );"); // 7: sort
+                "\"TIME\" INTEGER NOT NULL ," + // 5: time
+                "\"IS_TOOL\" INTEGER NOT NULL );"); // 6: isTool
     }
 
     /** Drops the underlying database table. */
@@ -87,9 +85,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         if (imageByte != null) {
             stmt.bindBlob(5, imageByte);
         }
-        stmt.bindLong(6, entity.getType());
-        stmt.bindLong(7, entity.getSubType());
-        stmt.bindLong(8, entity.getSort());
+        stmt.bindLong(6, entity.getTime());
+        stmt.bindLong(7, entity.getIsTool() ? 1L: 0L);
     }
 
     @Override
@@ -116,9 +113,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         if (imageByte != null) {
             stmt.bindBlob(5, imageByte);
         }
-        stmt.bindLong(6, entity.getType());
-        stmt.bindLong(7, entity.getSubType());
-        stmt.bindLong(8, entity.getSort());
+        stmt.bindLong(6, entity.getTime());
+        stmt.bindLong(7, entity.getIsTool() ? 1L: 0L);
     }
 
     @Override
@@ -134,9 +130,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // appName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // packageName
             cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4), // imageByte
-            cursor.getInt(offset + 5), // type
-            cursor.getInt(offset + 6), // subType
-            cursor.getInt(offset + 7) // sort
+            cursor.getLong(offset + 5), // time
+            cursor.getShort(offset + 6) != 0 // isTool
         );
         return entity;
     }
@@ -148,9 +143,8 @@ public class AppBeanDao extends AbstractDao<AppBean, Long> {
         entity.setAppName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPackageName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setImageByte(cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4));
-        entity.setType(cursor.getInt(offset + 5));
-        entity.setSubType(cursor.getInt(offset + 6));
-        entity.setSort(cursor.getInt(offset + 7));
+        entity.setTime(cursor.getLong(offset + 5));
+        entity.setIsTool(cursor.getShort(offset + 6) != 0);
      }
     
     @Override

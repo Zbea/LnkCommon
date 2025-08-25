@@ -29,6 +29,15 @@ class AppToolActivity:BaseActivity() {
     }
 
     override fun initData() {
+        if (AppDaoManager.getInstance().queryBeanByPackageName(Constants.PACKAGE_GEOMETRY)==null){
+            AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
+                appName="几何绘图"
+                imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
+                packageName=Constants.PACKAGE_GEOMETRY
+                time=System.currentTimeMillis()
+                isTool=false
+            })
+        }
     }
 
     override fun initView() {
@@ -42,28 +51,23 @@ class AppToolActivity:BaseActivity() {
         tv_ok.setOnClickListener {
             for (item in apps){
                 if (item.isCheck){
-                    if (!AppDaoManager.getInstance().isExist(item.packageName,2)){
-                        item.type=2
-                        AppDaoManager.getInstance().insertOrReplace(item)
-                    }
+                    item.isTool=true
+                    AppDaoManager.getInstance().insertOrReplace(item)
                 }
             }
-            setData()
-            setMenuData()
+            fetchData()
         }
         tv_out.setOnClickListener {
             for (item in menuApps){
                 if (item.isCheck){
-                    item.type=0
+                    item.isTool=false
                     AppDaoManager.getInstance().insertOrReplace(item)
                 }
             }
-            setData()
-            setMenuData()
+            fetchData()
         }
 
-        setData()
-        setMenuData()
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -119,18 +123,13 @@ class AppToolActivity:BaseActivity() {
         }
     }
 
+    override fun fetchData() {
+        setData()
+        setMenuData()
+    }
+
     private fun setData(){
-        apps.clear()
-        if (!AppDaoManager.getInstance().isExist(Constants.PACKAGE_GEOMETRY)){
-            AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
-                appName="几何绘图"
-                imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
-                packageName=Constants.PACKAGE_GEOMETRY
-                type=0
-                subType=1
-            })
-        }
-        apps=AppDaoManager.getInstance().queryAPPTool()
+        apps=AppDaoManager.getInstance().queryAll()
         for (item in apps){
             item.isCheck=false
         }
@@ -138,7 +137,7 @@ class AppToolActivity:BaseActivity() {
     }
 
     private fun setMenuData(){
-        menuApps=AppDaoManager.getInstance().queryTool()
+        menuApps=AppDaoManager.getInstance().queryToolAll()
         for (item in menuApps){
             item.isCheck=false
         }
@@ -151,8 +150,7 @@ class AppToolActivity:BaseActivity() {
                 setData()
             }
             Constants.APP_UNINSTALL_EVENT->{
-                setData()
-                setMenuData()
+                fetchData()
             }
         }
     }

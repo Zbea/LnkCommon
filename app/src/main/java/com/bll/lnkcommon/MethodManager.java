@@ -197,7 +197,7 @@ public class MethodManager {
     }
 
     private static @NonNull JSONArray getJsonArray() {
-        List<AppBean> toolApps= AppDaoManager.getInstance().queryTool();
+        List<AppBean> toolApps= AppDaoManager.getInstance().queryToolAll();
         JSONArray result =new JSONArray();
         for (AppBean item : toolApps) {
             if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))

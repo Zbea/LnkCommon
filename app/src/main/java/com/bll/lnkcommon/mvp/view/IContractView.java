@@ -81,7 +81,6 @@ public interface IContractView {
 
     //应用
     interface IAPPView extends IBaseView {
-        void onType(CommonData commonData);
         void onAppList(AppList appBean);
         void buySuccess();
     }

@@ -10,24 +10,6 @@ import com.bll.lnkcommon.net.*
  */
 class AppCenterPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
 
-
-    fun getTypeList() {
-
-        val app = RetrofitManager.service.getApkTypes()
-
-        doRequest(app, object : Callback<CommonData>(view) {
-            override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<CommonData>) {
-                if (tBaseResult.data!=null)
-                    view.onType(tBaseResult.data)
-            }
-
-        }, true)
-    }
-
     fun getAppList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getApks(map)
