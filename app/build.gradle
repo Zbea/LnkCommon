@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.bll.lnkcommon'
-    compileSdk 34
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.bll.lnkcommon"

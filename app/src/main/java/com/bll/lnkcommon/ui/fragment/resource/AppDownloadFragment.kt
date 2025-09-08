@@ -100,33 +100,14 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
                     presenter.buyApk(map)
                 }
                 else{
-                    val idName=app.applicationId.toString()
-                    if (index==2){
-                        val apkPath=FileAddress().getPathApk(idName)
-                        if (AppDaoManager.getInstance().queryBeanByPackageName(app.packageName)==null){
-                            if (File(apkPath).exists()) {
-                                installApk(apkPath)
-                            }
-                            else{
-                                downLoadStart(app)
-                            }
-                        }
-                        else{
-                            if (AppUtils.isAvailable(requireActivity(),app.packageName)){
-                                showToast("已安装")
-                            }
-                            else{
-                                if (File(apkPath).exists()) {
-                                    installApk(apkPath)
-                                }
-                                else{
-                                    downLoadStart(app)
-                                }
-                            }
-                        }
+                    if (index==2&&AppDaoManager.getInstance().queryBeanByPackageName(app.packageName)==null){
+                        downLoadStart(app)
                     }
                     else{
-                        if (!isInstalled(idName)) {
+                        if (AppUtils.isAvailable(requireActivity(),app.packageName)){
+                            showToast("已安装")
+                        }
+                        else{
                             downLoadStart(app)
                         }
                     }
@@ -161,22 +142,6 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
     //安装apk
     private fun installApk(apkPath: String) {
         AppUtils.installApp(requireActivity(), apkPath)
-    }
-
-    //是否已经下载安装
-    private fun isInstalled(idName:String): Boolean {
-        if (File(FileAddress().getPathApk(idName)).exists()){
-            val packageName = AppUtils.getApkInfo(requireActivity(), FileAddress().getPathApk(idName))
-            if (AppUtils.isAvailable(requireActivity(),packageName)){
-                AppUtils.startAPP(requireActivity(), packageName)
-            }
-            else{
-                //已经下载 直接去解析apk 去安装
-                installApk(FileAddress().getPathApk(idName))
-            }
-            return true
-        }
-        return false
     }
 
     /**

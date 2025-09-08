@@ -4,11 +4,14 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.ScoreDetailsDialog
 import com.bll.lnkcommon.mvp.model.ExamList
-import com.bll.lnkcommon.mvp.model.ScoreItem
 import com.bll.lnkcommon.utils.GlideUtils
-import com.bll.lnkcommon.utils.ScoreItemUtils
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_drawing.iv_score
+import kotlinx.android.synthetic.main.ac_drawing.v_content
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class ExamDetailsActivity:BaseDrawingActivity() {
 

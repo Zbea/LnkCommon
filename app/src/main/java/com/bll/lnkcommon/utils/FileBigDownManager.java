@@ -19,15 +19,15 @@ public class FileBigDownManager {
 
 
     public static FileBigDownManager with(Context context) {
-        if (incetance == null) {
-            synchronized (FileBigDownManager.class) {
-                if (incetance == null) {
-                    incetance = new FileBigDownManager();
-                }
-            }
-        }
-        mContext = context;
-        return incetance;
+//        if (incetance == null) {
+//            synchronized (FileBigDownManager.class) {
+//                if (incetance == null) {
+//                    incetance = new FileBigDownManager();
+//                }
+//            }
+//        }
+//        mContext = context;
+        return new FileBigDownManager();
     }
 
     //创建下载链接
