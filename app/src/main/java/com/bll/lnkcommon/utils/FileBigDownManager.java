@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -10,23 +9,10 @@ import com.liulishuo.filedownloader.FileDownloader;
 
 public class FileBigDownManager {
 
-    private static FileBigDownManager incetance;
-    private static Context mContext;
     private String url; //下载的url链接
     private String path;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
 
-
-    public static FileBigDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileBigDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileBigDownManager();
-//                }
-//            }
-//        }
-//        mContext = context;
+    public static FileBigDownManager with() {
         return new FileBigDownManager();
     }
 
@@ -36,6 +22,7 @@ public class FileBigDownManager {
         return this;
     }
 
+
     public FileBigDownManager setPath(String path) {
         this.path = path;
         return this;
@@ -43,14 +30,11 @@ public class FileBigDownManager {
 
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
         Log.d("debug"," download url = "+url);
         Log.d("debug"," path = "+path);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
-                .addHeader(auth, token)
-                .setForceReDownload(true)
+                .addHeader("Authorization", SPUtil.INSTANCE.getString("token"))
                 .setPath(path).setListener(new FileDownloadLargeFileListener() {
                     @Override
                     protected void completed(BaseDownloadTask task) {

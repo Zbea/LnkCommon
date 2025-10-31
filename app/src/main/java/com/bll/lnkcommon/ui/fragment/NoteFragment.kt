@@ -348,19 +348,23 @@ class NoteFragment:BaseFragment(),ISmsView {
         //获取笔记所有内容
         val noteContents = NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
         FileUploadManager(token).apply {
-            startUpload(path,note.title)
-            setCallBack{
-                cloudList.add(CloudListBean().apply {
-                    type=3
-                    title=note.title
-                    subTypeStr=note.typeStr
-                    date=System.currentTimeMillis()
-                    listJson= Gson().toJson(note)
-                    contentJson= Gson().toJson(noteContents)
-                    downloadUrl=it
-                })
-                mCloudUploadPresenter.upload(cloudList)
-            }
+            setCallBack(object : FileUploadManager.UploadCallBack {
+                override fun onUploadSuccess(url: String) {
+                    cloudList.add(CloudListBean().apply {
+                        type=3
+                        title=note.title
+                        subTypeStr=note.typeStr
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(note)
+                        contentJson= Gson().toJson(noteContents)
+                        downloadUrl=url
+                    })
+                    mCloudUploadPresenter.upload(cloudList)
+                }
+                override fun onUploadFail() {
+                }
+            })
+            startZipUpload(path,note.title)
         }
     }
 

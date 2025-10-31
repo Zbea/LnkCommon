@@ -378,7 +378,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         {
             savePaths.add(path+"/${i+1}.png")
         }
-        FileMultitaskDownManager.with(this).create(urls).setPath(savePaths).startMultiTaskDownLoad(
+        FileMultitaskDownManager.with().create(urls).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }

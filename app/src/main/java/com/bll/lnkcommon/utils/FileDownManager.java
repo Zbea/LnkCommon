@@ -1,35 +1,19 @@
 package com.bll.lnkcommon.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 
-/**
- * Created by ly on 2021/1/20 9:45
- */
+
 public class FileDownManager {
 
-    private static FileDownManager incetance;
-    private static Context mContext;
     private String url; //下载的url链接
     private String path;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
 
-
-    public static FileDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileDownManager();
-//                }
-//            }
-//        }
-//        mContext = context;
-        return new FileDownManager();
+    public static FileDownManager with() {
+        return  new FileDownManager();
     }
 
     //创建下载链接
@@ -45,13 +29,11 @@ public class FileDownManager {
 
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
         Log.d("debug"," download url = "+url);
         Log.d("debug"," path = "+path);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
                 .addHeader("Accept-Encoding", "identity")
-                .addHeader(auth, token)
+                .addHeader("Authorization", SPUtil.INSTANCE.getString("token"))
                 .setForceReDownload(true)
                 .setPath(path).setListener(new FileDownloadListener() {
 
@@ -67,7 +49,6 @@ public class FileDownManager {
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                 singletaskCallBack.progress(task, soFarBytes, totalBytes);
-
             }
 
             @Override

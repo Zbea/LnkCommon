@@ -40,14 +40,20 @@ class DocumentFragment : BaseFragment() {
     private var documentTypeNames= mutableListOf<String>()
 
     override fun onUpload(token: String) {
-        val file= mAdapter?.data?.get(position)
+        val file= mAdapter?.data?.get(position)!!
         FileUploadManager(token).apply {
-            upload(file?.path!!)
-            setCallBack{
-                hideLoading()
-                SPUtil.putString(file.name,it)
-                MethodManager.gotoDocument(requireActivity(), file)
-            }
+            setCallBack(object : FileUploadManager.UploadCallBack {
+                override fun onUploadSuccess(url: String) {
+                    hideLoading()
+                    SPUtil.putString(file.name,url)
+                    MethodManager.gotoDocument(requireActivity(), file)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("上传失败")
+                }
+            })
+            startUpload(file.path)
         }
     }
 
@@ -60,9 +66,9 @@ class DocumentFragment : BaseFragment() {
         showView(iv_manager)
         pageSize = 25
 
-        popupBeans.add(PopupBean(0, getString(R.string.type_create_str), false))
-        popupBeans.add(PopupBean(1, getString(R.string.type_delete_str), false))
-        popupBeans.add(PopupBean(2, "文档明细", false))
+        popupBeans.add(PopupBean(0, getString(R.string.type_create_str)))
+        popupBeans.add(PopupBean(1, getString(R.string.type_delete_str)))
+        popupBeans.add(PopupBean(2, "文档明细"))
 
         iv_manager?.setOnClickListener {
             PopupClick(requireActivity(), popupBeans, iv_manager, 5).builder().setOnSelectListener { item ->

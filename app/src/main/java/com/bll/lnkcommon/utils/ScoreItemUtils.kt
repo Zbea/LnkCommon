@@ -54,10 +54,16 @@ object ScoreItemUtils {
             return mutableListOf()
         }
         val list=Gson().fromJson(json, object : TypeToken<MutableList<ScoreItem>>() {}.type) as MutableList<ScoreItem>
+        for (item in list){
+            item.sort=list.indexOf(item)
+            item.childScores?.forEach {
+                it.sort=item.childScores.indexOf(it)
+            }
+        }
         if (correctModule==4||correctModule==7){
             var sort=0
             for (item in list){
-                item.childScores.forEach {
+                item.childScores?.forEach {
                     it.sort=sort
                     sort+=1
                 }
@@ -253,7 +259,7 @@ object ScoreItemUtils {
     private fun getRecursionChildItems(correctModule: Int, list: MutableList<ScoreItem>, parentItem: ScoreItem): MutableList<ScoreItem> {
         val items = mutableListOf<ScoreItem>()
         for (item in list) {
-            item.sortStr=if (list.indexOf(item)==0&&item.level==if (correctModule==5)2 else 3) " (${parentItem.sort+1})" else " "
+            item.sortStr=if (list.indexOf(item)==0&&item.level==if (correctModule==5)2 else 3) " (${parentItem.sort+1})" else ""
             if (item.childScores.isNullOrEmpty()) {
                 items.add(item)
             } else {

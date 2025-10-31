@@ -48,6 +48,13 @@ class MainActivity : BaseActivity(){
     }
 
     override fun initData() {
+        SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"")
+
+        val path = FileAddress().getPathDocument("默认")
+        if (!FileUtils.isExist(path)){
+            MethodManager.createFileScan(this,path)
+        }
+
         val screenshotPath=FileAddress().getPathScreen("未分类")
         if (!FileUtils.isExist(screenshotPath)){
             File(screenshotPath).mkdirs()

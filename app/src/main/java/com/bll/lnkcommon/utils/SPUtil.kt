@@ -20,42 +20,40 @@ object SPUtil {
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var map: ArrayMap<String, Any>
     private val gson = Gson()
-    private lateinit var rootFile: File
-    private val strs= mutableListOf("token","password","account")
-
-    fun getUserId():String{
-        val userStr=if (getObj("user", User::class.java) ==null){
-            ""
-        }
-        else{
-            getObj("user", User::class.java)?.accountId!!.toString()
-        }
-        return userStr
-    }
+    private val strs= mutableListOf("token","password","account","user")
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("config", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         map = ArrayMap()
-        rootFile = context.cacheDir
+    }
+
+    /**
+     * 获取账号相关保存key
+     */
+    private fun getKeyStr(key: String):String{
+        if (!strs.contains(key)){
+            return getUserId()+ key
+        }
+        return key
+    }
+
+    fun getUserId():String{
+        return getObj("user", User::class.java)?.accountId?.toString()?:""
     }
 
     fun putString(key: String, value: String) {
-        var keyStr=key
-        if (!strs.contains(key)){
-            keyStr= getUserId() + key
+        val keyStr= getKeyStr(key)
+        synchronized(map) {
+            map[keyStr] = value
         }
-        map[keyStr] = value
         Schedulers.io().run {
             editor.putString(keyStr, value).apply()
         }
     }
 
     fun getString(key: String): String {
-        var keyStr=key
-        if (!strs.contains(key)){
-            keyStr= getUserId() + key
-        }
+        val keyStr= getKeyStr(key)
         var s = map[keyStr]
         if (s == null) {
             s = sharedPreferences.getString(keyStr, "")
@@ -67,132 +65,64 @@ object SPUtil {
     }
 
     fun putInt(key: String, value: Int) {
-        map[getUserId() +key] = value
+        val keyStr= getKeyStr(key)
+        synchronized(map) {
+            map[keyStr] = value
+        }
         Schedulers.io().run {
-            editor.putInt(getUserId() +key, value).apply()
+            editor.putInt(keyStr, value).apply()
         }
     }
 
     fun getInt(key: String): Int {
-        var result = map[getUserId() +key]
+        val keyStr= getKeyStr(key)
+        var result = map[keyStr]
         if (result == null) {
-            result = sharedPreferences.getInt(getUserId() +key, 0)
-            map[getUserId() +key] = result
+            result = sharedPreferences.getInt(keyStr, 0)
+            map[keyStr] = result
         }
         return result as Int
     }
 
     fun putBoolean(key: String, value: Boolean) {
-        map[getUserId() +key] = value
+        val keyStr= getKeyStr(key)
+        synchronized(map) {
+            map[keyStr] = value
+        }
         Schedulers.io().run {
-            editor.putBoolean(getUserId() +key, value).apply()
+            editor.putBoolean(keyStr, value).apply()
         }
     }
 
     fun getBoolean(key: String): Boolean {
-        var result = map[getUserId() +key]
+        val keyStr= getKeyStr(key)
+        var result = map[keyStr]
         if (result == null) {
-            result = sharedPreferences.getBoolean(getUserId() +key, false)
-            map[getUserId() +key] = result
+            result = sharedPreferences.getBoolean(keyStr, false)
+            map[keyStr] = result
         }
         return result as Boolean
     }
 
     fun putObj(key: String, any: Any) {
-        var keyStr=key
-        if (key != "user"){
-            keyStr= getUserId() + key
-        }
-        map[keyStr] = any
-        Schedulers.io().run {
-            val file = File(rootFile, keyStr)
-            if (file.exists()) {
-                file.delete()
-            }
-            file.writeText(gson.toJson(any))
-        }
+        val keyStr= getKeyStr(key)
+        putString(keyStr,gson.toJson(any))
     }
 
-
     fun <T> getObj(key: String, cls: Class<T>): T? {
-        var keyStr=key
-        if (key != "user"){
-            keyStr= getUserId() + key
-        }
-        var result = map[keyStr]
-        if (result == null) {
-            val file = File(rootFile, keyStr)
-            if (file.exists()) {
-                val text = file.readText()
-                result = gson.fromJson(text, cls)
-                if (result != null) {
-                    map[keyStr] = result
-                }
-            }
-            else{
-                return null
-            }
-        }
-        return result as T
+        val keyStr= getKeyStr(key)
+        return gson.fromJson(getString(keyStr), cls)
     }
 
     fun removeObj(key: String): Any? {
-        var keyStr=key
-        if (key != "user"){
-            keyStr= getUserId() + key
+        val keyStr= getKeyStr(key)
+        synchronized(map) {
+            map.remove(keyStr)
         }
-        val file = File(rootFile, keyStr)
-        if (file.exists()) {
-            file.delete()
+        Schedulers.io().run {
+            editor.remove(keyStr).apply()
         }
         return map.remove(keyStr)
-    }
-
-    /**
-     * 序列化对象
-
-     * @param person
-     * *
-     * @return
-     * *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
-    private fun <A> serialize(obj: A): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val objectOutputStream = ObjectOutputStream(
-            byteArrayOutputStream)
-        objectOutputStream.writeObject(obj)
-        var serStr = byteArrayOutputStream.toString("ISO-8859-1")
-        serStr = java.net.URLEncoder.encode(serStr, "UTF-8")
-        objectOutputStream.close()
-        byteArrayOutputStream.close()
-        return serStr
-    }
-
-    /**
-     * 反序列化对象
-
-     * @param str
-     * *
-     * @return
-     * *
-     * @throws IOException
-     * *
-     * @throws ClassNotFoundException
-     */
-    @Suppress("UNCHECKED_CAST")
-    @Throws(IOException::class, ClassNotFoundException::class)
-    private fun <A> deSerialization(str: String): A {
-        val redStr = java.net.URLDecoder.decode(str, "UTF-8")
-        val byteArrayInputStream = ByteArrayInputStream(
-            redStr.toByteArray(charset("ISO-8859-1")))
-        val objectInputStream = ObjectInputStream(
-            byteArrayInputStream)
-        val obj = objectInputStream.readObject() as A
-        objectInputStream.close()
-        byteArrayInputStream.close()
-        return obj
     }
 
 }

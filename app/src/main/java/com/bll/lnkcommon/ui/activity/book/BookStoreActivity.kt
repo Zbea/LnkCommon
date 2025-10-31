@@ -200,7 +200,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ FileUtils.getUrlFormat(book.downloadUrl))
-        val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
+        val download = FileBigDownManager.with().create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileBigDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {

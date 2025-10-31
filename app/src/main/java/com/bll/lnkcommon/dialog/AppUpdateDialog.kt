@@ -11,6 +11,7 @@ import com.bll.lnkcommon.mvp.model.AppUpdateBean
 import com.bll.lnkcommon.mvp.model.SystemUpdateInfo
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.SPUtil
 
 
 class AppUpdateDialog(private val context: Context,private val type:Int,private val item:Any){
@@ -33,6 +34,8 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
 
         tvCancel?.setOnClickListener {
             dismiss()
+            SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"waiting")
+            listener?.onDelay()
         }
 
         if(type==1){
@@ -69,5 +72,15 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         if (btn_ok!=null){
             btn_ok?.text = string
         }
+    }
+
+    var listener: OnDialogClickListener? = null
+
+    fun interface OnDialogClickListener {
+        fun onDelay()
+    }
+
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+        listener = onDialogClickListener
     }
 }

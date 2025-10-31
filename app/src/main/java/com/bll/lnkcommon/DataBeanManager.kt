@@ -35,7 +35,7 @@ object DataBeanManager {
     val homeworkType = arrayOf(mContext.getString(R.string.teacher_homework_str),mContext.getString(R.string.classGroup_exam_str),mContext.getString(R.string.school_exam_str)
         ,mContext.getString(R.string.my_homework),mContext.getString(R.string.my_homework_correct))
 
-    var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
+    var resources = arrayOf("应用中心","实用工具","锁屏壁纸","跳页日历")
 
     val popupGrades: MutableList<PopupBean>
         get() {
@@ -542,6 +542,28 @@ object DataBeanManager {
             list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
+    }
+
+    fun getScoreStandardStr(score: Double,questionType:Int):String{
+        if (questionType>0){
+            return score.toString()
+        }
+        else {
+            return when (score) {
+                1.0 -> {
+                    "A"
+                }
+                2.0 -> {
+                    "B"
+                }
+                3.0 -> {
+                    "C"
+                }
+                else -> {
+                    score.toString()
+                }
+            }
+        }
     }
 
     /**

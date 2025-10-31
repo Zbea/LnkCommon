@@ -1,8 +1,5 @@
 package com.bll.lnkcommon.utils;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloadQueueSet;
@@ -15,24 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileMultitaskDownManager {
 
-    private static FileMultitaskDownManager incetance;
-    private static Context mContext;
     private List<String> urls; //下载的url链接
     private List<String> paths;//文件的绝对路径
-    private String auth = "";
-    private String token = "";
     private final AtomicInteger activeCount = new AtomicInteger(0);
 
-
-    public static FileMultitaskDownManager with(Context context) {
-//        if (incetance == null) {
-//            synchronized (FileMultitaskDownManager.class) {
-//                if (incetance == null) {
-//                    incetance = new FileMultitaskDownManager();
-//                }
-//            }
-//        }
-//        mContext = context;
+    public static FileMultitaskDownManager with() {
         return new FileMultitaskDownManager();
     }
 
@@ -50,41 +34,30 @@ public class FileMultitaskDownManager {
 
     //单任务下载
     public void startMultiTaskDownLoad(final MultiTaskCallBack multitaskCallBack) {
-
-        auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
-
         FileDownloadListener fileDownloadListener=new FileDownloadListener() {
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
             }
-
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.progress(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void completed(BaseDownloadTask task) {
                 if (activeCount.decrementAndGet() == 0) {
                     multitaskCallBack.completed(task);
                 }
             }
-
             @Override
             protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 //                multitaskCallBack.paused(task, soFarBytes, totalBytes);
             }
-
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 multitaskCallBack.error(task, e);
             }
-
             @Override
             protected void warn(BaseDownloadTask task) {
-
             }
         };
 
@@ -95,7 +68,7 @@ public class FileMultitaskDownManager {
             tasks.add(FileDownloader.getImpl().create(urls.get(i))
                     .setPath(paths.get(i))
                     .addHeader("Accept-Encoding", "identity")
-                    .addHeader(auth, token));
+                    .addHeader("Authorization", SPUtil.INSTANCE.getString("token")));
         }
         queueSet.disableCallbackProgressTimes();
         queueSet.setAutoRetryTimes(1);
@@ -114,4 +87,5 @@ public class FileMultitaskDownManager {
 
         void error(BaseDownloadTask task, Throwable e);
     }
+
 }

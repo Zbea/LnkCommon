@@ -146,6 +146,7 @@ public class MethodManager {
         if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.putExtra("open_mode", 1);
             intent.putExtra("path", localPath);
             intent.putExtra("url", url);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -175,21 +175,25 @@ class TextbookFragment : BaseFragment(), IMyHomeworkView {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(token).apply {
-                    startUpload(book.bookDrawPath, book.bookId.toString())
-                    setCallBack {
-                        cloudList.add(CloudListBean().apply {
-                            type = 2
-                            zipUrl = book.downloadUrl
-                            downloadUrl = it
-                            subTypeStr = DataBeanManager.textBookTypes[book.category].title
-                            date = System.currentTimeMillis()
-                            listJson = Gson().toJson(book)
-                            bookId = book.bookId
-                            bookTypeId=book.category
-                        })
-                        if (cloudList.size == books.size)
-                            mCloudUploadPresenter.upload(cloudList)
-                    }
+                    setCallBack(object : FileUploadManager.UploadCallBack {
+                        override fun onUploadSuccess(url: String) {
+                            cloudList.add(CloudListBean().apply {
+                                type = 2
+                                zipUrl = book.downloadUrl
+                                downloadUrl = url
+                                subTypeStr = DataBeanManager.textBookTypes[book.category].title
+                                date = System.currentTimeMillis()
+                                listJson = Gson().toJson(book)
+                                bookId = book.bookId
+                                bookTypeId=book.category
+                            })
+                            if (cloudList.size == books.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                        override fun onUploadFail() {
+                        }
+                    })
+                    startZipUpload(book.bookDrawPath, book.bookId.toString())
                 }
             } else {
                 cloudList.add(CloudListBean().apply {

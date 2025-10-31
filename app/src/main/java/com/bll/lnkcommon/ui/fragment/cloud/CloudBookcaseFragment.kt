@@ -14,6 +14,7 @@ import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.utils.FileBigDownManager
 import com.bll.lnkcommon.utils.FileDownManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
@@ -164,11 +165,9 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      */
     private fun downloadBookDrawing(book: Book){
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
-        FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+        FileBigDownManager.with().create(book.drawUrl).setPath(zipPath)
+            .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
@@ -185,6 +184,8 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                     })
                     countDownTasks?.countDown()
                 }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+                }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     countDownTasks?.countDown()
                 }
@@ -195,11 +196,9 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: Book) {
-        FileDownManager.with(activity).create(book.downloadUrl).setPath(book.bookPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+        FileBigDownManager.with().create(book.downloadUrl).setPath(book.bookPath)
+            .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     book.id=null
@@ -208,6 +207,8 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                     book.subtypeStr=""
                     BookDaoManager.getInstance().insertOrReplaceBook(book)
                     countDownTasks?.countDown()
+                }
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     countDownTasks?.countDown()

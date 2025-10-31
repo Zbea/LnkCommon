@@ -90,7 +90,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     private fun download(item: ItemTypeBean){
         showLoading()
         val zipPath = FileAddress().getPathZip(DateUtils.longToString(item.date))
-        FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
+        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

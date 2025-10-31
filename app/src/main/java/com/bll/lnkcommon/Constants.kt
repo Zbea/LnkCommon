@@ -28,6 +28,7 @@ object Constants {
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
         const val STATUS_BAR_SHOW=2147483647//永不消失
+        const val DEBUG="debug"
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.3.100:10800/v1/"
@@ -91,7 +92,9 @@ object Constants {
         const val SN = "SN"
         const val KEY = "Key"
         const val VERSION_NO = "VersionNO"
+
         const val SP_DIARY_BG_SET ="dirayBgRes"//日记
+        const val SP_UPDATE_SYSTEM_STATUS = "UpdateSystemStatus"
 
 }
 

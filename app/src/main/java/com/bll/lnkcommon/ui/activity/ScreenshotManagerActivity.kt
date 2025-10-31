@@ -147,17 +147,21 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView, IContractVie
         val path=item.path
         if (FileUtils.isExistContent(path)){
             FileUploadManager(token).apply {
-                startUpload(path,fileName)
-                setCallBack{
-                    cloudList.add(CloudListBean().apply {
-                        type=6
-                        subTypeStr="截图"
-                        date=System.currentTimeMillis()
-                        listJson= Gson().toJson(item)
-                        downloadUrl=it
-                    })
-                    mCloudUploadPresenter.upload(cloudList)
-                }
+                setCallBack(object : FileUploadManager.UploadCallBack {
+                    override fun onUploadSuccess(url: String) {
+                        cloudList.add(CloudListBean().apply {
+                            type=6
+                            subTypeStr="截图"
+                            date=System.currentTimeMillis()
+                            listJson= Gson().toJson(item)
+                            downloadUrl=url
+                        })
+                        mCloudUploadPresenter.upload(cloudList)
+                    }
+                    override fun onUploadFail() {
+                    }
+                })
+                startZipUpload(path,fileName)
             }
         }
         else{
