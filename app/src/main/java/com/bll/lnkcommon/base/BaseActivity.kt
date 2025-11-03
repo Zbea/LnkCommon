@@ -52,6 +52,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mUser:User?=null
     var mTabTypeAdapter:TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
+    var mDownloadManager:DownloadManager?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +79,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 Manifest.permission.READ_PHONE_STATE
             )
         }
-
+        mDownloadManager=DownloadManager()
         mDialog = ProgressDialog(this)
         if (rv_tab!=null){
             initTabView()
@@ -422,6 +423,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        mDownloadManager?.pauseAll()
     }
 }
 

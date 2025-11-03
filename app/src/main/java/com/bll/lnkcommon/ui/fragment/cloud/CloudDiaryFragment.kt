@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.ui.fragment.cloud
 
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +7,6 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.manager.BookDaoManager
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
@@ -18,7 +16,7 @@ import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.ui.adapter.CloudDiaryAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
-import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
@@ -26,9 +24,8 @@ import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import java.io.File
-import java.util.concurrent.CountDownLatch
 
 class CloudDiaryFragment: BaseCloudFragment() {
     private var mAdapter: CloudDiaryAdapter?=null
@@ -106,52 +103,48 @@ class CloudDiaryFragment: BaseCloudFragment() {
         val fileName=DateUtils.longToStringCalender(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
         val fileTargetPath= File(FileAddress().getPathDiary(fileName)).parent
-        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
-                        override fun onFinish() {
-                            val itemTypeBean= ItemTypeBean().apply {
-                                type=4
-                                title=item.title
-                                date=System.currentTimeMillis()
-                                typeId=item.id
-                            }
-                            ItemTypeDaoManager.getInstance().insertOrReplace(itemTypeBean)
+        mDownloadManager?.startSingle(item.downloadUrl,zipPath, object : DownloadManager.SingleCallback {
+            override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
+            }
+            override fun onCompleted(task: BaseDownloadTask) {
+                ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                    override fun onFinish() {
+                        val itemTypeBean= ItemTypeBean().apply {
+                            type=4
+                            title=item.title
+                            date=System.currentTimeMillis()
+                            typeId=item.id
+                        }
+                        ItemTypeDaoManager.getInstance().insertOrReplace(itemTypeBean)
 
-                            val diaryBeans: MutableList<DiaryBean> = Gson().fromJson(item.listJson, object : TypeToken<List<DiaryBean>>() {}.type)
-                            for (diaryBean in diaryBeans){
-                                diaryBean.id=null//设置数据库id为null用于重新加入
-                                diaryBean.isUpload=true
-                                diaryBean.uploadId=item.id
-                                DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
-                            }
+                        val diaryBeans: MutableList<DiaryBean> = Gson().fromJson(item.listJson, object : TypeToken<List<DiaryBean>>() {}.type)
+                        for (diaryBean in diaryBeans){
+                            diaryBean.id=null//设置数据库id为null用于重新加入
+                            diaryBean.isUpload=true
+                            diaryBean.uploadId=item.id
+                            DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
+                        }
 
-                            //删掉本地zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            showToast("下载成功")
-                            hideLoading()
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                            showToast(msg!!)
-                            hideLoading()
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast("下载失败")
-                }
-            })
+                        //删掉本地zip文件
+                        FileUtils.deleteFile(File(zipPath))
+                        showToast("下载成功")
+                        hideLoading()
+                    }
+                    override fun onProgress(percentDone: Int) {
+                    }
+                    override fun onError(msg: String?) {
+                        showToast(msg!!)
+                        hideLoading()
+                    }
+                    override fun onStart() {
+                    }
+                })
+            }
+            override fun onFailed(task: BaseDownloadTask?, error: String) {
+                hideLoading()
+                showToast("下载失败")
+            }
+        })
     }
 
     override fun fetchData() {

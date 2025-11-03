@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.ui.activity.book
 
-import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -23,7 +22,7 @@ import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileBigDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.ToolUtils
@@ -31,7 +30,6 @@ import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -236,72 +234,60 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     /**
      * 下载解压书籍
      */
-    private fun downLoadStart(book: TextbookBean): BaseDownloadTask? {
+    private fun downLoadStart(book: TextbookBean){
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val zipPath = FileAddress().getPathZip(fileName)
-        val download = FileBigDownManager.with().create(book.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
-
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
-                    if (task != null && task.isRunning) {
-                        runOnUiThread {
-                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+ "/"+
-                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                            bookDetailsDialog?.setUnClickBtn(s)
-                        }
+        mDownloadManager?.startSingle(book.downloadUrl,zipPath, object : DownloadManager.SingleCallback {
+            override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
+                if (task.isRunning) {
+                    runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024), "0.0M")+ "/"+
+                                ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024), "0.0M")
+                        bookDetailsDialog?.setUnClickBtn(s)
                     }
                 }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
+            }
+            override fun onCompleted(task: BaseDownloadTask) {
+                book.apply {
+                    loadSate = 2
+                    category = tabId
+                    time = System.currentTimeMillis()//下载时间用于排序
                 }
-                override fun completed(task: BaseDownloadTask?) {
-                    book.apply {
-                        loadSate = 2
-                        category = tabId
-                        time = System.currentTimeMillis()//下载时间用于排序
-                    }
-                    if (tabId<2){
-                        book.bookPath = FileAddress().getPathTextBook(fileName)
-                        book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
-                    }
-                    else{
-                        book.bookPath = FileAddress().getPathHomeworkBook(fileName)
-                        book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(fileName)
-                    }
-                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
-                        override fun onFinish() {
-                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            FileUtils.deleteFile(File(zipPath))
-                            EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                            bookDetailsDialog?.dismiss()
-                            Handler().postDelayed({
-                                hideLoading()
-                                showToast(book.bookName+"下载成功")
-                            },500)
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                            hideLoading()
-                            showToast(book.bookName+msg!!)
-                            bookDetailsDialog?.setChangeStatus()
-                        }
-                        override fun onStart() {
-                        }
-                    })
+                if (tabId<2){
+                    book.bookPath = FileAddress().getPathTextBook(fileName)
+                    book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
                 }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast("${book.bookName}下载失败")
-                    bookDetailsDialog?.setChangeStatus()
+                else{
+                    book.bookPath = FileAddress().getPathHomeworkBook(fileName)
+                    book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(fileName)
                 }
-            })
-        return download
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
+                ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                    override fun onFinish() {
+                        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                        FileUtils.deleteFile(File(zipPath))
+                        EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                        bookDetailsDialog?.dismiss()
+                        hideLoading()
+                        showToast(book.bookName+"下载成功")
+                    }
+                    override fun onProgress(percentDone: Int) {
+                    }
+                    override fun onError(msg: String?) {
+                        hideLoading()
+                        showToast(book.bookName+msg!!)
+                        bookDetailsDialog?.setChangeStatus()
+                    }
+                    override fun onStart() {
+                    }
+                })
+            }
+            override fun onFailed(task: BaseDownloadTask?, error: String) {
+                hideLoading()
+                showToast("${book.bookName}下载失败")
+                bookDetailsDialog?.setChangeStatus()
+            }
+        })
     }
 
     override fun fetchData() {

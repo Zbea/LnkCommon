@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.ui.fragment.cloud
 
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,7 @@ import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
 import com.bll.lnkcommon.ui.adapter.CloudNoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
@@ -109,59 +108,54 @@ class CloudNoteFragment: BaseCloudFragment() {
         showLoading()
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(item.downloadUrl))
         val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title)
-        FileDownManager.with().create(item.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
-                        override fun onFinish() {
-                            if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,1)){
-                                val noteType = ItemTypeBean().apply {
-                                    title = item.typeStr
-                                    type=1
-                                    date=System.currentTimeMillis()
-                                }
-                                ItemTypeDaoManager.getInstance().insertOrReplace(noteType)
-                            }
-                            //添加笔记
-                            item.id=null//设置数据库id为null用于重新加入
-                            item.date=System.currentTimeMillis()
-                            NoteDaoManager.getInstance().insertOrReplace(item)
+        mDownloadManager?.startSingle(item.downloadUrl,zipPath, object : DownloadManager.SingleCallback {
+            override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
 
-                            val noteContents=Gson().fromJson(item.contentJson, object : TypeToken<List<NoteContent>>() {}.type) as MutableList<NoteContent>
-                            for (contentBean in noteContents){
-                                contentBean.id=null
-                                NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
+            }
+            override fun onCompleted(task: BaseDownloadTask) {
+                ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
+                    override fun onFinish() {
+                        if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,1)){
+                            val noteType = ItemTypeBean().apply {
+                                title = item.typeStr
+                                type=1
+                                date=System.currentTimeMillis()
                             }
+                            ItemTypeDaoManager.getInstance().insertOrReplace(noteType)
+                        }
+                        //添加笔记
+                        item.id=null//设置数据库id为null用于重新加入
+                        item.date=System.currentTimeMillis()
+                        NoteDaoManager.getInstance().insertOrReplace(item)
 
-                            //删掉本地zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            Handler().postDelayed({
-                                EventBus.getDefault().post(Constants.NOTE_TYPE_REFRESH_EVENT)
-                                deleteItem()
-                                showToast("下载成功")
-                                hideLoading()
-                            },500)
+                        val noteContents=Gson().fromJson(item.contentJson, object : TypeToken<List<NoteContent>>() {}.type) as MutableList<NoteContent>
+                        for (contentBean in noteContents){
+                            contentBean.id=null
+                            NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
                         }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                            showToast(msg!!)
-                            hideLoading()
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast("下载失败")
-                }
-            })
+
+                        //删掉本地zip文件
+                        FileUtils.deleteFile(File(zipPath))
+                        EventBus.getDefault().post(Constants.NOTE_TYPE_REFRESH_EVENT)
+                        deleteItem()
+                        showToast("下载成功")
+                        hideLoading()
+                    }
+                    override fun onProgress(percentDone: Int) {
+                    }
+                    override fun onError(msg: String?) {
+                        showToast(msg!!)
+                        hideLoading()
+                    }
+                    override fun onStart() {
+                    }
+                })
+            }
+            override fun onFailed(task: BaseDownloadTask?, error: String) {
+                hideLoading()
+                showToast("下载失败")
+            }
+        })
     }
 
     override fun fetchData() {

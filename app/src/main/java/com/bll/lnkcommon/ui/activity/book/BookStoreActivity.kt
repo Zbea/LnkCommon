@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.ui.activity.book
 
-import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -22,14 +21,13 @@ import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.BookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileBigDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.utils.ToolUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -196,66 +194,54 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     //下载book
-    private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
+    private fun downLoadStart(url: String,book: Book) {
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ FileUtils.getUrlFormat(book.downloadUrl))
-        val download = FileBigDownManager.with().create(url).setPath(targetFileStr)
-            .startSingleTaskDownLoad(object :
-                FileBigDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
-                    if (task != null && task.isRunning) {
-                        runOnUiThread {
-                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+ "/"+
-                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                            downloadBookDialog?.setUnClickBtn(s)
-                        }
+        mDownloadManager?.startSingle(url,targetFileStr, object : DownloadManager.SingleCallback {
+            override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
+                if (task.isRunning) {
+                    runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024), "0.0M")+ "/"+
+                                ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024), "0.0M")
+                        downloadBookDialog?.setUnClickBtn(s)
                     }
                 }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    book.apply {
-                        loadSate = 2
-                        subtypeStr = when (tabStr) {
-                            "思维科学", "自然科学" -> {
-                                "科学技术"
-                            }
-                            "运动健康","艺术才能" -> {
-                                "运动才艺"
-                            }
-                            else -> {
-                                subTypeStr
-                            }
+            }
+            override fun onCompleted(task: BaseDownloadTask) {
+                book.apply {
+                    loadSate = 2
+                    subtypeStr = when (tabStr) {
+                        "思维科学", "自然科学" -> {
+                            "科学技术"
                         }
-                        time = System.currentTimeMillis()//下载时间用于排序
-                        bookPath = targetFileStr
-                        bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                        "运动健康","艺术才能" -> {
+                            "运动才艺"
+                        }
+                        else -> {
+                            subTypeStr
+                        }
                     }
-                    //修改书库分类状态
-                    ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
-                    //下载解压完成后更新存储的book
-                    BookDaoManager.getInstance().insertOrReplaceBook(book)
-                    //更新列表
-                    mAdapter?.notifyDataSetChanged()
-                    downloadBookDialog?.dismiss()
-                    EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
-                    EventBus.getDefault().post(Constants.BOOK_EVENT)
-                    showToast(book.bookName+getString(R.string.download_success))
-                    hideLoading()
+                    time = System.currentTimeMillis()//下载时间用于排序
+                    bookPath = targetFileStr
+                    bookDrawPath=FileAddress().getPathBookDraw(fileName)
                 }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast(book.bookName+getString(R.string.download_fail))
-                    downloadBookDialog?.setChangeStatus()
-                }
-            })
-        return download
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
+                //修改书库分类状态
+                ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
+                //下载解压完成后更新存储的book
+                BookDaoManager.getInstance().insertOrReplaceBook(book)
+                downloadBookDialog?.dismiss()
+                EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
+                EventBus.getDefault().post(Constants.BOOK_EVENT)
+                showToast(book.bookName+getString(R.string.download_success))
+                hideLoading()
+            }
+            override fun onFailed(task: BaseDownloadTask?, error: String) {
+                hideLoading()
+                showToast(book.bookName+getString(R.string.download_fail))
+                downloadBookDialog?.setChangeStatus()
+            }
+        })
     }
 
     private fun typeFindData(){

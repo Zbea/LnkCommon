@@ -5,7 +5,13 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
-import com.bll.lnkcommon.dialog.*
+import com.bll.lnkcommon.dialog.CatalogFreeNoteDialog
+import com.bll.lnkcommon.dialog.CommonDialog
+import com.bll.lnkcommon.dialog.FreeNoteFriendManageDialog
+import com.bll.lnkcommon.dialog.InputContentDialog
+import com.bll.lnkcommon.dialog.ModuleItemDialog
+import com.bll.lnkcommon.dialog.PopupFreeNoteReceiveList
+import com.bll.lnkcommon.dialog.PopupFreeNoteShareList
 import com.bll.lnkcommon.greendao.StringConverter
 import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
@@ -13,11 +19,23 @@ import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.ShareNoteList
 import com.bll.lnkcommon.mvp.presenter.FreeNotePresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IFreeNoteView
-import com.bll.lnkcommon.utils.*
-import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_free_note.*
+import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.DownloadManager
+import com.bll.lnkcommon.utils.FileImageUploadManager
+import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_free_note.tv_add
+import kotlinx.android.synthetic.main.ac_free_note.tv_delete
+import kotlinx.android.synthetic.main.ac_free_note.tv_name
+import kotlinx.android.synthetic.main.ac_free_note.tv_receive_list
+import kotlinx.android.synthetic.main.ac_free_note.tv_save
+import kotlinx.android.synthetic.main.ac_free_note.tv_share
+import kotlinx.android.synthetic.main.ac_free_note.tv_share_list
 import kotlinx.android.synthetic.main.ac_free_note.v_content
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
@@ -378,30 +396,25 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         {
             savePaths.add(path+"/${i+1}.png")
         }
-        FileMultitaskDownManager.with().create(urls).setPath(savePaths).startMultiTaskDownLoad(
-            object : FileMultitaskDownManager.MultiTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    val freeNoteBean= FreeNoteBean()
-                    freeNoteBean.userId=MethodManager.getAccountId()
-                    freeNoteBean.title=item.title
-                    freeNoteBean.date=item.date
-                    freeNoteBean.isSave=true
-                    freeNoteBean.bgRes=StringConverter().convertToEntityProperty(item.bgRes)
-                    freeNoteBean.paths=savePaths
-                    freeNoteBean.type=1
-                    FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
-                    showToast("下载成功")
-                    receivePopWindow?.setRefreshData()
-                    setChangeFreeNote(freeNoteBean)
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    showToast("下载失败")
-                }
-            })
+        mDownloadManager?.startBatch(urls,savePaths, object : DownloadManager.BatchCallback {
+            override fun onBatchCompleted() {
+                val freeNoteBean= FreeNoteBean()
+                freeNoteBean.userId=MethodManager.getAccountId()
+                freeNoteBean.title=item.title
+                freeNoteBean.date=item.date
+                freeNoteBean.isSave=true
+                freeNoteBean.bgRes=StringConverter().convertToEntityProperty(item.bgRes)
+                freeNoteBean.paths=savePaths
+                freeNoteBean.type=1
+                FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+                showToast("下载成功")
+                receivePopWindow?.setRefreshData()
+                setChangeFreeNote(freeNoteBean)
+            }
+            override fun onBatchFailed(error: String) {
+                showToast("下载失败")
+            }
+        })
     }
 
     private fun fetchReceiveNotes(page:Int, isShow: Boolean){

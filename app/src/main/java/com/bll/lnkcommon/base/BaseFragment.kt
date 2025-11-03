@@ -8,18 +8,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.bll.lnkcommon.*
+import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
+import com.bll.lnkcommon.DataBeanManager
+import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.MyApplication
+import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.manager.NoteDaoManager
-import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.model.AppUpdateBean
+import com.bll.lnkcommon.mvp.model.CloudListBean
+import com.bll.lnkcommon.mvp.model.CommonData
+import com.bll.lnkcommon.mvp.model.ItemTypeBean
+import com.bll.lnkcommon.mvp.model.Note
+import com.bll.lnkcommon.mvp.model.SystemUpdateInfo
 import com.bll.lnkcommon.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkcommon.mvp.presenter.CommonPresenter
 import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
@@ -29,15 +38,28 @@ import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
-import com.bll.lnkcommon.utils.*
+import com.bll.lnkcommon.utils.ActivityManager
+import com.bll.lnkcommon.utils.AppUtils
+import com.bll.lnkcommon.utils.DeviceUtil
+import com.bll.lnkcommon.utils.DownloadManager
+import com.bll.lnkcommon.utils.FileUtils
+import com.bll.lnkcommon.utils.KeyboardUtils
+import com.bll.lnkcommon.utils.NetworkUtil
+import com.bll.lnkcommon.utils.SPUtil
+import com.bll.lnkcommon.utils.SToast
+import com.bll.lnkcommon.utils.ToolUtils
 import com.bll.lnkcommon.widget.FlowLayoutManager
 import com.google.gson.Gson
 import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_list_tab.*
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_fragment_title.tv_title
+import kotlinx.android.synthetic.main.common_page_number.btn_page_down
+import kotlinx.android.synthetic.main.common_page_number.btn_page_up
+import kotlinx.android.synthetic.main.common_page_number.ll_page_number
+import kotlinx.android.synthetic.main.common_page_number.tv_page_current
+import kotlinx.android.synthetic.main.common_page_number.tv_page_total
+import kotlinx.android.synthetic.main.fragment_list_tab.rv_tab
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -71,6 +93,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var mTabTypeAdapter:TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
     var appUpdateDialog:AppUpdateDialog?=null
+    var mDownloadManager:DownloadManager?=null
 
     override fun onToken(token: String) {
         onUpload(token)
@@ -116,7 +139,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         if (rv_tab!=null){
             initTabView()
         }
-
+        mDownloadManager=DownloadManager()
         initCommonTitle()
         initView()
         mDialog = ProgressDialog(activity)
@@ -376,27 +399,21 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         else{
             if (appUpdateDialog==null||appUpdateDialog?.isShow()==false) {
                 appUpdateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
-                FileDownManager.with().create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-                    FileDownManager.SingleTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        if (task != null && task.isRunning) {
+                mDownloadManager?.startSingle(bean.downloadUrl,targetFileStr, object : DownloadManager.SingleCallback {
+                    override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
+                        if (task.isRunning) {
                             requireActivity().runOnUiThread {
-                                val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                        ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                                val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                        ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024),"0.0M")
                                 appUpdateDialog?.setUpdateBtn(s)
                             }
                         }
                     }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
+                    override fun onCompleted(task: BaseDownloadTask) {
                         appUpdateDialog?.dismiss()
                         AppUtils.installApp(requireActivity(), targetFileStr)
                     }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    override fun onFailed(task: BaseDownloadTask?, error: String) {
                         appUpdateDialog?.dismiss()
                     }
                 })
@@ -489,6 +506,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        mDownloadManager?.pauseAll()
     }
 
 }

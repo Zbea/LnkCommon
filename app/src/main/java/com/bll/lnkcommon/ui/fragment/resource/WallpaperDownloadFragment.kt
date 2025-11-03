@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.ImageDialog
@@ -15,12 +14,10 @@ import com.bll.lnkcommon.mvp.presenter.WallpaperPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.WallpaperAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileMultitaskDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
-import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
 
@@ -108,24 +105,19 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         val pathStr= FileAddress().getPathImage("wallpaper",item.contentId)
         val images = mutableListOf(item.bodyUrl)
         val savePaths= arrayListOf("$pathStr/1.png")
-        FileMultitaskDownManager.with().create(images).setPath(savePaths).startMultiTaskDownLoad(
-            object : FileMultitaskDownManager.MultiTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    hideLoading()
-                    item.path=savePaths[0]
-                    item.date=System.currentTimeMillis()
-                    WallpaperDaoManager.getInstance().insertOrReplace(item)
-                    showToast("下载完成")
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    hideLoading()
-                    showToast("下载失败")
-                }
-            })
+        mDownloadManager?.startBatch(images,savePaths, object : DownloadManager.BatchCallback {
+            override fun onBatchCompleted() {
+                hideLoading()
+                item.path=savePaths[0]
+                item.date=System.currentTimeMillis()
+                WallpaperDaoManager.getInstance().insertOrReplace(item)
+                showToast("下载完成")
+            }
+            override fun onBatchFailed(error: String) {
+                hideLoading()
+                showToast("下载失败")
+            }
+        })
     }
 
     /**

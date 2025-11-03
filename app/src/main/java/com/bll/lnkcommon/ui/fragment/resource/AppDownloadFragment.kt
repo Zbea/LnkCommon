@@ -6,25 +6,23 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.AppDaoManager
 import com.bll.lnkcommon.mvp.model.AppBean
 import com.bll.lnkcommon.mvp.model.AppList
-import com.bll.lnkcommon.mvp.model.CommonData
 import com.bll.lnkcommon.mvp.presenter.AppCenterPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AppCenterListAdapter
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.DownloadManager
+import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
 
@@ -123,26 +121,21 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
     }
 
     //下载应用
-    private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
+    private fun downLoadStart(bean: AppList.ListBean) {
         val targetFileStr= FileAddress().getPathApk(bean.applicationId.toString())
         showLoading()
-        val download = FileDownManager.with().create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+        mDownloadManager?.startSingle(bean.contentUrl,targetFileStr, object : DownloadManager.SingleCallback {
+            override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
             }
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun completed(task: BaseDownloadTask?) {
+            override fun onCompleted(task: BaseDownloadTask) {
                 hideLoading()
                 installApk(targetFileStr)
             }
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+            override fun onFailed(task: BaseDownloadTask?, error: String) {
                 hideLoading()
                 showToast("下载失败")
             }
         })
-        return download
     }
 
     //安装apk
@@ -171,8 +164,10 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag== Constants.APP_INSTALL_EVENT){
+            val bean=apps[position]
+            val path=FileAddress().getPathApk(bean.applicationId.toString())
+            FileUtils.delete(path)
             if (index==2){
-                val bean=apps[position]
                 if (AppDaoManager.getInstance().queryBeanByPackageName(bean.packageName)==null){
                     val item= AppBean()
                     item.appName=bean.nickname

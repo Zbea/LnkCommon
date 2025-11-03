@@ -4,32 +4,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkcommon.Constants
+import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseCloudFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager
-import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.CloudList
+import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.ui.adapter.TextbookAdapter
 import com.bll.lnkcommon.utils.DP2PX
-import com.bll.lnkcommon.utils.FileDownManager
+import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.concurrent.CountDownLatch
 
 class CloudTextbookFragment: BaseCloudFragment() {
-    private var countDownTasks: CountDownLatch?=null //异步完成后操作
     private var mAdapter: TextbookAdapter?=null
     private var textbooks= mutableListOf<TextbookBean>()
     private var position=0
@@ -78,8 +75,6 @@ class CloudTextbookFragment: BaseCloudFragment() {
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
                         override fun ok() {
                             downloadItem()
                         }
@@ -89,10 +84,8 @@ class CloudTextbookFragment: BaseCloudFragment() {
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定删除？").builder()
                     .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
                         override fun ok() {
-                            deleteItem(textbooks[position])
+                            deleteItem()
                         }
                     })
                 true
@@ -106,55 +99,16 @@ class CloudTextbookFragment: BaseCloudFragment() {
         val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(book.category,book.bookId)
         if (localBook == null) {
             showLoading()
-            //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-            if (!book.drawUrl.isNullOrEmpty()){
-                countDownTasks= CountDownLatch(2)
-                downloadBook(book)
-                downloadBookDrawing(book)
-            }
-            else{
-                countDownTasks=CountDownLatch(1)
-                downloadBook(book)
-            }
-            downloadSuccess(book)
+            downloadBook(book)
         } else {
             showToast("已下载")
         }
     }
 
-    private fun deleteItem(book: TextbookBean){
+    private fun deleteItem(){
         val ids= mutableListOf<Int>()
-        ids.add(book.cloudId)
+        ids.add(textbooks[position].cloudId)
         mCloudPresenter.deleteCloud(ids)
-    }
-
-    /**
-     * 下载完成
-     */
-    private fun downloadSuccess(book: TextbookBean){
-        //等待两个请求完成后刷新列表
-        Thread{
-            countDownTasks?.await()
-            requireActivity().runOnUiThread {
-                hideLoading()
-                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(book.category,book.bookId)
-                if (localBook!=null){
-                    showToast(book.bookName+"下载成功")
-                    deleteItem(book)
-                    EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-                }
-                else{
-                    if (FileUtils.isExistContent(book.bookDrawPath)){
-                        FileUtils.deleteFile(File(book.bookDrawPath))
-                    }
-                    if (FileUtils.isExistContent(book.bookPath)){
-                        FileUtils.deleteFile(File(book.bookPath))
-                    }
-                    showToast(book.bookName+"下载失败")
-                }
-            }
-            countDownTasks=null
-        }.start()
     }
 
     /**
@@ -162,68 +116,77 @@ class CloudTextbookFragment: BaseCloudFragment() {
      */
     private fun downloadBook(book: TextbookBean) {
         val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.downloadUrl))
-        FileDownManager.with().create(book.downloadUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
-                        override fun onFinish() {
-                            book.id=null
-                            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                            //删除教材的zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            countDownTasks?.countDown()
+        val zipDrawPath=FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
+        val urls= mutableListOf<String>()
+        val paths= mutableListOf<String>()
+        urls.add(book.downloadUrl)
+        paths.add(zipPath)
+        if (!book.drawUrl.isNullOrEmpty()){
+            urls.add(book.drawUrl)
+            paths.add(zipDrawPath)
+        }
+        mDownloadManager?.startBatch(urls,paths, object : DownloadManager.BatchCallback {
+            override fun onBatchCompleted() {
+                ZipUtils.unzip(zipPath, book.bookPath, object : IZipCallback {
+                    override fun onFinish() {
+                        FileUtils.deleteFile(File(zipPath))
+                        if (!book.drawUrl.isNullOrEmpty()){
+                            ZipUtils.unzip(zipDrawPath, book.bookDrawPath, object : IZipCallback {
+                                override fun onFinish() {
+                                    FileUtils.deleteFile(File(zipDrawPath))
+                                    downloadComplete(1,book)
+                                }
+                                override fun onProgress(percentDone: Int) {
+                                }
+                                override fun onError(msg: String) {
+                                    downloadComplete(0,book)
+                                }
+                                override fun onStart() {
+                                }
+                            })
                         }
-                        override fun onProgress(percentDone: Int) {
+                        else{
+                            downloadComplete(1,book)
                         }
-                        override fun onError(msg: String?) {
-                            countDownTasks?.countDown()
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    countDownTasks?.countDown()
-                }
-            })
+                    }
+                    override fun onProgress(percentDone: Int) {
+                    }
+                    override fun onError(msg: String?) {
+                        downloadComplete(0,book)
+                    }
+                    override fun onStart() {
+                    }
+                })
+
+            }
+            override fun onBatchFailed(error: String) {
+                hideLoading()
+                downloadComplete(0,book)
+            }
+        })
     }
 
     /**
-     * 下载书籍手写内容
+     * 下载结果
      */
-    private fun downloadBookDrawing(book: TextbookBean){
-        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
-        FileDownManager.with().create(book.drawUrl).setPath(zipPath)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                }
-                override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip(zipPath, book.bookDrawPath, object : IZipCallback {
-                        override fun onFinish() {
-                            //删除教材的zip文件
-                            FileUtils.deleteFile(File(zipPath))
-                            countDownTasks?.countDown()
-                        }
-                        override fun onProgress(percentDone: Int) {
-                        }
-                        override fun onError(msg: String?) {
-                            countDownTasks?.countDown()
-                        }
-                        override fun onStart() {
-                        }
-                    })
-                    countDownTasks?.countDown()
-                }
-                override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    countDownTasks?.countDown()
-                }
-            })
+    private fun downloadComplete(type:Int,book: TextbookBean){
+        hideLoading()
+        if (type==1){
+            book.id=null
+            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+            deleteItem()
+            showToast(book.bookName+getString(R.string.download_success))
+            EventBus.getDefault().post(TEXT_BOOK_EVENT)
+        }
+        else{
+            if (FileUtils.isExistContent(book.bookDrawPath)){
+                FileUtils.deleteFile(File(book.bookDrawPath))
+            }
+            if (FileUtils.isExistContent(book.bookPath)){
+                FileUtils.deleteFile(File(book.bookPath))
+            }
+            showToast(book.bookName+getString(R.string.download_fail))
+        }
     }
 
 
