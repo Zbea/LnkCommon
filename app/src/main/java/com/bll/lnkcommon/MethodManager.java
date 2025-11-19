@@ -27,7 +27,6 @@ import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
-import com.bll.lnkcommon.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkcommon.utils.ActivityManager;
 import com.bll.lnkcommon.utils.AppUtils;
 import com.bll.lnkcommon.utils.FileUtils;
@@ -228,20 +227,6 @@ public class MethodManager {
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         FileUtils.deleteFile(new File(book.bookDrawPath));
         EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
-    }
-
-    /**
-     * 跳转截图列表
-     * @param context
-     * @param index
-     * @param tabPath
-     */
-    public static void gotoScreenFile(Context context,int index,String tabPath){
-        Intent intent=new Intent(context, FileDrawingActivity.class);
-        intent.putExtra("pageIndex",index);
-        intent.putExtra("pagePath",tabPath);
-        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
-        context.startActivity(intent);
     }
 
     /**

@@ -61,12 +61,6 @@ class ScreenshotDetailsDialog(val context: Context) {
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
-        mAdapter.setOnChildClickListener{ parentPos,pos->
-            dialog.dismiss()
-            val path=screenTypes[parentPos].path
-            val files=FileUtils.getDescTimeFiles(path)
-            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
-        }
 
         return this
     }

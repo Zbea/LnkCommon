@@ -16,18 +16,15 @@ import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkcommon.ui.adapter.ScreenshotAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.io.File
-import kotlin.math.ceil
 
 class ScreenshotListActivity:BaseActivity() {
     private var popupBeans = mutableListOf<PopupBean>()
@@ -126,8 +123,7 @@ class ScreenshotListActivity:BaseActivity() {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                val index=totalNum-1-((pageIndex-1)*pageSize+position)
-                MethodManager.gotoScreenFile(this@ScreenshotListActivity,index,tabPath)
+                ImageDialog(this@ScreenshotListActivity, arrayListOf(mAdapter?.data!![position].path)).builder()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@ScreenshotListActivity.position=position

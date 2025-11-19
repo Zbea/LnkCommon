@@ -182,9 +182,6 @@
         <activity android:name=".ui.activity.account.PermissionSettingActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.FileDrawingActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.ScreenshotManagerActivity"
             android:windowSoftInputMode="adjustPan"
             />
