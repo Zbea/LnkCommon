@@ -578,15 +578,11 @@ abstract class BaseDrawingActivity : BaseActivity() {
         isGeometry=false
     }
 
-    /**
-     * 标题a操作
-     */
-    open fun setDrawingTitle(title:String){
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-//        elik?.onLassoReset()
+        if (elik?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+            elik?.onLassoReset()
+        }
     }
 
 }

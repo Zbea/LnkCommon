@@ -1,9 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.SchoolBean
-import com.bll.lnkcommon.mvp.model.Score
-import com.bll.lnkcommon.mvp.model.StudentBean
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 

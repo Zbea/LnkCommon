@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.common_date_arrow.iv_down
 import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
@@ -60,7 +61,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        showView(ll_diary)
+        showView(ll_diary,iv_edit)
         elik?.addOnTopView(ll_diary)
 
         iv_up.setOnClickListener {

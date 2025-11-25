@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkCorrectList
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 

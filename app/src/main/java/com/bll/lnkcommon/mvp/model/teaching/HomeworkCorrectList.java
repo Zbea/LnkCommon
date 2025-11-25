@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.model.teaching;
 
 import com.google.gson.annotations.SerializedName;
 

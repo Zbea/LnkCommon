@@ -25,6 +25,7 @@ import com.bll.lnkcommon.utils.FileImageUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_free_note.ll_friend_function
 import kotlinx.android.synthetic.main.ac_free_note.tv_add
 import kotlinx.android.synthetic.main.ac_free_note.tv_delete
 import kotlinx.android.synthetic.main.ac_free_note.tv_name
@@ -34,6 +35,7 @@ import kotlinx.android.synthetic.main.ac_free_note.tv_share
 import kotlinx.android.synthetic.main.ac_free_note.tv_share_list
 import kotlinx.android.synthetic.main.ac_free_note.v_content
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
@@ -149,6 +151,11 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
 
     }
     override fun initView() {
+        showView(iv_edit)
+        if (!MethodManager.isLogin()){
+            disMissView(ll_friend_function,tv_add)
+        }
+
         tv_save.setOnClickListener {
             freeNoteBean?.isSave=true
             saveFreeNote()

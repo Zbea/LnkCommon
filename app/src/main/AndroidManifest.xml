@@ -112,7 +112,7 @@
         <activity android:name=".ui.activity.book.TextBookStoreActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.TextBookDetailsActivity"
+        <activity android:name=".ui.activity.book.TextBookDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
@@ -142,7 +142,7 @@
         <activity android:name=".ui.activity.ScoreActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.HomeworkCorrectActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
@@ -185,13 +185,13 @@
         <activity android:name=".ui.activity.ScreenshotManagerActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.HomeworkDetailsActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.ExamDetailsActivity"
+        <activity android:name=".ui.activity.teaching.ExamDetailsActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.HomeworkRecordActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkRecordActivity"
             android:windowSoftInputMode="adjustPan"
             />
 

@@ -1,73 +1,66 @@
 package com.bll.lnkcommon.ui.fragment.homework
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList.TeacherHomeworkBean
-import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
-import com.bll.lnkcommon.ui.activity.ScoreActivity
-import com.bll.lnkcommon.ui.activity.drawing.HomeworkDetailsActivity
-import com.bll.lnkcommon.ui.activity.HomeworkRecordActivity
-import com.bll.lnkcommon.ui.adapter.TeacherHomeworkAdapter
+import com.bll.lnkcommon.dialog.HomeworkPublishDialog
+import com.bll.lnkcommon.dialog.InputContentDialog
+import com.bll.lnkcommon.dialog.LongClickManageDialog
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkTypeList
+import com.bll.lnkcommon.mvp.model.ItemList
+import com.bll.lnkcommon.mvp.presenter.MyHomeworkPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IMyHomeworkView
+import com.bll.lnkcommon.ui.adapter.HomeworkTypeAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
-import com.bll.lnkcommon.widget.SpaceItemDeco
+import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class HomeworkFragment : BaseFragment(),IHomeworkView {
+class HomeworkFragment:BaseFragment(),IMyHomeworkView {
 
-    private var index=0//1作业2考卷
-    private val presenter=HomeworkPresenter(this)
-    private var homeworks = mutableListOf<TeacherHomeworkBean>()
-    private var mAdapterHomework: TeacherHomeworkAdapter? = null
-    private var studentId = 0
-
-    private var courseStr=""
+    private var presenter=MyHomeworkPresenter(this)
+    private var studentId=0
+    private var homeworkTypes= mutableListOf<HomeworkTypeList.HomeworkTypeBean>()
+    private var mAdapter:HomeworkTypeAdapter?=null
     private var position=0
+    private var editNameStr=""
 
-    /**
-     * 实例 传送数据
-     */
-    fun newInstance(index:Int): HomeworkFragment {
-        val fragment= HomeworkFragment()
-        val bundle= Bundle()
-        bundle.putInt("index",index)
-        fragment.arguments=bundle
-        return fragment
+    override fun onList(homeworkTypeList: HomeworkTypeList) {
+        setPageNumber(homeworkTypeList.total)
+        homeworkTypes=homeworkTypeList.list
+        mAdapter?.setNewData(homeworkTypes)
+    }
+    override fun onCreateSuccess() {
+        pageIndex=1
+        fetchData()
     }
 
-    override fun onList(item: TeacherHomeworkList) {
-        setPageNumber(item.total)
-        homeworks=item.list
-        mAdapterHomework?.setNewData(homeworks)
+    override fun onEditSuccess() {
+        homeworkTypes[position].name=editNameStr
+        mAdapter?.notifyItemChanged(position)
     }
-    override fun onDeleteSuccess() {
-        mAdapterHomework?.remove(position)
+
+    override fun onDelete() {
+        mAdapter?.remove(position)
+    }
+
+    override fun onSendSuccess() {
+        showToast("布置成功")
     }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
     }
-
     override fun initView() {
-        index= arguments?.getInt("index")!!
-        pageSize=6
-
-        initRecyclerView()
-
-        if(DataBeanManager.students.size>0)
+        pageSize=9
+        if (DataBeanManager.students.size>0)
             studentId=DataBeanManager.students[0].accountId
+        initRecyclerView()
     }
-
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkConnected())
             fetchData()
@@ -75,76 +68,99 @@ class HomeworkFragment : BaseFragment(),IHomeworkView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),20f),
-            DP2PX.dip2px(requireActivity(),50f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mAdapterHomework = TeacherHomeworkAdapter(R.layout.item_homework_teacher, null,index)
-        rv_list.adapter = mAdapterHomework
-        mAdapterHomework?.bindToRecyclerView(rv_list)
-        mAdapterHomework?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco( 40))
-        mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
-            val item=homeworks[position]
-            val intent= Intent(requireActivity(), if (item.subType==3) HomeworkRecordActivity::class.java else HomeworkDetailsActivity::class.java)
-            val bundle= Bundle()
-            bundle.putSerializable("homeworkBean", item)
-            intent.putExtra("bundle", bundle)
-            customStartActivity(intent)
-        }
-        mAdapterHomework?.setOnItemChildClickListener { adapter, view, position ->
-            this.position=position
-            val item=homeworks[position]
-            when(view.id){
-                R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
-                        object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
-                            override fun ok() {
-                                val map=HashMap<String,Any>()
-                                map["ids"]=arrayOf(item.id)
-                                presenter.deleteHomeworks(map)
-                            }
-                        })
-                }
-                R.id.iv_rank->{
-                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(index).putExtra("id",item.studentTaskId))
-                }
+        mAdapter = HomeworkTypeAdapter(R.layout.item_my_homework, null).apply {
+            rv_list.layoutManager = GridLayoutManager(activity, 3)
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceGridItemDeco(3, 85))
+            setOnItemClickListener { adapter, view, position ->
+                sendHomework(homeworkTypes[position])
+            }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@HomeworkFragment.position=position
+                onLongClick()
+                true
             }
         }
     }
 
-
-    fun onChangeStudent(id:Int){
-        pageIndex=1
-        studentId=id
-        fetchData()
+    private fun onLongClick(){
+        val item=homeworkTypes[position]
+        val beans = mutableListOf<ItemList>()
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        beans.add(ItemList().apply {
+            name = "重命名"
+            resId = R.mipmap.icon_setting_edit
+        })
+        LongClickManageDialog(requireActivity(),item.name, beans).builder()
+            .setOnDialogClickListener { position->
+                when(position){
+                    0->{
+                        val map=HashMap<String,Any>()
+                        map["ids"]= arrayOf(item.id)
+                        presenter.deleteHomeworkType(map)
+                    }
+                    1->{
+                        InputContentDialog(requireActivity(),item.name).builder().setOnDialogClickListener{
+                            editNameStr=it
+                            val map=HashMap<String,Any>()
+                            map["id"]= item.id
+                            map["name"]= it
+                            presenter.editHomeworkType(map)
+                        }
+                    }
+                }
+            }
     }
 
-    fun onChangeCourse(coures:String){
-        courseStr=coures
+    /**
+     * 布置作业
+     */
+    private fun sendHomework(item: HomeworkTypeList.HomeworkTypeBean){
+        HomeworkPublishDialog(requireActivity()).builder().setOnDialogClickListener{
+            content,date->
+            val map=HashMap<String,Any>()
+            map["id"]=item.id
+            map["title"]=content
+            map["endTime"]=date
+            presenter.sendHomework(map)
+        }
+    }
+
+    /**
+     * 创建作业本
+     */
+    fun createHomeworkType(name:String,courseId:Int){
+        val map=HashMap<String,Any>()
+        map["name"]=name
+        map["subject"]=courseId
+        map["type"]=1
+        map["childId"]=studentId
+        presenter.createHomeworkType(map)
+    }
+
+    fun onChangeStudent(id:Int){
+        studentId=id
         pageIndex=1
         fetchData()
     }
 
     override fun onRefreshData() {
-        courseStr=""
         lazyLoad()
     }
 
     override fun fetchData() {
-        homeworks.clear()
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
+        val map=HashMap<String,Any>()
+        map["size"]=pageSize
+        map["page"]=pageIndex
         map["childId"]=studentId
-        map["type"] =index
-        if (courseStr.isNotEmpty())
-            map["subject"]=courseStr
         presenter.getHomeworks(map)
     }
 

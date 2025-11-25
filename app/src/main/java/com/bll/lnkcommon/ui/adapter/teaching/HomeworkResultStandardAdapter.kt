@@ -1,12 +1,12 @@
-package com.bll.lnkcommon.ui.adapter
+package com.bll.lnkcommon.ui.adapter.teaching
 
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.ResultStandardItem
-import com.bll.lnkcommon.mvp.model.ResultStandardItem.ResultChildItem
+import com.bll.lnkcommon.mvp.model.teaching.ResultStandardItem
+import com.bll.lnkcommon.mvp.model.teaching.ResultStandardItem.ResultChildItem
 import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

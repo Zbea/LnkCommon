@@ -1,10 +1,9 @@
-package com.bll.lnkcommon.ui.adapter
+package com.bll.lnkcommon.ui.adapter.teaching
 
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.ScoreItem
+import com.bll.lnkcommon.mvp.model.teaching.ScoreItem
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

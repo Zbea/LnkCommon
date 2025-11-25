@@ -1,6 +1,6 @@
 package com.bll.lnkcommon.utils
 
-import com.bll.lnkcommon.mvp.model.ScoreItem
+import com.bll.lnkcommon.mvp.model.teaching.ScoreItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.regex.Pattern
@@ -19,7 +19,7 @@ object ScoreItemUtils {
     fun updateAIJsonScores(currentScores: List<ScoreItem>, updateList: List<ScoreItem>) {
         var i = 0
         // 递归更新函数
-        fun updateNode(currentItem:  ScoreItem,parentItem: ScoreItem?) {
+        fun updateNode(currentItem: ScoreItem, parentItem: ScoreItem?) {
             if (i >= updateList.size) return
             // 优先检查当前节点是否匹配
             if (currentItem.label == updateList[i].label) {
@@ -307,7 +307,7 @@ object ScoreItemUtils {
     /**
      * 获取小题结果
      */
-    fun getItemScoreResult(item:ScoreItem):Int{
+    fun getItemScoreResult(item: ScoreItem):Int{
         if (item.label==0.0){
             return 0
         }

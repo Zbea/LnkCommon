@@ -1,12 +1,11 @@
-package com.bll.lnkcommon.ui.activity
+package com.bll.lnkcommon.ui.activity.teaching
 
 import android.widget.TextView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.ResultStandardDetailsDialog
-import com.bll.lnkcommon.dialog.ScoreDetailsDialog
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
 import com.bll.lnkcommon.utils.DateUtils
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -14,6 +13,7 @@ import com.google.android.exoplayer2.Player
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_homework_record.iv_play
 import kotlinx.android.synthetic.main.ac_homework_record.progressBar
+import kotlinx.android.synthetic.main.ac_homework_record.tv_content
 import kotlinx.android.synthetic.main.ac_homework_record.tv_end_time
 import kotlinx.android.synthetic.main.ac_homework_record.tv_play
 import kotlinx.android.synthetic.main.ac_homework_record.tv_speed_0_5
@@ -27,7 +27,7 @@ import java.util.TimerTask
 import java.util.stream.Collectors
 
 class HomeworkRecordActivity:BaseActivity() {
-    private var homeworkBean:TeacherHomeworkList.TeacherHomeworkBean?=null
+    private var homeworkBean: TeacherHomeworkList.TeacherHomeworkBean?=null
     private var exoPlayer: ExoPlayer? = null
     private var timer: Timer? = null
     private var speed=1f
@@ -43,6 +43,8 @@ class HomeworkRecordActivity:BaseActivity() {
 
     override fun initView() {
         setPageTitle("朗读作业")
+
+        tv_content.text=homeworkBean?.title
 
         speed=1f
         isReadyRecorder=false
@@ -122,13 +124,12 @@ class HomeworkRecordActivity:BaseActivity() {
         }
 
         iv_score.setOnClickListener {
-            if (homeworkBean?.type==1&&homeworkBean?.subType!=1){
-                val items= DataBeanManager.getResultStandardItems(homeworkBean!!.subType,homeworkBean!!.typeName,homeworkBean!!.questionType).stream().collect(Collectors.toList())
-                ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),if (homeworkBean?.subType==10)10 else homeworkBean?.questionType!!,homeworkBean?.question!!,items).builder()
+            if (homeworkBean?.recordType==1){
+                ResultStandardDetailsDialog(this, homeworkBean?.title!!, homeworkBean?.score!!.toDouble(),homeworkBean?.question!!).builder()
             }
             else{
-                val answerImages= homeworkBean?.answerUrl!!.split(",") as MutableList<String>
-                ScoreDetailsDialog(this,homeworkBean!!.title,homeworkBean!!.score.toDouble(),homeworkBean?.questionType!!,homeworkBean?.questionMode!!,answerImages,homeworkBean!!.question).builder()
+                val items= DataBeanManager.getResultStandardItems(homeworkBean!!.subType,homeworkBean!!.typeName,homeworkBean!!.questionType).stream().collect(Collectors.toList())
+                ResultStandardDetailsDialog(this,homeworkBean?.title!!,homeworkBean?.score!!.toDouble(),homeworkBean?.questionType!! ,homeworkBean?.question!!,items).builder()
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.model.teaching.ExamList
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 

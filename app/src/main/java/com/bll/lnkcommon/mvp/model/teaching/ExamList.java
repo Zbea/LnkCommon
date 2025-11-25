@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.model.teaching;
 
 import java.io.Serializable;
 import java.util.List;

@@ -10,21 +10,20 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.HomeworkCreateDialog
 import com.bll.lnkcommon.dialog.PopupRadioList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.ui.fragment.homework.ExamFragment
+import com.bll.lnkcommon.ui.fragment.homework.StudentExamFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkCorrectFragment
+import com.bll.lnkcommon.ui.fragment.homework.StudentHomeworkFragment
 import com.bll.lnkcommon.ui.fragment.homework.HomeworkFragment
-import com.bll.lnkcommon.ui.fragment.homework.MyHomeworkFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import kotlinx.android.synthetic.main.common_fragment_title.tv_course
-import kotlinx.android.synthetic.main.common_title.*
 
 class HomeworkManagerFragment:BaseFragment() {
 
-    private var homeworkFragment: HomeworkFragment? = null
-    private var testPaperFragment: HomeworkFragment? = null
-    private var examFragment: ExamFragment? = null
-    private var myHomeworkFragment:MyHomeworkFragment?=null
+    private var studentHomeworkFragment: StudentHomeworkFragment? = null
+    private var testPaperFragment: StudentHomeworkFragment? = null
+    private var studentExamFragment: StudentExamFragment? = null
+    private var homeworkFragment:HomeworkFragment?=null
     private var homeworkCorrectFragment:HomeworkCorrectFragment?=null
 
     private var lastPosition = 0
@@ -46,13 +45,13 @@ class HomeworkManagerFragment:BaseFragment() {
 
         val coursePops=DataBeanManager.popupCourses
 
-        homeworkFragment = HomeworkFragment().newInstance(1)
-        testPaperFragment=HomeworkFragment().newInstance(2)
-        examFragment = ExamFragment()
-        myHomeworkFragment= MyHomeworkFragment()
+        studentHomeworkFragment = StudentHomeworkFragment().newInstance(1)
+        testPaperFragment=StudentHomeworkFragment().newInstance(2)
+        studentExamFragment = StudentExamFragment()
+        homeworkFragment= HomeworkFragment()
         homeworkCorrectFragment= HomeworkCorrectFragment()
 
-        switchFragment(lastFragment, homeworkFragment)
+        switchFragment(lastFragment, studentHomeworkFragment)
 
         tv_course.setOnClickListener {
             PopupClick(requireActivity(), coursePops, tv_course,tv_course.width, 5).builder()
@@ -60,13 +59,13 @@ class HomeworkManagerFragment:BaseFragment() {
                     tv_course.text = it.name
                     when(lastPosition){
                         0->{
-                            homeworkFragment?.onChangeCourse(it.name)
+                            studentHomeworkFragment?.onChangeCourse(it.name)
                         }
                         1->{
                             testPaperFragment?.onChangeCourse(it.name)
                         }
                         2->{
-                            examFragment?.onChangeCourse(it.name)
+                            studentExamFragment?.onChangeCourse(it.name)
                         }
                     }
                 }
@@ -83,7 +82,7 @@ class HomeworkManagerFragment:BaseFragment() {
         iv_manager.setOnClickListener {
             HomeworkCreateDialog(requireActivity()).builder().setOnDialogClickListener {
                     contentStr, courseId ->
-                myHomeworkFragment?.createHomeworkType(contentStr,courseId)
+                homeworkFragment?.createHomeworkType(contentStr,courseId)
             }
         }
 
@@ -94,10 +93,10 @@ class HomeworkManagerFragment:BaseFragment() {
     }
 
     private fun changeFragmentStudent(id:Int){
-        homeworkFragment?.onChangeStudent(id)
+        studentHomeworkFragment?.onChangeStudent(id)
         testPaperFragment?.onChangeStudent(id)
-        examFragment?.onChangeStudent(id)
-        myHomeworkFragment?.onChangeStudent(id)
+        studentExamFragment?.onChangeStudent(id)
+        homeworkFragment?.onChangeStudent(id)
         homeworkCorrectFragment?.onChangeStudent(id)
     }
 
@@ -118,7 +117,7 @@ class HomeworkManagerFragment:BaseFragment() {
             0->{
                 showView(tv_course)
                 disMissView(iv_manager)
-                switchFragment(lastFragment, homeworkFragment)
+                switchFragment(lastFragment, studentHomeworkFragment)
             }
             1->{
                 showView(tv_course)
@@ -128,12 +127,12 @@ class HomeworkManagerFragment:BaseFragment() {
             2->{
                 showView(tv_course)
                 disMissView(iv_manager)
-                switchFragment(lastFragment, examFragment)
+                switchFragment(lastFragment, studentExamFragment)
             }
             3->{
                 showView(iv_manager)
                 disMissView(tv_course)
-                switchFragment(lastFragment, myHomeworkFragment)
+                switchFragment(lastFragment, homeworkFragment)
             }
             4->{
                 disMissView(tv_course,iv_manager)
@@ -148,19 +147,18 @@ class HomeworkManagerFragment:BaseFragment() {
     private fun switchFragment(from: Fragment?, to: Fragment?) {
         if (from != to) {
             lastFragment = to
-            val fm = activity?.supportFragmentManager
-            val ft = fm?.beginTransaction()
+            val ft = childFragmentManager.beginTransaction()
 
             if (!to?.isAdded!!) {
                 if (from != null) {
-                    ft?.hide(from)
+                    ft.hide(from)
                 }
-                ft?.add(R.id.fl_content_group, to)?.commit()
+                ft.add(R.id.fl_content_group, to).commit()
             } else {
                 if (from != null) {
-                    ft?.hide(from)
+                    ft.hide(from)
                 }
-                ft?.show(to)?.commit()
+                ft.show(to).commit()
             }
         }
     }

@@ -4,6 +4,12 @@ import com.bll.lnkcommon.mvp.model.book.BookStore
 import com.bll.lnkcommon.mvp.model.book.BookStoreType
 import com.bll.lnkcommon.mvp.model.book.TextbookStore
 import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.model.teaching.ExamList
+import com.bll.lnkcommon.mvp.model.teaching.ExamRankList
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkCorrectList
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkTypeList
+import com.bll.lnkcommon.mvp.model.teaching.Score
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
 import com.bll.lnkcommon.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.RequestBody

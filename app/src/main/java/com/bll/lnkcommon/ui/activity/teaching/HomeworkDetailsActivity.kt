@@ -1,12 +1,11 @@
-package com.bll.lnkcommon.ui.activity.drawing
+package com.bll.lnkcommon.ui.activity.teaching
 
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.ResultStandardDetailsDialog
 import com.bll.lnkcommon.dialog.ScoreDetailsDialog
-import com.bll.lnkcommon.mvp.model.ResultStandardItem
-import com.bll.lnkcommon.mvp.model.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.v_content
@@ -19,7 +18,7 @@ import java.util.stream.Collectors
 
 class HomeworkDetailsActivity:BaseDrawingActivity() {
 
-    private var homeworkBean:TeacherHomeworkList.TeacherHomeworkBean?=null
+    private var homeworkBean: TeacherHomeworkList.TeacherHomeworkBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
 

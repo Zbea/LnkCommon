@@ -11,7 +11,7 @@ import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.manager.ItemTypeDaoManager
 import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.ui.adapter.CloudScreenshotAdapter
+import com.bll.lnkcommon.ui.adapter.cloud.CloudScreenshotAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.DownloadManager

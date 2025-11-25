@@ -1,7 +1,7 @@
-package com.bll.lnkcommon.ui.adapter
+package com.bll.lnkcommon.ui.adapter.teaching
 
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.ScoreItem
+import com.bll.lnkcommon.mvp.model.teaching.ScoreItem
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

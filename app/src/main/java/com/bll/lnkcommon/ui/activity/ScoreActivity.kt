@@ -3,10 +3,11 @@ package com.bll.lnkcommon.ui.activity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.mvp.model.*
+import com.bll.lnkcommon.mvp.model.teaching.ExamRankList
+import com.bll.lnkcommon.mvp.model.teaching.Score
 import com.bll.lnkcommon.mvp.presenter.ScoreRankPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.ui.adapter.ScoreAdapter
+import com.bll.lnkcommon.ui.adapter.teaching.ScoreAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.ac_score.*

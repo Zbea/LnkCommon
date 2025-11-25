@@ -7,38 +7,51 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.dialog.ImageDialog
-import com.bll.lnkcommon.mvp.model.ExamList
-import com.bll.lnkcommon.mvp.presenter.ExamPresenter
-import com.bll.lnkcommon.mvp.view.IContractView.IExamView
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
+import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList.TeacherHomeworkBean
+import com.bll.lnkcommon.mvp.presenter.HomeworkPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkView
 import com.bll.lnkcommon.ui.activity.ScoreActivity
-import com.bll.lnkcommon.ui.activity.drawing.ExamDetailsActivity
-import com.bll.lnkcommon.ui.adapter.ExamAdapter
+import com.bll.lnkcommon.ui.activity.teaching.HomeworkDetailsActivity
+import com.bll.lnkcommon.ui.activity.teaching.HomeworkRecordActivity
+import com.bll.lnkcommon.ui.adapter.teaching.StudentHomeworkAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class ExamFragment : BaseFragment(),IExamView {
-    private val presenter=ExamPresenter(this)
-    private var exams = mutableListOf<ExamList.ExamBean>()
-    private var mAdapter: ExamAdapter? = null
+class StudentHomeworkFragment : BaseFragment(),IHomeworkView {
+
+    private var index=0//1作业2考卷
+    private val presenter=HomeworkPresenter(this)
+    private var homeworks = mutableListOf<TeacherHomeworkBean>()
+    private var mAdapterHomework: StudentHomeworkAdapter? = null
     private var studentId = 0
+
     private var courseStr=""
     private var position=0
 
-    override fun onList(item: ExamList) {
-        setPageNumber(item.total)
-        exams=item.list
-        mAdapter?.setNewData(exams)
+    /**
+     * 实例 传送数据
+     */
+    fun newInstance(index:Int): StudentHomeworkFragment {
+        val fragment= StudentHomeworkFragment()
+        val bundle= Bundle()
+        bundle.putInt("index",index)
+        fragment.arguments=bundle
+        return fragment
     }
 
+    override fun onList(item: TeacherHomeworkList) {
+        setPageNumber(item.total)
+        homeworks=item.list
+        mAdapterHomework?.setNewData(homeworks)
+    }
     override fun onDeleteSuccess() {
-        mAdapter?.remove(position)
+        mAdapterHomework?.remove(position)
     }
 
     override fun getLayoutId(): Int {
@@ -46,6 +59,7 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     override fun initView() {
+        index= arguments?.getInt("index")!!
         pageSize=6
 
         initRecyclerView()
@@ -68,29 +82,23 @@ class ExamFragment : BaseFragment(),IExamView {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mAdapter = ExamAdapter(R.layout.item_homework_teacher, null)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceItemDeco( 50))
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=exams[position]
-            val intent= Intent(requireActivity(), ExamDetailsActivity::class.java)
+        mAdapterHomework = StudentHomeworkAdapter(R.layout.item_homework_teacher, null,index)
+        rv_list.adapter = mAdapterHomework
+        mAdapterHomework?.bindToRecyclerView(rv_list)
+        mAdapterHomework?.setEmptyView(R.layout.common_empty)
+        rv_list?.addItemDecoration(SpaceItemDeco( 40))
+        mAdapterHomework?.setOnItemClickListener { adapter, view, position ->
+            val item=homeworks[position]
+            val intent= Intent(requireActivity(), if (item.subType==3) HomeworkRecordActivity::class.java else HomeworkDetailsActivity::class.java)
             val bundle= Bundle()
-            bundle.putSerializable("examBean", item)
+            bundle.putSerializable("homeworkBean", item)
             intent.putExtra("bundle", bundle)
             customStartActivity(intent)
         }
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+        mAdapterHomework?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
-            val item=exams[position]
+            val item=homeworks[position]
             when(view.id){
-                R.id.tv_rank->{
-                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java)
-                        .setFlags(0)
-                        .putExtra("id",item.schoolExamJobId)
-                    )
-                }
                 R.id.iv_delete->{
                     CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
                         object : CommonDialog.OnDialogClickListener {
@@ -98,14 +106,13 @@ class ExamFragment : BaseFragment(),IExamView {
                             }
                             override fun ok() {
                                 val map=HashMap<String,Any>()
-                                map["id"]=item.id
-                                presenter.deleteExam(map)
+                                map["ids"]=arrayOf(item.id)
+                                presenter.deleteHomeworks(map)
                             }
                         })
                 }
-                R.id.tv_answer->{
-                    val images=item.answerUrl.split(",").toList()
-                    ImageDialog(requireActivity(),images).builder()
+                R.id.iv_rank->{
+                    customStartActivity(Intent(requireActivity(),ScoreActivity::class.java).setFlags(index).putExtra("id",item.studentTaskId))
                 }
             }
         }
@@ -130,14 +137,15 @@ class ExamFragment : BaseFragment(),IExamView {
     }
 
     override fun fetchData() {
-        exams.clear()
+        homeworks.clear()
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
         map["childId"]=studentId
+        map["type"] =index
         if (courseStr.isNotEmpty())
-            map["type"]=DataBeanManager.getCourseId(courseStr)
-        presenter.getExams(map)
+            map["subject"]=courseStr
+        presenter.getHomeworks(map)
     }
 
     override fun onEventBusMessage(msgFlag: String) {

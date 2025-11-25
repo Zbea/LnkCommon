@@ -1,7 +1,7 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import com.bll.lnkcommon.mvp.model.ExamRankList
-import com.bll.lnkcommon.mvp.model.Score
+import com.bll.lnkcommon.mvp.model.teaching.ExamRankList
+import com.bll.lnkcommon.mvp.model.teaching.Score
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.BasePresenter
 import com.bll.lnkcommon.net.BaseResult

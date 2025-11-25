@@ -50,6 +50,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
+        showView(iv_edit)
         disMissView(iv_btn)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content)
 

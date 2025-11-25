@@ -7,15 +7,14 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.DataBeanManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
-import com.bll.lnkcommon.mvp.model.HomeworkCorrectList
-import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkCorrectList
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkCorrectList.CorrectBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView
-import com.bll.lnkcommon.ui.activity.drawing.HomeworkCorrectActivity
-import com.bll.lnkcommon.ui.adapter.HomeworkCorrectAdapter
+import com.bll.lnkcommon.ui.activity.teaching.HomeworkCorrectActivity
+import com.bll.lnkcommon.ui.adapter.teaching.HomeworkCorrectAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.widget.SpaceItemDeco
@@ -24,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_list_content.*
 class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
 
     private val mPresenter=HomeworkCorrectPresenter(this)
-    private var mAdapter:HomeworkCorrectAdapter?=null
+    private var mAdapter: HomeworkCorrectAdapter?=null
     private var homeworks= mutableListOf<CorrectBean>()
     private var studentId=0
     private var position=0

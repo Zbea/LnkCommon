@@ -15,7 +15,7 @@ import com.bll.lnkcommon.mvp.model.CloudList
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.NoteContent
-import com.bll.lnkcommon.ui.adapter.CloudNoteAdapter
+import com.bll.lnkcommon.ui.adapter.cloud.CloudNoteAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
@@ -31,7 +31,7 @@ import java.io.File
 
 class CloudNoteFragment: BaseCloudFragment() {
 
-    private var mAdapter:CloudNoteAdapter?=null
+    private var mAdapter: CloudNoteAdapter?=null
     private var notes= mutableListOf<Note>()
     private var position=0
 

@@ -1,9 +1,10 @@
-package com.bll.lnkcommon.ui.activity.drawing
+package com.bll.lnkcommon.ui.activity.book
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
 import com.bll.lnkcommon.Constants.TEXT_BOOK_EVENT
 import com.bll.lnkcommon.FileAddress
+import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CatalogBookDialog
@@ -13,7 +14,6 @@ import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
 import com.bll.lnkcommon.mvp.model.catalog.CatalogMsg
 import com.bll.lnkcommon.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkcommon.utils.FileUtils
-import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -118,7 +118,7 @@ class TextBookDetailsActivity:BaseDrawingActivity() {
         val showFile = getIndexFile(index)
         if (showFile!=null){
             book?.pageUrl=showFile.path //设置当前页面路径
-            GlideUtils.setImageCacheUrl(this,showFile.path,view)
+            MethodManager.setImageFile(showFile.path, view)
 
             val drawPath=book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath,true)

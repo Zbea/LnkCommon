@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.model.teaching;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +12,6 @@ public class ScoreItem implements Serializable {
     public int parentSort;
     public int level;
     public int result=0;//0错1对
-    public double label=1;//题目标准分数
+    public double label=0;//题目标准分数
     public List<ScoreItem> childScores=new ArrayList<>();
 }

@@ -295,8 +295,14 @@ public class MethodManager {
     public static void setImageFile(String path, ImageView imageView){
         File file=new File(path);
         if (file.exists()){
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            imageView.setImageBitmap(bitmap);
+            new Thread(() -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                imageView.post(() -> {
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
+            }).start();
         }
     }
 
@@ -325,15 +331,6 @@ public class MethodManager {
             list.get(position).isCheck=true;
         }
         return list;
-    }
-
-    public static ItemTypeBean getDefaultItemTypeDocument(){
-        String title="默认";
-        ItemTypeBean itemTypeBean=new ItemTypeBean();
-        itemTypeBean.type=6;
-        itemTypeBean.path=new FileAddress().getPathDocument(title);
-        itemTypeBean.title=title;
-        return itemTypeBean;
     }
 
     /**

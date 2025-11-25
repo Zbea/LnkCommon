@@ -1,9 +1,7 @@
-package com.bll.lnkcommon.ui.adapter
+package com.bll.lnkcommon.ui.adapter.cloud
 
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.DiaryBean
 import com.bll.lnkcommon.mvp.model.FreeNoteBean
-import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

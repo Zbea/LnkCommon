@@ -1,13 +1,11 @@
-package com.bll.lnkcommon.ui.activity.drawing
+package com.bll.lnkcommon.ui.activity.teaching
 
-import android.os.Handler
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.FileAddress
-import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
 import com.bll.lnkcommon.dialog.CommonDialog
-import com.bll.lnkcommon.mvp.model.HomeworkCorrectList.CorrectBean
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkCorrectList.CorrectBean
 import com.bll.lnkcommon.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IHomeworkCorrectView

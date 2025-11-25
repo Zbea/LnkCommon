@@ -35,7 +35,6 @@ class DateEventActivity:BaseDrawingActivity() {
         setPageTitle("日程")
         MethodManager.setImageResource(this, R.mipmap.icon_date_event_bg,v_content)
 
-
         setContentView()
         elik=v_content.pwInterFace
 

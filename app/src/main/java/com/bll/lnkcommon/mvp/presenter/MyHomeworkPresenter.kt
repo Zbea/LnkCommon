@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.mvp.presenter
 
-import android.util.Log
-import com.bll.lnkcommon.mvp.model.HomeworkTypeList
+import com.bll.lnkcommon.mvp.model.teaching.HomeworkTypeList
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 

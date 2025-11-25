@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.mvp.model;
+package com.bll.lnkcommon.mvp.model.teaching;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -34,5 +34,7 @@ public class TeacherHomeworkList {
         public String question;
         public int selfBatchStatus;//1自批
         public String answerUrl;
+        public int examType;//1普通作业卷2切题作业卷
+        public int recordType;//1智大语音评测
     }
 }

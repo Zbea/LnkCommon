@@ -1,4 +1,4 @@
-package com.bll.lnkcommon.ui.adapter
+package com.bll.lnkcommon.ui.adapter.cloud
 
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.Note
