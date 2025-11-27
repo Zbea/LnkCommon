@@ -24,11 +24,13 @@ import com.bll.lnkcommon.mvp.presenter.SmsPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
 import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.NotebookManagerActivity
+import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.ui.adapter.NoteAdapter
 import com.bll.lnkcommon.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class NoteFragment:BaseFragment(),ISmsView {
@@ -158,10 +160,7 @@ class NoteFragment:BaseFragment(),ISmsView {
             val note=notes[position]
             when(view.id){
                 R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定删除${note.title}？").builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
+                    CommonDialog(requireActivity()).setContent("确定删除${note.title}？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 deleteNote()
                             }
@@ -225,8 +224,6 @@ class NoteFragment:BaseFragment(),ISmsView {
                         return@setOnItemChildClickListener
                     }
                     CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
                         override fun ok() {
                             mQiniuPresenter.getToken()
                         }
@@ -248,6 +245,19 @@ class NoteFragment:BaseFragment(),ISmsView {
                 }
         }
         mAdapter?.addFooterView(view)
+    }
+
+    /**
+     * 跳转笔记写作
+     */
+    private fun gotoNote(note: Note) {
+        note.date=System.currentTimeMillis()
+        NoteDaoManager.getInstance().insertOrReplace(note)
+        EventBus.getDefault().post(NOTE_EVENT)
+
+        val intent = Intent(activity, NoteDrawingActivity::class.java)
+        intent.putExtra("noteId",note.id)
+        customStartActivity(intent)
     }
 
     //新建笔记本

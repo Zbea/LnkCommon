@@ -76,8 +76,10 @@ public class MethodManager {
         SPUtil.INSTANCE.putString("token", "");
         SPUtil.INSTANCE.removeObj("user");
         EventBus.getDefault().post(Constants.USER_EVENT);
+
         DataBeanManager.INSTANCE.getStudents().clear();
         EventBus.getDefault().post(Constants.STUDENT_EVENT);
+
         ActivityManager.getInstance().finishOthers(MainActivity.class);
         context.startActivity(new Intent(context, AccountLoginActivity.class));
 
@@ -114,8 +116,7 @@ public class MethodManager {
         String format=FileUtils.getUrlFormat(file.getPath());
         if (format.equals(".ppt") || format.equals(".pptx")){
             if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)) {
-                String url=SPUtil.INSTANCE.getString(file.getName());
-                gotoPptDetails(context,file.getPath(),url);
+                gotoPptDetails(context,file.getPath());
             }
         }
         else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
@@ -141,13 +142,12 @@ public class MethodManager {
         }
     }
 
-    public static void gotoPptDetails(Context context,String localPath,String url){
+    public static void gotoPptDetails(Context context,String path){
         if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
-            intent.putExtra("open_mode", 1);
-            intent.putExtra("path", localPath);
-            intent.putExtra("url", url);
+            intent.putExtra("open_mode", 0);  // 0-本地解析打开, 1-微软在线预览
+            intent.putExtra("path", path);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }

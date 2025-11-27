@@ -68,7 +68,6 @@ object Constants {
         const val APP_UNINSTALL_EVENT="AppUnInstallEvent"
         const val CALENDER_EVENT = "CalenderEvent"
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
-        const val SETTING_DATA_UPLOAD_EVENT = "SettingDataUploadEvent" //系统设置 一键下载
         const val REFRESH_STUDENT_PERMISSION_EVENT = "RefreshStudentPermission"
         const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"//截图管理刷新
 
@@ -79,8 +78,7 @@ object Constants {
 
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
         const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
-        //广播
-        const val DATA_UPLOAD_BROADCAST_EVENT = "com.htfyun.blackwhitebar.uploaddata"
+
         const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
         const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功

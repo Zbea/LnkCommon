@@ -303,25 +303,18 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     }
 
     /**
-     * 跳转笔记写作
-     */
-    fun gotoNote(note: Note) {
-        note.date=System.currentTimeMillis()
-        NoteDaoManager.getInstance().insertOrReplace(note)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-
-        val intent = Intent(activity, NoteDrawingActivity::class.java)
-        intent.putExtra("noteId",note.id)
-        customStartActivity(intent)
-    }
-
-
-    /**
      * 跳转活动(关闭已经打开的)
      */
     fun customStartActivity(intent: Intent){
         ActivityManager.getInstance().finishActivity(intent.component?.className)
         startActivity(intent)
+    }
+
+    /**
+     * 判断当前页面是否存在
+     */
+    fun isActivityLife():Boolean{
+        return isAdded&&!requireActivity().isDestroyed
     }
 
     fun onCheckUpdate() {
@@ -346,7 +339,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             showLog(it.toString())
             val code= it.optInt("Code")
             val jsonObject=it.optJSONObject("Data")
-            if (code==200&&jsonObject!=null){
+            if (isActivityLife()&&code==200&&jsonObject!=null){
                 val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
                 requireActivity().runOnUiThread {
 
@@ -378,7 +371,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             val code= jsonObject.optInt("code")
             val dataString=jsonObject.optString("data")
             val item= Gson().fromJson(dataString,AppUpdateBean::class.java)
-            if (code==0){
+            if (isActivityLife()&&code==0){
                 if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
                     requireActivity().runOnUiThread {
                         downLoadAPP(item)

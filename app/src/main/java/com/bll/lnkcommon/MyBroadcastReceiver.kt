@@ -38,10 +38,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)
             }
-            Constants.DATA_UPLOAD_BROADCAST_EVENT->{
-                Log.d("debug","上传")
-                EventBus.getDefault().postSticky(Constants.SETTING_DATA_UPLOAD_EVENT)
-            }
             //监听网络变化
             ConnectivityManager.CONNECTIVITY_ACTION->{
                 val info: NetworkInfo? = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO)

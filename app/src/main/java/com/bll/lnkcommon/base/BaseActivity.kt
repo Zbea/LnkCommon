@@ -45,7 +45,6 @@ import kotlin.math.ceil
 abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
     var mDialog: ProgressDialog? = null
-    var mSaveState:Bundle?=null
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
@@ -56,12 +55,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        mSaveState=savedInstanceState
         setContentView(layoutId())
-        initCommonTitle()
-        EventBus.getDefault().register(this)
-        setStatusBarColor(ContextCompat.getColor(this, R.color.white))
 
         if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -79,14 +73,24 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 Manifest.permission.READ_PHONE_STATE
             )
         }
+
+        EventBus.getDefault().register(this)
         mDownloadManager=DownloadManager()
         mDialog = ProgressDialog(this)
+
         if (rv_tab!=null){
             initTabView()
         }
         initCreate()
         initData()
         initView()
+        initCommonTitle()
+    }
+
+    /**
+     * 初始化onCreate
+     */
+    open fun initCreate(){
     }
 
     /**
@@ -103,12 +107,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 初始化 View
      */
     abstract fun initView()
-
-    /**
-     * 初始化onCreate
-     */
-    open fun initCreate(){
-    }
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
