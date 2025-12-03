@@ -36,5 +36,6 @@ public class TeacherHomeworkList {
         public String answerUrl;
         public int examType;//1普通作业卷2切题作业卷
         public int recordType;//1智大语音评测
+        public String audioUrl;//录音地址
     }
 }

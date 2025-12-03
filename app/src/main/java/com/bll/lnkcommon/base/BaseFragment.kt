@@ -328,7 +328,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
      * 检查系统更新
      */
     private fun checkSystemUpdate(){
-        val url= Constants.RELEASE_BASE_URL+"Device/CheckUpdate"
+        val url= Constants.URL_BASE+"Device/CheckUpdate"
 
         val  jsonBody = JSONObject()
         jsonBody.put(Constants.SN, DeviceUtil.getOtaSerialNumber())
@@ -339,10 +339,9 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             showLog(it.toString())
             val code= it.optInt("Code")
             val jsonObject=it.optJSONObject("Data")
-            if (isActivityLife()&&code==200&&jsonObject!=null){
+            if (isActivityLife()&&!DataBeanManager.isSystemUpdateShow&&code==200&&jsonObject!=null){
                 val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
                 requireActivity().runOnUiThread {
-
                     if (SPUtil.getString(Constants.SP_UPDATE_SYSTEM_STATUS)!="waiting"){
                         AppUpdateDialog(requireActivity(),2,item).builder().setDialogClickListener{
                             object : CountDownTimer(60*60*1000, 1000) {

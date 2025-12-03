@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.activity.teaching
 
+import android.media.MediaPlayer
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseDrawingActivity
@@ -7,6 +8,7 @@ import com.bll.lnkcommon.dialog.ResultStandardDetailsDialog
 import com.bll.lnkcommon.dialog.ScoreDetailsDialog
 import com.bll.lnkcommon.mvp.model.teaching.TeacherHomeworkList
 import com.bll.lnkcommon.utils.GlideUtils
+import kotlinx.android.synthetic.main.ac_drawing.iv_audio_play
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.v_content
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -21,6 +23,7 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
     private var homeworkBean: TeacherHomeworkList.TeacherHomeworkBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun layoutId(): Int {
         return R.layout.ac_drawing
@@ -45,6 +48,10 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
         disMissView(iv_btn,iv_tool,iv_catalog)
         setDisableTouchInput(true)
 
+        if (!homeworkBean?.audioUrl.isNullOrEmpty()){
+            showView(iv_audio_play)
+        }
+
         if (homeworkBean?.status==3)
             showView(iv_score)
 
@@ -61,6 +68,32 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
                     homeworkBean!!.answerUrl?.split(",") as MutableList<String>
                 }
                 ScoreDetailsDialog(this,homeworkBean!!.title,homeworkBean!!.score.toDouble(),homeworkBean?.questionType!!,homeworkBean?.questionMode!!,answerImages,homeworkBean!!.question).builder()
+            }
+        }
+
+        iv_audio_play.setOnClickListener {
+            if (mediaPlayer==null){
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.setDataSource(homeworkBean?.audioUrl)
+                mediaPlayer?.setOnCompletionListener {
+                    iv_audio_play.setImageResource(R.mipmap.icon_app_audio_play)
+                    mediaPlayer?.reset()
+                    mediaPlayer?.setDataSource(homeworkBean?.audioUrl)
+                    mediaPlayer?.prepare()
+                }
+                mediaPlayer?.prepare()
+                mediaPlayer?.start()
+                iv_audio_play.setImageResource(R.mipmap.icon_app_audio_pause)
+            }
+            else{
+                if (mediaPlayer?.isPlaying==true){
+                    mediaPlayer?.pause()
+                    iv_audio_play.setImageResource(R.mipmap.icon_app_audio_play)
+                }
+                else{
+                    mediaPlayer?.start()
+                    iv_audio_play.setImageResource(R.mipmap.icon_app_audio_pause)
+                }
             }
         }
 
@@ -89,6 +122,19 @@ class HomeworkDetailsActivity:BaseDrawingActivity() {
         tv_page.text="${posImage+1}"
         tv_page_total.text="${images.size}"
         GlideUtils.setImageCacheUrl(this, images[posImage],v_content)
+    }
+
+    private fun release() {
+        if (mediaPlayer != null) {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        release()
     }
 
 }

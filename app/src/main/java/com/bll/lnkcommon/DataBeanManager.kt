@@ -12,6 +12,7 @@ import java.util.*
 object DataBeanManager {
 
     var copyBitmap: Bitmap?=null//剪切、复制保存bitmap
+    var isSystemUpdateShow=false//是否可以更新系统应用 true正在更新
 
     var grades= mutableListOf<ItemList>()
     var typeGrades= mutableListOf<ItemList>()
@@ -657,19 +658,18 @@ object DataBeanManager {
     fun operatingGuideInfo():List<MultiItemEntity>{
         val list= mutableListOf<MultiItemEntity>()
         val types= mutableListOf("一、主页面","二、管理中心","三、实用工具")
-        val mainStrs= mutableListOf("注册","按键/接口","状态栏按钮","首页","书架","笔记","应用","随笔","日记","规划","截图","消息")
+        val mainStrs= mutableListOf("注册","按键/接口","状态栏按钮","首页","书架","文档","笔记","应用","随笔","日记","规划","截图","消息")
         val managerStrs= mutableListOf("管理中心")
         val toolStrs= mutableListOf("我的工具","我的日历","截屏","几何绘图")
         val childTypes= mutableListOf(mainStrs,managerStrs,toolStrs)
-        for (type in types){
-            val index=types.indexOf(type)
+        types.forEachIndexed { index, s ->
             val catalogParentBean = CatalogParentBean()
-            catalogParentBean.title=type
-            for (childType in childTypes[index]){
+            catalogParentBean.title=s
+            childTypes[index].forEachIndexed { childIndex, childStr ->
                 val catalogChildBean = CatalogChildBean()
-                catalogChildBean.title = childType
+                catalogChildBean.title = childStr
                 catalogChildBean.parentPosition=index
-                catalogChildBean.pageNumber = childTypes[index].indexOf(childType)+1
+                catalogChildBean.pageNumber = childIndex+1
                 catalogParentBean.addSubItem(catalogChildBean)
             }
             list.add(catalogParentBean)

@@ -14,6 +14,7 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppToolDialog
 import com.bll.lnkcommon.dialog.GeometryScaleDialog
 import com.bll.lnkcommon.mvp.model.PopupBean
+import kotlinx.android.synthetic.main.ac_drawing.iv_audio_play
 import kotlinx.android.synthetic.main.ac_drawing.iv_geometry
 import kotlinx.android.synthetic.main.ac_drawing.iv_score
 import kotlinx.android.synthetic.main.ac_drawing.ll_drawing_edit
@@ -84,6 +85,9 @@ abstract class BaseDrawingActivity : BaseActivity() {
 
         if (ll_drawing_edit!=null)
             setViewElikUnable(ll_drawing_edit)
+
+        if (iv_audio_play!=null)
+            setViewElikUnable(iv_audio_play)
 
         initClick()
         initGeometryView()

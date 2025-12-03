@@ -76,6 +76,7 @@
             <intent-filter>
                 <action android:name="com.bll.lnkcommon.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
+                <action android:name="com.htfyun.firmwareupdate.status.show"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>

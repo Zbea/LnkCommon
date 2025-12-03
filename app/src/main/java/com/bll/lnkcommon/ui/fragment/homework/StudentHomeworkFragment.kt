@@ -102,8 +102,6 @@ class StudentHomeworkFragment : BaseFragment(),IHomeworkView {
                 R.id.iv_delete->{
                     CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
                         object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
                             override fun ok() {
                                 val map=HashMap<String,Any>()
                                 map["ids"]=arrayOf(item.id)

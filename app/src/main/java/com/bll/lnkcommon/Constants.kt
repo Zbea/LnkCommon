@@ -32,7 +32,6 @@ object Constants {
 
 //                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.3.100:10800/v1/"
-        const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
         const val UPDATE_URL="http://cdn.qinglanmb.com/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -43,8 +42,6 @@ object Constants {
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
         val FREE_NOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
-        //断点记录文件保存的文件夹
-        val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         //解压的目录
@@ -78,6 +75,7 @@ object Constants {
 
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
         const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
+        const val SYSTEM_APP_STATUS_SHOW = "com.htfyun.firmwareupdate.status.show"//判断当前系统更新是否运行
 
         const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
         const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"

@@ -17,9 +17,15 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
     @SuppressLint("InvalidWakeLockTag")
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action==Constants.ACTION_DAY_REFRESH){
-            Log.d("debug","每天刷新")
-            EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
+        when(intent.action){
+            Constants.ACTION_DAY_REFRESH->{
+                Log.d("debug","每天刷新")
+                EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
+            }
+            Constants.SYSTEM_APP_STATUS_SHOW->{
+                val isShow=intent.getBooleanExtra("isShow",false)
+                DataBeanManager.isSystemUpdateShow=isShow
+            }
         }
         //未登录不执行
         if (!MethodManager.isLogin()){

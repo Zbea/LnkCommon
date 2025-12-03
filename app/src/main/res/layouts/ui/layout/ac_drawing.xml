@@ -85,11 +85,11 @@
         android:id="@+id/iv_geometry"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:visibility="gone"
+        android:padding="1dp"
         android:layout_margin="@dimen/dp_10"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        android:padding="1dp"
         android:src="@mipmap/icon_app_geometry"
         android:background="@drawable/click_btn_line_black"
         />
@@ -102,9 +102,23 @@
         android:layout_alignParentEnd="true"
         android:padding="1dp"
         android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="80dp"
         android:visibility="gone"
         android:src="@mipmap/icon_app_correct_score"
+        android:background="@drawable/click_btn_line_black"
+        />
+
+    <ImageView
+        android:id="@+id/iv_audio_play"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        android:padding="1dp"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@mipmap/icon_app_audio_play"
         android:background="@drawable/click_btn_line_black"
         />
 
