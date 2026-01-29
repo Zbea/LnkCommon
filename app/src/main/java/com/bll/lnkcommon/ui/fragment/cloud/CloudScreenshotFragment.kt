@@ -21,7 +21,7 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -48,16 +48,14 @@ class CloudScreenshotFragment: BaseCloudFragment() {
         layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
+        rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
+        rv_list.addItemDecoration(SpaceItemDeco(30))
         mAdapter = CloudScreenshotAdapter(R.layout.item_cloud_diary, null).apply {
-            rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-            rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定下载？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             download(items[position])
                         }
@@ -66,10 +64,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
                 if (view.id==R.id.iv_delete){
-                    CommonDialog(requireActivity()).setContent("确定删除？").builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 deleteItem()
                             }
@@ -77,7 +72,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(30))
+
     }
 
     private fun deleteItem(){

@@ -27,7 +27,6 @@ class HomeworkManagerFragment:BaseFragment() {
     private var homeworkCorrectFragment:HomeworkCorrectFragment?=null
 
     private var lastPosition = 0
-    private var lastFragment: Fragment? = null
 
 
     override fun getLayoutId(): Int {
@@ -51,7 +50,7 @@ class HomeworkManagerFragment:BaseFragment() {
         homeworkFragment= HomeworkFragment()
         homeworkCorrectFragment= HomeworkCorrectFragment()
 
-        switchFragment(lastFragment, studentHomeworkFragment)
+        switchFragment(1,lastFragment, studentHomeworkFragment)
 
         tv_course.setOnClickListener {
             PopupClick(requireActivity(), coursePops, tv_course,tv_course.width, 5).builder()
@@ -117,51 +116,31 @@ class HomeworkManagerFragment:BaseFragment() {
             0->{
                 showView(tv_course)
                 disMissView(iv_manager)
-                switchFragment(lastFragment, studentHomeworkFragment)
+                switchFragment(1,lastFragment, studentHomeworkFragment)
             }
             1->{
                 showView(tv_course)
                 disMissView(iv_manager)
-                switchFragment(lastFragment, testPaperFragment)
+                switchFragment(1,lastFragment, testPaperFragment)
             }
             2->{
                 showView(tv_course)
                 disMissView(iv_manager)
-                switchFragment(lastFragment, studentExamFragment)
+                switchFragment(1,lastFragment, studentExamFragment)
             }
             3->{
                 showView(iv_manager)
                 disMissView(tv_course)
-                switchFragment(lastFragment, homeworkFragment)
+                switchFragment(1,lastFragment, homeworkFragment)
             }
             4->{
                 disMissView(tv_course,iv_manager)
-                switchFragment(lastFragment, homeworkCorrectFragment)
+                switchFragment(1,lastFragment, homeworkCorrectFragment)
             }
         }
         lastPosition=position
     }
 
-
-    //页码跳转
-    private fun switchFragment(from: Fragment?, to: Fragment?) {
-        if (from != to) {
-            lastFragment = to
-            val ft = childFragmentManager.beginTransaction()
-
-            if (!to?.isAdded!!) {
-                if (from != null) {
-                    ft.hide(from)
-                }
-                ft.add(R.id.fl_content_group, to).commit()
-            } else {
-                if (from != null) {
-                    ft.hide(from)
-                }
-                ft.show(to).commit()
-            }
-        }
-    }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == Constants.STUDENT_EVENT) {

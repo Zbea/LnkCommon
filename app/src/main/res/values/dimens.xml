@@ -19,6 +19,9 @@
     <dimen name="drawing_tool_height">40dp</dimen>
     <dimen name="drawing_tool_dimens">60dp</dimen>
 
+    <dimen name="image_width">188dp</dimen>
+    <dimen name="image_height">250dp</dimen>
+
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_10">10dp</dimen>

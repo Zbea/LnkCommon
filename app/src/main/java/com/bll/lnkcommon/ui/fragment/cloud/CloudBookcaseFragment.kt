@@ -26,7 +26,7 @@ import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
+import kotlinx.android.synthetic.main.fragment_list_content_tab.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -37,11 +37,11 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_tab
+        return R.layout.fragment_list_content_tab
     }
 
     override fun initView() {
-        pageSize=9
+        pageSize=12
         initTab()
         initRecyclerView()
     }
@@ -53,14 +53,15 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     }
 
     private fun initTab(){
-        val books= DataBeanManager.bookType
-        bookTypeStr=books[0]
-        for (i in books.indices) {
+        val types= DataBeanManager.bookStoreTypes
+        types.forEach {
             itemTabTypes.add(ItemTypeBean().apply {
-                title=books[i]
-                isCheck=i==0
+                title=it.desc
+                typeId=it.type
             })
         }
+        itemTabTypes[0].isCheck=true
+        bookTypeStr=itemTabTypes[0].title
         mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
@@ -73,13 +74,14 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,30f),
-            DP2PX.dip2px(activity,20f),
-            DP2PX.dip2px(activity,30f),0)
+            DP2PX.dip2px(activity,15f),
+            DP2PX.dip2px(activity,25f),
+            DP2PX.dip2px(activity,15f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(activity,4)//创建布局管理
+        rv_list.addItemDecoration(SpaceGridItemDeco(4,DP2PX.dip2px(activity,15f)))
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
@@ -103,7 +105,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                 true
             }
         }
-        rv_list.addItemDecoration(SpaceGridItemDeco(3,30))
+
     }
 
     private fun downloadItem(){

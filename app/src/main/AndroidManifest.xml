@@ -55,6 +55,11 @@
     <uses-permission android:name="android.permission.RESTART_PACKAGES"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
+    <!--  Android 5.0+：使用情况访问权限（声明权限，需用户手动开启） -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -77,6 +82,8 @@
                 <action android:name="com.bll.lnkcommon.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
                 <action android:name="com.htfyun.firmwareupdate.status.show"/>
+                <!--                <action android:name="com.fctek.systemui.refresh"/>-->
+                <!--                <action android:name="com.fctek.firmwareupdate.status.show"/>-->
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -103,12 +110,6 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.drawing.NoteDrawingActivity"/>
-        <activity android:name=".ui.activity.book.BookcaseTypeActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <activity android:name=".ui.activity.book.BookStoreActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.book.TextBookStoreActivity"
             android:windowSoftInputMode="adjustPan"
             />

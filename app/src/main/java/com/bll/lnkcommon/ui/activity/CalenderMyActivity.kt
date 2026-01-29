@@ -64,14 +64,13 @@ class CalenderMyActivity:BaseActivity(){
             DP2PX.dip2px(this,30f), DP2PX.dip2px(this,60f),
             DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
+        rv_list?.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list?.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  60))
         mAdapter = CalenderMyAdapter(R.layout.item_wallpaper_my ,null).apply {
-            rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list.addItemDecoration(SpaceGridItemDeco(4,  90))
             setOnItemClickListener { adapter, view, position ->
                 val item=items[position]
                 val urls=item.previewUrl.split(",")
@@ -96,10 +95,7 @@ class CalenderMyActivity:BaseActivity(){
     }
 
     private fun delete(pos:Int){
-        CommonDialog(this).setContent("确定删除？").builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
+        CommonDialog(this).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
             override fun ok() {
                 val item=items[pos]
                 FileUtils.deleteFile(File(item.path))

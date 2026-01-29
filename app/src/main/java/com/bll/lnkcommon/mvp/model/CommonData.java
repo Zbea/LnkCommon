@@ -9,4 +9,5 @@ public class CommonData {
     public List<ItemList> subType;//应用分类
     public List<ItemList> version;
     public List<ItemList> wallpaper;
+    public List<ItemList> bookStoreType;
 }

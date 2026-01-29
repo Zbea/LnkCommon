@@ -27,6 +27,7 @@ import com.bll.lnkcommon.mvp.model.PrivacyPassword;
 import com.bll.lnkcommon.mvp.model.User;
 import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity;
 import com.bll.lnkcommon.ui.activity.MainActivity;
+import com.bll.lnkcommon.ui.activity.book.TextBookDetailsActivity;
 import com.bll.lnkcommon.utils.ActivityManager;
 import com.bll.lnkcommon.utils.AppUtils;
 import com.bll.lnkcommon.utils.FileUtils;
@@ -65,6 +66,10 @@ public class MethodManager {
         else {
             return user.accountId;
         }
+    }
+
+    public static String getToken(){
+        return SPUtil.INSTANCE.getString("token");
     }
 
     /**
@@ -145,7 +150,7 @@ public class MethodManager {
     public static void gotoPptDetails(Context context,String path){
         if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
             Intent intent = new Intent();
-            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,".OpenFileActivity"));
             intent.putExtra("open_mode", 0);  // 0-本地解析打开, 1-微软在线预览
             intent.putExtra("path", path);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -183,11 +188,11 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",getJsonArray().toString());
-        intent.putExtra("userId",getUser()!=null?getUser().accountId:0);
+        intent.putExtra("userId",getAccountId());
         intent.putExtra("type", type);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);
-        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NO_USER_ACTION);
         context.startActivity(intent);
 
         Handler handler=new Handler(Looper.getMainLooper());
@@ -214,6 +219,16 @@ public class MethodManager {
         return result;
     }
 
+    /**
+     * 跳转课本详情
+     */
+    public static void gotoTextBookDetails(Context context, TextbookBean textbookBean) {
+        ActivityManager.getInstance().finishActivity(TextBookDetailsActivity.class.getName());
+        Intent intent = new Intent(context, TextBookDetailsActivity.class);
+        intent.putExtra("book_id", textbookBean.bookId);
+        intent.putExtra("book_type", textbookBean.category);
+        context.startActivity(intent);
+    }
 
     public static void deleteBook(Book book){
         BookDaoManager.getInstance().deleteBook(book); //删除本地数据库
@@ -227,34 +242,6 @@ public class MethodManager {
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         FileUtils.deleteFile(new File(book.bookDrawPath));
         EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
-    }
-
-    /**
-     * 保存私密密码
-     * type 0日记1密本
-     * @param privacyPassword
-     */
-    public static void savePrivacyPassword(int type,PrivacyPassword privacyPassword){
-        if (type==0){
-            SPUtil.INSTANCE.putObj("privacyPasswordDiary",privacyPassword);
-        }
-        else{
-            SPUtil.INSTANCE.putObj("privacyPasswordNote",privacyPassword);
-        }
-    }
-
-    /**
-     * 获取私密密码
-     * type 0日记1密本
-     * @return
-     */
-    public static PrivacyPassword getPrivacyPassword(int type){
-         if (type==0){
-             return SPUtil.INSTANCE.getObj("privacyPasswordDiary", PrivacyPassword.class);
-        }
-        else{
-             return SPUtil.INSTANCE.getObj("privacyPasswordNote", PrivacyPassword.class);
-        }
     }
 
     /**

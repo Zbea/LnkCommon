@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_height"
+        >
+        <include
+            android:id="@+id/include_title"
+            layout="@layout/common_fragment_title" />
+        <com.bll.lnkcommon.widget.TabRadioGroup
+            android:id="@+id/tabRadioGroup"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            app:unselectedTextSize="30sp"
+            app:selectedTextSize="36sp"
+            app:unselectedTextColor="@color/black_30"
+            app:selectedTextColor="@color/black"
+            app:tabHeight="90dp" />
+
+    </RelativeLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/fl_content_bookcase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

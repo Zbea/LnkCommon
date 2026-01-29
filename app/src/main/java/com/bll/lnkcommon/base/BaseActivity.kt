@@ -24,6 +24,8 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.ProgressDialog
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
 import com.bll.lnkcommon.mvp.model.User
+import com.bll.lnkcommon.mvp.presenter.QiniuPresenter
+import com.bll.lnkcommon.mvp.view.IContractView.IQiniuView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
 import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
@@ -42,8 +44,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView,IQiniuView {
 
+    var mQiniuPresenter= QiniuPresenter(this)
     var mDialog: ProgressDialog? = null
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -52,6 +55,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mTabTypeAdapter:TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
     var mDownloadManager:DownloadManager?=null
+
+    override fun onToken(token: String) {
+        onUpload(token)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +84,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         EventBus.getDefault().register(this)
         mDownloadManager=DownloadManager()
         mDialog = ProgressDialog(this)
+        mUser=MethodManager.getUser()
 
         if (rv_tab!=null){
             initTabView()
@@ -415,6 +423,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     open fun fetchData(){
+
+    }
+
+
+    /**
+     * 开始上传
+     */
+    open fun onUpload(token: String){
 
     }
 

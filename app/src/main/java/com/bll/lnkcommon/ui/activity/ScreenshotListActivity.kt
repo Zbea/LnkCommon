@@ -112,14 +112,14 @@ class ScreenshotListActivity:BaseActivity() {
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,40f),
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,30f),
             DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
+        rv_list?.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list?.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this@ScreenshotListActivity, 30f)))
         mAdapter = ScreenshotAdapter(R.layout.item_bookstore, null).apply {
-            rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
@@ -131,7 +131,6 @@ class ScreenshotListActivity:BaseActivity() {
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 60f)))
 
     }
 

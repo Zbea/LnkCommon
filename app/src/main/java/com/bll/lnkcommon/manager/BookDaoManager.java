@@ -74,6 +74,23 @@ public class BookDaoManager {
         return bookDao.queryBuilder().where(whereUser).orderDesc(BookDao.Properties.Time).build().list();
     }
 
+    public List<Book> queryAllBook(int page, int pageSize) {
+        return bookDao.queryBuilder().where(whereUser)
+                .orderDesc(BookDao.Properties.Time)
+                .offset((page-1)*pageSize).limit(pageSize)
+                .build().list();
+    }
+
+    /**
+     * 获取打开过的书籍
+     * @param isLook
+     * @return
+     */
+    public List<Book> queryAllBook(boolean isLook,int size) {
+        WhereCondition whereCondition1=BookDao.Properties.IsLook.eq(isLook);
+        return bookDao.queryBuilder().where(whereUser,whereCondition1).orderDesc(BookDao.Properties.Time).limit(size).build().list();
+    }
+
     /**
      * 获取打开过的书籍
      * @param isLook
@@ -85,15 +102,15 @@ public class BookDaoManager {
     }
 
     //根据类别 细分子类
-    public List<Book> queryAllBook(String type) {
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(type);
+    public List<Book> queryAllBook(int type) {
+        WhereCondition whereCondition2=BookDao.Properties.Type.eq(type);
         return bookDao.queryBuilder().where(whereUser,whereCondition2)
                 .orderDesc(BookDao.Properties.Time).build().list();
     }
 
     //根据类别 细分子类 分页处理
-    public List<Book> queryAllBook(String type, int page, int pageSize) {
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(type);
+    public List<Book> queryAllBook(int type, int page, int pageSize) {
+        WhereCondition whereCondition2=BookDao.Properties.Type.eq(type);
         return bookDao.queryBuilder().where(whereUser,whereCondition2)
                 .orderDesc(BookDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)

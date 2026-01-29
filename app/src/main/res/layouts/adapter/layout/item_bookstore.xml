@@ -7,22 +7,24 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="@dimen/dp_195"
-        android:layout_height="@dimen/dp_260"
-        android:scaleType="fitXY"
-        android:background="@drawable/bg_black_stroke_5dp_corner"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_height"
         android:padding="1dp"
+        android:background="@drawable/bg_black_stroke_5dp_corner"
+        android:scaleType="fitXY"
         />
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="@dimen/dp_195"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="60dp"
         android:textSize="@dimen/sp_22"
-        android:lines="1"
         android:ellipsize="end"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/dp_10"
+        android:maxLines="2"
+        android:gravity="center_horizontal"
+        android:text="标题标题标题标题标题标题"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:textColor="@color/black"/>
 
 </LinearLayout>

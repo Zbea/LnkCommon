@@ -63,10 +63,10 @@ interface APIService{
     @GET("accounts")
     fun accounts(): Observable<BaseResult<User>>
     /**
-     * 修改姓名 "/accounts/nickname"
+     * 修改电话
      */
-    @PATCH("accounts/nickname")
-    fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    @POST("accounts/updateInfo")
+    fun editAccountInfo(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 绑定学生
      */

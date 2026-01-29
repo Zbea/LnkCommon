@@ -34,12 +34,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
         when(intent.action){
             "android.intent.action.PACKAGE_ADDED"->{
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
-                if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
-                    //安装完成后删除
-                    FileUtils.deleteFile(File(FileAddress().getLauncherPath()))
-                    // 应用安装完成后重启
-                    AppUtils.reOpenApk(context)
-                }
             }
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)

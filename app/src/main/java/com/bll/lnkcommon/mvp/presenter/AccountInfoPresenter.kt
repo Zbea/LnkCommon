@@ -3,11 +3,24 @@ package com.bll.lnkcommon.mvp.presenter
 import android.util.Pair
 import com.bll.lnkcommon.mvp.model.FriendList
 import com.bll.lnkcommon.mvp.model.StudentBean
+import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.net.*
 
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter<IContractView.IAccountInfoView>(view) {
+
+    fun accounts() {
+        val account = RetrofitManager.service.accounts()
+        doRequest(account, object : Callback<User>(view) {
+            override fun failed(tBaseResult: BaseResult<User>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<User>) {
+                view.getAccount(tBaseResult.data)
+            }
+        }, true)
+    }
 
     fun editPhone(code: String,phone: String) {
         val body = RequestUtils.getBody(
@@ -29,7 +42,7 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
         val body = RequestUtils.getBody(
             Pair.create("nickName", name)
         )
-        val editName = RetrofitManager.service.editName(body)
+        val editName = RetrofitManager.service.editAccountInfo(body)
         doRequest(editName, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -40,6 +53,20 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView) : BasePresenter
         }, true)
     }
 
+    fun onPrivacyPassword(psd: String) {
+        val body = RequestUtils.getBody(
+            Pair.create("privacyPassword", psd)
+        )
+        val editName = RetrofitManager.service.editAccountInfo(body)
+        doRequest(editName, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onPrivacyPassword()
+            }
+        }, true)
+    }
 
     fun onBindStudent(account: String) {
         val map=HashMap<String,Any>()

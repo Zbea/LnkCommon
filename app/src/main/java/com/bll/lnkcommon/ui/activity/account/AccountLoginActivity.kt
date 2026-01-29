@@ -30,6 +30,8 @@ class AccountLoginActivity: BaseActivity(), IContractView.ILoginView {
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
+        SPUtil.putString(Constants.SP_PRIVACY_PASSWORD,user.privacyPassword)
+
         EventBus.getDefault().post(Constants.USER_EVENT)
 
         MethodManager.setStatusBarValue(statusBarValue)

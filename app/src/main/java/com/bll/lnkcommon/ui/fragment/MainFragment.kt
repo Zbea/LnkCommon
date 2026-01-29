@@ -15,23 +15,19 @@ import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.DiaryManageDialog
 import com.bll.lnkcommon.dialog.DiaryUploadListDialog
+import com.bll.lnkcommon.dialog.NumberPasswordDialog
 import com.bll.lnkcommon.dialog.PopupUpClick
-import com.bll.lnkcommon.dialog.PrivacyPasswordCreateDialog
-import com.bll.lnkcommon.dialog.PrivacyPasswordDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
 import com.bll.lnkcommon.manager.DiaryDaoManager
 import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.PopupBean
-import com.bll.lnkcommon.mvp.model.PrivacyPassword
 import com.bll.lnkcommon.mvp.model.StudentBean
 import com.bll.lnkcommon.mvp.presenter.RelationPresenter
-import com.bll.lnkcommon.mvp.presenter.SmsPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.IRelationView
-import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
-import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.DateActivity
 import com.bll.lnkcommon.ui.activity.MessageListActivity
 import com.bll.lnkcommon.ui.activity.ScreenshotListActivity
+import com.bll.lnkcommon.ui.activity.account.AccountLoginActivity
 import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
 import com.bll.lnkcommon.ui.activity.drawing.DiaryActivity
 import com.bll.lnkcommon.ui.activity.drawing.FreeNoteActivity
@@ -41,6 +37,7 @@ import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.FileUploadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.GlideUtils
+import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.NetworkUtil
 import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.date.LunarSolarConverter
@@ -70,31 +67,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Random
 
-class MainFragment:BaseFragment(),IRelationView,ISmsView{
-    private var smsPresenter= SmsPresenter(this)
+class MainFragment:BaseFragment(),IRelationView{
     private val presenter=RelationPresenter(this)
     private var nowDayPos=1
     private var nowDay=0L
     private var calenderPath=""
     private var isChange=false
     private var isShow=false//是否存在台历
-    private var privacyPassword=MethodManager.getPrivacyPassword(0)
-    private var privacyPasswordSave:PrivacyPassword?=null
-    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
 
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
-
-    override fun onSms() {
-        showToast("短信发送成功")
-    }
-    override fun onCheckSuccess() {
-        showToast("日记密码设置成功")
-        privacyPassword=privacyPasswordSave
-        MethodManager.savePrivacyPassword(0,privacyPassword)
-        privacyPasswordDialog?.getPrivacyPassword()
-    }
 
     override fun onListStudents(list: MutableList<StudentBean>) {
         if (list.size>0){
@@ -212,8 +195,6 @@ class MainFragment:BaseFragment(),IRelationView,ISmsView{
             val boolean=SPUtil.getBoolean("isShowCalender")
             val titleStr=if (boolean) "默认显示日程？" else "默认显示台历？"
             CommonDialog(requireActivity()).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
                 override fun ok() {
                     if (boolean){
                         SPUtil.putBoolean("isShowCalender",false)
@@ -351,23 +332,23 @@ class MainFragment:BaseFragment(),IRelationView,ISmsView{
      * 日记跳转
      */
     private fun startDiaryActivity(typeId:Int){
-        if (privacyPassword!=null&&privacyPassword?.isSet==true){
-            privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
-            privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
-                override fun onClick() {
-                    customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
-                }
-                override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                    privacyPasswordSave=privacyPassword
-                    smsPresenter.checkPhone(code)
-                }
-                override fun onPhone(phone: String) {
-                    smsPresenter.sms(phone)
-                }
-            })
-        }
-        else{
-            customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+        val privacyPassword= SPUtil.getString(Constants.SP_PRIVACY_PASSWORD)
+        if (privacyPassword.isEmpty()) {
+            customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
+        } else {
+            NumberPasswordDialog(requireActivity()).builder().apply { setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                    override fun onNumber(psw: String) {
+                        if (privacyPassword == MD5Utils.digest(psw)){
+                            cancel()
+                            customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
+                        }
+                        else{
+                            reset()
+                            showToast("密码错误")
+                        }
+                    }
+                })
+            }
         }
     }
 
@@ -376,56 +357,11 @@ class MainFragment:BaseFragment(),IRelationView,ISmsView{
      */
     private fun onLongDiary(){
         val pops= mutableListOf<PopupBean>()
-        if (privacyPassword==null){
-            pops.add(PopupBean(1,"设置密码"))
-        }
-        else{
-            if (privacyPassword?.isSet==true){
-                pops.add(PopupBean(1,"取消密码"))
-            }
-            else{
-                pops.add(PopupBean(1,"设置密码"))
-            }
-        }
-        pops.add(PopupBean(2,"结集保存"))
-        pops.add(PopupBean(3,"云库日记"))
-        PopupUpClick(requireActivity(),pops,ll_diary,160,(ll_diary.width-160)/2,-ll_diary.height).builder().setOnSelectListener{
+        pops.add(PopupBean(1,"结集保存"))
+        pops.add(PopupBean(2,"云库日记"))
+        PopupUpClick(requireActivity(),pops,ll_diary,160,(ll_diary.width-160)/2,-ll_diary.height+50).builder().setOnSelectListener{
             when(it.id){
                 1->{
-                    if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
-                            override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                privacyPasswordSave=privacyPassword
-                                smsPresenter.checkPhone(code)
-                            }
-                            override fun onPhone(phone: String) {
-                                smsPresenter.sms(phone)
-                            }
-                        })
-                    }
-                    else{
-                        val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun ok() {
-                                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
-                                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
-                                    override fun onClick() {
-                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                        MethodManager.savePrivacyPassword(0,privacyPassword)
-                                    }
-                                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                        privacyPasswordSave=privacyPassword
-                                        smsPresenter.checkPhone(code)
-                                    }
-                                    override fun onPhone(phone: String) {
-                                        smsPresenter.sms(phone)
-                                    }
-                                })
-                            }
-                        })
-                    }
-                }
-                2->{
                     DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
                             titleStr,startLong,endLong->
                         diaryStartLong=startLong
@@ -439,7 +375,7 @@ class MainFragment:BaseFragment(),IRelationView,ISmsView{
                         }
                     }
                 }
-                3->{
+                2->{
                     DiaryUploadListDialog(requireActivity()).builder().setOnDialogClickListener{ typeId->
                         startDiaryActivity(typeId)
                     }
@@ -451,7 +387,6 @@ class MainFragment:BaseFragment(),IRelationView,ISmsView{
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             USER_EVENT->{
-                privacyPassword=MethodManager.getPrivacyPassword(0)
                 lazyLoad()
             }
             STUDENT_EVENT->{

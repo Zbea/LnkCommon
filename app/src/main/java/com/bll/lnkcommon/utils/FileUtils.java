@@ -97,30 +97,47 @@ public class FileUtils {
                 files.add(tempList[i]);
             }
         }
-        files.sort( new FileNumberComparator());
+        files.sort( new FileLastNumberComparator());
 
         return files;
     }
 
-    //按数字排序
-    public static class FileNumberComparator implements Comparator<File> {
-        private  final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)");
+    // 按文件名中【最后出现的数字】排序
+    static class FileLastNumberComparator implements Comparator<File> {
+        // 匹配所有数字片段（非末尾也匹配，后续取最后一个）
+        private final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)");
 
         @Override
         public int compare(File f1, File f2) {
             String name1 = f1.getName();
             String name2 = f2.getName();
-            Matcher matcher1 = NUMBER_PATTERN.matcher(name1);
-            Matcher matcher2 = NUMBER_PATTERN.matcher(name2);
 
-            if (matcher1.find() && matcher2.find()) {
-                int num1 = Integer.parseInt(matcher1.group(1));
-                int num2 = Integer.parseInt(matcher2.group(1));
-                return Integer.compare(num1, num2);
+            // 提取最后出现的数字
+            int lastNum1 = getLastNumber(name1);
+            int lastNum2 = getLastNumber(name2);
+
+            // 先按最后数字排序
+            if (lastNum1 != lastNum2) {
+                return Integer.compare(lastNum1, lastNum2);
             } else {
-                // 如果文件名中没有数字，可以按文件名直接比较或者抛出异常，视情况而定
+                // 数字相同则按原文件名排序
                 return name1.compareTo(name2);
             }
+        }
+
+        /**
+         * 提取文件名中最后出现的数字
+         * @param fileName 文件名
+         * @return 最后一段数字（无数字返回0）
+         */
+        private int getLastNumber(String fileName) {
+            Matcher matcher = NUMBER_PATTERN.matcher(fileName);
+            int lastNum = 0;
+            // 遍历所有匹配的数字，记录最后一个
+            while (matcher.find()) {
+                lastNum = Integer.parseInt(matcher.group(1));
+            }
+            return lastNum;
         }
     }
 

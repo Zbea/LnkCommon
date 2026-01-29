@@ -39,7 +39,7 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
         var currentScores= mutableListOf<ScoreItem>()
         var currentResults= mutableListOf<ResultStandardItem.ResultChildItem>()
         if (correctMode >0) {
-            currentScores = ScoreItemUtils.jsonListToModuleList(commitJson,correctMode)
+            currentScores = ScoreItemUtils.questionToList(commitJson,correctMode)
         }
         else{
             currentResults=DataBeanManager.getResultChildItems().stream().collect(Collectors.toList())

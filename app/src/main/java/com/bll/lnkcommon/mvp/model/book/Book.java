@@ -49,6 +49,11 @@ public class Book {
     public int cloudId;
     @Transient
     public String drawUrl;
+    @Transient
+    public String previewUrl;
+    @Transient
+    public String loadString;
+
     @Generated(hash = 24855883)
     public Book(Long id, long userId, int bookId, int type, String subtypeStr, String imageUrl,
             String bookName, int grade, int supply, String downloadUrl, String bookPath,

@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.base
 
+import VolleyCallback
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -22,12 +24,10 @@ import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
-import com.bll.lnkcommon.manager.NoteDaoManager
 import com.bll.lnkcommon.mvp.model.AppUpdateBean
 import com.bll.lnkcommon.mvp.model.CloudListBean
 import com.bll.lnkcommon.mvp.model.CommonData
 import com.bll.lnkcommon.mvp.model.ItemTypeBean
-import com.bll.lnkcommon.mvp.model.Note
 import com.bll.lnkcommon.mvp.model.SystemUpdateInfo
 import com.bll.lnkcommon.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkcommon.mvp.presenter.CommonPresenter
@@ -36,11 +36,9 @@ import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.mvp.view.IContractView.ICloudUploadView
 import com.bll.lnkcommon.net.ExceptionHandle
 import com.bll.lnkcommon.net.IBaseView
-import com.bll.lnkcommon.ui.activity.drawing.NoteDrawingActivity
 import com.bll.lnkcommon.ui.adapter.TabTypeAdapter
 import com.bll.lnkcommon.utils.ActivityManager
 import com.bll.lnkcommon.utils.AppUtils
-import com.bll.lnkcommon.utils.DeviceUtil
 import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.utils.KeyboardUtils
@@ -95,6 +93,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var appUpdateDialog:AppUpdateDialog?=null
     var mDownloadManager:DownloadManager?=null
 
+    var lastFragment: Fragment? = null
+
     override fun onToken(token: String) {
         onUpload(token)
     }
@@ -111,6 +111,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
             DataBeanManager.typeGrades=commonData.typeGrade
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
+        if (!commonData.bookStoreType.isNullOrEmpty())
+            DataBeanManager.bookStoreTypes=commonData.bookStoreType
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -302,6 +304,42 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         }
     }
 
+    //页码跳转
+    fun switchFragment(type:Int,from: Fragment?, to: Fragment?) {
+        val layoutId=when(type){
+            1->{
+                R.id.fl_content_group
+            }
+            2->{
+                R.id.fl_content_bookcase
+            }
+            else->{
+                0
+            }
+        }
+        if (from != to) {
+            lastFragment = to
+            val ft = getFragmentTransaction()
+
+            if (!to?.isAdded!!) {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.add(layoutId, to).commit()
+            } else {
+                if (from != null) {
+                    ft.hide(from)
+                }
+                ft.show(to).commit()
+            }
+        }
+    }
+
+    fun getFragmentTransaction(): FragmentTransaction {
+        val fm = childFragmentManager
+        return fm.beginTransaction()
+    }
+
     /**
      * 跳转活动(关闭已经打开的)
      */
@@ -313,7 +351,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     /**
      * 判断当前页面是否存在
      */
-    fun isActivityLife():Boolean{
+    private fun isActivityLife():Boolean{
         return isAdded&&!requireActivity().isDestroyed
     }
 
@@ -329,56 +367,64 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
      */
     private fun checkSystemUpdate(){
         val url= Constants.URL_BASE+"Device/CheckUpdate"
-
-        val  jsonBody = JSONObject()
-        jsonBody.put(Constants.SN, DeviceUtil.getOtaSerialNumber())
-        jsonBody.put(Constants.KEY, ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber()))
-        jsonBody.put(Constants.VERSION_NO, DeviceUtil.getOtaProductVersion())
-
-        val  jsonObjectRequest= JsonObjectRequest(Request.Method.POST,url,jsonBody, {
-            showLog(it.toString())
-            val code= it.optInt("Code")
-            val jsonObject=it.optJSONObject("Data")
-            if (isActivityLife()&&!DataBeanManager.isSystemUpdateShow&&code==200&&jsonObject!=null){
-                val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
-                requireActivity().runOnUiThread {
-                    if (SPUtil.getString(Constants.SP_UPDATE_SYSTEM_STATUS)!="waiting"){
-                        AppUpdateDialog(requireActivity(),2,item).builder().setDialogClickListener{
-                            object : CountDownTimer(60*60*1000, 1000) {
-                                override fun onTick(millisUntilFinished: Long) {
-                                }
-                                override fun onFinish() {
-                                    SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"")
-                                }
-                            }.start()
+        val jsonBody = JSONObject().apply {
+            put(Constants.SN, ToolUtils.getOtaSerialNumber())
+            put(Constants.KEY, ServerParams.getInstance().GetHtMd5Key(ToolUtils.getOtaSerialNumber()))
+            put(Constants.VERSION_NO, ToolUtils.getOtaProductVersion())
+        }
+        VolleyHttpManager.post(
+            url = url,
+            jsonBody = jsonBody,
+            clazz = JSONObject::class.java,
+            callback = object : VolleyCallback<JSONObject> {
+                override fun onSuccess(data: JSONObject) {
+                    val code = data.optInt("Code")
+                    val jsonObject = data.optJSONObject("Data")
+                    if (isActivityLife() && !DataBeanManager.isSystemUpdateShow && code == 200 && jsonObject != null) {
+                        val item = Gson().fromJson(jsonObject.toString(), SystemUpdateInfo::class.java)
+                        if (SPUtil.getString(Constants.SP_UPDATE_SYSTEM_STATUS) != "waiting") {
+                            AppUpdateDialog(requireActivity(),2,item).builder().setDialogClickListener{
+                                object : CountDownTimer(60*60*1000, 1000) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                    }
+                                    override fun onFinish() {
+                                        SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"")
+                                    }
+                                }.start()
+                            }
                         }
                     }
-                    
+                }
+                override fun onError(errorMsg: String, errorCode: Int) {
+                    showLog(errorMsg)
                 }
             }
-        },null)
-        MyApplication.requestQueue?.add(jsonObjectRequest)
+        )
     }
     /**
      * 检查应用更新
      */
     private fun checkAppUpdate(){
         val url=Constants.URL_BASE+"app/info/one?type=3"
-
-        val  jsonObjectRequest= StringRequest(Request.Method.GET,url, {
-            val jsonObject= JSONObject(it)
-            val code= jsonObject.optInt("code")
-            val dataString=jsonObject.optString("data")
-            val item= Gson().fromJson(dataString,AppUpdateBean::class.java)
-            if (isActivityLife()&&code==0){
-                if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
-                    requireActivity().runOnUiThread {
-                        downLoadAPP(item)
+        VolleyHttpManager.get(
+            url = url,
+            clazz = JSONObject::class.java,
+            callback = object : VolleyCallback<JSONObject> {
+                override fun onSuccess(data: JSONObject) {
+                    val code = data.optInt("code")
+                    val dataString = data.optString("data")
+                    val item = Gson().fromJson(dataString, AppUpdateBean::class.java)
+                    if (isActivityLife() && code == 0) {
+                        if (item.versionCode > AppUtils.getVersionCode(requireActivity())) {
+                            downLoadAPP(item)
+                        }
                     }
                 }
+                override fun onError(errorMsg: String, errorCode: Int) {
+                    showLog(errorMsg)
+                }
             }
-        },null)
-        MyApplication.requestQueue?.add(jsonObjectRequest)
+        )
     }
     /**
      * 下载应用
@@ -386,7 +432,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     private fun downLoadAPP(bean: AppUpdateBean){
         val targetFileStr = FileAddress().getLauncherPath()
         if (FileUtils.isExist(targetFileStr)){
-            AppUtils.installApp(requireActivity(), targetFileStr)
+            if (!AppUtils.isAppInForegroundCompat(requireActivity(),Constants.PACKAGE_INSTALLER))
+                AppUtils.installApp(requireActivity(), targetFileStr)
         }
         else{
             if (appUpdateDialog==null||appUpdateDialog?.isShow()==false) {
@@ -403,7 +450,8 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
                     }
                     override fun onCompleted(task: BaseDownloadTask) {
                         appUpdateDialog?.dismiss()
-                        AppUtils.installApp(requireActivity(), targetFileStr)
+                        if (!AppUtils.isAppInForegroundCompat(requireActivity(),Constants.PACKAGE_INSTALLER))
+                            AppUtils.installApp(requireActivity(), targetFileStr)
                     }
                     override fun onFailed(task: BaseDownloadTask?, error: String) {
                         appUpdateDialog?.dismiss()

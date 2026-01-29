@@ -188,4 +188,12 @@ public class ToolUtils {
         return sn;
     }
 
+    public static String getCurrentFirmwareVersion() {
+        String version = SystemProperties.get("ro.product.version");
+        if (TextUtils.isEmpty(version)) {
+            return "1.0.0";
+        }
+        return version;
+    }
+
 }

@@ -10,17 +10,17 @@ import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
-import com.bll.lnkcommon.dialog.DownloadTextbookDialog
 import com.bll.lnkcommon.dialog.PopupCityList
 import com.bll.lnkcommon.dialog.PopupRadioList
+import com.bll.lnkcommon.dialog.PreviewDialog
 import com.bll.lnkcommon.manager.TextbookGreenDaoManager
+import com.bll.lnkcommon.mvp.model.PopupBean
 import com.bll.lnkcommon.mvp.model.book.BookStoreType
 import com.bll.lnkcommon.mvp.model.book.TextbookBean
 import com.bll.lnkcommon.mvp.model.book.TextbookStore
-import com.bll.lnkcommon.mvp.model.*
 import com.bll.lnkcommon.mvp.presenter.BookStorePresenter
 import com.bll.lnkcommon.mvp.view.IContractView
-import com.bll.lnkcommon.ui.adapter.TextbookAdapter
+import com.bll.lnkcommon.ui.adapter.TextBookStoreAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DownloadManager
 import com.bll.lnkcommon.utils.FileUtils
@@ -30,8 +30,12 @@ import com.bll.lnkcommon.utils.zip.IZipCallback
 import com.bll.lnkcommon.utils.zip.ZipUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_list_tab.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list_tab.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_course
+import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_province
+import kotlinx.android.synthetic.main.common_title.tv_semester
+import kotlinx.android.synthetic.main.common_title.tv_type
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -41,13 +45,12 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private var tabStr = ""
     private val presenter = BookStorePresenter(this)
     private var textbooks = mutableListOf<TextbookBean>()
-    private var mAdapter: TextbookAdapter? = null
+    private var mAdapter: TextBookStoreAdapter? = null
 
     private var provinceStr = ""
     private var gradeId=0
     private var semester=0
     private var courseId=0//科目
-    private var bookDetailsDialog: DownloadTextbookDialog? = null
 
     private var cityPopWindow: PopupCityList?=null
     private var subjectList = mutableListOf<PopupBean>()
@@ -64,7 +67,6 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
     override fun buyBookSuccess() {
         textbooks[position].buyStatus = 1
-        bookDetailsDialog?.setChangeStatus()
         mAdapter?.notifyItemChanged(position)
     }
 
@@ -165,6 +167,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun onTabClickListener(view: View, position: Int) {
+        mAdapter?.setChangeType(position)
         when(position){
             0,2->{
                 showView(tv_course,tv_grade,tv_semester,tv_province)
@@ -183,50 +186,56 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,30f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,30f),0)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this,30f),
+            DP2PX.dip2px(this,25f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
+        rv_list?.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = TextbookAdapter(R.layout.item_bookstore, textbooks)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_empty)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            this.position=position
-            showBookDetails(textbooks[position])
-        }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,60))
-    }
-
-    /**
-     * 展示书籍详情
-     */
-    private fun showBookDetails(book: TextbookBean) {
-        bookDetailsDialog = DownloadTextbookDialog(this, book)
-        bookDetailsDialog?.builder()
-        bookDetailsDialog?.setOnClickListener {
-            if (book.buyStatus == 1) {
-                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(tabId,book.bookId)
-                if (localBook == null) {
-                    downLoadStart(book)
-                } else {
-                    book.loadSate = 2
-                    showToast("已下载")
-                    bookDetailsDialog?.setDissBtn()
-                }
-            } else {
-                val map = HashMap<String, Any>()
-                map["bookId"] = book.bookId
-                when(tabId){
-                    0,1->{
-                        map["type"] = 2
+        rv_list?.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this,15f)))
+        mAdapter = TextBookStoreAdapter(R.layout.item_bookstore_buy, null).apply {
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
+            setOnItemClickListener { adapter, view, position ->
+                this@TextBookStoreActivity.position = position
+                val book=textbooks[position]
+                val content="出版社："+DataBeanManager.getBookVersionStr(book.version)+"\n简介："+book.bookDesc
+                PreviewDialog(this@TextBookStoreActivity,book.bookName,content,mutableListOf()).builder()
+            }
+            setOnItemChildClickListener { adapter, view, position ->
+                this@TextBookStoreActivity.position=position
+                val book=textbooks[position]
+                if (view.id==R.id.tv_buy){
+                    if (book.buyStatus == 1) {
+                        val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(tabId,book.bookId)
+                        if (book.loadSate==2){
+                            MethodManager .gotoTextBookDetails(this@TextBookStoreActivity,localBook as TextbookBean)
+                            return@setOnItemChildClickListener
+                        }
+                        if (localBook==null){
+                            downLoadStart(book)
+                        }
+                        else{
+                            book.loadSate = 2
+                            showToast(R.string.downloaded)
+                            notifyItemChanged(position)
+                        }
+                    } else {
+                        val map = HashMap<String, Any>()
+                        map["bookId"] = book.bookId
+                        when(tabId){
+                            0,1->{
+                                map["type"] = 2
+                            }
+                            2,3->{
+                                map["type"] = 1
+                            }
+                        }
+                        presenter.buyBook(map)
                     }
-                    2,3->{
-                        map["type"] = 1
-                    }
                 }
-                presenter.buyBook(map)
             }
         }
     }
@@ -244,13 +253,14 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     runOnUiThread {
                         val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024), "0.0M")+ "/"+
                                 ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024), "0.0M")
-                        bookDetailsDialog?.setUnClickBtn(s)
+                       mAdapter?.setChangeText(s,position)
                     }
                 }
             }
             override fun onCompleted(task: BaseDownloadTask) {
                 book.apply {
                     loadSate = 2
+                    loadString=""
                     category = tabId
                     time = System.currentTimeMillis()//下载时间用于排序
                 }
@@ -267,7 +277,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                         FileUtils.deleteFile(File(zipPath))
                         EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                        bookDetailsDialog?.dismiss()
+                        mAdapter?.notifyItemChanged(position)
                         hideLoading()
                         showToast(book.bookName+"下载成功")
                     }
@@ -276,7 +286,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     override fun onError(msg: String?) {
                         hideLoading()
                         showToast(book.bookName+msg!!)
-                        bookDetailsDialog?.setChangeStatus()
+                        mAdapter?.setInitText(position)
                     }
                     override fun onStart() {
                     }
@@ -285,7 +295,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             override fun onFailed(task: BaseDownloadTask?, error: String) {
                 hideLoading()
                 showToast("${book.bookName}下载失败")
-                bookDetailsDialog?.setChangeStatus()
+                mAdapter?.setInitText(position)
             }
         })
     }

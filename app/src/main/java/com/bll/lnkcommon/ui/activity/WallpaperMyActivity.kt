@@ -62,12 +62,11 @@ class WallpaperMyActivity:BaseActivity(){
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this, 4)
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,60))
         mAdapter = WallpaperMyAdapter(R.layout.item_wallpaper_my,null).apply {
-            rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco(4,90))
             setOnItemClickListener { adapter, view, position ->
                 ImageDialog(this@WallpaperMyActivity,items[position].bodyUrl.split(",")).builder()
             }

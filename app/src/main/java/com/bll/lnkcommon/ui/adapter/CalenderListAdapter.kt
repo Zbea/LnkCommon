@@ -1,5 +1,6 @@
 package com.bll.lnkcommon.ui.adapter
 
+import android.widget.ImageView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
 import com.bll.lnkcommon.utils.GlideUtils
@@ -10,11 +11,37 @@ class CalenderListAdapter(layoutResId: Int,data: List<CalenderItemBean>?) : Base
 
     override fun convert(helper: BaseViewHolder, item: CalenderItemBean) {
         helper.apply {
-            setText(R.id.tv_name,item.title)
-            GlideUtils.setImageRoundUrl(mContext,item.imageUrl,getView(R.id.iv_image),8)
-            setText(R.id.tv_buy,if (item.buyStatus==1) "下载" else "购买")
+            setText(R.id.tv_name, item.title)
+            val image = getView<ImageView>(R.id.iv_image)
+            GlideUtils.setImageRoundUrl(mContext, item.imageUrl, image, 8)
+            when(item.loadSate){
+                2->{
+                    setText(R.id.tv_buy,"已下载")
+                }
+                1->{
+                    setText(R.id.tv_buy,item.loadString)
+                }
+                0->{
+                    setText(R.id.tv_buy,if (item.buyStatus==1) "下载" else "购买")
+                }
+            }
+
+            setText(R.id.tv_price,if (item.price==0) "免费" else "${item.price}")
+
             addOnClickListener(R.id.tv_buy)
         }
+    }
+
+    fun setChangeText(s:String,pos:Int){
+        data[pos].loadString=s
+        data[pos].loadSate=1
+        notifyItemChanged(pos)
+    }
+
+    fun setInitText(pos: Int){
+        data[pos].loadString=""
+        data[pos].loadSate=0
+        notifyItemChanged(pos)
     }
 
 }

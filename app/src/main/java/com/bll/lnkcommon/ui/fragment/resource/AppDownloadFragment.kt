@@ -156,7 +156,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"] = supply
+//        map["type"] = supply
         map["subType"]=index
         map["bookType"]=3
         presenter.getAppList(map)

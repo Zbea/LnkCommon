@@ -58,15 +58,14 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(requireActivity(),30f),
-            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),25f),
             DP2PX.dip2px(requireActivity(),30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
-        mAdapter = WallpaperAdapter(R.layout.item_wallpaper, items)
-        rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
+        rv_list.addItemDecoration(SpaceGridItemDeco(4,DP2PX.dip2px(requireActivity(),15f)))
+        mAdapter = WallpaperAdapter(R.layout.item_bookstore_buy, items)
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
@@ -75,14 +74,14 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         mAdapter?.setOnItemChildClickListener{ adapter, view, position ->
             this.position=position
             val item=items[position]
-            if (view.id==R.id.btn_download){
+            if (view.id==R.id.tv_buy){
                 if (item.buyStatus==1){
                     val paintingBean= WallpaperDaoManager.getInstance().queryBean(item.contentId)
                     if (paintingBean==null){
                         onDownload()
                     }
                     else{
-                        showToast("已下载")
+                        showToast(R.string.downloaded)
                     }
                 }
                 else{

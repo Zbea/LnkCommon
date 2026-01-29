@@ -47,6 +47,8 @@ public interface IContractView {
     }
 
     interface IAccountInfoView extends IBaseView {
+        void getAccount(User user);
+        void onPrivacyPassword();
         void onEditPhone();
         void onEditNameSuccess();
         void onBind();

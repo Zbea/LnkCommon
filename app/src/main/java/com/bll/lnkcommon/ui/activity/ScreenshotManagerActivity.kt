@@ -28,17 +28,13 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
-class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView, IContractView.IQiniuView {
+class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView{
 
     private var mCloudUploadPresenter= CloudUploadPresenter(this)
-    private var mQiniuPresenter= QiniuPresenter(this)
     private var items= mutableListOf<ItemTypeBean>()
     private var mAdapter: ItemTypeManagerAdapter? = null
     private var position=0
 
-    override fun onToken(token: String) {
-        uploadScreenShot(token)
-    }
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         showToast("上传成功")
         val item=items[position]
@@ -136,11 +132,9 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView, IContractVie
                 }
             }
         }
-
     }
 
-
-    private fun uploadScreenShot(token:String){
+    override fun onUpload(token: String) {
         val cloudList= mutableListOf<CloudListBean>()
         val item=items[position]
         val fileName= DateUtils.longToString(item.date)
@@ -168,6 +162,5 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView, IContractVie
             showToast("暂无内容，无法上传")
         }
     }
-
 
 }

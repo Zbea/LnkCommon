@@ -34,7 +34,7 @@ class MainActivity : BaseActivity(){
     private var lastFragment: Fragment? = null
 
     private var mainFragment: MainFragment? = null
-    private var bookcaseFragment: BookcaseFragment? = null
+    private var bookcaseFragment: BookcaseManageFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
     private var teachFragment: HomeworkManagerFragment?=null
@@ -65,18 +65,6 @@ class MainActivity : BaseActivity(){
             FileUtils.deleteFile(File(targetFileStr))
         }
 
-        //创建书架分类
-        if (ItemTypeDaoManager.getInstance().queryAll(2).size==0){
-            val strings = DataBeanManager.bookType
-            for (i in strings.indices) {
-                val item = ItemTypeBean()
-                item.type=2
-                item.title = strings[i]
-                item.date=System.currentTimeMillis()
-                ItemTypeDaoManager.getInstance().insertOrReplace(item)
-            }
-        }
-
         mData= DataBeanManager.getMainData()
         //如果账号有关联学生
         if (MethodManager.isLogin()&&DataBeanManager.students.size>0){
@@ -100,7 +88,7 @@ class MainActivity : BaseActivity(){
         setLoginView()
 
         mainFragment = MainFragment()
-        bookcaseFragment = BookcaseFragment()
+        bookcaseFragment = BookcaseManageFragment()
         documentFragment=DocumentFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()
@@ -268,7 +256,16 @@ class MainActivity : BaseActivity(){
                     }
                 }
             }
+            Constants.AUTO_REFRESH_EVENT->{
+                //执行每天上传半年不使用书籍
+                mQiniuPresenter.getToken()
+            }
         }
+    }
+
+    override fun onToken(token: String) {
+        bookcaseFragment?.upload(token)
+        textbookFragment?.upload(token)
     }
 
     override fun onDestroy() {

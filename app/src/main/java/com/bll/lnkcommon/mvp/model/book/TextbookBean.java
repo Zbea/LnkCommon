@@ -51,6 +51,8 @@ public class TextbookBean {
     public int buyStatus;//1已购买
     @Transient
     public int cloudId;
+    @Transient
+    public String loadString;
 
     @Generated(hash = 22297967)
     public TextbookBean(Long id, long userId, int bookId, int category, int type, String imageUrl,

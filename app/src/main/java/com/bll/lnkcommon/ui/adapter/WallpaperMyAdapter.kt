@@ -10,7 +10,7 @@ class WallpaperMyAdapter(layoutResId: Int, data: List<WallpaperBean>?) : BaseQui
 
     override fun convert(helper: BaseViewHolder, item: WallpaperBean) {
         helper.apply {
-            setText(R.id.cb_check,"  "+item.title)
+            setText(R.id.cb_check," "+item.title)
             setChecked(R.id.cb_check,item.isCheck)
             GlideUtils.setImageRoundUrl(mContext,item.path,getView(R.id.iv_image),8)
             addOnClickListener(R.id.cb_check)

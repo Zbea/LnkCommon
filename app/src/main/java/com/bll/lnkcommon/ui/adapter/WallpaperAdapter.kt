@@ -13,11 +13,9 @@ class WallpaperAdapter(layoutResId: Int,data: List<WallpaperBean>?) : BaseQuickA
         helper.apply {
             setText(R.id.tv_name,item.title)
             GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,getView(R.id.iv_image),8)
-            setText(R.id.tv_price,if (item.price==0) "免费" else item.price.toString()+"青豆")
-            setText(R.id.btn_download,if (item.buyStatus==1) "下载" else "购买")
-            addOnClickListener(R.id.btn_download)
+            setText(R.id.tv_price,if (item.price==0) "免费" else item.price.toString())
+            setText(R.id.tv_buy,if (item.buyStatus==1) "下载" else "购买")
+            addOnClickListener(R.id.tv_buy)
         }
-
     }
-
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 自定义TabRadioGroup属性 -->
+    <declare-styleable name="TabRadioGroup">
+        <!-- 选项卡标题数组（用逗号分隔，如"首页,消息,我的"） -->
+        <attr name="tabTitles" format="string" />
+        <!-- 未选中文字大小 -->
+        <attr name="unselectedTextSize" format="dimension" />
+        <!-- 选中文字大小 -->
+        <attr name="selectedTextSize" format="dimension" />
+        <!-- 未选中文字颜色 -->
+        <attr name="unselectedTextColor" format="color" />
+        <!-- 选中文字颜色 -->
+        <attr name="selectedTextColor" format="color" />
+        <!-- 选项卡高度 -->
+        <attr name="tabHeight" format="dimension" />
+    </declare-styleable>
+</resources>

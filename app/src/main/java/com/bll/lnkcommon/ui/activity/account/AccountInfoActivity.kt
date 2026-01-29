@@ -14,8 +14,10 @@ import com.bll.lnkcommon.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkcommon.mvp.view.IContractView
 import com.bll.lnkcommon.ui.adapter.AccountStudentAdapter
 import com.bll.lnkcommon.MethodManager
+import com.bll.lnkcommon.mvp.model.User
 import com.bll.lnkcommon.mvp.presenter.SmsPresenter
 import com.bll.lnkcommon.mvp.view.IContractView.ISmsView
+import com.bll.lnkcommon.utils.MD5Utils
 import com.bll.lnkcommon.utils.SPUtil
 import com.bll.lnkcommon.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_info.*
@@ -30,6 +32,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
     private var mAdapter: AccountStudentAdapter?=null
     private var position=0
     private var phone=""
+    private var firstPsw=""
+    private var currentPsw=""
 
     override fun onSms() {
         showToast("短信发送成功")
@@ -37,6 +41,19 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
     override fun onCheckSuccess() {
         editPhone()
     }
+
+    override fun getAccount(user: User) {
+        mUser=user
+        SPUtil.putString(Constants.SP_PRIVACY_PASSWORD,user.privacyPassword)
+        setAccountInfo()
+    }
+
+    override fun onPrivacyPassword() {
+        SPUtil.putString(Constants.SP_PRIVACY_PASSWORD,if (currentPsw.isEmpty())"" else MD5Utils.digest(currentPsw))
+        setPrivacyPswStr()
+        showToast(if (currentPsw.isEmpty())"密码取消成功" else "密码设置成功")
+    }
+
 
     override fun onEditPhone() {
         showToast("修改手机号码成功")
@@ -72,7 +89,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
     }
 
     override fun initData() {
-        mUser=MethodManager.getUser()
+        presenter.accounts()
         presenter.getStudents()
     }
 
@@ -82,11 +99,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
 
         initRecyclerView()
 
-        mUser?.apply {
-            tv_user.text = account
-            tv_name.text = nickname
-            tv_phone.text =getPhoneStr(telNumber)
-        }
+        setAccountInfo()
 
         btn_edit_name.setOnClickListener {
             editName()
@@ -110,6 +123,54 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
 
         btn_edit_password.setOnClickListener {
             customStartActivity(Intent(this, AccountRegisterActivity::class.java).setFlags(1))
+        }
+
+        btn_privacy_password.setOnClickListener {
+            val privacyPassword=SPUtil.getString(Constants.SP_PRIVACY_PASSWORD)
+            if (privacyPassword.isEmpty()){
+                NumberPasswordDialog(this@AccountInfoActivity).builder().apply {
+                    setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                        override fun onNumber(psw: String) {
+                            if (firstPsw.isEmpty()){
+                                firstPsw=psw
+                                reset()
+                                setTitle("再输密码")
+                            }
+                            else{
+                                if (firstPsw==psw){
+                                    currentPsw=psw
+                                    cancel()
+                                    presenter.onPrivacyPassword(psw)
+                                }
+                                else{
+                                    reset()
+                                    showToast("两次密码设置不一致，再次输入")
+                                }
+                            }
+                        }
+                        override fun onDismiss() {
+                            firstPsw=""
+                        }
+                    })
+                }
+            }
+            else{
+                NumberPasswordDialog(this@AccountInfoActivity).builder().apply {
+                    setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                        override fun onNumber(psw: String) {
+                            if (privacyPassword == MD5Utils.digest(psw)){
+                                currentPsw=""
+                                cancel()
+                                presenter.onPrivacyPassword("-")
+                            }
+                            else{
+                                reset()
+                                showToast("密码输入错误")
+                            }
+                        }
+                    })
+                }
+            }
         }
 
         btn_logout.setOnClickListener {
@@ -146,6 +207,21 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
                 }
             }
         }
+    }
+
+    private fun setAccountInfo(){
+        mUser?.apply {
+            tv_user.text = account
+            tv_name.text = nickname
+            tv_phone.text =getPhoneStr(telNumber)
+        }
+        setPrivacyPswStr()
+    }
+
+    private fun setPrivacyPswStr(){
+        val privacyPassword=SPUtil.getString(Constants.SP_PRIVACY_PASSWORD)
+        btn_privacy_password.text=if (privacyPassword.isEmpty()) "设置密码" else "取消密码"
+        tv_privacy_password.text=if (privacyPassword.isEmpty()) "" else "******"
     }
 
     private fun getPhoneStr(phone:String):String{

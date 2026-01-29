@@ -24,6 +24,8 @@ import android.os.Environment
  */
 object Constants {
 
+        const val WIDTH = 1404
+        const val HEIGHT = 1872
         const val halfYear=180*24*60*60*1000
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
@@ -72,10 +74,17 @@ object Constants {
         const val PACKAGE_GEOMETRY="com.geometry"
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"
+        const val PACKAGE_INSTALLER= "com.android.packageinstaller"
+
+//        const val PACKAGE_SYSTEM_UPDATE = "com.fctek.firmwareupdate"
+//        const val PACKAGE_PPT= "com.fctek.dualdocreader"
+//        const val PACKAGE_UI_BAR="com.fctek.systemui"
 
         const val ACTION_DAY_REFRESH = "com.bll.lnkcommon.refresh"//每天0刷新
         const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
         const val SYSTEM_APP_STATUS_SHOW = "com.htfyun.firmwareupdate.status.show"//判断当前系统更新是否运行
+ //        const val NET_REFRESH = "com.fctek.systemui.refresh"
+//        const val SYSTEM_APP_STATUS_SHOW = "com.fctek.firmwareupdate.status.show"//判断当前系统更新是否运行
 
         const val LOGIN_BROADCAST_EVENT="com.bll.lnkcommon.account.login"
         const val LOGOUT_BROADCAST_EVENT="com.bll.lnkcommon.account.logout"
@@ -89,7 +98,7 @@ object Constants {
 
         const val SP_DIARY_BG_SET ="dirayBgRes"//日记
         const val SP_UPDATE_SYSTEM_STATUS = "UpdateSystemStatus"
-
+        const val SP_PRIVACY_PASSWORD = "PrivacyPassword"//私密密码
 }
 
 

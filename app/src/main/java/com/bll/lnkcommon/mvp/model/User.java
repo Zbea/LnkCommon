@@ -8,4 +8,6 @@ public class User {
     public String telNumber;
     public String nickname;
     public int balance=0;//学豆
+
+    public String privacyPassword;//隐私密码
 }

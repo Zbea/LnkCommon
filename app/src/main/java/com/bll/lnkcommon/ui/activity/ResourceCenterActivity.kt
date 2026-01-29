@@ -32,7 +32,6 @@ class ResourceCenterActivity: BaseActivity(){
 
     override fun initView() {
         setPageTitle("资源中心")
-        showView(tv_supply)
 
         appFragment=AppDownloadFragment().newInstance(1)
         toolFragment=AppDownloadFragment().newInstance(2)

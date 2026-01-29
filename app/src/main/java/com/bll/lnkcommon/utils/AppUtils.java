@@ -3,6 +3,8 @@ package com.bll.lnkcommon.utils;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -26,6 +28,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class AppUtils {
     public final static String WIDTH = "width";
@@ -433,4 +437,96 @@ public class AppUtils {
         }
         return btyes;
     }
+
+    /**
+     * 全版本兼容：判断指定包名的应用是否在前台运行
+     * @param context 上下文（建议使用ApplicationContext）
+     * @param targetPackageName 目标应用包名
+     * @return true=前台运行；false=后台运行/未运行
+     */
+    public static boolean isAppInForegroundCompat(Context context, String targetPackageName) {
+        if (context == null || targetPackageName == null || targetPackageName.trim().isEmpty()) {
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Android 5.0（API 21）及以上：使用UsageStatsManager
+            return isAppInForegroundLollipop(context, targetPackageName);
+        } else {
+            // Android 5.0以下：使用ActivityManager（GET_TASKS权限）
+            return isAppInForegroundLowVersion(context, targetPackageName);
+        }
+    }
+
+    /**
+     * Android 5.0+ 实现：使用UsageStatsManager（官方推荐）
+     */
+    private static boolean isAppInForegroundLollipop(Context context, String targetPackageName) {
+        // 1. 获取UsageStatsManager实例
+        UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        if (usageStatsManager == null) {
+            return false;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        // 2. 查询最近1小时内的应用使用记录（时间范围可自定义，如 1000*60*10=10分钟）
+        long startTime = currentTime - 1000 * 60 * 60;
+        List<UsageStats> statsList = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_BEST,
+                startTime,
+                currentTime
+        );
+
+        // 3. 无使用记录，引导用户开启权限并返回false
+        if (statsList == null || statsList.isEmpty()) {
+            return false;
+        }
+
+        // 4. 按最后使用时间排序，获取最新使用的应用
+        SortedMap<Long, UsageStats> sortedStats = new TreeMap<>();
+        for (UsageStats stats : statsList) {
+            sortedStats.put(stats.getLastTimeUsed(), stats);
+        }
+
+        UsageStats latestUsageStats = null;
+        if (!sortedStats.isEmpty()) {
+            latestUsageStats = sortedStats.get(sortedStats.lastKey());
+        }
+
+        // 5. 对比包名，判断是否为前台应用
+        if (latestUsageStats != null && targetPackageName.equals(latestUsageStats.getPackageName())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Android 5.0以下 & Android 10以下 实现：使用ActivityManager（已废弃，仅兼容低版本）
+     */
+    @SuppressWarnings("deprecation")
+    private static boolean isAppInForegroundLowVersion(Context context, String targetPackageName) {
+        // Android 10（API 29）及以上，该API已废弃，直接返回false
+        if (Build.VERSION.SDK_INT >= 29) {
+            return false;
+        }
+        // 1. 获取ActivityManager实例
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager == null) {
+            return false;
+        }
+        // 2. 获取前台任务列表（仅取1个，即当前最顶层任务）
+        List<ActivityManager.RunningTaskInfo> taskList = activityManager.getRunningTasks(1);
+        if (taskList == null || taskList.isEmpty()) {
+            return false;
+        }
+        // 3. 获取前台任务的包名并对比
+        ActivityManager.RunningTaskInfo foregroundTask = taskList.get(0);
+        if (foregroundTask.topActivity == null) {
+            return false;
+        }
+        String foregroundPackageName = foregroundTask.topActivity.getPackageName();
+        return targetPackageName.equals(foregroundPackageName);
+    }
+
+
 }

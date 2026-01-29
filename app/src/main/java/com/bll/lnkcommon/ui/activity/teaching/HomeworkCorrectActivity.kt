@@ -25,56 +25,15 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniuView{
+class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
 
     private val presenter=HomeworkCorrectPresenter(this)
-    private var mQiniuPresenter= QiniuPresenter(this)
     private var correctBean:CorrectBean?=null
     private var images= mutableListOf<String>()
     private var posImage=0
     private var url=""
     private val bitmapBatchSaver=BitmapBatchSaver(4)
 
-    override fun onToken(token: String) {
-        showLoading()
-        //获取合图的图片，没有手写的页面那原图
-        val paths= mutableListOf<String>()
-        for (i in images.indices){
-            val mergePath=getPathMergeStr(i+1)
-            if (File(mergePath).exists()){
-                paths.add(mergePath)
-            }
-        }
-        FileImageUploadManager(token, paths).apply {
-            startUpload()
-            setCallBack(object : FileImageUploadManager.UploadCallBack {
-                override fun onUploadSuccess(urls: List<String>) {
-                    //校验正确图片，没有手写图片拿原图
-                    val uploadPaths= mutableListOf<String>()
-                    var index=0
-                    for (i in images.indices){
-                        val mergePath=getPathMergeStr(i+1)
-                        if (File(mergePath).exists()){
-                            uploadPaths.add(urls[index])
-                            index+=1
-                        }
-                        else{
-                            uploadPaths.add(images[i])
-                        }
-                    }
-                    url=ToolUtils.getImagesStr(uploadPaths)
-                    val map= HashMap<String, Any>()
-                    map["id"]=correctBean?.id!!
-                    map["changeUrl"]=url
-                    presenter.commitPaperStudent(map)
-                }
-                override fun onUploadFail() {
-                    hideLoading()
-                    showToast("上传失败")
-                }
-            })
-        }
-    }
     override fun onUpdateSuccess() {
         showToast("批改成功")
         correctBean?.changeUrl=url
@@ -168,6 +127,47 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView ,IQiniu
      */
     private fun getPathMergeStr(index: Int):String{
         return getPath()+"/merge/${index}.png"//手绘地址
+    }
+
+    override fun onUpload(token: String) {
+        showLoading()
+        //获取合图的图片，没有手写的页面那原图
+        val paths= mutableListOf<String>()
+        for (i in images.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                paths.add(mergePath)
+            }
+        }
+        FileImageUploadManager(token, paths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    //校验正确图片，没有手写图片拿原图
+                    val uploadPaths= mutableListOf<String>()
+                    var index=0
+                    for (i in images.indices){
+                        val mergePath=getPathMergeStr(i+1)
+                        if (File(mergePath).exists()){
+                            uploadPaths.add(urls[index])
+                            index+=1
+                        }
+                        else{
+                            uploadPaths.add(images[i])
+                        }
+                    }
+                    url=ToolUtils.getImagesStr(uploadPaths)
+                    val map= HashMap<String, Any>()
+                    map["id"]=correctBean?.id!!
+                    map["changeUrl"]=url
+                    presenter.commitPaperStudent(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("上传失败")
+                }
+            })
+        }
     }
 
     override fun onDestroy() {

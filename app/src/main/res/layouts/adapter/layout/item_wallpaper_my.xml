@@ -7,20 +7,21 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="@dimen/dp_195"
-        android:layout_height="@dimen/dp_260"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_height"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
         />
     <CheckBox
         android:id="@+id/cb_check"
-        android:layout_width="@dimen/dp_195"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="60dp"
         android:textSize="22sp"
-        android:lines="1"
+        android:maxLines="2"
         android:ellipsize="end"
         android:button="@drawable/bg_check_selector"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
         android:textColor="@color/black"/>
 
 
