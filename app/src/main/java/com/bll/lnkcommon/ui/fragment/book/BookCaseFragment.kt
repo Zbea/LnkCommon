@@ -109,12 +109,4 @@ class BookCaseFragment: BaseFragment() {
         fetchData()
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        when (msgFlag) {
-            BOOK_EVENT -> {
-                fetchData()
-            }
-        }
-    }
-
 }

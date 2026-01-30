@@ -7,16 +7,12 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.ImageDialog
-import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.WallpaperDaoManager
-import com.bll.lnkcommon.mvp.model.ItemList
 import com.bll.lnkcommon.mvp.model.WallpaperBean
-import com.bll.lnkcommon.ui.adapter.WallpaperAdapter
 import com.bll.lnkcommon.ui.adapter.WallpaperMyAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.tv_setting
@@ -64,7 +60,7 @@ class WallpaperMyActivity:BaseActivity(){
 
         rv_list.layoutManager = GridLayoutManager(this, 4)
         rv_list?.addItemDecoration(SpaceGridItemDeco(4,60))
-        mAdapter = WallpaperMyAdapter(R.layout.item_wallpaper_my,null).apply {
+        mAdapter = WallpaperMyAdapter(R.layout.item_calender_my,null).apply {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
@@ -72,7 +68,7 @@ class WallpaperMyActivity:BaseActivity(){
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@WallpaperMyActivity.position=position
-                if (view.id==R.id.cb_check){
+                if (view.id==R.id.ll_name){
                     for (item in items){
                         item.isCheck=false
                     }

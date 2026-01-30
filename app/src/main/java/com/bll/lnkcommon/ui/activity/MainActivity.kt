@@ -263,7 +263,7 @@ class MainActivity : BaseActivity(){
         }
     }
 
-    override fun onToken(token: String) {
+    override fun onUploadToken(token: String) {
         bookcaseFragment?.upload(token)
         textbookFragment?.upload(token)
     }

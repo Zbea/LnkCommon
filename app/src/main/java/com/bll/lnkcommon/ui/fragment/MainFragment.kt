@@ -410,7 +410,7 @@ class MainFragment:BaseFragment(),IRelationView{
         lazyLoad()
     }
 
-    override fun onUpload(token: String) {
+    override fun onUploadToken(token: String) {
         cloudList.clear()
         val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
         if (diarys.isNotEmpty()){

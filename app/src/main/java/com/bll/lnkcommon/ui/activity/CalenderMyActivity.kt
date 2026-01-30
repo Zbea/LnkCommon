@@ -8,17 +8,12 @@ import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.CommonDialog
 import com.bll.lnkcommon.dialog.ImageDialog
-import com.bll.lnkcommon.dialog.LongClickManageDialog
 import com.bll.lnkcommon.manager.CalenderDaoManager
-import com.bll.lnkcommon.manager.WallpaperDaoManager
 import com.bll.lnkcommon.mvp.model.CalenderItemBean
-import com.bll.lnkcommon.mvp.model.ItemList
-import com.bll.lnkcommon.ui.adapter.CalenderListAdapter
 import com.bll.lnkcommon.ui.adapter.CalenderMyAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.FileUtils
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
@@ -68,7 +63,7 @@ class CalenderMyActivity:BaseActivity(){
 
         rv_list?.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         rv_list?.addItemDecoration(SpaceGridItemDeco(4,  60))
-        mAdapter = CalenderMyAdapter(R.layout.item_wallpaper_my ,null).apply {
+        mAdapter = CalenderMyAdapter(R.layout.item_calender_my ,null).apply {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
@@ -78,7 +73,7 @@ class CalenderMyActivity:BaseActivity(){
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CalenderMyActivity.position=position
-                if (view.id==R.id.cb_check){
+                if (view.id==R.id.ll_name){
                     for (item in items){
                         item.isCheck=false
                     }

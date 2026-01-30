@@ -309,7 +309,7 @@ class NoteFragment:BaseFragment(){
         }
     }
 
-    override fun onUpload(token: String) {
+    override fun onUploadToken(token: String) {
         cloudList.clear()
         val note=notes[position]
         val path=FileAddress().getPathNote(note.typeStr,note.title)

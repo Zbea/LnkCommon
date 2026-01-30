@@ -12,15 +12,11 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.Constants.NETWORK_CONNECTION_COMPLETE_EVENT
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
-import com.bll.lnkcommon.MyApplication
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.dialog.AppUpdateDialog
 import com.bll.lnkcommon.dialog.ProgressDialog
@@ -96,7 +92,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     var lastFragment: Fragment? = null
 
     override fun onToken(token: String) {
-        onUpload(token)
+        onUploadToken(token)
     }
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
@@ -335,7 +331,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         }
     }
 
-    fun getFragmentTransaction(): FragmentTransaction {
+    private fun getFragmentTransaction(): FragmentTransaction {
         val fm = childFragmentManager
         return fm.beginTransaction()
     }
@@ -523,7 +519,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
     /**
      * 开始上传
      */
-    open fun onUpload(token: String){
+    open fun onUploadToken(token: String){
 
     }
 

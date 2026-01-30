@@ -251,8 +251,8 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             override fun onProgress(task: BaseDownloadTask, soFar: Long, total: Long) {
                 if (task.isRunning) {
                     runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024), "0.0M")+ "/"+
-                                ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024), "0.0M")
+                        val s = ToolUtils.getFormatNum(soFar.toDouble() / (1024 * 1024), "0.0")+ "/"+
+                                ToolUtils.getFormatNum(total.toDouble() / (1024 * 1024), "0.0")
                        mAdapter?.setChangeText(s,position)
                     }
                 }

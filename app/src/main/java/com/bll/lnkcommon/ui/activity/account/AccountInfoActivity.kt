@@ -54,7 +54,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
         showToast(if (currentPsw.isEmpty())"密码取消成功" else "密码设置成功")
     }
 
-
     override fun onEditPhone() {
         showToast("修改手机号码成功")
         mUser?.telNumber=phone

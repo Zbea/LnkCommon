@@ -129,7 +129,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
         return getPath()+"/merge/${index}.png"//手绘地址
     }
 
-    override fun onUpload(token: String) {
+    override fun onUploadToken(token: String) {
         showLoading()
         //获取合图的图片，没有手写的页面那原图
         val paths= mutableListOf<String>()

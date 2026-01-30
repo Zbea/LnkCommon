@@ -1,6 +1,7 @@
 package com.bll.lnkcommon.ui.fragment
 
 import android.content.Intent
+import com.bll.lnkcommon.Constants.BOOK_EVENT
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseFragment
 import com.bll.lnkcommon.ui.activity.book.BookStoreTypeActivity
@@ -38,7 +39,7 @@ class BookcaseManageFragment: BaseFragment() {
         bookCaseFragment= BookCaseFragment()
         bookReadingFragment= BookReadingFragment()
 
-        switchFragment(3,lastFragment,bookReadingFragment)
+        switchFragment(2,lastFragment,bookReadingFragment)
 
         tabRadioGroup.setTabTitles(tabTitles)
         tabRadioGroup.setOnTabSelectedListener(object : TabRadioGroup.OnTabSelectedListener {
@@ -56,6 +57,19 @@ class BookcaseManageFragment: BaseFragment() {
     }
 
     override fun lazyLoad() {
+    }
+
+    override fun onRefreshData() {
+        bookCaseFragment?.onRefreshData()
+        bookReadingFragment?.onRefreshData()
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when (msgFlag) {
+            BOOK_EVENT -> {
+                onRefreshData()
+            }
+        }
     }
 
     /**

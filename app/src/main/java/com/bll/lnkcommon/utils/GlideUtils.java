@@ -36,6 +36,7 @@ public class GlideUtils {
 
     public static final void setImageRoundUrl(Context mContext,String url, ImageView imageView,int round){
         RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
         requestOptions.transform(new RoundedCorners(round));
 
         Glide.with(mContext)

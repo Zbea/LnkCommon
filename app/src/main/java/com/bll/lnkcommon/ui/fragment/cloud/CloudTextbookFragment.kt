@@ -72,7 +72,6 @@ class CloudTextbookFragment: BaseCloudFragment() {
         rv_list.addItemDecoration(SpaceGridItemDeco(4,DP2PX.dip2px(activity,15f)))
 
         mAdapter = TextBookAdapter(R.layout.item_bookstore, null).apply {
-            rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position

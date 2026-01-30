@@ -12,10 +12,10 @@ class CalenderMyAdapter(layoutResId: Int, data: List<CalenderItemBean>?) : BaseQ
 
     override fun convert(helper: BaseViewHolder, item: CalenderItemBean) {
         helper.apply {
-            setText(R.id.cb_check,"  "+item.title)
-            setChecked(R.id.cb_check,item.isCheck)
+            setText(R.id.tv_name,item.title)
+            setImageResource(R.id.iv_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
             GlideUtils.setImageRoundUrl(mContext,item.imageUrl,getView(R.id.iv_image),8)
-            addOnClickListener(R.id.cb_check)
+            addOnClickListener(R.id.ll_name)
         }
     }
 

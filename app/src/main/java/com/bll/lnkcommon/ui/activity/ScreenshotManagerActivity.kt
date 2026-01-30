@@ -134,7 +134,7 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView{
         }
     }
 
-    override fun onUpload(token: String) {
+    override fun onUploadToken(token: String) {
         val cloudList= mutableListOf<CloudListBean>()
         val item=items[position]
         val fileName= DateUtils.longToString(item.date)

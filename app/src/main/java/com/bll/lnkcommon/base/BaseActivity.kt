@@ -16,7 +16,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.MethodManager
@@ -57,7 +56,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mDownloadManager:DownloadManager?=null
 
     override fun onToken(token: String) {
-        onUpload(token)
+        onUploadToken(token)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -430,7 +429,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 开始上传
      */
-    open fun onUpload(token: String){
+    open fun onUploadToken(token: String){
 
     }
 
