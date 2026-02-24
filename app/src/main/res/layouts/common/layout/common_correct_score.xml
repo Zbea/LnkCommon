@@ -102,6 +102,30 @@
         android:background="@drawable/bg_black_stroke_0dp_corner"
         >
 
+        <ScrollView
+            android:id="@+id/sv_score"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_20"
+            android:fillViewport="true"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                >
+
+                <com.bll.lnkcommon.widget.ScoreTreeLayout
+                    android:id="@+id/sl_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+        </ScrollView>
+
         <ImageView
             android:id="@+id/iv_score_up"
             android:layout_width="wrap_content"
@@ -117,17 +141,6 @@
             android:src="@mipmap/icon_main_down"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/dp_25"
-            android:layout_marginBottom="@dimen/dp_25"
-            android:layout_marginStart="@dimen/dp_50"
-            android:layout_marginEnd="@dimen/dp_50"
             />
 
         <ImageView

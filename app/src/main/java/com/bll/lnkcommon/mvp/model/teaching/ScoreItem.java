@@ -8,24 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreItem implements Serializable {
-    public double score=0;
-    public int sort;
-    public String sortStr;//标题
-    public int result=0;//0错1对
-    public double label=0;//题目标准分数
+    public double score;
+    public int type=1;
+    public String sortStr="";
+    public int result;//0错1对
+    public double label;//题目标准分数
+    public boolean isChildBottom;//将最大层级都没有子的时候其父为true 然后横排
+    public ScoreItem parentItem;
     public List<ScoreItem> childScores=new ArrayList<>();
-
     public String pos;
-    public List<Point> points=parsePoints(pos);
 
-    private List<Point> parsePoints(String json){
-        List<Point> points=new ArrayList<>();
-        try{
-            points=new Gson().fromJson(json, new TypeToken<List<Point>>() {}.getType());
-        }
-        catch (Exception ignored){
-        }
-        return points;
+    //为true childScores为同级子
+    public boolean getIsChildLevel(){
+        return this.type==2;
     }
 
     public static class Point implements Serializable{

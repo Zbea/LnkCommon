@@ -3,27 +3,15 @@ package com.bll.lnkcommon.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.teaching.ResultStandardItem
-import com.bll.lnkcommon.mvp.model.teaching.ScoreItem
-import com.bll.lnkcommon.ui.adapter.teaching.TopicMultistageScoreAdapter
-import com.bll.lnkcommon.ui.adapter.teaching.TopicResultStandardAdapter
-import com.bll.lnkcommon.ui.adapter.teaching.TopicScoreAdapter
-import com.bll.lnkcommon.ui.adapter.teaching.TopicTwoScoreAdapter
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.ScoreItemUtils
-import com.bll.lnkcommon.widget.SpaceGridItemDeco
-import com.bll.lnkcommon.widget.SpaceItemDeco
-import java.util.stream.Collectors
+import com.bll.lnkcommon.widget.ScoreTreeLayout
 
 class ScoreDetailsDialog(val context: Context, private val title:String, private val score:Double,
                          private val correctMode:Int,private val scoreMode:Int,private val answerImages:MutableList<String>,
@@ -35,20 +23,6 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.common_correct_score)
         dialog.show()
-
-        var currentScores= mutableListOf<ScoreItem>()
-        var currentResults= mutableListOf<ResultStandardItem.ResultChildItem>()
-        if (correctMode >0) {
-            currentScores = ScoreItemUtils.questionToList(commitJson,correctMode)
-        }
-        else{
-            currentResults=DataBeanManager.getResultChildItems().stream().collect(Collectors.toList())
-            for (item in currentResults){
-                if (item.sort==score.toInt()){
-                    item.isCheck=true
-                }
-            }
-        }
 
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
         ivClose.setOnClickListener {
@@ -63,15 +37,12 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
             iv_expand_arrow.visibility=View.GONE
         iv_expand_arrow.setOnClickListener {
             isExpend = !isExpend
-
-            val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            val layoutParams = rl_score_content.layoutParams
             if (isExpend) {
                 iv_expand_arrow.setImageResource(R.mipmap.icon_topic_arrow_shrink)
-                layoutParams.topMargin = DP2PX.dip2px(context, 10f)
                 layoutParams.height = DP2PX.dip2px(context, 1000f)
             } else {
                 iv_expand_arrow.setImageResource(R.mipmap.icon_topic_arrow_expend)
-                layoutParams.topMargin = DP2PX.dip2px(context, 10f)
                 layoutParams.height = DP2PX.dip2px(context, 500f)
             }
             rl_score_content.layoutParams = layoutParams
@@ -88,51 +59,31 @@ class ScoreDetailsDialog(val context: Context, private val title:String, private
         tvAnswer.setOnClickListener {
             ImageDialog(context, answerImages).builder()
         }
+        val sv_score = dialog.findViewById<ScrollView>(R.id.sv_score)
+        val sl_score = dialog.findViewById<ScoreTreeLayout>(R.id.sl_score)
 
-        val rv_list_score = dialog.findViewById<RecyclerView>(R.id.rv_list)
 
-        when(correctMode){
-            1,2->{
-                rv_list_score.layoutManager = GridLayoutManager(context,3)
-                TopicScoreAdapter(R.layout.item_topic_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(context,15f)))
+        if (correctMode >0) {
+            val currentScores = ScoreItemUtils.questionToList(commitJson,correctMode)
+            sl_score.bindData(currentScores,false)
+        }
+        else{
+            val currentResults=ArrayList(DataBeanManager.getResultChildItems())
+            for (item in currentResults){
+                if (item.sort==score.toInt()){
+                    item.isCheck=true
                 }
             }
-            3,4,5->{
-                rv_list_score.layoutManager = LinearLayoutManager(context)
-                TopicTwoScoreAdapter(if(correctMode==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
-                }
-            }
-            6,7->{
-                rv_list_score.layoutManager = LinearLayoutManager(context)
-                val sharedPool = RecyclerView.RecycledViewPool()
-                rv_list_score.setRecycledViewPool(sharedPool)
-                TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,currentScores).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,15f)))
-                }
-            }
-            else->{
-                rv_list_score.layoutManager = GridLayoutManager(context, 3)
-                TopicResultStandardAdapter(R.layout.item_homework_result_standard_child,currentResults).apply {
-                    rv_list_score.adapter = this
-                    bindToRecyclerView(rv_list_score)
-                }
-            }
+            sl_score.bindData(currentResults)
         }
 
+
         iv_score_up.setOnClickListener {
-            rv_list_score.scrollBy(0,-DP2PX.dip2px(context,300f))
+            sv_score.scrollBy(0,-DP2PX.dip2px(context,300f))
         }
 
         iv_score_down.setOnClickListener {
-            rv_list_score.scrollBy(0, DP2PX.dip2px(context,300f))
+            sv_score.scrollBy(0, DP2PX.dip2px(context,300f))
         }
 
         return this
