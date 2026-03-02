@@ -54,7 +54,7 @@ class MessageListActivity:BaseActivity(),IContractView.IMessageView {
         }
 
         tv_ok.setOnClickListener {
-            MessageSendDialog(this).builder().setOnClickListener{
+            MessageSendDialog(this).builder().setOnDialogClickListener{
                 val map=HashMap<String,Any>()
                 map["title"]=it
                 map["userId"]=studentId

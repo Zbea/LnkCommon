@@ -79,9 +79,7 @@ class NotebookManagerActivity : BaseActivity() {
     //删除
     private fun deleteNotebook(){
         CommonDialog(this).setContent("确定删除笔记本？").builder()
-            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
+            .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun ok() {
                     val noteType=noteBooks[position]
                     val notes= NoteDaoManager.getInstance().queryAll(noteType.title)

@@ -24,10 +24,10 @@
 
     <ImageView
         android:id="@+id/iv_result"
-        android:layout_width="wrap_content"
+        android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:src="@mipmap/icon_correct_wrong"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_5"
         />
 
 </LinearLayout>

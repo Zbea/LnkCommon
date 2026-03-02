@@ -7,89 +7,80 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BasePopupWindow
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.widget.WheelView
 
 /**
  * 时间选择器
  */
-class PopupDateSelector(var context:Context, var view: View, val nums:List<Int>, val type: Int) {
+class PopupDateSelector(
+    context: Context,
+    anchorView: View,
+    private val nums: List<Int>,
+    private val type: Int // 0=年份选择，其他=月份选择
+) : BasePopupWindow(context = context, anchorView = anchorView, layoutWidth = anchorView.width, xOffset = 0, yOffset = 5) {
 
-    private var mPopupWindow:PopupWindow?=null
+    override fun getLayoutResId(): Int = R.layout.popup_date_number_selector
 
-    fun builder(): PopupDateSelector?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_date_number_selector, null, false)
-        mPopupWindow = PopupWindow(context).apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // 设置PopupWindow的内容view
-            contentView=popView
-            isFocusable=true // 设置PopupWindow可获得焦点
-            isTouchable=true // 设置PopupWindow可触摸
-            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-            width=view.width
-        }
+    override fun initView() {
 
-        var pos=0
-        if (type==0){
-            for (i in nums.indices)
-            {
-                if (nums[i]==DateUtils.getYear())
-                    pos=i
-            }
-        }
-        else{
-            for (i in nums.indices)
-            {
-                if (nums[i]==DateUtils.getMonth())
-                    pos=i
-            }
-        }
+        val defaultPos = calculateDefaultPosition()
 
+        val wvView = contentView.findViewById<WheelView>(R.id.wv_view)
+        wvView.setOffset(2) // 保留原有偏移设置
+        wvView.setItems(nums) // 设置滚轮数据
+        wvView.setSelection(defaultPos) // 设置默认选中位置
 
-        val wv_view = popView.findViewById<WheelView>(R.id.wv_view)
-        wv_view.setOffset(2)
-        wv_view.setItems(nums)
-        wv_view.setSelection(pos)
-        wv_view.setOnWheelViewListener(object : WheelView.OnWheelViewListener {
+        wvView.setOnWheelViewListener(object : WheelView.OnWheelViewListener {
             override fun onSelector(selectedIndex: Int, item: String?) {
-                onSelectorListener?.onSelect(item!!)
+                item?.let {
+                    onDateSelectorListener?.onSelect(it)
+                }
             }
 
             override fun onClick(item: String?) {
-                onSelectorListener?.onSelect(item!!)
-                dismiss()
+                item?.let {
+                    onDateSelectorListener?.onSelect(it)
+                    dismiss()
+                }
             }
-
         })
-
-
-        show()
-        return this
     }
 
-    fun dismiss() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.dismiss()
+    /**
+     * 辅助方法：计算年份/月份的默认选中位置
+     */
+    private fun calculateDefaultPosition(): Int {
+        var pos = 0
+        if (type == 0) {
+            // 年份选择：匹配当前年份
+            for (i in nums.indices) {
+                if (nums[i] == DateUtils.getYear()) {
+                    pos = i
+                    break
+                }
+            }
+        } else {
+            // 月份选择：匹配当前月份
+            for (i in nums.indices) {
+                if (nums[i] == DateUtils.getMonth()) {
+                    pos = i
+                    break
+                }
+            }
         }
+        return pos
     }
 
-    fun show() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,0, 5)
-        }
+    private var onDateSelectorListener: OnDateSelectorListener? = null
+
+    fun setOnDateSelectorListener(listener: OnDateSelectorListener) {
+        this.onDateSelectorListener = listener
     }
 
-   private var onSelectorListener:OnSelectorListener?=null
-
-    fun setOnSelectorListener(onSelectorListener:OnSelectorListener)
-    {
-        this.onSelectorListener=onSelectorListener
-    }
-
-    fun interface OnSelectorListener{
+    fun interface OnDateSelectorListener {
         fun onSelect(date: String)
     }
-
-
 
 }

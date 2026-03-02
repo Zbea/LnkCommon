@@ -91,7 +91,7 @@ class StudentExamFragment : BaseFragment(),IExamView {
                     )
                 }
                 R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setOnDialogClickListener(
                         object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }

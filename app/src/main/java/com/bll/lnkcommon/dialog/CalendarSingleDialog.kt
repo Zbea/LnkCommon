@@ -1,93 +1,93 @@
 package com.bll.lnkcommon.dialog
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 
+/**
+ * 单日历选择弹窗
+ * @param context 上下文
+ * @param x X轴偏移（dp），0则使用基类默认值
+ * @param y Y轴偏移（dp），0则使用基类默认值
+ */
+class CalendarSingleDialog(context: Context, private val x: Float = 0f, private val y: Float = 0f) : BaseDialog(context) {
 
-class CalendarSingleDialog(private val context: Context,private val x:Float,private val y:Float) {
+    private var calendarView: CalendarView? = null
 
-    private var dialog: Dialog? = null
-    constructor(context: Context):this(context,0f,0f)
+    private var dateListener: OnDateListener? = null
+
+    override val defaultGravity: Int
+        get() = if (x != 0f && y != 0f) Gravity.TOP or Gravity.END else super.defaultGravity
+
+    override val defaultXOffset: Float
+        get() = if (x != 0f && y != 0f) x else super.defaultXOffset
+
+    override val defaultYOffset: Float
+        get() = if (x != 0f && y != 0f) y else super.defaultYOffset
+
+
+    override fun getLayoutResId(): Int = R.layout.dialog_calendar_single
 
     @SuppressLint("SetTextI18n")
-    fun builder(): CalendarSingleDialog {
-        dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_calendar_single)
-        val window = dialog?.window!!
-        window.setBackgroundDrawableResource(android.R.color.transparent)
-        if(x!=0f&&y!=0f){
-            val layoutParams = window.attributes
-            layoutParams.gravity = Gravity.TOP or Gravity.END
-            layoutParams.x = DP2PX.dip2px(context, x)
-            layoutParams.y = DP2PX.dip2px(context, y)
-        }
-        dialog?.show()
+    override fun initView(contentView: View) {
 
-        val tv_year = dialog?.findViewById<TextView>(R.id.tv_year)
-        val iv_left = dialog?.findViewById<ImageView>(R.id.iv_left)
-        val iv_right = dialog?.findViewById<ImageView>(R.id.iv_right)
-        val calendarView = dialog?.findViewById<CalendarView>(R.id.dp_date)
+        val tvYear = contentView.findViewById<TextView>(R.id.tv_year)
+        val ivLeft = contentView.findViewById<ImageView>(R.id.iv_left)
+        val ivRight = contentView.findViewById<ImageView>(R.id.iv_right)
+        calendarView = contentView.findViewById(R.id.dp_date)
 
-        tv_year?.text="${calendarView?.curYear} 年  ${calendarView?.curMonth} 月"
+        tvYear?.text = "${calendarView?.curYear} 年  ${calendarView?.curMonth} 月"
 
-        iv_left?.setOnClickListener {
+        ivLeft?.setOnClickListener {
             calendarView?.scrollToPre()
         }
 
-        iv_right?.setOnClickListener {
+        ivRight?.setOnClickListener {
             calendarView?.scrollToNext()
         }
 
         calendarView?.setOnMonthChangeListener { year, month ->
-            tv_year?.text="$year 年  $month 月"
+            tvYear?.text = "$year 年  $month 月"
         }
 
         calendarView?.setOnCalendarSelectListener(object : CalendarView.OnCalendarSelectListener {
-            override fun onCalendarOutOfRange(calendar: Calendar?) {
-            }
-
+            override fun onCalendarOutOfRange(calendar: Calendar?) {}
             override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
-                if (isClick){
-                    val years = calendar?.year
-                    val months = calendar?.month
-                    val days = calendar?.day
-                    val dateToStamp = "${years}-${months}-${days}"
+                if (isClick) {
+                    val year = calendar?.year ?: return
+                    val month = calendar?.month ?: return
+                    val day = calendar?.day ?: return
+                    // 日期转时间戳
+                    val dateToStamp = "${year}-${month}-${day}"
                     val time = DateUtils.dateToStamp(dateToStamp)
+                    // 触发回调
                     dateListener?.getDate(time)
                     dismiss()
                 }
             }
         })
-        return this
     }
-
-
-    fun show() {
-        dialog?.show()
-    }
-
-    fun dismiss() {
-        dialog?.dismiss()
-    }
-
-    private var dateListener: OnDateListener? = null
 
     fun interface OnDateListener {
         fun getDate(dateTim: Long)
     }
 
-    fun setOnDateListener(dateListener: OnDateListener?) {
-        this.dateListener = dateListener
+    fun setOnDateListener(listener: OnDateListener?): CalendarSingleDialog {
+        this.dateListener = listener
+        return this
     }
 
-
+    //保持链式调用连贯性
+    override fun builder(): CalendarSingleDialog {
+        super.builder()
+        return this
+    }
 }

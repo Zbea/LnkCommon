@@ -3,6 +3,7 @@ package com.bll.lnkcommon.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.Constants
@@ -18,68 +19,73 @@ import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
+import com.bll.lnkcommon.base.BaseDialog
 
-class DiaryUploadListDialog(val context: Context) {
+/**
+ * 日记上传列表弹窗
+ * @param context 上下文
+ */
+class DiaryUploadListDialog(context: Context) : BaseDialog(context) {
 
-    fun builder(): DiaryUploadListDialog {
+    private var onDialogClickListener: OnDialogClickListener? = null
 
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_diary_upload_list)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+    override fun getLayoutResId(): Int = R.layout.dialog_diary_upload_list
 
-        val diaryTypes=ItemTypeDaoManager.getInstance().queryAllOrderDesc(4)
+    override fun initView(contentView: View) {
 
-        val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
-        rv_list?.layoutManager = LinearLayoutManager(context)
+        val diaryTypes = ItemTypeDaoManager.getInstance().queryAllOrderDesc(4)
+
+        val rvList = contentView.findViewById<RecyclerView>(R.id.rv_list)
+        rvList.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_diary_upload, diaryTypes)
-        rv_list?.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rv_list)
+        mAdapter.bindToRecyclerView(rvList)
         mAdapter.setEmptyView(R.layout.common_empty)
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            listener?.onClick(diaryTypes[position].typeId)
-            dialog.dismiss()
+        rvList.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context, 10f)))
+        mAdapter.setOnItemClickListener { _, _, position ->
+            onDialogClickListener?.onClick(diaryTypes[position].typeId)
+            dismiss()
         }
-        mAdapter.setOnItemChildClickListener { adapter, view, position ->
-            if (view.id==R.id.iv_delete){
+
+        mAdapter.setOnItemChildClickListener { _, view, position ->
+            if (view.id == R.id.iv_delete) {
                 CommonDialog(context).setContent("确定删除？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
-                            val item=diaryTypes[position]
-                            val diaryBeans=DiaryDaoManager.getInstance().queryList(item.typeId)
-                            for (diaryBean in diaryBeans){
-                                val path= FileAddress().getPathDiary(DateUtils.longToStringCalender(diaryBean.date))
+                            val item = diaryTypes[position]
+                            // 删除日记文件和数据库记录
+                            val diaryBeans = DiaryDaoManager.getInstance().queryList(item.typeId)
+                            diaryBeans.forEach { diaryBean ->
+                                val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(diaryBean.date))
                                 FileUtils.deleteFile(File(path))
                                 DiaryDaoManager.getInstance().delete(diaryBean)
                             }
+                            // 删除类型记录并更新列表
                             ItemTypeDaoManager.getInstance().deleteBean(item)
                             mAdapter.remove(position)
                         }
                     })
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(context,10f)))
+    }
 
+    fun interface OnDialogClickListener {
+        fun onClick(typeId: Int)
+    }
+
+    fun setOnDialogClickListener(listener: OnDialogClickListener): DiaryUploadListDialog {
+        this.onDialogClickListener = listener
         return this
     }
 
-    private var listener: OnDialogClickListener? = null
-
-    fun interface OnDialogClickListener {
-        fun onClick(typeId:Int)
-    }
-
-    fun setOnDialogClickListener(listener: OnDialogClickListener) {
-        this.listener = listener
+    override fun builder(): DiaryUploadListDialog {
+        super.builder()
+        return this
     }
 
     class MyAdapter(layoutResId: Int, data: List<ItemTypeBean>?) : BaseQuickAdapter<ItemTypeBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ItemTypeBean) {
-            helper.setText(R.id.tv_name,item.title)
+            helper.setText(R.id.tv_name, item.title)
             helper.addOnClickListener(R.id.iv_delete)
         }
     }
-
 }

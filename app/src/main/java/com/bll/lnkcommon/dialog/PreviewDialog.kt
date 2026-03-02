@@ -1,70 +1,78 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.GlideUtils
 
-class PreviewDialog(val context: Context,private val title:String,private val content:String, private val images:List<String>){
+class PreviewDialog(
+    context: Context,
+    private val title: String,
+    private val content: String,
+    private val images: List<String>
+) : BaseDialog(context) {
 
-    private var page=0
-    private val total=images.size-1
-    private var tvPage:TextView?=null
-    private var ivImage:ImageView?=null
+    // 自定义宽度
+    override val defaultWidth: Int
+        get() = if (images.isNotEmpty()) DP2PX.dip2px(context,720f) else DP2PX.dip2px(context,500f)
 
-    fun builder(): PreviewDialog {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_preview)
-        val window=dialog.window!!
-        window.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams =window.attributes
-        val width=if (images.isNotEmpty()) DP2PX.dip2px(context,720F) else DP2PX.dip2px(context,500F)
-        layoutParams.width=width
-        dialog.show()
+    private var page = 0
+    private val total get() = images.size - 1
+    private var tvPage: TextView? = null
+    private var ivImage: ImageView? = null
 
-        ivImage=dialog.findViewById(R.id.iv_image)
-        val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
-        ivClose.setOnClickListener { dialog.dismiss() }
-        val rlImage=dialog.findViewById<RelativeLayout>(R.id.rl_image)
-        val ivUp=dialog.findViewById<ImageView>(R.id.iv_up)
-        val ivDown=dialog.findViewById<ImageView>(R.id.iv_down)
-        tvPage=dialog.findViewById(R.id.tv_page)
-        val tvContent=dialog.findViewById<TextView>(R.id.tv_content)
-        val tvTitle=dialog.findViewById<TextView>(R.id.tv_title)
+    override fun getLayoutResId(): Int = R.layout.dialog_preview
 
-        tvTitle.text=title
-        tvContent.text=content
+    override fun initView(contentView: View) {
+        // 初始化控件
+        ivImage = contentView.findViewById(R.id.iv_image)
+        val ivClose = contentView.findViewById<ImageView>(R.id.iv_close)
+        val rlImage = contentView.findViewById<RelativeLayout>(R.id.rl_image)
+        val ivUp = contentView.findViewById<ImageView>(R.id.iv_up)
+        val ivDown = contentView.findViewById<ImageView>(R.id.iv_down)
+        tvPage = contentView.findViewById(R.id.tv_page)
+        val tvContent = contentView.findViewById<TextView>(R.id.tv_content)
+        val tvTitle = contentView.findViewById<TextView>(R.id.tv_title)
 
-        if (images.isNotEmpty()){
-            rlImage.visibility=View.VISIBLE
+        // 设置标题和内容
+        tvTitle.text = title
+        tvContent.text = content
+
+        // 关闭按钮
+        ivClose.setOnClickListener { dismiss() }
+
+        // 图片区域显示控制
+        if (images.isNotEmpty()) {
+            rlImage.visibility = View.VISIBLE
             setChange()
         }
+
+        // 上一页
         ivUp.setOnClickListener {
-            if (page>0){
-                page-=1
+            if (page > 0) {
+                page -= 1
                 setChange()
             }
         }
 
+        // 下一页
         ivDown.setOnClickListener {
-            if (page<total){
-                page+=1
+            if (page < total) {
+                page += 1
                 setChange()
             }
         }
-        return this
     }
 
-    private fun setChange(){
-        GlideUtils.setImageUrl(context,images[page],ivImage)
-        tvPage?.text="${page+1}/${total+1}"
+    private fun setChange() {
+        // 加载图片
+        GlideUtils.setImageUrl(context, images[page], ivImage)
+        // 更新页码
+        tvPage?.text = "${page + 1}/${total + 1}"
     }
-
 }

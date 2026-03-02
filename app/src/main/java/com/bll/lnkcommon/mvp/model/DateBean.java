@@ -6,13 +6,13 @@ import com.bll.lnkcommon.utils.date.Solar;
 
 import java.io.Serializable;
 
-public class Date implements Serializable {
+public class DateBean implements Serializable {
 
     public int year;
     public int month;
     public int day;
     public int week;//2星期一 8星期日
-    public long time=0l;
+    public long time=0L;
     public boolean isNow;//是否是当天
     public boolean isNowMonth;//是否是当月
 

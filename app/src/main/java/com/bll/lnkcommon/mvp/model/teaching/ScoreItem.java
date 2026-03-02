@@ -11,6 +11,7 @@ public class ScoreItem implements Serializable {
     public double score;
     public int type=1;
     public String sortStr="";
+    public int level;
     public int result;//0错1对
     public double label;//题目标准分数
     public boolean isChildBottom;//将最大层级都没有子的时候其父为true 然后横排

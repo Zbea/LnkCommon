@@ -43,7 +43,8 @@ class OperatingGuideActivity :BaseActivity() {
         tv_ok.text="目录"
         tv_ok.setOnClickListener {
             if (popCatalog==null){
-                popCatalog=PopupOperatingGuideCatalog(this,tv_ok).builder()
+                popCatalog=PopupOperatingGuideCatalog(this,tv_ok)
+                popCatalog?.builder()
                 popCatalog?.setOnSelectListener{ position,page->
                     for (item in itemTabTypes){
                         item.isCheck=false

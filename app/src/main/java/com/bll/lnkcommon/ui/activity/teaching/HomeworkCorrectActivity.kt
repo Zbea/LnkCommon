@@ -65,7 +65,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IHomeworkCorrectView {
             if (!bitmapBatchSaver.isAccomplished){
                 showToast("手写未保存，请稍后提交")
             }
-            CommonDialog(this).setContent("确定批改以及发送？").builder().setDialogClickListener(object :
+            CommonDialog(this).setContent("确定批改以及发送？").builder().setOnDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

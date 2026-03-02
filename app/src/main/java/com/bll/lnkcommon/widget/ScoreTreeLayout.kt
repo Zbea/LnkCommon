@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.mvp.model.teaching.ResultStandardItem
 import com.bll.lnkcommon.mvp.model.teaching.ScoreItem
+import com.bll.lnkcommon.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.google.android.flexbox.AlignItems
@@ -24,10 +25,11 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 
 class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
-    private val levelPadding= 40//缩放间距
+    private val levelPadding=40//缩放间距
     private var isShowResult=true
     private var childNodeAdapter: ChildNodeAdapter?=null
     private var childResultAdapter: ChildResultStandardAdapter?=null
+    private var maxLevel=0
 
     enum class ClickViewType {
         TV_SCORE, // 点击了分数文本
@@ -64,6 +66,8 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
             createSingleLevelRecyclerView(rootDataList)
         }
         else{
+            assignLevelAndGetMax(rootDataList)
+            Log.d("ScoreTreeLayout", "maxLevel:$maxLevel")
             processScoreItemBottomFlag(rootDataList)
             rootDataList.forEach { rootItem ->
                 val singleTree = ScoreItemView(context)
@@ -136,8 +140,8 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
 
     /**
      * 数据的isBottom赋值逻辑
-     * 1. 计算最大层级（isLevel=true的节点自身算层级，其子节点不计入）
-     * 2. 按分支判定父节点isBottom：只要父节点下有一个子节点是isLevel=true，父节点isBottom=false；否则=true
+     * 1. 计算最大层级（isChildLevel=true的节点自身算层级，其子节点不计入）
+     * 2. 按分支判定父节点isBottom：只要父节点下有一个子节点是isChildLevel=true，父节点isBottom=false；否则=true
      */
     private fun processScoreItemBottomFlag(rootList: MutableList<ScoreItem>) {
         val nodeLevelMap = mutableMapOf<ScoreItem, Int>()
@@ -173,6 +177,33 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     /**
+     * 为ScoreItem列表赋值层级，并返回最大层级数
+     * @param scoreItems 待处理的ScoreItem列表
+     * @return 最大层级数
+     */
+    private fun assignLevelAndGetMax(scoreItems: MutableList<ScoreItem>) {
+        // 递归处理每个ScoreItem
+        fun processItem(item: ScoreItem, currentLevel: Int) {
+            // 为当前元素赋值层级（所有元素都要赋值，包括type==2）
+            item.level = currentLevel
+            // 更新最大层级数
+            if (currentLevel > maxLevel) {
+                maxLevel = currentLevel
+            }
+            // 判断是否处理子元素：仅当type!=2时，才处理子级
+            if (!item.isChildLevel) {
+                // 子级层级+1
+                val nextLevel = currentLevel + 1
+                for (child in item.childScores) {
+                    processItem(child, nextLevel)
+                }
+            }
+        }
+        // 从第一层开始处理所有根元素
+        scoreItems.forEach { processItem(it, 1) }
+    }
+
+    /**
      * 创建单层数据的横向RecyclerView
      */
     private fun createResultRecyclerView(dataList: MutableList<ResultStandardItem.ResultChildItem>) {
@@ -189,8 +220,8 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
      */
     private fun createSingleLevelRecyclerView(dataList: MutableList<ScoreItem>) {
         val params=LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-        params.marginStart=40
-        params.marginEnd=40
+        params.marginStart=20
+        params.marginEnd=20
         val singleLevelRv = RecyclerView(context).apply {
             layoutParams = params
         }
@@ -218,9 +249,17 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
                 if (scoreItem.childScores.isEmpty()) return
 
                 if (scoreItem.isChildLevel) {
+                    //根据层级缩进，以使最后一层对其
+                    val layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                    layoutParams.setMargins(levelPadding*(maxLevel-scoreItem.level)- DP2PX.dip2px(context,22f), 0, 0, 0)
+                    rvListLevel?.layoutParams = layoutParams
                     childNodeAdapter=initHorizontalRecyclerView(rvListLevel!!,scoreItem.childScores) // 横排
                 }
                 else if (scoreItem.isChildBottom){
+                    //根据层级缩进，以使最后一层对其
+                    val layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                    layoutParams.setMargins(levelPadding*(maxLevel-scoreItem.level)+DP2PX.dip2px(context,175f), 0, 0, 0)
+                    rvListBottom?.layoutParams = layoutParams
                     childNodeAdapter=initHorizontalRecyclerView(rvListBottom!!,scoreItem.childScores) // 横排
                 }
                 else {
@@ -293,7 +332,12 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
                 rvListBottom?.visibility=if (scoreItem.isChildBottom) View.VISIBLE else View.GONE
 
                 if (isShowResult){
-                    ivResult?.visibility = if (scoreItem.childScores.isNullOrEmpty()) View.VISIBLE else View.GONE
+                    ivResult?.visibility = if (scoreItem.childScores.isNullOrEmpty()) View.VISIBLE else View.INVISIBLE
+                    if (scoreItem.childScores.isNullOrEmpty()){
+                        val layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+                        layoutParams.setMargins(10+levelPadding*(maxLevel-scoreItem.level), 5, 0, 0)
+                        ivResult?.layoutParams = layoutParams
+                    }
                 }
                 else{
                     ivResult?.visibility=View.GONE
@@ -406,7 +450,7 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
      */
     private fun initSingleRecyclerView(recyclerView: RecyclerView,list:MutableList<ScoreItem>): ChildNodeAdapter {
 
-        recyclerView.layoutManager =GridLayoutManager(context,3)
+        recyclerView.layoutManager =GridLayoutManager(context,4)
 
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
@@ -415,7 +459,7 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         recyclerView.adapter = childNodeAdapter
 
         // 添加Item间距
-        recyclerView.addItemDecoration(SpaceGridItemDeco1(3,40,20))
+        recyclerView.addItemDecoration(SpaceGridItemDeco1(4,15,20))
         return childNodeAdapter
     }
 
@@ -450,6 +494,8 @@ class ScoreTreeLayout @JvmOverloads constructor(context: Context, attrs: Attribu
     inner class ChildNodeAdapter(data: MutableList<ScoreItem>?) : BaseQuickAdapter<ScoreItem, BaseViewHolder>(R.layout.item_topic_score, data) {
         override fun convert(holder: BaseViewHolder, item: ScoreItem) {
             holder.setText(R.id.tv_sort, item.sortStr)
+            val tvSort=holder.getView<TextView>(R.id.tv_sort)
+            tvSort.width= DP2PX.dip2px(context,50f)
             val tvScore=holder.getView<TextView>(R.id.tv_score)
             val ivResult=holder.getView<ImageView>(R.id.iv_result)
 

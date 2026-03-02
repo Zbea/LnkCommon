@@ -88,7 +88,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             setOnItemClickListener { adapter, view, position ->
                 this@CloudBookcaseFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             downloadItem()
                         }
@@ -97,7 +97,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudBookcaseFragment.position=position
                 CommonDialog(requireActivity()).setContent(R.string.tips_is_delete).builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             deleteItem()
                         }

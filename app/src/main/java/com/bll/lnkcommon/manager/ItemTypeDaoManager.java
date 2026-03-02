@@ -4,15 +4,11 @@ import com.bll.lnkcommon.MethodManager;
 import com.bll.lnkcommon.MyApplication;
 import com.bll.lnkcommon.greendao.DaoSession;
 import com.bll.lnkcommon.greendao.ItemTypeBeanDao;
-import com.bll.lnkcommon.mvp.model.Date;
 import com.bll.lnkcommon.mvp.model.ItemTypeBean;
-import com.bll.lnkcommon.mvp.model.User;
-import com.bll.lnkcommon.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ItemTypeDaoManager {
 

@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BasePopupWindow
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -17,88 +18,43 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * 多选弹框
  */
-class PopupMultipleList(val context:Context, val list:MutableList<PopupBean>, val view: View, val width:Int, val yoff:Int) {
+class PopupMultipleList(
+    context: Context,
+    private val list: MutableList<PopupBean>,
+    anchorView: View,
+    layoutWidth: Int = 0,
+    yOffset: Int = 0
+) : BasePopupWindow(context, anchorView, layoutWidth, 0, yOffset) {
 
-    private var mPopupWindow:PopupWindow?=null
-    private var xoff=0
+    constructor(context: Context, list: MutableList<PopupBean>, view: View, yoff: Int) :
+            this(context, list, view, 0, yoff)
 
-    constructor(context: Context, list: MutableList<PopupBean>, view: View, yoff: Int):this(context, list, view, 0,yoff)
+    override fun getLayoutResId(): Int = R.layout.popup_list
 
-    fun builder(): PopupMultipleList?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
-        mPopupWindow = PopupWindow(context).apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // 设置PopupWindow的内容view
-            contentView=popView
-            isFocusable=true // 设置PopupWindow可获得焦点
-            isTouchable=true // 设置PopupWindow可触摸
-            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-            isClippingEnabled = false
-            if (this@PopupMultipleList.width!=0){
-                width=this@PopupMultipleList.width
+
+    override fun initView() {
+        val mAdapter = initRecyclerView(
+            rvId = R.id.rv_list,
+            data = list,
+        ) { layoutId, data ->
+            object : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutId, data) {
+                override fun convert(helper: BaseViewHolder, item: PopupBean) {
+                    helper.setText(R.id.tv_name, item.name)
+                    helper.setVisible(R.id.iv_check, item.isCheck)
+                }
             }
         }
 
-        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
-        rvList.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rvList)
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            list[position].isCheck=!list[position].isCheck
-            mAdapter.notifyDataSetChanged()
+        mAdapter.setOnItemClickListener { _, _, position ->
+            list[position].isCheck = !list[position].isCheck
+            mAdapter.notifyItemChanged(position)
         }
 
-        mPopupWindow?.setOnDismissListener {
-            val checkList= mutableListOf<PopupBean>()
-            for (item in list){
-                if (item.isCheck)
-                    checkList.add(item)
+        setPopupDismissListener {
+            val checkList = list.filter { it.isCheck }.toMutableList()
+            if (checkList.isNotEmpty()) {
+                notifyMultiSelect(checkList)
             }
-            if (checkList.size>0)
-                onSelectListener?.onSelect(checkList)
-        }
-
-        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        xoff = mPopupWindow?.contentView?.measuredWidth!!
-
-        show()
-        return this
-    }
-
-    fun dismiss() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.dismiss()
         }
     }
-
-    fun show() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,if (width!=0)0 else -xoff, yoff,Gravity.RIGHT);
-        }
-    }
-
-   private var onSelectListener: OnSelectListener?=null
-
-    fun setOnSelectListener(onSelectListener: OnSelectListener)
-    {
-        this.onSelectListener=onSelectListener
-    }
-
-    fun interface OnSelectListener{
-        fun onSelect(items: List<PopupBean>)
-    }
-
-
-    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: PopupBean) {
-
-            helper.setText(R.id.tv_name,item.name)
-            helper.setVisible(R.id.iv_check,item.isCheck)
-
-        }
-
-    }
-
 }

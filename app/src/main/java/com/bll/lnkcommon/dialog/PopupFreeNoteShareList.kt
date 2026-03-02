@@ -13,96 +13,102 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.mvp.model.ShareNoteList
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BasePopupWindow
+import com.bll.lnkcommon.dialog.PopupFreeNoteReceiveList.MyAdapter
+import com.bll.lnkcommon.manager.FreeNoteDaoManager
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.DateUtils
+import com.bll.lnkcommon.utils.SToast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import kotlin.math.ceil
 
-class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int) {
+class PopupFreeNoteShareList(context: Context, anchorView: View, val total:Int)
+    : BasePopupWindow(
+    context = context,
+    anchorView = anchorView,
+    layoutWidth = DP2PX.dip2px(context, 280f),
+    xOffset =-DP2PX.dip2px(context, 280f)+anchorView.width,
+    yOffset = 0)
+{
 
     private var lists= mutableListOf<ShareNoteList.ShareNoteBean>()
-    private var mPopupWindow: PopupWindow? = null
     private var mAdapter: MyAdapter?=null
     private var pageSize=6
     private var pageIndex=1
     private var pageCount=1
+
     private var ll_page_number:LinearLayout?=null
     private var tv_page_current:TextView?=null
     private var tv_page_total:TextView?=null
 
-    fun builder(): PopupFreeNoteShareList {
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_freenote_list, null, false)
-        mPopupWindow = PopupWindow(context).apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // 设置PopupWindow的内容view
-            contentView = popView
-            isFocusable = true // 设置PopupWindow可获得焦点
-            isTouchable = true // 设置PopupWindow可触摸
-            isOutsideTouchable = true // 设置非PopupWindow区域可触摸
-            width=DP2PX.dip2px(context,280f)
-        }
+    override fun getLayoutResId(): Int = R.layout.popup_freenote_list
 
-        ll_page_number = popView.findViewById(R.id.ll_page_number)
-        tv_page_current = popView.findViewById(R.id.tv_page_current)
-        tv_page_total = popView.findViewById(R.id.tv_page_total)
+    override fun initView() {
+        initPageViews()
+        initRecyclerView()
+        calculatePageCount()
+    }
 
-        val btn_page_up = popView.findViewById<TextView>(R.id.btn_page_up)
-        val btn_page_down = popView.findViewById<TextView>(R.id.btn_page_down)
+    /**
+     * 初始化分页控件
+     */
+    private fun initPageViews() {
+        ll_page_number = contentView.findViewById(R.id.ll_page_number)
+        tv_page_current = contentView.findViewById(R.id.tv_page_current)
+        tv_page_total = contentView.findViewById(R.id.tv_page_total)
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
+        // 上一页按钮点击
+        contentView.findViewById<TextView>(R.id.btn_page_up).setOnClickListener {
+            if (pageIndex > 1) {
+                pageIndex -= 1
                 onClickListener?.onPage(pageIndex)
+                tv_page_current?.text = pageIndex.toString() // 更新当前页显示
             }
         }
 
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
+        // 下一页按钮点击
+        contentView.findViewById<TextView>(R.id.btn_page_down).setOnClickListener {
+            if (pageIndex < pageCount) {
+                pageIndex += 1
                 onClickListener?.onPage(pageIndex)
+                tv_page_current?.text = pageIndex.toString() // 更新当前页显示
             }
         }
+    }
 
-        val rvList = popView.findViewById<RecyclerView>(R.id.rv_list)
+    /**
+     * 初始化RecyclerView和Adapter
+     */
+    private fun initRecyclerView() {
+        val rvList = contentView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
         mAdapter = MyAdapter(R.layout.item_freenote_share_list, null)
-        rvList.adapter=mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item=lists[position]
             ImageDialog(context,item.paths.split(","),item.bgRes.split(",")).builder()
         }
+    }
 
+    /**
+     * 计算分页总数并更新UI
+     */
+    private fun calculatePageCount() {
         pageCount = ceil(total.toDouble() / pageSize).toInt()
         if (total == 0) {
-            ll_page_number?.visibility=View.GONE
+            ll_page_number?.visibility = View.GONE
         } else {
             tv_page_current?.text = pageIndex.toString()
             tv_page_total?.text = pageCount.toString()
-            ll_page_number?.visibility=View.VISIBLE
+            ll_page_number?.visibility = View.VISIBLE
         }
-
-        show()
-        return this
     }
 
     fun setData(beans:MutableList<ShareNoteList.ShareNoteBean>){
         lists=beans
         mAdapter?.setNewData(lists)
-    }
-
-    fun dismiss() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.dismiss()
-        }
-    }
-
-    fun show() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view, 0, 0, Gravity.RIGHT)
-        }
     }
 
     private var onClickListener: OnClickListener?=null
@@ -117,7 +123,6 @@ class PopupFreeNoteShareList(var context: Context, var view: View, val total:Int
     }
 
     class MyAdapter(layoutResId: Int, data: MutableList<ShareNoteList.ShareNoteBean>?) : BaseQuickAdapter<ShareNoteList.ShareNoteBean, BaseViewHolder>(layoutResId, data) {
-
         override fun convert(helper: BaseViewHolder, item: ShareNoteList.ShareNoteBean) {
             helper.apply {
                 setText(R.id.tv_title,item.title)

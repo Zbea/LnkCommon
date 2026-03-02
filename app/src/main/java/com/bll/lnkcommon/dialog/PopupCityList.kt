@@ -11,118 +11,93 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BasePopupWindow
 import com.bll.lnkcommon.mvp.model.AreaBean
 import com.bll.lnkcommon.mvp.model.PopupBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-/**
- * 单选弹框
- */
-class PopupCityList(val context:Context,val view: View, val width:Int) {
 
-    private var mPopupWindow:PopupWindow?=null
-    private var provinces= mutableListOf<AreaBean>()
-    private var provincePops= mutableListOf<PopupBean>()
-    private var cityPops= mutableListOf<PopupBean>()
+class PopupCityList(
+    context: Context,
+    anchorView: View,
+    width: Int
+) : BasePopupWindow(context, anchorView, width * 2) {
 
-    fun builder(): PopupCityList{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_list_city, null, false)
-        mPopupWindow = PopupWindow(context).apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // 设置PopupWindow的内容view
-            contentView=popView
-            isFocusable=true // 设置PopupWindow可获得焦点
-            isTouchable=true // 设置PopupWindow可触摸
-            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-            width=this@PopupCityList.width*2
-            isClippingEnabled = false
-        }
+    private var provinces = mutableListOf<AreaBean>()
+    private var provincePops = mutableListOf<PopupBean>()
+    private var cityPops = mutableListOf<PopupBean>()
+    private lateinit var provinceAdapter: BaseQuickAdapter<PopupBean, BaseViewHolder>
+    private lateinit var cityAdapter: BaseQuickAdapter<PopupBean, BaseViewHolder>
 
-        provinces = MethodManager.getProvinces(context)
+    override fun getLayoutResId(): Int = R.layout.popup_list_city
 
-        for (i in provinces.indices){
-            provincePops.add(PopupBean(i,provinces[i].value,i==0))
-        }
-        val citys=provinces[0].children
-        for (i in citys.indices){
-            cityPops.add(PopupBean(i,citys[i].value,false))
-        }
+    override fun initView() {
 
-        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        val mAdapter = MAdapter(R.layout.item_popwindow_list, provincePops)
-        rvList.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rvList)
+        initProvinceData()
 
-        val rvListCity=popView.findViewById<RecyclerView>(R.id.rv_list_city)
-        rvListCity.layoutManager = LinearLayoutManager(context)//创建布局管理
-        val mAdapterCity = MAdapter(R.layout.item_popwindow_list, cityPops)
-        rvListCity.adapter = mAdapterCity
-        mAdapterCity.bindToRecyclerView(rvListCity)
-
-
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            for (item in provincePops) {
-                item.isCheck=false
+        provinceAdapter = initRecyclerView(
+            rvId = R.id.rv_list,
+            data = provincePops,
+            adapterBuilder = { layoutResId, data ->
+                createCityAdapter(data)
             }
-            provincePops[position].isCheck=true
-            mAdapter.notifyDataSetChanged()
+        )
+
+        cityAdapter = initRecyclerView(
+            rvId = R.id.rv_list_city,
+            data = cityPops,
+            adapterBuilder = { layoutResId, data ->
+                createCityAdapter(data)
+            }
+        )
+
+        provinceAdapter.setOnItemClickListener { _, _, position ->
+            provincePops.forEach { it.isCheck = false }
+            provincePops[position].isCheck = true
+            provinceAdapter.notifyDataSetChanged()
 
             cityPops.clear()
-            val citys=provinces[position].children
-            for (i in citys.indices){
-                cityPops.add(PopupBean(i,citys[i].value,false))
+            val citys = provinces[position].children
+            citys.forEachIndexed { index, areaBean ->
+                cityPops.add(PopupBean(index, areaBean.value, false))
             }
-            mAdapterCity.setNewData(cityPops)
+            cityAdapter.setNewData(cityPops)
         }
 
-        mAdapterCity.setOnItemClickListener { adapter, view, position ->
-            for (item in cityPops) {
-                item.isCheck=false
+        cityAdapter.setOnItemClickListener { _, _, position ->
+            cityPops.forEach { it.isCheck = false }
+            cityPops[position].isCheck = true
+            cityAdapter.notifyDataSetChanged()
+            notifySelect(cityPops[position])
+        }
+    }
+
+    /**
+     * 初始化省份数据（业务特有逻辑）
+     */
+    private fun initProvinceData() {
+        provinces = MethodManager.getProvinces(context)
+        // 初始化省份列表
+        provinces.forEachIndexed { index, areaBean ->
+            provincePops.add(PopupBean(index, areaBean.value, index == 0))
+        }
+        // 初始化默认城市列表
+        val defaultCitys = provinces[0].children
+        defaultCitys.forEachIndexed { index, areaBean ->
+            cityPops.add(PopupBean(index, areaBean.value, false))
+        }
+    }
+
+    /**
+     * 创建城市/省份通用Adapter
+     */
+    private fun createCityAdapter(data: List<PopupBean>?): BaseQuickAdapter<PopupBean, BaseViewHolder> {
+        return object : BaseQuickAdapter<PopupBean, BaseViewHolder>(R.layout.item_popwindow_list, data) {
+            override fun convert(helper: BaseViewHolder, item: PopupBean) {
+                helper.setText(R.id.tv_name, item.name)
+                helper.setVisible(R.id.iv_check, item.isCheck)
             }
-            cityPops[position].isCheck=true
-            mAdapterCity.notifyDataSetChanged()
-            if (onSelectListener!=null)
-                onSelectListener?.onSelect(cityPops[position])
-            dismiss()
-        }
-
-        show()
-        return this
-    }
-
-    fun dismiss() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.dismiss()
         }
     }
-
-    fun show() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view, 0, 0,Gravity.START)
-        }
-    }
-
-   private var onSelectListener:OnSelectListener?=null
-
-    fun setOnSelectListener(onSelectListener:OnSelectListener)
-    {
-        this.onSelectListener=onSelectListener
-    }
-
-    fun interface OnSelectListener{
-        fun onSelect(item: PopupBean)
-    }
-
-
-    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: PopupBean) {
-            helper.setText(R.id.tv_name,item.name)
-            helper.setVisible(R.id.iv_check,item.isCheck)
-        }
-
-    }
-
 }

@@ -7,79 +7,80 @@ import android.view.View
 import android.widget.TextView
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.mvp.model.AppUpdateBean
 import com.bll.lnkcommon.mvp.model.SystemUpdateInfo
 import com.bll.lnkcommon.utils.AppUtils
 import com.bll.lnkcommon.utils.DP2PX
 import com.bll.lnkcommon.utils.SPUtil
 
+/**
+ * 应用/系统更新弹窗
+ * @param context 上下文
+ * @param type 类型（1=应用更新，其他=系统更新）
+ * @param item 数据（AppUpdateBean/SystemUpdateInfo）
+ */
+class AppUpdateDialog(context: Context, private val type: Int, private val item: Any) : BaseDialog(context) {
 
-class AppUpdateDialog(private val context: Context,private val type:Int,private val item:Any){
+    private var tvUpdate: TextView? = null
+    private var tvInfo: TextView? = null
+    private var onDialogClickListener: OnDialogClickListener? = null
 
-    private var dialog:Dialog?=null
-    private var btn_ok:TextView?=null
-    private var tv_info:TextView?=null
+    override fun getLayoutResId(): Int = R.layout.dialog_update
 
-    fun builder(): AppUpdateDialog {
-        dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_update)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.show()
-
-        btn_ok = dialog?.findViewById(R.id.tv_update)
-        val tvCancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val tv_name = dialog?.findViewById<TextView>(R.id.tv_title)
-        tv_info = dialog?.findViewById(R.id.tv_info)
+    override fun initView(contentView: View) {
+        tvUpdate = contentView.findViewById(R.id.tv_update)
+        val tvCancel = contentView.findViewById<TextView>(R.id.tv_cancel)
+        val tvTitle = contentView.findViewById<TextView>(R.id.tv_title)
+        tvInfo = contentView.findViewById(R.id.tv_info)
 
         tvCancel?.setOnClickListener {
             dismiss()
-            SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS,"waiting")
-            listener?.onDelay()
+            SPUtil.putString(Constants.SP_UPDATE_SYSTEM_STATUS, "waiting")
+            onDialogClickListener?.onDelay()
         }
 
-        if(type==1){
-            val item=item as AppUpdateBean
-            tv_name?.text="应用更新："+item.versionName
-            tv_info?.text=item.versionInfo
-            tvCancel?.visibility= View.GONE
-        }
-        else{
-            val item=item as SystemUpdateInfo
-            tv_name?.text="系统更新："+item.version
-            tv_info?.text=item.description
-            btn_ok?.setOnClickListener {
-                dialog?.dismiss()
-                AppUtils.startAPP(context,Constants.PACKAGE_SYSTEM_UPDATE)
+        when (type) {
+            1 -> {
+                // 应用更新
+                val appUpdateBean = item as AppUpdateBean
+                tvTitle?.text = "应用更新：${appUpdateBean.versionName}"
+                tvInfo?.text = appUpdateBean.versionInfo
+                tvCancel?.visibility = View.GONE // 隐藏取消按钮
+            }
+            else -> {
+                // 系统更新
+                val systemUpdateInfo = item as SystemUpdateInfo
+                tvTitle?.text = "系统更新：${systemUpdateInfo.version}"
+                tvInfo?.text = systemUpdateInfo.description
+                // 确认更新按钮逻辑
+                tvUpdate?.setOnClickListener {
+                    dismiss()
+                    AppUtils.startAPP(context, Constants.PACKAGE_SYSTEM_UPDATE)
+                }
             }
         }
+    }
+
+    fun setUpdateBtn(text: String): AppUpdateDialog {
+        tvUpdate?.text = text
         return this
     }
 
-    fun show() {
-        dialog?.show()
-    }
-
-    fun dismiss() {
-        dialog?.dismiss()
-    }
-
-    fun isShow():Boolean?{
-        return dialog?.isShowing
-    }
-
-    fun setUpdateBtn(string: String){
-        if (btn_ok!=null){
-            btn_ok?.text = string
-        }
-    }
-
-    var listener: OnDialogClickListener? = null
+    fun isShow(): Boolean = dialog?.isShowing ?: false
 
     fun interface OnDialogClickListener {
         fun onDelay()
     }
 
-    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
-        listener = onDialogClickListener
+    fun setOnDialogClickListener(listener: OnDialogClickListener?): AppUpdateDialog {
+        this.onDialogClickListener = listener
+        return this
     }
+
+    override fun builder(): AppUpdateDialog {
+        super.builder()
+        return this
+    }
+
 }

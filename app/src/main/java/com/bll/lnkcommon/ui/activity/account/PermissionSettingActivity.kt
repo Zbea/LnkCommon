@@ -101,9 +101,7 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
 
         st_money.setOnClickListener {
             val titleStr=if (mStudentBean?.isAllowMoney!!) "确定不允许该学生使用青豆？" else "确定允许该学生使用青豆？"
-            CommonDialog(this).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
+            CommonDialog(this).setContent(titleStr).builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun ok() {
                     type=1
                     val map=HashMap<String,Any>()
@@ -111,7 +109,7 @@ class PermissionSettingActivity:BaseActivity(),IPermissionSettingView {
                     map["buyState"]=if (mStudentBean?.isAllowMoney!!) 2 else 1
                     mPresenter.onChangeAllow(map)
                 }
-            }
+            })
         }
 
         st_book.setOnClickListener {

@@ -127,7 +127,7 @@ public class MethodManager {
         else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
             List<String> images=new ArrayList<>();
             images.add(file.getPath());
-            new ImageDialog(context,images).builder();
+            new ImageDialog(context,images,new ArrayList<>()).builder();
         }
         else {
                 String fileName=FileUtils.getUrlName(file.getPath());

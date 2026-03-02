@@ -81,7 +81,7 @@ class DocumentFragment : BaseFragment() {
                             showToast("分类存在内容，无法删除")
                             return@setOnSelectListener
                         }
-                        CommonDialog(requireActivity()).setContent(R.string.tips_is_delete).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        CommonDialog(requireActivity()).setContent(R.string.tips_is_delete).builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 documentTypeNames.removeAt(tabPos)
                                 FileUtils.delete(path)

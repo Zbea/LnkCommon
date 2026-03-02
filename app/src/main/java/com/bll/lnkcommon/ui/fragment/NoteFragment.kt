@@ -136,10 +136,10 @@ class NoteFragment:BaseFragment(){
                 if (privacyPassword.isEmpty()) {
                     gotoNote(note)
                 } else {
-                    NumberPasswordDialog(requireActivity()).builder().apply { setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                    NumberPasswordDialog(requireActivity()).builder().apply { setOnDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
                         override fun onNumber(psw: String) {
                             if (privacyPassword == MD5Utils.digest(psw)){
-                                cancel()
+                                dismiss()
                                 gotoNote(note)
                             }
                             else{
@@ -156,7 +156,7 @@ class NoteFragment:BaseFragment(){
             val note=notes[position]
             when(view.id){
                 R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定删除${note.title}？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    CommonDialog(requireActivity()).setContent("确定删除${note.title}？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 deleteNote()
                             }
@@ -182,7 +182,7 @@ class NoteFragment:BaseFragment(){
                         showToast("${note.title}暂无内容，无需上传")
                         return@setOnItemChildClickListener
                     }
-                    CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    CommonDialog(requireActivity()).setContent("上传${note.title}到云书库？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             mQiniuPresenter.getToken()
                         }

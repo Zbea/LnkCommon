@@ -60,7 +60,7 @@ class CloudNoteFragment: BaseCloudFragment() {
             setOnItemClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
                         override fun ok() {
@@ -72,7 +72,7 @@ class CloudNoteFragment: BaseCloudFragment() {
                 this@CloudNoteFragment.position=position
                 if (view.id==R.id.iv_delete){
                     CommonDialog(requireActivity()).setContent("确定删除？").builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
                             override fun ok() {

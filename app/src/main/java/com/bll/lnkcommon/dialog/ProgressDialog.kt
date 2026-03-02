@@ -1,51 +1,37 @@
-package com.bll.lnkcommon.dialog;
+package com.bll.lnkcommon.dialog
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.app.Activity
+import android.content.Context
+import android.view.View
+import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 
-import com.bll.lnkcommon.Constants;
-import com.bll.lnkcommon.R;
-import com.bll.lnkcommon.utils.DP2PX;
+class ProgressDialog(context: Context) : BaseDialog(context) {
 
+    override fun getLayoutResId(): Int = R.layout.dialog_progress
 
-public class ProgressDialog {
-
-
-    private Context context;
-    private Dialog mDialog;
-
-    public ProgressDialog(Context context) {
-        this.context = context;
-        createDialog();
+    override fun initView(contentView: View) {
     }
 
-    public void createDialog() {
-        mDialog = new Dialog(context);
-        mDialog.setContentView(R.layout.dialog_progress);
-        mDialog.setCanceledOnTouchOutside(true);
-        Window window = mDialog.getWindow();
-        //要加上设置背景，否则dialog宽高设置无作用
-        window.setBackgroundDrawableResource(android.R.color.transparent);
-    }
-
-    public void show() {
-        Activity activity= (Activity) context;
-        if (activity!=null && !activity.isFinishing() && !activity.isDestroyed() &&
-                mDialog != null && !mDialog.isShowing()) {
-            mDialog.show();
+    // 重写show方法，增加Activity状态检查
+    override fun show() {
+        val activity = context as? Activity
+        if (activity != null && !activity.isFinishing && !activity.isDestroyed) {
+            super.show()
         }
     }
 
-    public void dismiss() {
-        Activity activity= (Activity) context;
-        if (activity!=null && !activity.isFinishing() && !activity.isDestroyed() &&
-                mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+    // 重写dismiss方法，增加Activity状态检查
+    override fun dismiss() {
+        val activity = context as? Activity
+        if (activity != null && !activity.isFinishing && !activity.isDestroyed) {
+            super.dismiss()
         }
+    }
+
+    override fun builder(): ProgressDialog {
+        super.builder()
+        return this
     }
 
 }

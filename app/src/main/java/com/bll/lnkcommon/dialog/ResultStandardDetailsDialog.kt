@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.DataBeanManager.getResultStandardStr
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.mvp.model.teaching.ResultStandardItem
 import com.bll.lnkcommon.ui.adapter.teaching.HomeworkResultRecordAdapter
 import com.bll.lnkcommon.ui.adapter.teaching.HomeworkResultStandardAdapter
@@ -21,26 +21,25 @@ import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class ResultStandardDetailsDialog(val context: Context, private val title:String, private val score:Double,private val questionType:Int,private val question:String,private val items:MutableList<ResultStandardItem>) {
+class ResultStandardDetailsDialog(context: Context, private val title:String, private val score:Double,private val questionType:Int,private val question:String,private val items:MutableList<ResultStandardItem>)
+    :BaseDialog(context) {
 
     constructor(context: Context,title: String,score: Double,question: String):this(context, title, score, 11, question, mutableListOf<ResultStandardItem>())
 
-    fun builder(): ResultStandardDetailsDialog {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.common_correct_result_standard)
-        dialog.show()
+    override fun getLayoutResId(): Int = R.layout.common_correct_result_standard
 
-        val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
+    override fun initView(contentView: View) {
+        val ivClose=contentView.findViewById<ImageView>(R.id.iv_close)
         ivClose.setOnClickListener {
-            dialog.dismiss()
+            dismiss()
         }
 
-        val tvTitle=dialog.findViewById<TextView>(R.id.tv_title)
+        val tvTitle=contentView.findViewById<TextView>(R.id.tv_title)
         tvTitle.text=title
 
-        val tvScore=dialog.findViewById<TextView>(R.id.tv_score)
-        val ratingBar=dialog.findViewById<RatingBar>(R.id.ratingBar)
-        val recyclerview = dialog.findViewById<RecyclerView>(R.id.rv_list)
+        val tvScore=contentView.findViewById<TextView>(R.id.tv_score)
+        val ratingBar=contentView.findViewById<RatingBar>(R.id.ratingBar)
+        val recyclerview = contentView.findViewById<RecyclerView>(R.id.rv_list)
 
         when(questionType){
             10->{
@@ -99,8 +98,5 @@ class ResultStandardDetailsDialog(val context: Context, private val title:String
                 tvScore.text= getResultStandardStr(score,questionType)
             }
         }
-
-        return this
     }
-
 }

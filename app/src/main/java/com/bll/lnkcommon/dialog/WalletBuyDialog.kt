@@ -1,102 +1,94 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
-import android.widget.Button
+import android.view.View
 import android.widget.RadioButton
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.mvp.model.AccountQdBean
 import com.bll.lnkcommon.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class WalletBuyDialog(val context: Context, val list: List<AccountQdBean>) {
+class WalletBuyDialog(
+    context: Context,
+    private val list: List<AccountQdBean>
+) : BaseDialog(context) {
 
-    private var dialog:Dialog?=null
-    private var id=0
+    private var id = 0
 
-    fun builder(): WalletBuyDialog {
-        dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_account_xd)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.show()
+    override fun getLayoutResId(): Int = R.layout.dialog_account_xd
 
-        val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
-        val btn_ok = dialog!!.findViewById<TextView>(R.id.tv_ok)
-        val btn_cancel = dialog!!.findViewById<TextView>(R.id.tv_cancel)
-        val rb_wx = dialog!!.findViewById<RadioButton>(R.id.rb_wx)
+    override fun initView(contentView: View) {
+        // 初始化控件
+        val recyclerView = contentView.findViewById<RecyclerView>(R.id.rv_list)
+        val rbWx = contentView.findViewById<RadioButton>(R.id.rb_wx)
 
-        recyclerview.layoutManager = GridLayoutManager(context,4)//创建布局管理
+        // 初始化列表
+        recyclerView.layoutManager = GridLayoutManager(context, 4)
         val mAdapter = AccountXdAdapter(R.layout.item_account_smoney, list)
-        recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceGridItemDeco(4,40))
-        mAdapter.setOnItemClickListener { adapter, view, position ->
+        recyclerView.adapter = mAdapter
+        recyclerView.addItemDecoration(SpaceGridItemDeco(4, 40))
+
+        // 列表项点击事件
+        mAdapter.setOnItemClickListener { _, _, position ->
             mAdapter.setItemView(position)
-            id= list[position].id
+            id = list[position].id
         }
 
-        btn_cancel.setOnClickListener {
+        // 取消按钮
+        btnCancel?.setOnClickListener { dismiss() }
+
+        // 确认按钮
+        btnOk?.setOnClickListener {
             dismiss()
+            val payType = if (rbWx.isChecked) 2 else 1
+            listener?.onClick(payType, id.toString())
         }
 
-        btn_ok.setOnClickListener {
-            dismiss()
-            val payType=if (rb_wx.isChecked)  2  else  1
-            if (listener!=null)
-                listener?.onClick(payType,id.toString())
-        }
-
+        // 默认选中第一个项
         if (list.isNotEmpty()) {
             id = list[0].id
         }
-        return this
     }
 
-    fun dismiss(){
-        if(dialog!=null)
-            dialog?.dismiss()
-    }
-
-    fun show(){
-        if(dialog!=null)
-            dialog?.show()
-    }
-
+    // 点击监听
     private var listener: OnDialogClickListener? = null
-
     fun interface OnDialogClickListener {
-        fun onClick(payType:Int,id:String)
+        fun onClick(payType: Int, id: String)
     }
-
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
     }
 
+    override fun builder(): WalletBuyDialog {
+        super.builder()
+        return this
+    }
+
+    // 账户选择适配器
     class AccountXdAdapter(layoutResId: Int, data: List<AccountQdBean>?) : BaseQuickAdapter<AccountQdBean, BaseViewHolder>(layoutResId, data) {
 
         var mPosition = 0
 
         override fun convert(helper: BaseViewHolder, item: AccountQdBean) {
-            helper.setText(R.id.tv_name,item.amount.toString())
-            if (helper.adapterPosition==mPosition){
-                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_solid_5dp_corner)
-                helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.white) )
-            }
-            else{
-                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_gray_stroke_5dp_corner)
-                helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
+            helper.setText(R.id.tv_name, item.amount.toString())
+
+            // 选中状态样式
+            if (helper.adapterPosition == mPosition) {
+                helper.setBackgroundRes(R.id.tv_name, R.drawable.bg_black_solid_5dp_corner)
+                helper.setTextColor(R.id.tv_name, mContext.resources.getColor(R.color.white))
+            } else {
+                helper.setBackgroundRes(R.id.tv_name, R.drawable.bg_gray_stroke_5dp_corner)
+                helper.setTextColor(R.id.tv_name, mContext.resources.getColor(R.color.black))
             }
         }
 
         fun setItemView(position: Int) {
-            mPosition=position
+            mPosition = position
             notifyDataSetChanged()
         }
-
     }
-
-
 }

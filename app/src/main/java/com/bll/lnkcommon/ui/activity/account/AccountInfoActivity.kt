@@ -128,7 +128,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
             val privacyPassword=SPUtil.getString(Constants.SP_PRIVACY_PASSWORD)
             if (privacyPassword.isEmpty()){
                 NumberPasswordDialog(this@AccountInfoActivity).builder().apply {
-                    setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                    setOnDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
                         override fun onNumber(psw: String) {
                             if (firstPsw.isEmpty()){
                                 firstPsw=psw
@@ -155,7 +155,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
             }
             else{
                 NumberPasswordDialog(this@AccountInfoActivity).builder().apply {
-                    setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+                    setOnDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
                         override fun onNumber(psw: String) {
                             if (privacyPassword == MD5Utils.digest(psw)){
                                 currentPsw=""
@@ -173,10 +173,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
         }
 
         btn_logout.setOnClickListener {
-            CommonDialog(this).setContent("退出登录？").builder().setDialogClickListener(object :
+            CommonDialog(this).setContent("退出登录？").builder().setOnDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
                 override fun ok() {
                     mUser=null
                     MethodManager.logout(this@AccountInfoActivity)
@@ -264,10 +262,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISmsVie
      * 取消关联
      */
     private fun cancel(){
-        CommonDialog(this).setContent( "取消学生关联?").builder().setDialogClickListener(object :
+        CommonDialog(this).setContent( "取消学生关联?").builder().setOnDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
             override fun ok() {
                 presenter.unbindStudent(students[position].accountId)
             }

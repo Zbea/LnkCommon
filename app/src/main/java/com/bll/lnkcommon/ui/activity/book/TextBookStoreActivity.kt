@@ -124,7 +124,8 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
         tv_province.setOnClickListener {
             if (cityPopWindow==null){
-                cityPopWindow=PopupCityList(this,tv_province,tv_province.width).builder()
+                cityPopWindow=PopupCityList(this,tv_province,tv_province.width)
+                cityPopWindow?.builder()
                 cityPopWindow?.setOnSelectListener { item ->
                     provinceStr = item.name
                     tv_province.text = item.name

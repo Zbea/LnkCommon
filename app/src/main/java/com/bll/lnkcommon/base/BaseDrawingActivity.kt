@@ -493,7 +493,7 @@ abstract class BaseDrawingActivity : BaseActivity() {
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this).builder().setDialogClickListener{
+        AppToolDialog(this).builder().setOnDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

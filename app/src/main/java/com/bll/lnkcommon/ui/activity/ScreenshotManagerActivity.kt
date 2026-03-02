@@ -94,9 +94,7 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView{
                             showToast("分类存在内容，无法删除")
                             return@setOnItemChildClickListener
                         }
-                        CommonDialog(this@ScreenshotManagerActivity).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
+                        CommonDialog(this@ScreenshotManagerActivity).setContent("确定删除？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 FileUtils.deleteFile(File(item.path))
                                 ItemTypeDaoManager.getInstance().deleteBean(item)
@@ -116,9 +114,7 @@ class ScreenshotManagerActivity : BaseActivity(), ICloudUploadView{
                         notifyDataSetChanged()
                     }
                     R.id.iv_upload->{
-                        CommonDialog(this@ScreenshotManagerActivity).setContent("确定上传？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
+                        CommonDialog(this@ScreenshotManagerActivity).setContent("确定上传？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 if (NetworkUtil.isNetworkConnected()){
                                     mQiniuPresenter.getToken()

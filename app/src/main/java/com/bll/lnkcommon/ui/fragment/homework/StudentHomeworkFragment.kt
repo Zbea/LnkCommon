@@ -100,7 +100,7 @@ class StudentHomeworkFragment : BaseFragment(),IHomeworkView {
             val item=homeworks[position]
             when(view.id){
                 R.id.iv_delete->{
-                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setOnDialogClickListener(
                         object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 val map=HashMap<String,Any>()

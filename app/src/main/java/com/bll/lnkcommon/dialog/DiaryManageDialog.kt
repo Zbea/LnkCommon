@@ -1,82 +1,88 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.utils.DateUtils
 import com.bll.lnkcommon.utils.KeyboardUtils
 
-class DiaryManageDialog(val context: Context,val type:Int) {
-    var startLong=0L
-    var endLong=0L
+/**
+ * 日记管理弹窗（上传/删除）
+ * @param context 上下文
+ * @param type 类型（1=上传日记，其他=删除日记）
+ */
+class DiaryManageDialog(context: Context, private val type: Int) : BaseDialog(context) {
 
-    fun builder(): DiaryManageDialog {
+    var startLong = 0L
+    var endLong = 0L
 
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_diary_upload)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+    private var onDialogClickListener: OnDialogClickListener? = null
 
-        val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.text=if (type==1) "上传日记" else "删除日记"
-        val et_name = dialog.findViewById<EditText>(R.id.et_name)
-        et_name.visibility=if (type==1) View.VISIBLE else View.GONE
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
-        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        val tv_start_date = dialog.findViewById<TextView>(R.id.tv_start_date)
-        val tv_end_date = dialog.findViewById<TextView>(R.id.tv_end_date)
+    override fun getLayoutResId(): Int = R.layout.dialog_diary_upload
 
-        tv_start_date.setOnClickListener {
-            CalendarSingleDialog(context,310f,480f).builder().setOnDateListener{
-                startLong=it
-                tv_start_date.text= DateUtils.longToStringDataNoYear(startLong)
-            }
+    override fun initView(contentView: View) {
+
+        val tvTitle = contentView.findViewById<TextView>(R.id.tv_title)
+        val etName = contentView.findViewById<EditText>(R.id.et_name)
+        val tvStartDate = contentView.findViewById<TextView>(R.id.tv_start_date)
+        val tvEndDate = contentView.findViewById<TextView>(R.id.tv_end_date)
+
+        tvTitle.text = if (type == 1) "上传日记" else "删除日记"
+
+        etName?.visibility = if (type == 1) View.VISIBLE else View.GONE
+
+        tvStartDate?.setOnClickListener {
+            CalendarSingleDialog(context, 310f, 480f).builder().setOnDateListener { time ->
+                    startLong = time
+                    tvStartDate.text = DateUtils.longToStringDataNoYear(startLong)
+                }
         }
 
-        tv_end_date.setOnClickListener {
-            CalendarSingleDialog(context,310f,480f).builder().setOnDateListener{
-                endLong=it
-                tv_end_date.text= DateUtils.longToStringDataNoYear(endLong)
-            }
+        tvEndDate?.setOnClickListener {
+            CalendarSingleDialog(context, 310f, 480f).builder().setOnDateListener { time ->
+                    endLong = time
+                    tvEndDate.text = DateUtils.longToStringDataNoYear(endLong)
+                }
         }
 
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
+        btnCancel?.setOnClickListener {
+            dismiss()
         }
-        btn_ok.setOnClickListener {
-            var titleStr=""
-            if (type==1){
-                titleStr=et_name.text.toString()
-                if (titleStr.isEmpty()){
+        btnOk?.setOnClickListener {
+            var titleStr = ""
+            // 上传模式：校验标题非空
+            if (type == 1) {
+                titleStr = etName?.text.toString().trim()
+                if (titleStr.isEmpty()) {
                     return@setOnClickListener
                 }
             }
-            if (startLong>0&&endLong>0&&startLong<endLong){
-                dialog.dismiss()
-                listener?.onClick(titleStr,startLong, endLong)
+            // 校验日期范围（开始<结束）
+            if (startLong > 0 && endLong > 0 && startLong < endLong) {
+                dismiss()
+                onDialogClickListener?.onClick(titleStr, startLong, endLong)
             }
         }
 
-        dialog.setOnDismissListener {
+        dialog?.setOnDismissListener {
             KeyboardUtils.hideSoftKeyboard(context)
         }
+    }
+
+    fun interface OnDialogClickListener {
+        fun onClick(name: String, startLong: Long, endLong: Long)
+    }
+
+    fun setOnDialogClickListener(listener: OnDialogClickListener): DiaryManageDialog {
+        this.onDialogClickListener = listener
         return this
     }
 
-    private var listener: OnDialogClickListener? = null
-
-    fun interface OnDialogClickListener {
-        fun onClick(name: String,startLong:Long,endLong: Long)
+    override fun builder(): DiaryManageDialog {
+        super.builder() // 调用基类构建逻辑（创建Dialog、透明背景等）
+        return this
     }
-
-    fun setOnDialogClickListener(listener: OnDialogClickListener) {
-        this.listener = listener
-    }
-
 }

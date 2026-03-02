@@ -1,6 +1,5 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
@@ -9,83 +8,96 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.utils.ScoreItemUtils
 import com.bll.lnkcommon.widget.ScoreTreeLayout
 
-class ScoreDetailsDialog(val context: Context, private val title:String, private val score:Double,
-                         private val correctMode:Int,private val scoreMode:Int,private val answerImages:MutableList<String>,
-                         private val commitJson:String) {
+class ScoreDetailsDialog(
+    context: Context,
+    private val title: String,
+    private val score: Double,
+    private val correctMode: Int,
+    private val scoreMode: Int,
+    private val answerImages: MutableList<String>,
+    private val commitJson: String
+) : BaseDialog(context) {
 
-    private var isExpend=false
+    private var isExpend = false
 
-    fun builder(): ScoreDetailsDialog {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.common_correct_score)
-        dialog.show()
+    // 布局ID
+    override fun getLayoutResId(): Int = R.layout.common_correct_score
 
-        val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
-        ivClose.setOnClickListener {
-            dialog.dismiss()
-        }
-        val iv_score_up=dialog.findViewById<ImageView>(R.id.iv_score_up)
-        val iv_score_down=dialog.findViewById<ImageView>(R.id.iv_score_down)
+    // 初始化视图和业务逻辑
+    override fun initView(contentView: View) {
+        // 关闭按钮
+        val ivClose = contentView.findViewById<ImageView>(R.id.iv_close)
+        ivClose.setOnClickListener { dismiss() }
 
-        val rl_score_content=dialog.findViewById<RelativeLayout>(R.id.rl_score_content)
-        val iv_expand_arrow=dialog.findViewById<ImageView>(R.id.iv_expand_arrow)
-        if (correctMode<=0)
-            iv_expand_arrow.visibility=View.GONE
-        iv_expand_arrow.setOnClickListener {
+        // 滚动控制按钮
+        val ivScoreUp = contentView.findViewById<ImageView>(R.id.iv_score_up)
+        val ivScoreDown = contentView.findViewById<ImageView>(R.id.iv_score_down)
+
+        // 展开/收起相关
+        val rlScoreContent = contentView.findViewById<RelativeLayout>(R.id.rl_score_content)
+        val ivExpandArrow = contentView.findViewById<ImageView>(R.id.iv_expand_arrow)
+
+        // 标题和评分
+        val tvTitle = contentView.findViewById<TextView>(R.id.tv_title)
+        val tvScore = contentView.findViewById<TextView>(R.id.tv_score)
+        val tvAnswer = contentView.findViewById<TextView>(R.id.tv_answer)
+
+        // 滚动视图和评分布局
+        val svScore = contentView.findViewById<ScrollView>(R.id.sv_score)
+        val slScore = contentView.findViewById<ScoreTreeLayout>(R.id.sl_score)
+
+        // 设置标题
+        tvTitle.text = title
+
+        // 展开/收起箭头控制
+        ivExpandArrow.visibility = if (correctMode <= 0) View.GONE else View.VISIBLE
+        ivExpandArrow.setOnClickListener {
             isExpend = !isExpend
-            val layoutParams = rl_score_content.layoutParams
-            if (isExpend) {
-                iv_expand_arrow.setImageResource(R.mipmap.icon_topic_arrow_shrink)
-                layoutParams.height = DP2PX.dip2px(context, 1000f)
+            val layoutParams = rlScoreContent.layoutParams
+            layoutParams.height = if (isExpend) {
+                ivExpandArrow.setImageResource(R.mipmap.icon_topic_arrow_shrink)
+                dp2px(1000f)
             } else {
-                iv_expand_arrow.setImageResource(R.mipmap.icon_topic_arrow_expend)
-                layoutParams.height = DP2PX.dip2px(context, 500f)
+                ivExpandArrow.setImageResource(R.mipmap.icon_topic_arrow_expend)
+                dp2px(500f)
             }
-            rl_score_content.layoutParams = layoutParams
+            rlScoreContent.layoutParams = layoutParams
         }
 
-        val tvTitle=dialog.findViewById<TextView>(R.id.tv_title)
-        tvTitle.text=title
+        // 设置评分文本
+        tvScore.text = DataBeanManager.getScoreStandardStr(score, correctMode)
 
-        val tvScore=dialog.findViewById<TextView>(R.id.tv_score)
-        tvScore.text= DataBeanManager.getScoreStandardStr(score,correctMode)
-
-        val tvAnswer=dialog.findViewById<TextView>(R.id.tv_answer)
-        tvAnswer.visibility=if (answerImages.isEmpty()) View.GONE else View.VISIBLE
+        // 答题图片显示控制
+        tvAnswer.visibility = if (answerImages.isEmpty()) View.GONE else View.VISIBLE
         tvAnswer.setOnClickListener {
             ImageDialog(context, answerImages).builder()
         }
-        val sv_score = dialog.findViewById<ScrollView>(R.id.sv_score)
-        val sl_score = dialog.findViewById<ScoreTreeLayout>(R.id.sl_score)
 
-
-        if (correctMode >0) {
-            val currentScores = ScoreItemUtils.questionToList(commitJson,correctMode)
-            sl_score.bindData(currentScores,false)
-        }
-        else{
-            val currentResults=ArrayList(DataBeanManager.getResultChildItems())
-            for (item in currentResults){
-                if (item.sort==score.toInt()){
-                    item.isCheck=true
+        // 绑定评分数据
+        if (correctMode > 0) {
+            val currentScores = ScoreItemUtils.questionToList(commitJson, correctMode)
+            slScore.bindData(currentScores, false)
+        } else {
+            val currentResults = ArrayList(DataBeanManager.getResultChildItems())
+            currentResults.forEach { item ->
+                if (item.sort == score.toInt()) {
+                    item.isCheck = true
                 }
             }
-            sl_score.bindData(currentResults)
+            slScore.bindData(currentResults)
         }
 
-
-        iv_score_up.setOnClickListener {
-            sv_score.scrollBy(0,-DP2PX.dip2px(context,300f))
+        // 滚动控制
+        ivScoreUp.setOnClickListener {
+            svScore.scrollBy(0, -dp2px(300f))
         }
 
-        iv_score_down.setOnClickListener {
-            sv_score.scrollBy(0, DP2PX.dip2px(context,300f))
+        ivScoreDown.setOnClickListener {
+            svScore.scrollBy(0, dp2px(300f))
         }
-
-        return this
     }
 }

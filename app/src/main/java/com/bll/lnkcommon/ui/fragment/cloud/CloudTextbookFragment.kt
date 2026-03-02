@@ -76,7 +76,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
             setOnItemClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             downloadItem()
                         }
@@ -85,7 +85,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定删除？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             deleteItem()
                         }

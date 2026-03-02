@@ -90,7 +90,7 @@ class CalenderMyActivity:BaseActivity(){
     }
 
     private fun delete(pos:Int){
-        CommonDialog(this).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+        CommonDialog(this).setContent("确定删除？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
             override fun ok() {
                 val item=items[pos]
                 FileUtils.deleteFile(File(item.path))

@@ -105,7 +105,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
                     else{
                         if (AppUtils.isAvailable(requireActivity(),app.packageName)){
                             showToast("已安装")
-                            CommonDialog(requireActivity()).setContent("确定重新下载安装？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            CommonDialog(requireActivity()).setContent("确定重新下载安装？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                                 override fun ok() {
                                     downLoadStart(app)
                                 }

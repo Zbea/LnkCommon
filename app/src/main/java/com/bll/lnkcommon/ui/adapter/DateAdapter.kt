@@ -1,7 +1,6 @@
 package com.bll.lnkcommon.ui.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
 import android.view.View
@@ -11,18 +10,17 @@ import android.widget.TextView
 import com.bll.lnkcommon.FileAddress
 import com.bll.lnkcommon.MethodManager
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.mvp.model.Date
+import com.bll.lnkcommon.mvp.model.DateBean
 import com.bll.lnkcommon.utils.DateUtils
-import com.bll.lnkcommon.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
 
-class DateAdapter(layoutResId: Int, data: List<Date>?) :
-    BaseQuickAdapter<Date, BaseViewHolder>(layoutResId, data) {
+class DateAdapter(layoutResId: Int, data: List<DateBean>?) :
+    BaseQuickAdapter<DateBean, BaseViewHolder>(layoutResId, data) {
 
     @SuppressLint("WrongConstant")
-    override fun convert(helper: BaseViewHolder, item: Date) {
+    override fun convert(helper: BaseViewHolder, item: DateBean) {
         val tvDay = helper.getView<TextView>(R.id.tv_day)
         val tvLunar=helper.getView<TextView>(R.id.tv_lunar)
         val ivImage=helper.getView<ImageView>(R.id.iv_image)

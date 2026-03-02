@@ -1,63 +1,62 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.widget.NumberPasswordView
 
-class NumberPasswordDialog(val context: Context) {
+class NumberPasswordDialog(context: Context) : BaseDialog(context) {
 
-    private var dialog: Dialog? = null
-    private var tv_title:TextView?=null
-    private var nv_view:NumberPasswordView?=null
+    private var tvTitle: TextView? = null
+    private var nvView: NumberPasswordView? = null
 
-    fun builder(): NumberPasswordDialog {
-        dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_number_password)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.show()
+    override fun getLayoutResId(): Int = R.layout.dialog_number_password
 
-        val ivClose=dialog?.findViewById<ImageView>(R.id.iv_close)
-        ivClose?.setOnClickListener { dialog?.dismiss() }
-        tv_title = dialog?.findViewById(R.id.tv_title)
-        nv_view=dialog?.findViewById(R.id.nv_view)
-        nv_view?.onPwdComplete={ psd->
+    override fun initView(contentView: View) {
+        // 关闭按钮
+        val ivClose = contentView.findViewById<ImageView>(R.id.iv_close)
+        ivClose?.setOnClickListener { dismiss() }
+
+        // 标题和密码输入控件
+        tvTitle = contentView.findViewById(R.id.tv_title)
+        nvView = contentView.findViewById(R.id.nv_view)
+
+        // 密码完成监听
+        nvView?.onPwdComplete = { psd ->
             onDialogClickListener?.onNumber(psd)
         }
 
+        // 弹窗关闭监听
         dialog?.setOnDismissListener {
             onDialogClickListener?.onDismiss()
         }
+    }
 
+    // 自定义方法
+    fun reset() {
+        nvView?.reset()
+    }
+
+    fun setTitle(str: String) {
+        tvTitle?.text = str
+    }
+
+    // 点击监听
+    private var onDialogClickListener: OnDialogClickListener? = null
+    interface OnDialogClickListener {
+        fun onNumber(psw: String)
+        fun onDismiss() {}
+    }
+    fun setOnDialogClickListener(onDialogClickListener: OnDialogClickListener) {
+        this.onDialogClickListener = onDialogClickListener
+    }
+
+    override fun builder(): NumberPasswordDialog {
+        super.builder()
         return this
     }
 
-    fun show() {
-        dialog?.show()
-    }
-
-    fun cancel() {
-        dialog?.dismiss()
-    }
-
-    fun reset(){
-        nv_view?.reset()
-    }
-
-    fun setTitle(str:String){
-        tv_title?.text=str
-    }
-
-    private var onDialogClickListener: OnDialogClickListener? = null
-
-    interface OnDialogClickListener {
-        fun onNumber(psw:String)
-        fun onDismiss(){}
-    }
-
-    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener) {
-        this.onDialogClickListener = onDialogClickListener
-    }
 }

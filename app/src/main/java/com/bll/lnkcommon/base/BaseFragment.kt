@@ -140,7 +140,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
         mDownloadManager=DownloadManager()
         initCommonTitle()
         initView()
-        mDialog = ProgressDialog(activity)
+        mDialog = ProgressDialog(requireActivity()).builder()
         lazyLoadDataIfPrepared()
     }
 
@@ -379,7 +379,7 @@ abstract class BaseFragment : Fragment(), IBaseView, IContractView.ICommonView,I
                     if (isActivityLife() && !DataBeanManager.isSystemUpdateShow && code == 200 && jsonObject != null) {
                         val item = Gson().fromJson(jsonObject.toString(), SystemUpdateInfo::class.java)
                         if (SPUtil.getString(Constants.SP_UPDATE_SYSTEM_STATUS) != "waiting") {
-                            AppUpdateDialog(requireActivity(),2,item).builder().setDialogClickListener{
+                            AppUpdateDialog(requireActivity(),2,item).builder().setOnDialogClickListener{
                                 object : CountDownTimer(60*60*1000, 1000) {
                                     override fun onTick(millisUntilFinished: Long) {
                                     }

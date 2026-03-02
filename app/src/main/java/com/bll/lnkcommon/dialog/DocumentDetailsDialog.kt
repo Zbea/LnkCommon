@@ -2,6 +2,7 @@ package com.bll.lnkcommon.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,86 +17,96 @@ import com.bll.lnkcommon.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
+import com.bll.lnkcommon.base.BaseDialog
 
-class DocumentDetailsDialog(val context: Context) {
+/**
+ * 文档明细弹窗：继承BaseDialog
+ * @param context 上下文
+ */
+class DocumentDetailsDialog(context: Context) : BaseDialog(context) {
 
-    fun builder(): DocumentDetailsDialog {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_bookcase_list)
-        val window= dialog.window!!
-        window.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+    override fun getLayoutResId(): Int = R.layout.dialog_bookcase_list
 
-        var total=0
-        val items= mutableListOf<ItemDetailsBean>()
+    override fun initView(contentView: View) {
 
+        val tvTitle = contentView.findViewById<TextView>(R.id.tv_title)
+        val tvTotal = contentView.findViewById<TextView>(R.id.tv_total)
+        val rvList = contentView.findViewById<MaxRecyclerView>(R.id.rv_list)
+
+        tvTitle.text = "文档明细"
+
+        var total = 0
+        val items = mutableListOf<ItemDetailsBean>()
         val path = FileAddress().getPathDocument("默认")
-        val documentTypeNames=FileUtils.getDirectorys(File(path).parent)
+        val documentTypeNames = FileUtils.getDirectorys(File(path).parent)
 
-        for (name in documentTypeNames){
-            val files= FileUtils.getDescFiles(FileAddress().getPathDocument(name))
-            if (files.isNotEmpty()){
+        documentTypeNames.forEach { name ->
+            val files = FileUtils.getDescFiles(FileAddress().getPathDocument(name))
+            if (files.isNotEmpty()) {
                 items.add(ItemDetailsBean().apply {
-                    typeStr=name
-                    num=files.size
-                    this.files=files
+                    typeStr = name
+                    num = files.size
+                    this.files = files
                 })
-                total+=files.size
+                total += files.size
             }
         }
 
-        val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.setText("文档明细")
+        tvTotal.text = "总计：${total}"
 
-        val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
-        tv_total.text="总计：${total}"
-
-        val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
-        rv_list?.layoutManager = LinearLayoutManager(context)
+        rvList.layoutManager = LinearLayoutManager(context)
         val mAdapter = ScreenshotDetailsAdapter(R.layout.item_details_list, items)
-        rv_list?.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceItemDeco(30))
-        mAdapter.setOnChildClickListener{ parentPos,pos->
-            dialog.dismiss()
+        rvList.adapter = mAdapter
+        mAdapter.bindToRecyclerView(rvList)
+        rvList.addItemDecoration(SpaceItemDeco(30))
+
+        mAdapter.setOnChildClickListener { parentPos, pos ->
+            dismiss()
             MethodManager.gotoDocument(context, items[parentPos].files[pos])
         }
+    }
 
+    override fun builder(): DocumentDetailsDialog {
+        super.builder()
         return this
     }
 
-
-    class ScreenshotDetailsAdapter(layoutResId: Int, data: List<ItemDetailsBean>?) : BaseQuickAdapter<ItemDetailsBean, BaseViewHolder>(layoutResId, data) {
+    class ScreenshotDetailsAdapter(layoutResId: Int, data: List<ItemDetailsBean>?) :
+        BaseQuickAdapter<ItemDetailsBean, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: ItemDetailsBean) {
-            helper.setText(R.id.tv_book_type,item.typeStr)
-            helper.setText(R.id.tv_book_num,"( ${item.num}) ")
+            helper.setText(R.id.tv_book_type, item.typeStr)
+            helper.setText(R.id.tv_book_num, "( ${item.num}) ")
 
             val recyclerView = helper.getView<RecyclerView>(R.id.rv_list)
-            recyclerView?.layoutManager = FlowLayoutManager()
-            val mAdapter = ChildAdapter(R.layout.item_details_list_name,item.files)
-            recyclerView?.adapter = mAdapter
-            mAdapter.setOnItemClickListener { adapter, view, position ->
-                listener?.onClick(helper.adapterPosition,position)
+            recyclerView.layoutManager = FlowLayoutManager()
+            val mAdapter = ChildAdapter(R.layout.item_details_list_name, item.files)
+            recyclerView.adapter = mAdapter
+
+            // 子列表条目点击
+            mAdapter.setOnItemClickListener { _, _, position ->
+                listener?.onClick(helper.adapterPosition, position)
             }
         }
 
-        class ChildAdapter(layoutResId: Int,  data: List<File>?) : BaseQuickAdapter<File, BaseViewHolder>(layoutResId, data) {
+        // 子Adapter
+        class ChildAdapter(layoutResId: Int, data: List<File>?) :
+            BaseQuickAdapter<File, BaseViewHolder>(layoutResId, data) {
             override fun convert(helper: BaseViewHolder, item: File) {
-                helper.apply {
-                    helper.setText(R.id.tv_name, FileUtils.getFileName(item.name))
-                }
+                helper.setText(R.id.tv_name, FileUtils.getFileName(item.name))
             }
         }
 
+        // 子条目点击回调
         private var listener: OnChildClickListener? = null
 
         fun interface OnChildClickListener {
-            fun onClick(parentPos:Int,pos: Int)
+            fun onClick(parentPos: Int, pos: Int)
         }
-        fun setOnChildClickListener(listener: OnChildClickListener?) {
+
+        fun setOnChildClickListener(listener: OnChildClickListener?): ScreenshotDetailsAdapter {
             this.listener = listener
+            return this
         }
     }
-
 }

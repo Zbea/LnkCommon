@@ -180,7 +180,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
         }
 
         tv_delete.setOnClickListener {
-            CommonDialog(this).setContent("确定删除当前随笔？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+            CommonDialog(this).setContent("确定删除当前随笔？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
                 override fun ok() {
@@ -207,7 +207,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
                 return@setOnClickListener
             }
             if (receivePopWindow==null){
-                receivePopWindow=PopupFreeNoteReceiveList(this,tv_receive_list,receiveTotal).builder()
+                receivePopWindow=PopupFreeNoteReceiveList(this,tv_receive_list,receiveTotal)
+                receivePopWindow?.builder()
                 receivePopWindow?.setData(receiveNotes)
                 receivePopWindow?.setOnClickListener(object : PopupFreeNoteReceiveList.OnClickListener {
                     override fun onClick(position: Int) {
@@ -240,7 +241,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
                 return@setOnClickListener
             }
             if (sharePopWindow==null){
-                sharePopWindow=PopupFreeNoteShareList(this,tv_share_list,shareTotal).builder()
+                sharePopWindow=PopupFreeNoteShareList(this,tv_share_list,shareTotal)
+                sharePopWindow?.builder()
                 sharePopWindow?.setData(shareNotes)
                 sharePopWindow?.setOnClickListener(object : PopupFreeNoteShareList.OnClickListener {
                     override fun onPage(pageIndex: Int) {
@@ -335,7 +337,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IFreeNoteView {
     }
 
     override fun onCatalog() {
-        CatalogFreeNoteDialog(this,freeNoteBean!!.date).builder().setOnItemClickListener{
+        CatalogFreeNoteDialog(this,freeNoteBean!!.date).builder().setOnDialogClickListener{
             setChangeFreeNote(it)
         }
     }

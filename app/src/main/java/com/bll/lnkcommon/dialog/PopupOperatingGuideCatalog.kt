@@ -1,17 +1,14 @@
 package com.bll.lnkcommon.dialog
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkcommon.DataBeanManager
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BasePopupWindow
 import com.bll.lnkcommon.mvp.model.catalog.CatalogChildBean
 import com.bll.lnkcommon.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkcommon.utils.DP2PX
@@ -19,102 +16,98 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity
 
-class PopupOperatingGuideCatalog(var context:Context,  var view: View) {
+/**
+ * 操作指南目录弹窗
+ * @param context 上下文
+ * @param anchorView 锚点View，弹窗依附显示的View
+ */
+class PopupOperatingGuideCatalog(
+    context: Context,
+    anchorView: View
+) : BasePopupWindow(
+    context = context,
+    anchorView = anchorView,
+    layoutWidth = DP2PX.dip2px(context,320f), // 固定宽度320dp
+) {
 
-    private var mPopupWindow:PopupWindow?=null
-    private var xoff=0
+    override fun getLayoutResId(): Int = R.layout.popup_operating_guide_catalog
 
-    fun builder(): PopupOperatingGuideCatalog{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_operating_guide_catalog, null, false)
-        mPopupWindow = PopupWindow(context).apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // 设置PopupWindow的内容view
-            contentView=popView
-            isFocusable=true // 设置PopupWindow可获得焦点
-            isTouchable=true // 设置PopupWindow可触摸
-            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
-            isClippingEnabled = false
-            width=DP2PX.dip2px(context,320f)
-        }
-
-        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
+    override fun initView() {
+        val rvList = contentView.findViewById<RecyclerView>(R.id.rv_list)
+        rvList.layoutManager = LinearLayoutManager(context)
         val mAdapter = CatalogAdapter(DataBeanManager.operatingGuideInfo())
-        rvList.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
-        mAdapter.setOnCatalogClickListener { position,page->
-            onSelectListener?.onClick(position,page)
+        mAdapter.setOnCatalogClickListener { position, page ->
+            onSelectListener?.onClick(position, page)
             dismiss()
         }
-
-        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        xoff = mPopupWindow?.contentView?.measuredWidth!!
-
-        show()
-        return this
     }
 
-    fun dismiss() {
+    // 重写show方法
+    override fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.dismiss()
+            mPopupWindow?.showAsDropDown(anchorView, 0, 5,Gravity.END)
         }
     }
 
-    fun show() {
-        if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view, 0, 5,Gravity.END)
-        }
+    private var onSelectListener: OnSelectListener? = null
+
+    fun setOnSelectListener(onSelectListener: OnSelectListener) {
+        this.onSelectListener = onSelectListener
     }
 
-   private var onSelectListener:OnSelectListener?=null
-
-    fun setOnSelectListener(onSelectListener:OnSelectListener)
-    {
-        this.onSelectListener=onSelectListener
+    fun interface OnSelectListener {
+        fun onClick(position: Int, page: Int)
     }
 
-    fun interface OnSelectListener{
-        fun onClick(position:Int,page:Int)
-    }
-
+    // ===================== 目录适配器 =====================
     class CatalogAdapter(data: List<MultiItemEntity>?) : BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder>(data) {
         init {
+            // 注册不同的item类型
             addItemType(0, R.layout.item_catalog_parent)
             addItemType(1, R.layout.item_catalog_child)
         }
+
         override fun convert(helper: BaseViewHolder, multiItemEntity: MultiItemEntity?) {
             when (helper.itemViewType) {
+                // 父项（折叠/展开）
                 0 -> {
-                    val item= multiItemEntity as CatalogParentBean
+                    val item = multiItemEntity as CatalogParentBean
                     helper.setText(R.id.tv_name, item.title)
                     helper.itemView.setOnClickListener {
                         val pos = helper.adapterPosition
                         if (item.isExpanded) {
-                            collapse(pos,false)
+                            collapse(pos, false)
                         } else {
-                            expand(pos,false)
+                            expand(pos, false)
                         }
                     }
                 }
-                1-> {
+                // 子项（可点击）
+                1 -> {
                     val childItem = multiItemEntity as CatalogChildBean
-                    helper.setText(R.id.tv_name, "       "+childItem.title)
-                    helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
-                    helper.setText(R.id.tv_page,"${childItem.pageNumber}")
+                    helper.setText(R.id.tv_name, "       " + childItem.title)
+                    helper.setTextColor(
+                        R.id.tv_name,
+                        mContext.resources.getColor(R.color.black)
+                    )
+                    helper.setText(R.id.tv_page, "${childItem.pageNumber}")
                     helper.getView<LinearLayout>(R.id.ll_click).setOnClickListener {
-                        if (listener!=null)
-                            listener?.onClick(childItem.parentPosition,childItem.pageNumber)
+                        listener?.onClick(childItem.parentPosition, childItem.pageNumber)
                     }
                 }
             }
         }
+
+        // 子项点击监听
         private var listener: OnCatalogClickListener? = null
-        fun interface OnCatalogClickListener{
-            fun onClick(position:Int,page:Int)
+
+        fun interface OnCatalogClickListener {
+            fun onClick(position: Int, page: Int)
         }
+
         fun setOnCatalogClickListener(listener: OnCatalogClickListener?) {
             this.listener = listener
         }
     }
-
 }

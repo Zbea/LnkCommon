@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_correct_wrong"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_5"
                 android:layout_marginTop="2dp"
                 android:visibility="gone"
                 />
@@ -71,7 +71,6 @@
             android:id="@+id/rv_list_level"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
             android:visibility="gone"
             />
     </LinearLayout>
@@ -80,7 +79,6 @@
         android:id="@+id/rv_list_child"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_25"
         android:visibility="gone"
         />
 

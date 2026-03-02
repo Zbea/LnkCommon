@@ -194,7 +194,7 @@ class MainFragment:BaseFragment(),IRelationView{
         iv_change.setOnLongClickListener {
             val boolean=SPUtil.getBoolean("isShowCalender")
             val titleStr=if (boolean) "默认显示日程？" else "默认显示台历？"
-            CommonDialog(requireActivity()).setContent(titleStr).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+            CommonDialog(requireActivity()).setContent(titleStr).builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun ok() {
                     if (boolean){
                         SPUtil.putBoolean("isShowCalender",false)
@@ -205,7 +205,7 @@ class MainFragment:BaseFragment(),IRelationView{
                         showView(iv_calender)
                     }
                 }
-            }
+            })
             return@setOnLongClickListener true
         }
 
@@ -336,10 +336,10 @@ class MainFragment:BaseFragment(),IRelationView{
         if (privacyPassword.isEmpty()) {
             customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
         } else {
-            NumberPasswordDialog(requireActivity()).builder().apply { setDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
+            NumberPasswordDialog(requireActivity()).builder().apply { setOnDialogClickListener(object : NumberPasswordDialog.OnDialogClickListener {
                     override fun onNumber(psw: String) {
                         if (privacyPassword == MD5Utils.digest(psw)){
-                            cancel()
+                            dismiss()
                             customStartActivity(Intent(activity, DiaryActivity::class.java).setFlags(typeId))
                         }
                         else{
@@ -359,7 +359,7 @@ class MainFragment:BaseFragment(),IRelationView{
         val pops= mutableListOf<PopupBean>()
         pops.add(PopupBean(1,"结集保存"))
         pops.add(PopupBean(2,"云库日记"))
-        PopupUpClick(requireActivity(),pops,ll_diary,160,(ll_diary.width-160)/2,-ll_diary.height+50).builder().setOnSelectListener{
+        PopupUpClick(requireActivity(),pops,ll_diary,160,(ll_diary.width-160)/2,-ll_diary.height).builder().setOnSelectListener{
             when(it.id){
                 1->{
                     DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{

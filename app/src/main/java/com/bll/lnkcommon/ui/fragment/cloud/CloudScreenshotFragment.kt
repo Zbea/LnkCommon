@@ -55,7 +55,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定下载？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                CommonDialog(requireActivity()).setContent("确定下载？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun ok() {
                             download(items[position])
                         }
@@ -64,7 +64,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudScreenshotFragment.position=position
                 if (view.id==R.id.iv_delete){
-                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    CommonDialog(requireActivity()).setContent("确定删除？").builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 deleteItem()
                             }

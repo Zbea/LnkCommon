@@ -71,7 +71,7 @@
         <LinearLayout
             android:id="@+id/ll_friend_function"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             >
 
@@ -134,7 +134,7 @@
         <TextView
             android:id="@+id/tv_save"
             android:layout_width="60dp"
-            android:layout_height="@dimen/dp_45"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
             android:gravity="center"
             android:text="保存"
@@ -145,7 +145,7 @@
         <TextView
             android:id="@+id/tv_delete"
             android:layout_width="60dp"
-            android:layout_height="@dimen/dp_45"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_50"
             android:text="删除"
             android:textColor="@color/black"

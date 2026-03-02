@@ -1,20 +1,54 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import com.bll.lnkcommon.R
+import com.bll.lnkcommon.base.BaseDialog
 
+class CommonDialog(context: Context) : BaseDialog(context) {
 
-class CommonDialog(private val context: Context) {
+    private var onDialogClickListener: OnDialogClickListener? = null
 
-    private var dialog: Dialog? = null
     private var titleStr = ""
-    private var contentStr = "" //提示文案
+    private var contentStr = "" // 提示文案
     private var contentStrId = 0
-    private var cancelStr = "" //取消文案
-    private var okStr = "" //确认文案
+    private var cancelStr = "" // 取消文案
+    private var okStr = "" // 确认文案
+
+    override fun getLayoutResId(): Int {
+        return R.layout.dialog_com
+    }
+
+    override fun initView(contentView: View) {
+        val titleTv = contentView.findViewById<TextView>(R.id.tv_dialog_title)
+        val contentTv = contentView.findViewById<TextView>(R.id.tv_dialog_content)
+
+        if (titleStr.isNotEmpty()) {
+            titleTv.text = titleStr
+            titleTv.visibility = View.VISIBLE
+        } else {
+            titleTv.visibility = View.GONE
+        }
+
+        when {
+            contentStrId != 0 -> contentTv.setText(contentStrId)
+            contentStr.isNotEmpty() -> contentTv.text = contentStr
+        }
+
+        btnCancel?.text = cancelStr.ifEmpty { "取消" }
+        btnOk?.text = okStr.ifEmpty { "确认" }
+
+        btnCancel?.setOnClickListener {
+            dismiss()
+            onDialogClickListener?.cancel()
+        }
+
+        btnOk?.setOnClickListener {
+            dismiss()
+            onDialogClickListener?.ok()
+        }
+    }
 
     fun setTitle(title: String): CommonDialog {
         this.titleStr = title
@@ -32,61 +66,29 @@ class CommonDialog(private val context: Context) {
     }
 
     fun setCancel(cancel: String): CommonDialog {
-        cancelStr = cancel
+        this.cancelStr = cancel
         return this
     }
 
     fun setOk(ok: String): CommonDialog {
-        okStr = ok
+        this.okStr = ok
         return this
     }
 
-    fun builder(): CommonDialog {
-        dialog = Dialog(context)
-        dialog?.setContentView(R.layout.dialog_com)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog?.show()
-
-        val titleTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_title)
-        val contentTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_content)
-        val cancelTv = dialog!!.findViewById<TextView>(R.id.tv_cancel)
-        val tvOk = dialog!!.findViewById<TextView>(R.id.tv_ok)
-
-        if (titleStr.isNotEmpty()) titleTv.text = titleStr
-        titleTv.visibility = if (titleStr.isNotEmpty()) View.VISIBLE else View.GONE
-        if (contentStr.isNotEmpty()) contentTv.text = contentStr
-        if (contentStrId!=0) contentTv.setText(contentStrId)
-        if (cancelStr.isNotEmpty()) cancelTv.text = cancelStr
-        if (okStr.isNotEmpty()) tvOk.text = okStr
-
-        cancelTv.setOnClickListener {
-            cancel()
-            onDialogClickListener?.cancel()
-        }
-        tvOk.setOnClickListener {
-            cancel()
-            onDialogClickListener?.ok()
-        }
-
+    //保持链式结构
+    override fun builder(): CommonDialog {
+        super.builder()
         return this
     }
-
-    fun show() {
-        dialog!!.show()
-    }
-
-    fun cancel() {
-        dialog!!.dismiss()
-    }
-
-    var onDialogClickListener: OnDialogClickListener? = null
 
     interface OnDialogClickListener {
-        fun cancel(){}
+        fun cancel() {}
         fun ok()
     }
 
-    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
-        this.onDialogClickListener = onDialogClickListener
+    fun setOnDialogClickListener(listener: OnDialogClickListener?): CommonDialog {
+        this.onDialogClickListener = listener
+        return this
     }
+
 }

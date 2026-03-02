@@ -57,7 +57,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
             setOnItemClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
                 CommonDialog(requireActivity()).setContent("确定下载？").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
                         override fun ok() {
@@ -69,7 +69,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 this@CloudDiaryFragment.position=position
                 if (view.id==R.id.iv_delete){
                     CommonDialog(requireActivity()).setContent("确定删除？").builder()
-                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        .setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
                             override fun ok() {

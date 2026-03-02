@@ -1,110 +1,121 @@
 package com.bll.lnkcommon.dialog
 
-import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
-import com.bll.lnkcommon.utils.DP2PX
+import com.bll.lnkcommon.base.BaseDialog
 import com.bll.lnkcommon.utils.KeyboardUtils
 import com.bll.lnkcommon.utils.SToast
 
-class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int) {
+/**
+ * 几何尺寸设置弹窗：继承BaseDialog
+ * @param context 上下文
+ * @param currentGeometry 几何类型（1=线、2=矩形、3=圆等）
+ * @param type 子类型（圆：0=半径、1=直径）
+ */
+class GeometryScaleDialog(context: Context, private val currentGeometry: Int, private val type: Int) : BaseDialog(context) {
 
+    private var onDialogClickListener: OnDialogClickListener? = null
 
-    fun builder(): GeometryScaleDialog? {
+    override fun getLayoutResId(): Int = R.layout.dialog_geometry_scale
 
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_geometry_scale)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+    override fun initView(contentView: View) {
 
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
-        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        val et_width = dialog.findViewById<EditText>(R.id.et_width)
-        val et_height = dialog.findViewById<EditText>(R.id.et_height)
-        when(currentGeometry){
-            1->{
-                et_width.hint = context.getString(R.string.geometry_hint_lint_distance)
-                et_height.visibility= View.GONE
+        val btnOk = contentView.findViewById<TextView>(R.id.tv_ok)
+        val btnCancel = contentView.findViewById<TextView>(R.id.tv_cancel)
+        val etWidth = contentView.findViewById<EditText>(R.id.et_width)
+        val etHeight = contentView.findViewById<EditText>(R.id.et_height)
+
+        //根据几何类型初始化输入框提示/显隐
+        when (currentGeometry) {
+            1 -> {
+                etWidth.hint = context.getString(R.string.geometry_hint_lint_distance)
+                etHeight.visibility = View.GONE
             }
-            2->{
-                et_width.hint =context.getString(R.string.geometry_hint_rectangle_width)
-                et_height.hint = context.getString(R.string.geometry_hint_rectangle_height)
+            2 -> {
+                etWidth.hint = context.getString(R.string.geometry_hint_rectangle_width)
+                etHeight.hint = context.getString(R.string.geometry_hint_rectangle_height)
             }
-            3->{
-                if (type==0){
-                    et_width.hint =context.getString(R.string.geometry_hint_circle_radius)
+            3 -> {
+                etWidth.hint = if (type == 0) {
+                    context.getString(R.string.geometry_hint_circle_radius)
+                } else {
+                    context.getString(R.string.geometry_hint_circle_diameter)
                 }
-                else{
-                    et_width.hint =context.getString(R.string.geometry_hint_circle_diameter)
-                }
-                et_height.visibility= View.GONE
+                etHeight.visibility = View.GONE
             }
-            5->{
-                et_width.hint = context.getString(R.string.geometry_hint_oval_half_width)
-                et_height.hint = context.getString(R.string.geometry_hint_oval_half_height)
+            5 -> {
+                etWidth.hint = context.getString(R.string.geometry_hint_oval_half_width)
+                etHeight.hint = context.getString(R.string.geometry_hint_oval_half_height)
             }
-            7->{
-                et_width.hint = "输入抛物线大小"
-                et_height.visibility= View.GONE
+            7 -> {
+                etWidth.hint = "输入抛物线大小"
+                etHeight.visibility = View.GONE
             }
-            8->{
-                et_width.hint = context.getString(R.string.geometry_hint_angle)
-                et_height.visibility= View.GONE
+            8 -> {
+                etWidth.hint = context.getString(R.string.geometry_hint_angle)
+                etHeight.visibility = View.GONE
             }
-            9->{
-                et_width.hint = context.getString(R.string.geometry_hint_scale)
-                et_height.visibility= View.GONE
+            9 -> {
+                etWidth.hint = context.getString(R.string.geometry_hint_scale)
+                etHeight.visibility = View.GONE
             }
         }
 
-
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
+        btnCancel.setOnClickListener {
+            dismiss()
         }
-        btn_ok.setOnClickListener {
-            val width = et_width.text.toString()
-            val height=et_height.text.toString()
-            if (width.isNotEmpty()) {
-                dialog.dismiss()
-                if (currentGeometry==2||currentGeometry==5||currentGeometry==9){
-                    if (height.isNotEmpty()){
-                        dialog.dismiss()
-                        listener?.onClick(width.toFloat(),height.toFloat())
+
+        btnOk.setOnClickListener {
+            val widthStr = etWidth.text.toString().trim()
+            val heightStr = etHeight.text.toString().trim()
+
+            if (widthStr.isNotEmpty()) {
+                val width = widthStr.toFloat()
+                // 不同几何类型的校验逻辑
+                when (currentGeometry) {
+                    2, 5, 9 -> {
+                        if (heightStr.isNotEmpty()) {
+                            val height = heightStr.toFloat()
+                            dismiss()
+                            onDialogClickListener?.onClick(width, height)
+                        }
                     }
-                }
-                else{
-                    val num=width.toFloat()
-                    if (currentGeometry==8&&num>360){
-                        SToast.showText("角度需要小于360°")
+                    8 -> {
+                        if (width > 360) {
+                            SToast.showText("角度需要小于360°")
+                        } else {
+                            dismiss()
+                            onDialogClickListener?.onClick(width, 0f)
+                        }
                     }
-                    else{
-                        dialog.dismiss()
-                        listener?.onClick(num,0f)
+                    else -> {
+                        dismiss()
+                        onDialogClickListener?.onClick(width, 0f)
                     }
                 }
             }
         }
-        dialog.setOnDismissListener {
+
+        dialog?.setOnDismissListener {
             KeyboardUtils.hideSoftKeyboard(context)
         }
+    }
 
+    fun interface OnDialogClickListener {
+        fun onClick(width: Float, height: Float)
+    }
+
+    fun setOnDialogClickListener(listener: OnDialogClickListener?): GeometryScaleDialog {
+        this.onDialogClickListener = listener
         return this
     }
 
-    private var listener: OnDialogClickListener? = null
-
-    fun interface OnDialogClickListener {
-        fun onClick(width: Float,height:Float)
-    }
-
-    fun setOnDialogClickListener(listener: OnDialogClickListener?) {
-        this.listener = listener
+    override fun builder(): GeometryScaleDialog {
+        super.builder()
+        return this
     }
 
 }

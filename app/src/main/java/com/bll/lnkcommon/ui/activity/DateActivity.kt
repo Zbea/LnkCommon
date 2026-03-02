@@ -1,12 +1,13 @@
 package com.bll.lnkcommon.ui.activity
 
 import android.content.Intent
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkcommon.Constants
 import com.bll.lnkcommon.R
 import com.bll.lnkcommon.base.BaseActivity
 import com.bll.lnkcommon.dialog.PopupDateSelector
-import com.bll.lnkcommon.mvp.model.Date
+import com.bll.lnkcommon.mvp.model.DateBean
 import com.bll.lnkcommon.ui.activity.drawing.DateEventActivity
 import com.bll.lnkcommon.ui.adapter.DateAdapter
 import com.bll.lnkcommon.utils.DateUtils
@@ -16,6 +17,9 @@ import kotlinx.android.synthetic.main.ac_date.*
 import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 open class DateActivity: BaseActivity() {
 
@@ -24,28 +28,20 @@ open class DateActivity: BaseActivity() {
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
-    private var dates= mutableListOf<Date>()
+    private var dateBeans= mutableListOf<DateBean>()
     private var position=0
-    private var yearList= mutableListOf<Int>()
-    private var monthList= mutableListOf<Int>()
+    private val yearList = mutableListOf<Int>().apply {
+        val nowYear = DateUtils.getYear()
+        repeat(5) { i -> add(nowYear - 5 + i) }
+        repeat(5) { i -> add(nowYear + 1 + i) }
+    }
+    private val monthList = (1..12).toMutableList()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
     }
 
     override fun initData() {
-        val nowYear=DateUtils.getYear()
-        for (i in 4 downTo 0){
-            yearList.add(nowYear-i)
-        }
-        for (i in 1..5){
-            yearList.add(nowYear+i)
-        }
-
-        for (i in 1..12)
-        {
-            monthList.add(i)
-        }
     }
 
     override fun initView() {
@@ -59,11 +55,12 @@ open class DateActivity: BaseActivity() {
 
         tv_year.setOnClickListener {
             if (yearPop==null){
-                yearPop=PopupDateSelector(this,tv_year,yearList,0).builder()
-                yearPop ?.setOnSelectorListener {
+                yearPop=PopupDateSelector(this,tv_year,yearList,0)
+                yearPop?.builder()
+                yearPop?.setOnDateSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    getDates()
+                    loadCalendarData()
                 }
                 yearPop?.show()
             }
@@ -74,11 +71,12 @@ open class DateActivity: BaseActivity() {
 
         tv_month.setOnClickListener {
             if (monthPop==null){
-                monthPop=PopupDateSelector(this,tv_month,monthList,1).builder()
-                monthPop?.setOnSelectorListener {
+                monthPop=PopupDateSelector(this,tv_month,monthList,1)
+                monthPop?.builder()
+                monthPop?.setOnDateSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    getDates()
+                    loadCalendarData()
                 }
                 monthPop?.show()
             }
@@ -87,7 +85,7 @@ open class DateActivity: BaseActivity() {
             }
         }
 
-        getDates()
+        loadCalendarData()
     }
 
     private fun initRecycler(){
@@ -97,7 +95,7 @@ open class DateActivity: BaseActivity() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
-            val dateBean=dates[position]
+            val dateBean=dateBeans[position]
             if (dateBean.year!=0){
                 val intent = Intent(this, DateEventActivity::class.java)
                 intent.putExtra("date",dateBean.time)
@@ -106,103 +104,66 @@ open class DateActivity: BaseActivity() {
         }
     }
 
-
-    //根据月份获取当月日期
-    private fun getDates(){
-        dates.clear()
-//        val lastYear: Int
-//        val lastMonth: Int
-//        val nextYear: Int
-//        val nextMonth: Int
-//
-//        when (monthNow) {
-//            //当月为一月份时候
-//            1 -> {
-//                lastYear=yearNow-1
-//                lastMonth=12
-//                nextYear=yearNow
-//                nextMonth=monthNow+1
-//            }
-//            //当月为12月份时候
-//            12 -> {
-//                lastYear=yearNow
-//                lastMonth=monthNow-1
-//                nextYear=yearNow+1
-//                nextMonth=1
-//            }
-//            else -> {
-//                lastYear=yearNow
-//                lastMonth=monthNow-1
-//                nextYear=yearNow
-//                nextMonth=monthNow+1
-//            }
-//        }
-
-        var week=DateUtils.getMonthOneDayWeek(yearNow,monthNow-1)
-        if (week==1)
-            week=8
-
-        //补齐上月差数
-        for (i in 0 until week-2){
-//            //上月天数
-//            val maxDay=DateUtils.getMonthMaxDay(lastYear,lastMonth-1)
-//            val day=maxDay-(week-2)+(i+1)
-//            dates.add(getDateBean(lastYear,lastMonth,day,false))
-            dates.add(Date())
-        }
-
-        val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
-        for (i in 1 .. max)
-        {
-            dates.add(getDateBean(yearNow,monthNow,i))
-        }
-
-        if (dates.size>35){
-            //补齐下月天数
-            for (i in 0 until 42-dates.size){
-//                val day=i+1
-//                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
+    /**
+     * 加载日历数据
+     */
+    private fun loadCalendarData() {
+        lifecycleScope.launch {
+            val newDateList = withContext(Dispatchers.IO) {
+                generateCalendarDates(yearNow, monthNow)
             }
+            dateBeans.clear()
+            dateBeans.addAll(newDateList)
+            mAdapter?.setNewData(dateBeans)
         }
-        else{
-            for (i in 0 until 35-dates.size){
-//                val day=i+1
-//                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
-            }
-        }
-
-        mAdapter?.setNewData(dates)
-
-        Thread {
-            runOnUiThread {
-                for (date in dates) {
-                    if (date.time != 0L) {
-                        date.lunar = LunarSolarConverter.SolarToLunar(date.solar)
-                    }
-                }
-                mAdapter?.notifyDataSetChanged()
-            }
-        }.start()
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int): Date {
-        val solar=Solar()
-        solar.solarYear=year
-        solar.solarMonth=month
-        solar.solarDay=day
+    /**
+     * 生成日历数据：提取为纯函数，无副作用，便于测试
+     */
+    private fun generateCalendarDates(targetYear: Int, targetMonth: Int): MutableList<DateBean> {
+        val dateBeans = mutableListOf<DateBean>()
+        // 获取当月第一天是周几
+        var firstDayWeek = DateUtils.getMonthOneDayWeek(targetYear, targetMonth - 1)
+        firstDayWeek = if (firstDayWeek == 1) 8 else firstDayWeek
 
-        val date= Date()
-        date.year=year
-        date.month=month
-        date.day=day
-        date.time=DateUtils.dateToStamp("$year-$month-$day")
-        date.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
-        date.solar= solar
-        date.week=DateUtils.getWeek(date.time)
+        // 补齐上月占位（空Date）
+        repeat(firstDayWeek - 2) {
+            dateBeans.add(DateBean())
+        }
+        // 添加当月日期
+        val monthMaxDay = DateUtils.getMonthMaxDay(targetYear, targetMonth - 1)
+        repeat(monthMaxDay) { day ->
+            dateBeans.add(createDateBean(targetYear, targetMonth, day + 1))
+        }
+        // 补齐下月占位（空Date），保证总长度为 35 或 42（7的倍数）
+        val targetSize = if (dateBeans.size > 35) 42 else 35
+        repeat(targetSize - dateBeans.size) {
+            dateBeans.add(DateBean())
+        }
+        return dateBeans
+    }
 
-        return date
+    /**
+     * 创建日期Bean
+     */
+    private fun createDateBean(year: Int, month: Int, day: Int): DateBean {
+        val solar = Solar().apply {
+            solarYear = year
+            solarMonth = month
+            solarDay = day
+        }
+        val dateTime = DateUtils.dateToStamp("$year-$month-$day")
+        return DateBean().apply {
+            this.year = year
+            this.month = month
+            this.day = day
+            this.time = dateTime
+            this.isNow = (day == DateUtils.getDay() && DateUtils.getMonth() == month)
+            this.solar = solar
+            this.week = DateUtils.getWeek(dateTime)
+            this.lunar = LunarSolarConverter.SolarToLunar(solar)
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

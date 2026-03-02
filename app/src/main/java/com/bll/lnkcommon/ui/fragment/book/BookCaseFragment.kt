@@ -78,7 +78,7 @@ class BookCaseFragment: BaseFragment() {
                 MethodManager.gotoBookDetails(requireActivity(),1, books[position])
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                CommonDialog(requireActivity()).setContent(R.string.tips_is_delete).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                CommonDialog(requireActivity()).setContent(R.string.tips_is_delete).builder().setOnDialogClickListener(object : CommonDialog.OnDialogClickListener {
                     override fun ok() {
                         MethodManager.deleteBook(books[position])
                     }
